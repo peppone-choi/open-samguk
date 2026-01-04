@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: open-samguk-postgres
+    environment:
+      POSTGRES_DB: open_samguk
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - open-samguk-postgres:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: open-samguk-api
+    environment:
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=open_samguk
+      - DB_SCHEMA=gateway
+      - JWT_SECRET=dev-secret-key
+      - DAEMON_HOST=daemon
+      - DAEMON_PORT=3001
+    ports:
+      - "3001:3000"
+    depends_on:
+      - postgres
+      - daemon
+
+  daemon:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    container_name: open-samguk-daemon
+    command: ["node", "apps/api/dist/daemon/main"]
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=open_samguk
+      - DB_SCHEMA=gateway
+      - DAEMON_PORT=3001
+    ports:
+      - "3002:3001"
+    depends_on:
+      - postgres
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    container_name: open-samguk-web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:3000/api/v1
+    depends_on:
+      - api
+
+volumes:
+  open-samguk-postgres:

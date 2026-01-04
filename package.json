@@ -1,0 +1,20 @@
+{
+  "name": "open-samguk",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:api": "npm --prefix apps/api run start:dev",
+    "dev:web": "npm --prefix apps/web run dev",
+    "build": "pnpm -r --if-present build",
+    "build:api": "npm --prefix apps/api run build",
+    "build:web": "npm --prefix apps/web run build",
+    "db:migrate": "npm --prefix apps/api run db:migrate",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "lint": "pnpm -r --if-present lint",
+    "test": "pnpm -r --if-present test"
+  }
+}
