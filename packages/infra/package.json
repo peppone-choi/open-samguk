@@ -1,0 +1,31 @@
+{
+  "name": "@sammo-ts/infra",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm,cjs --dts",
+    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sammo-ts/common": "workspace:*",
+    "@sammo-ts/logic": "workspace:*",
+    "ioredis": "^5.4.0",
+    "pg": "^8.11.0",
+    "reflect-metadata": "^0.2.0",
+    "typeorm": "^0.3.20",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@swc/core": "^1.15.8",
+    "@types/node": "^20.0.0",
+    "@types/pg": "^8.11.0",
+    "better-sqlite3": "^12.5.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
