@@ -7,7 +7,8 @@ export type RequirementKey =
   | { kind: 'destCity'; id: number }
   | { kind: 'destNation'; id: number }
   | { kind: 'arg'; key: string }
-  | { kind: 'env'; key: string };
+  | { kind: 'env'; key: string }
+  | { kind: 'message'; id: number };
 
 // 제약 검사 결과 타입
 export type ConstraintResult =

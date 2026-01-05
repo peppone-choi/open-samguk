@@ -1,3 +1,5 @@
+import { WorldSnapshot } from './entities.js';
+
 /**
  * 도시 지형 정보 및 정적 데이터
  * 레거시의 CityConstBase.php 데이터를 포팅함
@@ -205,4 +207,106 @@ export class MapUtil {
     const connections = this.getConnections(id1);
     return connections.includes(id2);
   }
-}
+
+  public static getDistance(startId: number, endId: number): number {
+    this.initialize();
+    if (startId === endId) return 0;
+
+    // BFS
+    const queue: [number, number][] = [[startId, 0]];
+    const visited = new Set<number>([startId]);
+
+    while (queue.length > 0) {
+      const [currentId, dist] = queue.shift()!;
+      if (currentId === endId) return dist;
+
+      const city = this.getCity(currentId);
+      if (!city) continue;
+
+      for (const nextId of city.connections) {
+        if (!visited.has(nextId)) {
+          visited.add(nextId);
+          queue.push([nextId, dist + 1]);
+        }
+      }
+    }
+
+        return 999; // Unreachable
+
+      }
+
+    
+
+      public static getDistanceWithNation(startId: number, endId: number, nationIds: number[], snapshot: WorldSnapshot): number | undefined {
+
+        this.initialize();
+
+        if (startId === endId) return 0;
+
+    
+
+        const nationSet = new Set(nationIds);
+
+    
+
+        // BFS
+
+        const queue: [number, number][] = [[startId, 0]];
+
+        const visited = new Set<number>([startId]);
+
+    
+
+        while (queue.length > 0) {
+
+          const [currentId, dist] = queue.shift()!;
+
+          if (currentId === endId) return dist;
+
+    
+
+          const city = this.getCity(currentId);
+
+          if (!city) continue;
+
+    
+
+          for (const nextId of city.connections) {
+
+            if (!visited.has(nextId)) {
+
+              // 목적지 도시는 국가 소유가 아니더라도(천도 중 뺏겼을 수도 있으니?) 체크? 
+
+              // 레거시는 [$nationID]를 넘겨서 자국령만 체크함.
+
+              const targetCity = snapshot.cities[nextId];
+
+              if (targetCity && nationSet.has(targetCity.nationId)) {
+
+                visited.add(nextId);
+
+                queue.push([nextId, dist + 1]);
+
+              } else if (nextId === endId) {
+
+                // 목적지 도달 가능 여부 (만약 목적지 도시가 경로 중간에 있지 않고 끝이라면?)
+
+                // 사실 레거시 calcCityDistance는 모든 노드가 해당 국가 소유여야 함.
+
+              }
+
+            }
+
+          }
+
+        }
+
+    
+
+        return undefined;
+
+      }
+
+    }
+
+    

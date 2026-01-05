@@ -27,6 +27,7 @@ export interface General {
   crewType: number;
   train: number;
   atmos: number;
+  dex: Record<number, number>; // 병종 숙련도 (key: armType, value: score)
   age: number;
   bornYear: number;
   deadYear: number;
@@ -43,6 +44,9 @@ export interface General {
   makeLimit: number;
   killTurn: number;
   block: number; // 차단 상태
+  defenceTrain: number;
+  tournamentState: number;
+  lastTurn: Record<string, any>;
   meta: Record<string, any>;
   penalty: Record<string, any>;
 }
@@ -59,6 +63,7 @@ export interface Nation {
   tech: number;
   power: number;
   level: number;
+  gennum: number; // 장수 수
   typeCode: string; // 성향 코드
   scoutLevel: number; // 첩보 레벨
   warState: number; // 전쟁 상태
@@ -73,6 +78,7 @@ export interface City {
   name: string;
   nationId: number;
   level: number;
+  supply: number; // 보급 상태 (0:단절, 1:보급)
   front: number; // 전방 상태 (0:후방, 1:교전, 2:접경, 3:적진)
   pop: number;
   popMax: number;
@@ -133,6 +139,7 @@ export interface WorldSnapshot {
   cities: Record<number, City>;
   diplomacy: Record<string, Diplomacy>; // key: "src:dest"
   troops: Record<number, Troop>;
+  messages: Record<number, Message>;
   gameTime: GameTime;
   env: Record<string, any>;
 }
@@ -146,6 +153,7 @@ export interface WorldDelta {
   diplomacy?: Record<string, Delta<Diplomacy>>;
   troops?: Record<number, Delta<Troop>>;
   messages?: Message[];
+  deleteMessages?: number[];
   gameTime?: Delta<GameTime>;
   env?: Delta<Record<string, any>>;
   logs?: {

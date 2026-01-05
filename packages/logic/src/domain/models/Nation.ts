@@ -49,6 +49,14 @@ export class Nation {
     return { rice: this.props.rice };
   }
 
+  /**
+   * 국가 기술력 증가
+   */
+  public increaseTech(amount: number): Delta<INation> {
+    this.props.tech += amount;
+    return { tech: this.props.tech };
+  }
+
   public get id(): number { return this.props.id; }
   public get gold(): number { return this.props.gold; }
   public toJSON(): INation { return { ...this.props }; }

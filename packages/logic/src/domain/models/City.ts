@@ -11,6 +11,14 @@ export class City {
   }
 
   /**
+   * 인구 증가
+   */
+  public increasePop(amount: number): Delta<ICity> {
+    this.props.pop = Math.min(this.props.pop + amount, this.props.popMax);
+    return { pop: this.props.pop };
+  }
+
+  /**
    * 농지 수치 증가
    */
   public increaseAgri(amount: number): Delta<ICity> {
@@ -35,10 +43,18 @@ export class City {
   }
 
   /**
+   * 수비 수치 증가
+   */
+  public increaseDef(amount: number): Delta<ICity> {
+    this.props.def = Math.min(this.props.def + amount, this.props.defMax);
+    return { def: this.props.def };
+  }
+
+  /**
    * 성벽 수치 증가
    */
   public increaseWall(amount: number): Delta<ICity> {
-    this.props.wall += amount;
+    this.props.wall = Math.min(this.props.wall + amount, this.props.wallMax);
     return { wall: this.props.wall };
   }
 
