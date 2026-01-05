@@ -11,3 +11,6 @@ export * from './GeneralForcedMarchCommand.js';
 export * from './GeneralFoundNationCommand.js';
 export * from './GeneralGiftCommand.js';
 export * from './GeneralJoinNationCommand.js';
+export * from './NationChangeNameCommand.js';
+export * from './NationConfiscateCommand.js';
+export * from './NationRewardCommand.js';

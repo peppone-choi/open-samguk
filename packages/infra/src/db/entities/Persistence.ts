@@ -11,10 +11,10 @@ export class SnapshotMeta {
   @Column('text')
   profile!: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'datetime' })
   created_at!: Date;
 
-  @Column()
+  @Column({ type: 'datetime' })
   turn_time!: Date;
 
   @Column('text')
@@ -59,7 +59,7 @@ export class Journal {
   @Column({ type: 'simple-json' })
   payload!: any;
 
-  @CreateDateColumn()
+  @CreateDateColumn({ type: 'timestamp' })
   created_at!: Date;
 }
 
@@ -74,6 +74,6 @@ export class JournalOffset {
   @Column({ type: 'bigint' })
   last_seq!: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   applied_at!: Date;
 }

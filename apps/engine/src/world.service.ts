@@ -45,7 +45,7 @@ export class InMemoryWorldService implements OnModuleInit {
         messages: {},
         env: {},
         gameTime: { year: 184, month: 1 },
-      });
+      } as WorldSnapshot);
     }
 
     // 2. 저널 재생

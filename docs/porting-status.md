@@ -21,7 +21,7 @@
 - [x] che_성벽보수 (RepairWallCommand)
 - [x] che_첩보 (SpyCommand)
 - [x] che_상업투자 (DevelopCommerceCommand)
-- [ ] che_건국 (FoundNationCommand)
+- [x] che_건국 (FoundNationCommand)
 - [x] che_숙련전환 (ConvertDexCommand)
 - [x] che_임관 (JoinNationCommand)
 - [x] che_소집해제 (DischargeCommand)
@@ -50,7 +50,7 @@
 - [x] che_훈련 (TrainingCommand)
 - [x] che_모병 (DraftCommand) - `GeneralDraftCommand.ts`
 - [x] che_사기진작 (EncourageCommand)
-- [ ] che_정착장려 (DevelopPopulationCommand)
+- [x] che_정착장려 (DevelopPopulationCommand)
 - [x] che_기술연구 (ResearchTechCommand)
 - [ ] che_랜덤임관 (RandomJoinCommand)
 - [x] che_치안강화 (DevelopSecurityCommand) - `GeneralReinforceSecurityCommand.ts`
@@ -66,7 +66,7 @@
 - [ ] che_수몰 (FloodAttackCommand)
 - [ ] event_대검병연구 (ResearchUnitCommand)
 - [x] che_포상 (RewardGeneralCommand)
-- [ ] che_몰수 (ConfiscateCommand)
+- [x] che_몰수 (ConfiscateCommand) - `NationConfiscateCommand.ts`
 - [ ] che_종전수락 (AcceptStopWarCommand)
 - [ ] event_극병연구 (ResearchUnitCommand)
 - [ ] che_발령 (AppointMoveCommand)

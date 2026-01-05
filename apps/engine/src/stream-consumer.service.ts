@@ -45,7 +45,7 @@ export class StreamConsumerService implements OnModuleInit, OnModuleDestroy {
           'COUNT', '1',
           'BLOCK', '5000',
           'STREAMS', this.streamKey, '>'
-        );
+        ) as [string, [string, string[]][]][] | null;
 
         if (!results) continue;
 
@@ -67,9 +67,16 @@ export class StreamConsumerService implements OnModuleInit, OnModuleDestroy {
     try {
       // flat array를 object로 변환
       for (let i = 0; i < fields.length; i += 2) {
-        data[fields[i]] = fields[i + 1];
+        const key = fields[i];
+        const value = fields[i + 1];
+        if (key !== undefined && value !== undefined) {
+          data[key] = value;
+        }
       }
 
+      if (!data.payload) {
+        throw new Error('Missing payload in message');
+      }
       const command = JSON.parse(data.payload) as DaemonCommand;
       this.logger.log(`Processing [${command.requestId}] ${command.type}`);
 

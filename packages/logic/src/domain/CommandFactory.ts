@@ -13,6 +13,7 @@ import { NationRewardCommand } from './commands/NationRewardCommand.js';
 import { NationChangeNameCommand } from './commands/NationChangeNameCommand.js';
 import { NationChangeColorCommand } from './commands/NationChangeColorCommand.js';
 import { NationChangeCapitalCommand } from './commands/NationChangeCapitalCommand.js';
+import { NationConfiscateCommand } from './commands/NationConfiscateCommand.js';
 import { GeneralDraftCommand } from './commands/GeneralDraftCommand.js';
 import { GeneralConscriptCommand } from './commands/GeneralConscriptCommand.js';
 import { GeneralTradeCommand } from './commands/GeneralTradeCommand.js';
@@ -131,12 +132,9 @@ export class CommandFactory {
       case '포상':
       case 'che_포상':
         return new NationRewardCommand();
-      case '국호변경':
-      case 'che_국호변경':
-        return new NationChangeNameCommand();
-      case '국기변경':
-      case 'che_국기변경':
-        return new NationChangeColorCommand();
+      case '몰수':
+      case 'che_몰수':
+        return new NationConfiscateCommand();
       case '천도':
       case 'che_천도':
         return new NationChangeCapitalCommand();
