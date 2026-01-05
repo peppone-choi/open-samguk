@@ -34,3 +34,4 @@ export * from './domain/events/pre-month/TestPreMonthEvent.js';
 export * from './domain/events/month/WandererDisbandEvent.js';
 export * from './test/types.js';
 export * from './test/ParityHarness.js';
+export * from './domain/scenario/index.js';
