@@ -1,5 +1,25 @@
 import { Constraint, ConstraintContext, ConstraintResult, RequirementKey, StateView } from './Constraint.js';
 import { MapUtil } from './MapData.js';
+import { NotLordConstraint } from './constraints/NotLordConstraint.js';
+import { BeChiefConstraint } from './constraints/BeChiefConstraint.js';
+import { NotChiefConstraint } from './constraints/NotChiefConstraint.js';
+import { NotOccupiedCityConstraint } from './constraints/NotOccupiedCityConstraint.js';
+import { NeutralCityConstraint } from './constraints/NeutralCityConstraint.js';
+import { NotNeutralDestCityConstraint } from './constraints/NotNeutralDestCityConstraint.js';
+import { OccupiedDestCityConstraint } from './constraints/OccupiedDestCityConstraint.js';
+import { NotOccupiedDestCityConstraint } from './constraints/NotOccupiedDestCityConstraint.js';
+import { SuppliedDestCityConstraint } from './constraints/SuppliedDestCityConstraint.js';
+import { ReqGeneralValueConstraint } from './constraints/ReqGeneralValueConstraint.js';
+import { ReqNationValueConstraint } from './constraints/ReqNationValueConstraint.js';
+import { ReqCityValueConstraint } from './constraints/ReqCityValueConstraint.js';
+import { ReqDestCityValueConstraint } from './constraints/ReqDestCityValueConstraint.js';
+import { ReqDestNationValueConstraint } from './constraints/ReqDestNationValueConstraint.js';
+import { ReqNationGoldConstraint } from './constraints/ReqNationGoldConstraint.js';
+import { ReqNationRiceConstraint } from './constraints/ReqNationRiceConstraint.js';
+import { NotCapitalConstraint } from './constraints/NotCapitalConstraint.js';
+import { NotSameDestCityConstraint } from './constraints/NotSameDestCityConstraint.js';
+import { ExistsDestNationConstraint } from './constraints/ExistsDestNationConstraint.js';
+import { DifferentDestNationConstraint } from './constraints/DifferentDestNationConstraint.js';
 
 /**
  * 공통 제약 조건들을 생성하는 헬퍼 클래스
@@ -484,7 +504,7 @@ export class ConstraintHelper {
       test: (ctx, view) => {
         const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
         if (!nation) return { kind: 'deny', reason: '국가 정보를 찾을 수 없습니다.' };
-        
+
         const value = nation.meta[key] ?? 0;
         let pass = false;
         switch (compare) {
@@ -501,5 +521,183 @@ export class ConstraintHelper {
         return { kind: 'allow' };
       },
     };
+  }
+
+  /**
+   * 군주가 아니어야 함
+   */
+  public static NotLord(): Constraint {
+    return new NotLordConstraint();
+  }
+
+  /**
+   * 수뇌여야 함 (officer_level > 4)
+   */
+  public static BeChief(): Constraint {
+    return new BeChiefConstraint();
+  }
+
+  /**
+   * 수뇌가 아니어야 함 (officer_level <= 4)
+   */
+  public static NotChief(): Constraint {
+    return new NotChiefConstraint();
+  }
+
+  /**
+   * 현재 도시가 아국이 아니어야 함
+   */
+  public static NotOccupiedCity(): Constraint {
+    return new NotOccupiedCityConstraint();
+  }
+
+  /**
+   * 현재 도시가 공백지여야 함
+   */
+  public static NeutralCity(): Constraint {
+    return new NeutralCityConstraint();
+  }
+
+  /**
+   * 대상 도시가 공백지가 아니어야 함
+   */
+  public static NotNeutralDestCity(): Constraint {
+    return new NotNeutralDestCityConstraint();
+  }
+
+  /**
+   * 대상 도시가 아국이어야 함
+   */
+  public static OccupiedDestCity(): Constraint {
+    return new OccupiedDestCityConstraint();
+  }
+
+  /**
+   * 대상 도시가 아국이 아니어야 함
+   */
+  public static NotOccupiedDestCity(): Constraint {
+    return new NotOccupiedDestCityConstraint();
+  }
+
+  /**
+   * 대상 도시가 보급이 연결되어 있어야 함
+   */
+  public static SuppliedDestCity(): Constraint {
+    return new SuppliedDestCityConstraint();
+  }
+
+  /**
+   * 범용 장수 값 검사
+   * @example ConstraintHelper.ReqGeneralValue('leadership', '통솔', '>=', 80)
+   */
+  public static ReqGeneralValue(
+    key: string,
+    keyNick: string,
+    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    reqVal: number,
+    errMsg?: string
+  ): Constraint {
+    return new ReqGeneralValueConstraint(key, keyNick, comp, reqVal, errMsg);
+  }
+
+  /**
+   * 범용 국가 값 검사 (퍼센트 지원)
+   * @example ConstraintHelper.ReqNationValue('gold', '국고', '>=', 10000)
+   * @example ConstraintHelper.ReqNationValue('rice', '군량', '>=', '50%')
+   */
+  public static ReqNationValue(
+    key: string,
+    keyNick: string,
+    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    reqVal: number | string,
+    errMsg?: string
+  ): Constraint {
+    return new ReqNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
+  }
+
+  /**
+   * 범용 도시 값 검사 (퍼센트 지원)
+   * @example ConstraintHelper.ReqCityValue('agri', '농업', '>=', 10000)
+   * @example ConstraintHelper.ReqCityValue('comm', '상업', '>=', '50%')
+   */
+  public static ReqCityValue(
+    key: string,
+    keyNick: string,
+    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    reqVal: number | string,
+    errMsg?: string
+  ): Constraint {
+    return new ReqCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
+  }
+
+  /**
+   * 범용 대상 도시 값 검사 (퍼센트 지원)
+   * @example ConstraintHelper.ReqDestCityValue('def', '방어', '<', '80%')
+   */
+  public static ReqDestCityValue(
+    key: string,
+    keyNick: string,
+    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    reqVal: number | string,
+    errMsg?: string
+  ): Constraint {
+    return new ReqDestCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
+  }
+
+  /**
+   * 범용 대상 국가 값 검사 (퍼센트 지원)
+   * @example ConstraintHelper.ReqDestNationValue('gold', '상대국 국고', '<', 10000)
+   */
+  public static ReqDestNationValue(
+    key: string,
+    keyNick: string,
+    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    reqVal: number | string,
+    errMsg?: string
+  ): Constraint {
+    return new ReqDestNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
+  }
+
+  /**
+   * 국가 자금이 충분해야 함
+   */
+  public static ReqNationGold(amount: number): Constraint {
+    return new ReqNationGoldConstraint(amount);
+  }
+
+  /**
+   * 국가 군량이 충분해야 함
+   */
+  public static ReqNationRice(amount: number): Constraint {
+    return new ReqNationRiceConstraint(amount);
+  }
+
+  /**
+   * 수도가 아니어야 함
+   * @param allowChief - true인 경우, 수뇌는 수도에서도 허용
+   */
+  public static NotCapital(allowChief: boolean = false): Constraint {
+    return new NotCapitalConstraint(allowChief);
+  }
+
+  /**
+   * 대상 도시가 현재 도시와 달라야 함
+   */
+  public static NotSameDestCity(): Constraint {
+    return new NotSameDestCityConstraint();
+  }
+
+  /**
+   * 대상 국가가 존재해야 함
+   */
+  public static ExistsDestNation(): Constraint {
+    return new ExistsDestNationConstraint();
+  }
+
+  /**
+   * 대상 국가가 현재 국가와 달라야 함
+   */
+  public static DifferentDestNation(): Constraint {
+    return new DifferentDestNationConstraint();
   }
 }
