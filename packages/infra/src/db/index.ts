@@ -7,6 +7,10 @@ import { NationTurn } from './entities/NationTurn.js';
 import { GeneralEntity } from './entities/General.js';
 import { NationEntity } from './entities/Nation.js';
 import { CityEntity } from './entities/City.js';
+import { MemberEntity } from './entities/Member.js';
+import { MemberLogEntity } from './entities/MemberLog.js';
+import { LoginTokenEntity } from './entities/LoginToken.js';
+import { SystemEntity } from './entities/System.js';
 
 export * from './entities/Persistence.js';
 export * from './entities/GeneralTurn.js';
@@ -14,6 +18,10 @@ export * from './entities/NationTurn.js';
 export * from './entities/General.js';
 export * from './entities/Nation.js';
 export * from './entities/City.js';
+export * from './entities/Member.js';
+export * from './entities/MemberLog.js';
+export * from './entities/LoginToken.js';
+export * from './entities/System.js';
 
 let dataSource: DataSource | null = null;
 

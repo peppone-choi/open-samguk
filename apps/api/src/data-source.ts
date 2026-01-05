@@ -1,7 +1,11 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
 import { env } from '@sammo-ts/infra';
-import { SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn } from '@sammo-ts/infra';
+import { 
+  SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn,
+  MemberEntity, MemberLogEntity, LoginTokenEntity, SystemEntity,
+  GeneralEntity, NationEntity, CityEntity, NationTurn
+} from '@sammo-ts/infra';
 
 /**
  * TypeORM CLI를 위한 Data Source 설정
@@ -13,7 +17,11 @@ export const AppDataSource = new DataSource({
   schema: env.PROFILE, // 현재 프로필 스키마 대상
   synchronize: false,
   logging: true,
-  entities: [SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn],
+  entities: [
+    SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn,
+    MemberEntity, MemberLogEntity, LoginTokenEntity, SystemEntity,
+    GeneralEntity, NationEntity, CityEntity, NationTurn
+  ],
   migrations: ['src/migrations/*.ts'],
   subscribers: [],
 });
