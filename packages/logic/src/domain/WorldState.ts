@@ -1,4 +1,4 @@
-import { WorldSnapshot, WorldDelta } from './entities.js';
+import { WorldSnapshot, WorldDelta } from "./entities.js";
 
 /**
  * 인메모리 월드 상태 (Domain Model)
@@ -100,7 +100,7 @@ export class WorldState {
    */
   public applyJournal(journal: { type: string; payload: any }): void {
     // 저널 타입에 따른 처리
-    if (journal.type === 'turn_run' && journal.payload.delta) {
+    if (journal.type === "turn_run" && journal.payload.delta) {
       this.applyDelta(journal.payload.delta);
     }
     // TODO: 다른 저널 타입(이벤트 등) 처리 추가

@@ -1,25 +1,35 @@
-import { Constraint, ConstraintContext, ConstraintResult, RequirementKey, StateView } from './Constraint.js';
-import { MapUtil } from './MapData.js';
-import { NotLordConstraint } from './constraints/NotLordConstraint.js';
-import { BeChiefConstraint } from './constraints/BeChiefConstraint.js';
-import { NotChiefConstraint } from './constraints/NotChiefConstraint.js';
-import { NotOccupiedCityConstraint } from './constraints/NotOccupiedCityConstraint.js';
-import { NeutralCityConstraint } from './constraints/NeutralCityConstraint.js';
-import { NotNeutralDestCityConstraint } from './constraints/NotNeutralDestCityConstraint.js';
-import { OccupiedDestCityConstraint } from './constraints/OccupiedDestCityConstraint.js';
-import { NotOccupiedDestCityConstraint } from './constraints/NotOccupiedDestCityConstraint.js';
-import { SuppliedDestCityConstraint } from './constraints/SuppliedDestCityConstraint.js';
-import { ReqGeneralValueConstraint } from './constraints/ReqGeneralValueConstraint.js';
-import { ReqNationValueConstraint } from './constraints/ReqNationValueConstraint.js';
-import { ReqCityValueConstraint } from './constraints/ReqCityValueConstraint.js';
-import { ReqDestCityValueConstraint } from './constraints/ReqDestCityValueConstraint.js';
-import { ReqDestNationValueConstraint } from './constraints/ReqDestNationValueConstraint.js';
-import { ReqNationGoldConstraint } from './constraints/ReqNationGoldConstraint.js';
-import { ReqNationRiceConstraint } from './constraints/ReqNationRiceConstraint.js';
-import { NotCapitalConstraint } from './constraints/NotCapitalConstraint.js';
-import { NotSameDestCityConstraint } from './constraints/NotSameDestCityConstraint.js';
-import { ExistsDestNationConstraint } from './constraints/ExistsDestNationConstraint.js';
-import { DifferentDestNationConstraint } from './constraints/DifferentDestNationConstraint.js';
+import {
+  Constraint,
+  ConstraintContext,
+  ConstraintResult,
+  RequirementKey,
+  StateView,
+} from "./Constraint.js";
+import { MapUtil } from "./MapData.js";
+import { NotLordConstraint } from "./constraints/NotLordConstraint.js";
+import { BeChiefConstraint } from "./constraints/BeChiefConstraint.js";
+import { NotChiefConstraint } from "./constraints/NotChiefConstraint.js";
+import { NotOccupiedCityConstraint } from "./constraints/NotOccupiedCityConstraint.js";
+import { NeutralCityConstraint } from "./constraints/NeutralCityConstraint.js";
+import { NotNeutralDestCityConstraint } from "./constraints/NotNeutralDestCityConstraint.js";
+import { OccupiedDestCityConstraint } from "./constraints/OccupiedDestCityConstraint.js";
+import { NotOccupiedDestCityConstraint } from "./constraints/NotOccupiedDestCityConstraint.js";
+import { SuppliedDestCityConstraint } from "./constraints/SuppliedDestCityConstraint.js";
+import { ReqGeneralValueConstraint } from "./constraints/ReqGeneralValueConstraint.js";
+import { ReqNationValueConstraint } from "./constraints/ReqNationValueConstraint.js";
+import { ReqCityValueConstraint } from "./constraints/ReqCityValueConstraint.js";
+import { ReqDestCityValueConstraint } from "./constraints/ReqDestCityValueConstraint.js";
+import { ReqDestNationValueConstraint } from "./constraints/ReqDestNationValueConstraint.js";
+import { ReqNationGoldConstraint } from "./constraints/ReqNationGoldConstraint.js";
+import { ReqNationRiceConstraint } from "./constraints/ReqNationRiceConstraint.js";
+import { NotCapitalConstraint } from "./constraints/NotCapitalConstraint.js";
+import { NotSameDestCityConstraint } from "./constraints/NotSameDestCityConstraint.js";
+import { ExistsDestNationConstraint } from "./constraints/ExistsDestNationConstraint.js";
+import { DifferentDestNationConstraint } from "./constraints/DifferentDestNationConstraint.js";
+import { NearNationConstraint } from "./constraints/NearNationConstraint.js";
+import { DisallowDiplomacyBetweenStatusConstraint } from "./constraints/DisallowDiplomacyBetweenStatusConstraint.js";
+import { AllowDiplomacyBetweenStatusConstraint } from "./constraints/AllowDiplomacyBetweenStatusConstraint.js";
+import { ReqEnvValueConstraint } from "./constraints/ReqEnvValueConstraint.js";
 
 /**
  * 공통 제약 조건들을 생성하는 헬퍼 클래스
@@ -30,14 +40,17 @@ export class ConstraintHelper {
    */
   static NotBeNeutral(): Constraint {
     return {
-      name: 'NotBeNeutral',
-      requires: (ctx) => [{ kind: 'nation', id: ctx.nationId ?? 0 }],
+      name: "NotBeNeutral",
+      requires: (ctx) => [{ kind: "nation", id: ctx.nationId ?? 0 }],
       test: (ctx, view) => {
-        const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
+        const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
         if (!nation || nation.id === 0) {
-          return { kind: 'deny', reason: '중립 세력은 이 명령을 수행할 수 없습니다.' };
+          return {
+            kind: "deny",
+            reason: "중립 세력은 이 명령을 수행할 수 없습니다.",
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -47,14 +60,17 @@ export class ConstraintHelper {
    */
   static ReqGeneralGold(amount: number): Constraint {
     return {
-      name: 'ReqGeneralGold',
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      name: "ReqGeneralGold",
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
+        const general = view.get({ kind: "general", id: ctx.actorId });
         if (!general || general.gold < amount) {
-          return { kind: 'deny', reason: `자금이 부족합니다. (필요: ${amount})` };
+          return {
+            kind: "deny",
+            reason: `자금이 부족합니다. (필요: ${amount})`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -64,14 +80,17 @@ export class ConstraintHelper {
    */
   static ReqGeneralRice(amount: number): Constraint {
     return {
-      name: 'ReqGeneralRice',
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      name: "ReqGeneralRice",
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
+        const general = view.get({ kind: "general", id: ctx.actorId });
         if (!general || general.rice < amount) {
-          return { kind: 'deny', reason: `군량이 부족합니다. (필요: ${amount})` };
+          return {
+            kind: "deny",
+            reason: `군량이 부족합니다. (필요: ${amount})`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -81,14 +100,14 @@ export class ConstraintHelper {
    */
   static ReqGeneralCrew(): Constraint {
     return {
-      name: 'ReqGeneralCrew',
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      name: "ReqGeneralCrew",
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
+        const general = view.get({ kind: "general", id: ctx.actorId });
         if (!general || general.crew <= 0) {
-          return { kind: 'deny', reason: '병사가 없습니다.' };
+          return { kind: "deny", reason: "병사가 없습니다." };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -98,14 +117,17 @@ export class ConstraintHelper {
    */
   static ReqGeneralTrainMargin(maxTrain: number): Constraint {
     return {
-      name: 'ReqGeneralTrainMargin',
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      name: "ReqGeneralTrainMargin",
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
+        const general = view.get({ kind: "general", id: ctx.actorId });
         if (!general || general.train >= maxTrain) {
-          return { kind: 'deny', reason: `이미 최대 훈련도(${maxTrain})에 도달했습니다.` };
+          return {
+            kind: "deny",
+            reason: `이미 최대 훈련도(${maxTrain})에 도달했습니다.`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -115,14 +137,17 @@ export class ConstraintHelper {
    */
   static ReqGeneralAtmosMargin(maxAtmos: number): Constraint {
     return {
-      name: 'ReqGeneralAtmosMargin',
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      name: "ReqGeneralAtmosMargin",
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
+        const general = view.get({ kind: "general", id: ctx.actorId });
         if (!general || general.atmos >= maxAtmos) {
-          return { kind: 'deny', reason: `이미 최대 사기치(${maxAtmos})에 도달했습니다.` };
+          return {
+            kind: "deny",
+            reason: `이미 최대 사기치(${maxAtmos})에 도달했습니다.`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -133,13 +158,16 @@ export class ConstraintHelper {
   static NoPenalty(penaltyKey: string): Constraint {
     return {
       name: `NoPenalty:${penaltyKey}`,
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
+        const general = view.get({ kind: "general", id: ctx.actorId });
         if (general?.penalty?.[penaltyKey]) {
-          return { kind: 'deny', reason: '제약 사항이 있어 명령을 수행할 수 없습니다.' };
+          return {
+            kind: "deny",
+            reason: "제약 사항이 있어 명령을 수행할 수 없습니다.",
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -149,14 +177,17 @@ export class ConstraintHelper {
    */
   static OccupiedCity(): Constraint {
     return {
-      name: 'OccupiedCity',
-      requires: (ctx) => [{ kind: 'city', id: ctx.cityId ?? 0 }],
+      name: "OccupiedCity",
+      requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
-        const city = view.get({ kind: 'city', id: ctx.cityId ?? 0 });
+        const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
         if (!city || city.nationId === 0) {
-          return { kind: 'deny', reason: '공백지에서는 이 명령을 수행할 수 없습니다.' };
+          return {
+            kind: "deny",
+            reason: "공백지에서는 이 명령을 수행할 수 없습니다.",
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -166,16 +197,19 @@ export class ConstraintHelper {
    */
   static SuppliedCity(): Constraint {
     return {
-      name: 'SuppliedCity',
-      requires: (ctx) => [{ kind: 'city', id: ctx.cityId ?? 0 }],
+      name: "SuppliedCity",
+      requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
-        const city = view.get({ kind: 'city', id: ctx.cityId ?? 0 });
-        // supply가 undefined이면 (테스트 등) 통과? 아니면 실패? 
+        const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
+        // supply가 undefined이면 (테스트 등) 통과? 아니면 실패?
         // 안전하게 supply === 1 체크. (기본값 1)
         if (!city || city.supply !== 1) {
-          return { kind: 'deny', reason: '보급이 끊긴 도시에서는 이 명령을 수행할 수 없습니다.' };
+          return {
+            kind: "deny",
+            reason: "보급이 끊긴 도시에서는 이 명령을 수행할 수 없습니다.",
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -185,28 +219,36 @@ export class ConstraintHelper {
    */
   static NearCity(distance: number = 1): Constraint {
     return {
-      name: 'NearCity',
+      name: "NearCity",
       requires: (ctx) => [
-        { kind: 'city', id: ctx.cityId ?? 0 },
-        { kind: 'arg', key: 'destCityId' }
+        { kind: "city", id: ctx.cityId ?? 0 },
+        { kind: "arg", key: "destCityId" },
       ],
       test: (ctx, view) => {
         const destCityId = ctx.args.destCityId;
-        if (!destCityId) return { kind: 'deny', reason: '목적지 도시가 지정되지 않았습니다.' };
-        if (ctx.cityId === destCityId) return { kind: 'deny', reason: '현재 도시와 목적지 도시가 같습니다.' };
+        if (!destCityId)
+          return { kind: "deny", reason: "목적지 도시가 지정되지 않았습니다." };
+        if (ctx.cityId === destCityId)
+          return {
+            kind: "deny",
+            reason: "현재 도시와 목적지 도시가 같습니다.",
+          };
 
         if (distance === 1) {
           if (!MapUtil.areAdjacent(ctx.cityId ?? 0, destCityId)) {
-            return { kind: 'deny', reason: '인접한 도시가 아닙니다.' };
+            return { kind: "deny", reason: "인접한 도시가 아닙니다." };
           }
         } else {
           const dist = MapUtil.getDistance(ctx.cityId ?? 0, destCityId);
           if (dist > distance) {
-            return { kind: 'deny', reason: `거리가 너무 멉니다. (현재: ${dist}, 최대: ${distance})` };
+            return {
+              kind: "deny",
+              reason: `거리가 너무 멉니다. (현재: ${dist}, 최대: ${distance})`,
+            };
           }
         }
 
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -216,14 +258,17 @@ export class ConstraintHelper {
    */
   static ExistsDestGeneral(): Constraint {
     return {
-      name: 'ExistsDestGeneral',
-      requires: (ctx) => [{ kind: 'destGeneral', id: ctx.args.destGeneralId }],
+      name: "ExistsDestGeneral",
+      requires: (ctx) => [{ kind: "destGeneral", id: ctx.args.destGeneralId }],
       test: (ctx, view) => {
-        const destGeneral = view.get({ kind: 'destGeneral', id: ctx.args.destGeneralId });
+        const destGeneral = view.get({
+          kind: "destGeneral",
+          id: ctx.args.destGeneralId,
+        });
         if (!destGeneral) {
-          return { kind: 'deny', reason: '대상 장수가 존재하지 않습니다.' };
+          return { kind: "deny", reason: "대상 장수가 존재하지 않습니다." };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -233,20 +278,23 @@ export class ConstraintHelper {
    */
   static FriendlyDestGeneral(): Constraint {
     return {
-      name: 'FriendlyDestGeneral',
+      name: "FriendlyDestGeneral",
       requires: (ctx) => [
-        { kind: 'general', id: ctx.actorId },
-        { kind: 'destGeneral', id: ctx.args.destGeneralId }
+        { kind: "general", id: ctx.actorId },
+        { kind: "destGeneral", id: ctx.args.destGeneralId },
       ],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
-        const destGeneral = view.get({ kind: 'destGeneral', id: ctx.args.destGeneralId });
-        if (!general || !destGeneral) return { kind: 'allow' };
+        const general = view.get({ kind: "general", id: ctx.actorId });
+        const destGeneral = view.get({
+          kind: "destGeneral",
+          id: ctx.args.destGeneralId,
+        });
+        if (!general || !destGeneral) return { kind: "allow" };
 
         if (general.nationId !== destGeneral.nationId) {
-          return { kind: 'deny', reason: '같은 국가 소속 장수가 아닙니다.' };
+          return { kind: "deny", reason: "같은 국가 소속 장수가 아닙니다." };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -256,20 +304,26 @@ export class ConstraintHelper {
    */
   static DifferentNationDestGeneral(): Constraint {
     return {
-      name: 'DifferentNationDestGeneral',
+      name: "DifferentNationDestGeneral",
       requires: (ctx) => [
-        { kind: 'general', id: ctx.actorId },
-        { kind: 'destGeneral', id: ctx.args.destGeneralId }
+        { kind: "general", id: ctx.actorId },
+        { kind: "destGeneral", id: ctx.args.destGeneralId },
       ],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
-        const destGeneral = view.get({ kind: 'destGeneral', id: ctx.args.destGeneralId });
-        if (!general || !destGeneral) return { kind: 'allow' }; // 다른 제약에서 걸릴 것
+        const general = view.get({ kind: "general", id: ctx.actorId });
+        const destGeneral = view.get({
+          kind: "destGeneral",
+          id: ctx.args.destGeneralId,
+        });
+        if (!general || !destGeneral) return { kind: "allow" }; // 다른 제약에서 걸릴 것
 
         if (general.nationId === destGeneral.nationId) {
-          return { kind: 'deny', reason: '같은 국가 소속 장수는 등용할 수 없습니다.' };
+          return {
+            kind: "deny",
+            reason: "같은 국가 소속 장수는 등용할 수 없습니다.",
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -282,15 +336,19 @@ export class ConstraintHelper {
    */
   public static ReqOfficerLevel(minLevel: number): Constraint {
     return {
-      name: 'ReqOfficerLevel',
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      name: "ReqOfficerLevel",
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
-        if (!general) return { kind: 'deny', reason: '장수를 찾을 수 없습니다.' };
+        const general = view.get({ kind: "general", id: ctx.actorId });
+        if (!general)
+          return { kind: "deny", reason: "장수를 찾을 수 없습니다." };
         if (general.officerLevel < minLevel) {
-          return { kind: 'deny', reason: `관직 레벨이 부족합니다. (요구: ${minLevel})` };
+          return {
+            kind: "deny",
+            reason: `관직 레벨이 부족합니다. (요구: ${minLevel})`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -300,225 +358,273 @@ export class ConstraintHelper {
    */
   public static BeNeutral(): Constraint {
     return {
-      name: 'BeNeutral',
-      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      name: "BeNeutral",
+      requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
-        if (!general) return { kind: 'deny', reason: '장수를 찾을 수 없습니다.' };
+        const general = view.get({ kind: "general", id: ctx.actorId });
+        if (!general)
+          return { kind: "deny", reason: "장수를 찾을 수 없습니다." };
         if (general.nationId !== 0) {
-          return { kind: 'deny', reason: '이미 소속된 국가가 있습니다.' };
+          return { kind: "deny", reason: "이미 소속된 국가가 있습니다." };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
 
   public static BeLord(): Constraint {
     return {
-      name: 'BeLord',
+      name: "BeLord",
       requires: (ctx) => [
-        { kind: 'general', id: ctx.actorId },
-        { kind: 'nation', id: ctx.nationId ?? 0 }
+        { kind: "general", id: ctx.actorId },
+        { kind: "nation", id: ctx.nationId ?? 0 },
       ],
       test: (ctx, view) => {
-        const general = view.get({ kind: 'general', id: ctx.actorId });
-        const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
-        
-        if (!general || !nation) return { kind: 'deny', reason: '국가 정보를 찾을 수 없습니다.' };
+        const general = view.get({ kind: "general", id: ctx.actorId });
+        const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
+
+        if (!general || !nation)
+          return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
         if (nation.chiefGeneralId !== general.id) {
-            return { kind: 'deny', reason: '군주만 실행할 수 있습니다.' };
+          return { kind: "deny", reason: "군주만 실행할 수 있습니다." };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
 
   public static WanderingNation(): Constraint {
     return {
-        name: 'WanderingNation',
-        requires: (ctx) => [{ kind: 'nation', id: ctx.nationId ?? 0 }],
-        test: (ctx, view) => {
-            const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
-            if (!nation || nation.level !== 0) {
-                return { kind: 'deny', reason: '방랑군 상태여야 합니다.' };
-            }
-            return { kind: 'allow' };
+      name: "WanderingNation",
+      requires: (ctx) => [{ kind: "nation", id: ctx.nationId ?? 0 }],
+      test: (ctx, view) => {
+        const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
+        if (!nation || nation.level !== 0) {
+          return { kind: "deny", reason: "방랑군 상태여야 합니다." };
         }
+        return { kind: "allow" };
+      },
     };
   }
 
   public static NotWanderingNation(): Constraint {
     return {
-        name: 'NotWanderingNation',
-        requires: (ctx) => [{ kind: 'nation', id: ctx.nationId ?? 0 }],
-        test: (ctx, view) => {
-            const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
-            if (nation && nation.level === 0) {
-                return { kind: 'deny', reason: '방랑군은 이 명령을 수행할 수 없습니다.' };
-            }
-            return { kind: 'allow' };
+      name: "NotWanderingNation",
+      requires: (ctx) => [{ kind: "nation", id: ctx.nationId ?? 0 }],
+      test: (ctx, view) => {
+        const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
+        if (nation && nation.level === 0) {
+          return {
+            kind: "deny",
+            reason: "방랑군은 이 명령을 수행할 수 없습니다.",
+          };
         }
+        return { kind: "allow" };
+      },
     };
   }
 
-  public static RemainCityCapacity(key: 'agri' | 'comm' | 'secu' | 'def' | 'wall', actionName: string): Constraint {
+  public static RemainCityCapacity(
+    key: "agri" | "comm" | "secu" | "def" | "wall",
+    actionName: string,
+  ): Constraint {
     return {
-      name: 'RemainCityCapacity',
-      requires: (ctx) => [{ kind: 'city', id: ctx.cityId ?? 0 }],
+      name: "RemainCityCapacity",
+      requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
-        const city = view.get({ kind: 'city', id: ctx.cityId ?? 0 });
-        if (!city) return { kind: 'deny', reason: '도시 정보를 찾을 수 없습니다.' };
-        
+        const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
+        if (!city)
+          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
+
         const current = city[key] ?? 0;
         const max = city[`${key}Max`] ?? 0;
 
         if (current >= max) {
-          return { kind: 'deny', reason: `이미 해당 도시의 ${actionName} 수치가 최대치에 도달했습니다.` };
+          return {
+            kind: "deny",
+            reason: `이미 해당 도시의 ${actionName} 수치가 최대치에 도달했습니다.`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
 
   public static ReqNationGeneralCount(minCount: number): Constraint {
     return {
-        name: 'ReqNationGeneralCount',
-        requires: (ctx) => [{ kind: 'nation', id: ctx.nationId ?? 0 }],
-        test: (ctx, view) => {
-            const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
-            if (!nation) return { kind: 'deny', reason: '국가 정보를 찾을 수 없습니다.' };
-            if (nation.gennum < minCount) {
-                return { kind: 'deny', reason: `수하 장수가 ${minCount}명 이상이어야 합니다.` };
-            }
-            return { kind: 'allow' };
+      name: "ReqNationGeneralCount",
+      requires: (ctx) => [{ kind: "nation", id: ctx.nationId ?? 0 }],
+      test: (ctx, view) => {
+        const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
+        if (!nation)
+          return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
+        if (nation.gennum < minCount) {
+          return {
+            kind: "deny",
+            reason: `수하 장수가 ${minCount}명 이상이어야 합니다.`,
+          };
         }
+        return { kind: "allow" };
+      },
     };
   }
 
   public static ExistsRecruitMessage(): Constraint {
     return {
-      name: 'ExistsRecruitMessage',
+      name: "ExistsRecruitMessage",
       requires: (ctx) => [
-        { kind: 'arg', key: 'messageId' },
-        { kind: 'message', id: ctx.args.messageId }
+        { kind: "arg", key: "messageId" },
+        { kind: "message", id: ctx.args.messageId },
       ],
       test: (ctx, view) => {
         const messageId = ctx.args.messageId;
-        if (!messageId) return { kind: 'deny', reason: '서신 ID가 지정되지 않았습니다.' };
-        const message = view.get({ kind: 'message', id: messageId });
-        if (!message) return { kind: 'deny', reason: '해당 서신이 존재하지 않습니다.' };
-        if (message.meta?.type !== 'recruit') return { kind: 'deny', reason: '등용 권유 서신이 아닙니다.' };
-        if (message.destId !== ctx.actorId) return { kind: 'deny', reason: '본인에게 온 서신이 아닙니다.' };
-        return { kind: 'allow' };
-      }
-    }
+        if (!messageId)
+          return { kind: "deny", reason: "서신 ID가 지정되지 않았습니다." };
+        const message = view.get({ kind: "message", id: messageId });
+        if (!message)
+          return { kind: "deny", reason: "해당 서신이 존재하지 않습니다." };
+        if (message.meta?.type !== "recruit")
+          return { kind: "deny", reason: "등용 권유 서신이 아닙니다." };
+        if (message.destId !== ctx.actorId)
+          return { kind: "deny", reason: "본인에게 온 서신이 아닙니다." };
+        return { kind: "allow" };
+      },
+    };
   }
 
   public static ConstructableCity(): Constraint {
     return {
-        name: 'ConstructableCity',
-        requires: (ctx) => [{ kind: 'city', id: ctx.cityId ?? 0 }],
-        test: (ctx, view) => {
-            const city = view.get({ kind: 'city', id: ctx.cityId ?? 0 });
-            // Level 5(소) 이상이어야 건국 가능 (1,2,3,4 불가)
-            if (!city || city.level < 5) {
-                return { kind: 'deny', reason: '건국할 수 없는 도시입니다.' };
-            }
-            return { kind: 'allow' };
+      name: "ConstructableCity",
+      requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
+      test: (ctx, view) => {
+        const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
+        // Level 5(소) 이상이어야 건국 가능 (1,2,3,4 불가)
+        if (!city || city.level < 5) {
+          return { kind: "deny", reason: "건국할 수 없는 도시입니다." };
         }
+        return { kind: "allow" };
+      },
     };
   }
 
   public static CheckNationNameDuplicate(name: string): Constraint {
     return {
-        name: 'CheckNationNameDuplicate',
-        requires: (ctx) => [], // Needs global nation list access?
-        test: (ctx, view) => {
-            // Need access to all nations. View might need to support `getAllNations`?
-            // Or I skip this in constraint and check in Command.run.
-            return { kind: 'allow' };
-        }
+      name: "CheckNationNameDuplicate",
+      requires: (ctx) => [], // Needs global nation list access?
+      test: (ctx, view) => {
+        // Need access to all nations. View might need to support `getAllNations`?
+        // Or I skip this in constraint and check in Command.run.
+        return { kind: "allow" };
+      },
     };
   }
 
   public static ReqCitySecu(reqSecu: number): Constraint {
     return {
-      name: 'ReqCitySecu',
-      requires: (ctx) => [{ kind: 'city', id: ctx.cityId ?? 0 }],
+      name: "ReqCitySecu",
+      requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
-        const city = view.get({ kind: 'city', id: ctx.cityId ?? 0 });
-        if (!city) return { kind: 'deny', reason: '도시 정보를 찾을 수 없습니다.' };
+        const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
+        if (!city)
+          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
         if (city.secu < reqSecu) {
-          return { kind: 'deny', reason: `도시의 치안 수치가 부족합니다. (요구: ${reqSecu})` };
+          return {
+            kind: "deny",
+            reason: `도시의 치안 수치가 부족합니다. (요구: ${reqSecu})`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
 
   public static ReqCityTrader(npcType: number): Constraint {
     return {
-      name: 'ReqCityTrader',
-      requires: (ctx) => [{ kind: 'city', id: ctx.cityId ?? 0 }],
+      name: "ReqCityTrader",
+      requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
-        const city = view.get({ kind: 'city', id: ctx.cityId ?? 0 });
-        if (!city) return { kind: 'deny', reason: '도시 정보를 찾을 수 없습니다.' };
+        const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
+        if (!city)
+          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
         // 상선/상인이 있는 도시는 trade 수치가 높거나 특정 메타 데이터가 있어야 함.
-        // 레거시에서는 CityConst::byID($general->getCityID())->trade >= 10 등으로 체크? 
+        // 레거시에서는 CityConst::byID($general->getCityID())->trade >= 10 등으로 체크?
         // 일단 trade >= 10 을 상인 존재 여부로 가정.
         if (city.trade < 10 && npcType === 0) {
-          return { kind: 'deny', reason: '상인이 없는 도시입니다.' };
+          return { kind: "deny", reason: "상인이 없는 도시입니다." };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
 
   public static AlwaysFail(reason: string): Constraint {
     return {
-      name: 'AlwaysFail',
+      name: "AlwaysFail",
       requires: () => [],
-      test: () => ({ kind: 'deny', reason }),
+      test: () => ({ kind: "deny", reason }),
     };
   }
 
   public static ReqCityTrust(actionName: string): Constraint {
     return {
-      name: 'ReqCityTrust',
-      requires: (ctx) => [{ kind: 'city', id: ctx.cityId ?? 0 }],
+      name: "ReqCityTrust",
+      requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
-        const city = view.get({ kind: 'city', id: ctx.cityId ?? 0 });
-        if (!city) return { kind: 'deny', reason: '도시 정보를 찾을 수 없습니다.' };
+        const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
+        if (!city)
+          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
         if (city.trust >= 100) {
-          return { kind: 'deny', reason: `이미 ${actionName} 수치가 최대치(100)에 도달했습니다.` };
+          return {
+            kind: "deny",
+            reason: `이미 ${actionName} 수치가 최대치(100)에 도달했습니다.`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
 
-  public static ReqNationMeta(key: string, expectedValue: any, compare: 'eq' | 'gt' | 'lt' | 'ge' | 'le' = 'eq', reason?: string): Constraint {
+  public static ReqNationMeta(
+    key: string,
+    expectedValue: any,
+    compare: "eq" | "gt" | "lt" | "ge" | "le" = "eq",
+    reason?: string,
+  ): Constraint {
     return {
-      name: 'ReqNationMeta',
-      requires: (ctx) => [{ kind: 'nation', id: ctx.nationId ?? 0 }],
+      name: "ReqNationMeta",
+      requires: (ctx) => [{ kind: "nation", id: ctx.nationId ?? 0 }],
       test: (ctx, view) => {
-        const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
-        if (!nation) return { kind: 'deny', reason: '국가 정보를 찾을 수 없습니다.' };
+        const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
+        if (!nation)
+          return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
 
         const value = nation.meta[key] ?? 0;
         let pass = false;
         switch (compare) {
-          case 'eq': pass = value === expectedValue; break;
-          case 'gt': pass = value > expectedValue; break;
-          case 'lt': pass = value < expectedValue; break;
-          case 'ge': pass = value >= expectedValue; break;
-          case 'le': pass = value <= expectedValue; break;
+          case "eq":
+            pass = value === expectedValue;
+            break;
+          case "gt":
+            pass = value > expectedValue;
+            break;
+          case "lt":
+            pass = value < expectedValue;
+            break;
+          case "ge":
+            pass = value >= expectedValue;
+            break;
+          case "le":
+            pass = value <= expectedValue;
+            break;
         }
 
         if (!pass) {
-          return { kind: 'deny', reason: reason ?? `국가 설정 조건(${key})을 만족하지 않습니다.` };
+          return {
+            kind: "deny",
+            reason: reason ?? `국가 설정 조건(${key})을 만족하지 않습니다.`,
+          };
         }
-        return { kind: 'allow' };
+        return { kind: "allow" };
       },
     };
   }
@@ -593,9 +699,9 @@ export class ConstraintHelper {
   public static ReqGeneralValue(
     key: string,
     keyNick: string,
-    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number,
-    errMsg?: string
+    errMsg?: string,
   ): Constraint {
     return new ReqGeneralValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -608,9 +714,9 @@ export class ConstraintHelper {
   public static ReqNationValue(
     key: string,
     keyNick: string,
-    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string
+    errMsg?: string,
   ): Constraint {
     return new ReqNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -623,9 +729,9 @@ export class ConstraintHelper {
   public static ReqCityValue(
     key: string,
     keyNick: string,
-    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string
+    errMsg?: string,
   ): Constraint {
     return new ReqCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -637,9 +743,9 @@ export class ConstraintHelper {
   public static ReqDestCityValue(
     key: string,
     keyNick: string,
-    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string
+    errMsg?: string,
   ): Constraint {
     return new ReqDestCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -651,9 +757,9 @@ export class ConstraintHelper {
   public static ReqDestNationValue(
     key: string,
     keyNick: string,
-    comp: '>' | '>=' | '==' | '<=' | '<' | '!=' | '===' | '!==',
+    comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string
+    errMsg?: string,
   ): Constraint {
     return new ReqDestNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -699,5 +805,50 @@ export class ConstraintHelper {
    */
   public static DifferentDestNation(): Constraint {
     return new DifferentDestNationConstraint();
+  }
+
+  /**
+   * 대상 국가가 인접 국가여야 함
+   */
+  public static NearNation(): Constraint {
+    return new NearNationConstraint();
+  }
+
+  /**
+   * 특정 외교 상태일 때 명령 불가
+   * @param disallowList 상태 → 에러 메시지 맵
+   */
+  public static DisallowDiplomacyBetweenStatus(
+    disallowList: Record<string, string>,
+  ): Constraint {
+    return new DisallowDiplomacyBetweenStatusConstraint(disallowList);
+  }
+
+  /**
+   * 특정 외교 상태일 때만 명령 가능
+   * @param allowList 허용되는 외교 상태 코드 배열
+   * @param errorMsg 허용되지 않을 때 에러 메시지
+   */
+  public static AllowDiplomacyBetweenStatus(
+    allowList: string[],
+    errorMsg: string,
+  ): Constraint {
+    return new AllowDiplomacyBetweenStatusConstraint(allowList, errorMsg);
+  }
+
+  /**
+   * 환경 변수 조건 검사
+   * @param key 환경 변수 키
+   * @param op 비교 연산자
+   * @param value 비교 대상 값
+   * @param errorMsg 실패 시 에러 메시지
+   */
+  public static ReqEnvValue(
+    key: string,
+    op: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
+    value: number,
+    errorMsg: string,
+  ): Constraint {
+    return new ReqEnvValueConstraint(key, op, value, errorMsg);
   }
 }

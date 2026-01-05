@@ -1,17 +1,17 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GameConst } from '../GameConst.js';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { City } from '../models/City.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GameConst } from "../GameConst.js";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { City } from "../models/City.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 모병 커맨드
  * 레거시: che_모병
  */
 export class GeneralDraftCommand extends GeneralCommand {
-  readonly actionName = '모병';
+  readonly actionName = "모병";
 
   constructor() {
     super();
@@ -25,9 +25,14 @@ export class GeneralDraftCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -43,8 +48,10 @@ export class GeneralDraftCommand extends GeneralCommand {
     const general = new General(iGeneral);
     const city = new City(iCity);
 
-    const { delta: generalDelta, crewGain } = general.draft(iGeneral.leadership);
-    
+    const { delta: generalDelta, crewGain } = general.draft(
+      iGeneral.leadership,
+    );
+
     // 도시 인구 및 치안 감소
     const popLoss = Math.round(crewGain * 1.2);
     const cityDeltaPop = city.decreasePop(popLoss);
@@ -62,7 +69,9 @@ export class GeneralDraftCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [`병사 ${crewGain}명을 모병했습니다. (인구 -${popLoss}, 치안 -${GameConst.draftSecuLoss})`],
+          [actorId]: [
+            `병사 ${crewGain}명을 모병했습니다. (인구 -${popLoss}, 치안 -${GameConst.draftSecuLoss})`,
+          ],
         },
       },
     };

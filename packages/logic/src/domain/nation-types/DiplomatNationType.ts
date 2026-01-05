@@ -1,4 +1,4 @@
-import { BaseNationType } from './types';
+import { BaseNationType } from "./types";
 
 /**
  * DiplomatNationType (종횡가) - Diplomatist/Strategist School
@@ -16,25 +16,25 @@ import { BaseNationType } from './types';
  * - Gold income: -10%
  */
 export class DiplomatNationType extends BaseNationType {
-  readonly name = '종횡가';
-  readonly pros = '전략↑ 수성↑';
-  readonly cons = '금수입↓ 농상↓';
+  readonly name = "종횡가";
+  readonly pros = "전략↑ 수성↑";
+  readonly cons = "금수입↓ 농상↓";
 
   onCalcDomestic(
     turnType: string,
     varType: string,
     value: number,
-    aux?: unknown
+    aux?: unknown,
   ): number {
     // Defense & Walls bonuses
-    if (turnType === '수비' || turnType === '성벽') {
-      if (varType === 'score') return value * 1.1;
-      if (varType === 'cost') return value * 0.8;
+    if (turnType === "수비" || turnType === "성벽") {
+      if (varType === "score") return value * 1.1;
+      if (varType === "cost") return value * 0.8;
     }
     // Agriculture or Commerce penalties
-    else if (turnType === '농업' || turnType === '상업') {
-      if (varType === 'score') return value * 0.9;
-      if (varType === 'cost') return value * 1.2;
+    else if (turnType === "농업" || turnType === "상업") {
+      if (varType === "score") return value * 0.9;
+      if (varType === "cost") return value * 1.2;
     }
 
     return value;
@@ -42,7 +42,7 @@ export class DiplomatNationType extends BaseNationType {
 
   onCalcNationalIncome(type: string, amount: number): number {
     // Gold income penalty
-    if (type === 'gold') {
+    if (type === "gold") {
       return amount * 0.9;
     }
 
@@ -51,11 +51,11 @@ export class DiplomatNationType extends BaseNationType {
 
   onCalcStrategic(turnType: string, varType: string, value: number): number {
     // Strategic delay bonus
-    if (varType === 'delay') {
+    if (varType === "delay") {
       return Math.round((value * 3) / 4);
     }
     // Global delay bonus
-    if (varType === 'globalDelay') {
+    if (varType === "globalDelay") {
       return Math.round(value / 2);
     }
     return value;

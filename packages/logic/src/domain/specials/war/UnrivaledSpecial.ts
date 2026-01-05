@@ -1,11 +1,11 @@
-import { BaseSpecial } from '../BaseSpecial';
-import type { General } from '../../entities';
+import { BaseSpecial } from "../BaseSpecial";
+import type { General } from "../../entities";
 import {
   SpecialWeightType,
   SpecialType,
   type StatAux,
   type WarUnit,
-} from '../types';
+} from "../types";
 
 /**
  * Unrivaled (무쌍) - War Special Ability
@@ -19,17 +19,17 @@ export class UnrivaledSpecial extends BaseSpecial {
   static readonly type = [SpecialType.STAT_STRENGTH];
 
   id = 61;
-  name = '무쌍';
+  name = "무쌍";
   info =
-    '[전투] 대미지 +5%, 피해 -2%, 공격 시 필살 확률 +10%p, <br>승리 수의 로그 비례로 대미지 상승(10회 ⇒ +5%, 40회 ⇒ +15%)<br>승리 수의 로그 비례로 피해 감소(10회 ⇒ -2%, 40회 ⇒ -6%)';
+    "[전투] 대미지 +5%, 피해 -2%, 공격 시 필살 확률 +10%p, <br>승리 수의 로그 비례로 대미지 상승(10회 ⇒ +5%, 40회 ⇒ +15%)<br>승리 수의 로그 비례로 피해 감소(10회 ⇒ -2%, 40회 ⇒ -6%)";
 
   onCalcStat(
     _general: General,
     statName: string,
     value: any,
-    aux?: StatAux
+    aux?: StatAux,
   ): any {
-    if (statName === 'warCriticalRatio' && aux?.isAttacker) {
+    if (statName === "warCriticalRatio" && aux?.isAttacker) {
       return value + 0.1;
     }
     return value;
@@ -44,8 +44,7 @@ export class UnrivaledSpecial extends BaseSpecial {
     const killnum = 0; // Placeholder
 
     attackMultiplier += Math.log(Math.max(1, killnum / 5)) / Math.log(2) / 20;
-    defenceMultiplier -=
-      Math.log(Math.max(1, killnum / 5)) / Math.log(2) / 50;
+    defenceMultiplier -= Math.log(Math.max(1, killnum / 5)) / Math.log(2) / 50;
 
     return [attackMultiplier, defenceMultiplier];
   }

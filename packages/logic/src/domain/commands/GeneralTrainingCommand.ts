@@ -1,16 +1,16 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GameConst } from '../GameConst.js';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GameConst } from "../GameConst.js";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 훈련 커맨드
  * 레거시: che_훈련
  */
 export class GeneralTrainingCommand extends GeneralCommand {
-  readonly actionName = '훈련';
+  readonly actionName = "훈련";
 
   constructor() {
     super();
@@ -25,9 +25,14 @@ export class GeneralTrainingCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -39,7 +44,7 @@ export class GeneralTrainingCommand extends GeneralCommand {
 
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
-// ...existing code...
+    // ...existing code...
 
     // DDD: 도메인 모델 활용
     const general = new General(iGeneral);

@@ -1,4 +1,4 @@
-import { BaseNationType } from './types';
+import { BaseNationType } from "./types";
 
 /**
  * LegalistNationType (법가) - Legalist School
@@ -15,25 +15,25 @@ import { BaseNationType } from './types';
  * - Population growth: -20%
  */
 export class LegalistNationType extends BaseNationType {
-  readonly name = '법가';
-  readonly pros = '금수입↑ 치안↑';
-  readonly cons = '인구↓ 민심↓';
+  readonly name = "법가";
+  readonly pros = "금수입↑ 치안↑";
+  readonly cons = "인구↓ 민심↓";
 
   onCalcDomestic(
     turnType: string,
     varType: string,
     value: number,
-    aux?: unknown
+    aux?: unknown,
   ): number {
     // Security bonuses
-    if (turnType === '치안') {
-      if (varType === 'score') return value * 1.1;
-      if (varType === 'cost') return value * 0.8;
+    if (turnType === "치안") {
+      if (varType === "score") return value * 1.1;
+      if (varType === "cost") return value * 0.8;
     }
     // Morale or Population penalties
-    else if (turnType === '민심' || turnType === '인구') {
-      if (varType === 'score') return value * 0.9;
-      if (varType === 'cost') return value * 1.2;
+    else if (turnType === "민심" || turnType === "인구") {
+      if (varType === "score") return value * 0.9;
+      if (varType === "cost") return value * 1.2;
     }
 
     return value;
@@ -41,11 +41,11 @@ export class LegalistNationType extends BaseNationType {
 
   onCalcNationalIncome(type: string, amount: number): number {
     // Gold income bonus
-    if (type === 'gold') {
+    if (type === "gold") {
       return amount * 1.1;
     }
     // Population growth penalty
-    if (type === 'pop' && amount > 0) {
+    if (type === "pop" && amount > 0) {
       return amount * 0.8;
     }
 

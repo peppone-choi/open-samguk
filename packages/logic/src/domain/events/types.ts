@@ -1,15 +1,15 @@
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { DeltaUtil } from '../../utils/DeltaUtil.js';
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { DeltaUtil } from "../../utils/DeltaUtil.js";
 
 /**
  * 이벤트 실행 시점 (Legacy: EventTarget)
  */
 export enum EventTarget {
-  PRE_MONTH = 'PRE_MONTH',
-  MONTH = 'MONTH',
-  OCCUPY_CITY = 'OCCUPY_CITY',
-  DESTROY_NATION = 'DESTROY_NATION',
-  UNITED = 'UNITED',
+  PRE_MONTH = "PRE_MONTH",
+  MONTH = "MONTH",
+  OCCUPY_CITY = "OCCUPY_CITY",
+  DESTROY_NATION = "DESTROY_NATION",
+  UNITED = "UNITED",
 }
 
 /**
@@ -21,7 +21,7 @@ export interface GameEvent {
   name: string;
   target: EventTarget;
   priority: number; // 낮을수록 먼저 실행 (Legacy: PRIORITY_MIN = 0)
-  
+
   /**
    * 이벤트 실행 조건 검사
    */
@@ -65,14 +65,18 @@ export class EventRegistry {
    * @param snapshot 현재 월드 상태
    * @param context 추가 컨텍스트 (예: 점령된 도시 ID 등)
    */
-  public runEvents(target: EventTarget, snapshot: WorldSnapshot, context?: any): WorldDelta {
+  public runEvents(
+    target: EventTarget,
+    snapshot: WorldSnapshot,
+    context?: any,
+  ): WorldDelta {
     const events = this.getEvents(target);
     const combinedDelta: WorldDelta = {};
 
-    // 임시 스냅샷은 만들지 않고, 델타만 누적함. 
+    // 임시 스냅샷은 만들지 않고, 델타만 누적함.
     // (레거시에서도 순차 실행이지만, 각 이벤트가 즉시 반영된 상태를 보는지 여부는 체크 필요.
     //  일단은 독립적인 실행으로 가정하고 Delta Merge)
-    
+
     // Note: 결정론적 실행을 위해 순서가 보장된 상태에서 실행됨
     for (const event of events) {
       if (event.condition(snapshot, context)) {
@@ -84,4 +88,3 @@ export class EventRegistry {
     return combinedDelta;
   }
 }
-

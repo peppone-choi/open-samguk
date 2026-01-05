@@ -1,6 +1,7 @@
 # Project Context for Claude Code
 
 ## 1. Commands (명령어)
+
 ```bash
 # 개발 서버
 pnpm dev:api          # NestJS 백엔드 (http://localhost:3000)
@@ -24,6 +25,7 @@ npm --prefix legacy run test     # 레거시 테스트
 ```
 
 ## 2. Architecture (아키텍처 & 구조)
+
 - **Backend**: NestJS (REST API + TypeORM)
 - **Frontend**: Next.js 15 (App Router + Tailwind + shadcn/ui)
 - **Engine**: Node.js 턴 데몬 (게임 틱 처리)
@@ -32,6 +34,7 @@ npm --prefix legacy run test     # 레거시 테스트
 - **Package Manager**: pnpm (workspace monorepo)
 
 ### 디렉토리 구조
+
 ```
 apps/
   api/        # NestJS 백엔드
@@ -48,11 +51,13 @@ docs/         # 아키텍처 문서
 ## 3. Workflow Rules (작업 규칙)
 
 ### Commit Style
+
 - **Conventional Commits**: `feat`, `fix`, `docs`, `refactor`, `test`, `chore`
 - 명령형 영어: "Add feature" (O), "Added feature" (X)
 - 예: `feat: add battle calculation module`
 
 ### Code Style
+
 - TypeScript **Strict Mode** 필수
 - 4 spaces 들여쓰기
 - `camelCase` (변수/함수), `PascalCase` (클래스/타입)
@@ -61,10 +66,12 @@ docs/         # 아키텍처 문서
 - 공개 API는 명시적 타입 필수
 
 ### Error Handling
+
 - 모든 비동기 작업은 try-catch 감싸기
 - 에러 로깅 필수 (추후 Sentry 연동)
 
 ## 4. Past Mistakes (오답 노트)
+
 > 클로드가 자주 틀리는 내용을 여기에 추가하세요
 
 - [ ] `legacy/` 파일 직접 수정하지 말 것 (참조용)
@@ -75,7 +82,9 @@ docs/         # 아키텍처 문서
 - [ ] lodash 전체 import 금지 → 개별 import (`lodash/get`)
 
 ## 5. Verification (자가 검증)
+
 작업 완료 전 반드시 확인:
+
 ```bash
 pnpm typecheck && pnpm lint && pnpm test
 ```
@@ -83,6 +92,7 @@ pnpm typecheck && pnpm lint && pnpm test
 실패 시 수정 후 재실행. **성공할 때까지 반복**.
 
 ## 6. Key Files (핵심 파일)
+
 - 아키텍처 개요: `docs/architecture/overview.md`
 - 레거시 엔진 맵: `docs/architecture/legacy-engine.md`
 - 포팅 계획: `docs/architecture/rewrite-plan.md`

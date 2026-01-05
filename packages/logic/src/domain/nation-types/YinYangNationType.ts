@@ -1,4 +1,4 @@
-import { BaseNationType } from './types';
+import { BaseNationType } from "./types";
 
 /**
  * YinYangNationType (음양가) - Yin-Yang School
@@ -15,25 +15,25 @@ import { BaseNationType } from './types';
  * - Strategic delay: +33% (4/3 multiplier)
  */
 export class YinYangNationType extends BaseNationType {
-  readonly name = '음양가';
-  readonly pros = '농상↑ 인구↑';
-  readonly cons = '기술↓ 전략↓';
+  readonly name = "음양가";
+  readonly pros = "농상↑ 인구↑";
+  readonly cons = "기술↓ 전략↓";
 
   onCalcDomestic(
     turnType: string,
     varType: string,
     value: number,
-    aux?: unknown
+    aux?: unknown,
   ): number {
     // Agriculture or Commerce bonuses
-    if (turnType === '농업' || turnType === '상업') {
-      if (varType === 'score') return value * 1.1;
-      if (varType === 'cost') return value * 0.8;
+    if (turnType === "농업" || turnType === "상업") {
+      if (varType === "score") return value * 1.1;
+      if (varType === "cost") return value * 0.8;
     }
     // Technology penalties
-    else if (turnType === '기술') {
-      if (varType === 'score') return value * 0.9;
-      if (varType === 'cost') return value * 1.2;
+    else if (turnType === "기술") {
+      if (varType === "score") return value * 0.9;
+      if (varType === "cost") return value * 1.2;
     }
 
     return value;
@@ -41,7 +41,7 @@ export class YinYangNationType extends BaseNationType {
 
   onCalcNationalIncome(type: string, amount: number): number {
     // Population growth bonus
-    if (type === 'pop' && amount > 0) {
+    if (type === "pop" && amount > 0) {
       return amount * 1.2;
     }
 
@@ -50,7 +50,7 @@ export class YinYangNationType extends BaseNationType {
 
   onCalcStrategic(turnType: string, varType: string, value: number): number {
     // Strategic delay penalty
-    if (varType === 'delay') {
+    if (varType === "delay") {
       return Math.round((value * 4) / 3);
     }
     return value;

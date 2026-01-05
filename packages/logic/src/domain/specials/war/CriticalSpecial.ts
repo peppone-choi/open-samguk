@@ -1,12 +1,12 @@
-import { BaseSpecial } from '../BaseSpecial';
-import type { General } from '../../entities';
+import { BaseSpecial } from "../BaseSpecial";
+import type { General } from "../../entities";
 import {
   SpecialWeightType,
   SpecialType,
   type StatAux,
   type WarUnit,
   type WarUnitTriggerCaller,
-} from '../types';
+} from "../types";
 
 /**
  * Critical (필살) - War Special Ability
@@ -22,20 +22,19 @@ export class CriticalSpecial extends BaseSpecial {
   ];
 
   id = 71;
-  name = '필살';
-  info =
-    '[전투] 필살 확률 +30%p, 필살 발동시 대상 회피 불가, 필살 계수 향상';
+  name = "필살";
+  info = "[전투] 필살 확률 +30%p, 필살 발동시 대상 회피 불가, 필살 계수 향상";
 
   onCalcStat(
     _general: General,
     statName: string,
     value: any,
-    aux?: StatAux
+    aux?: StatAux,
   ): any {
-    if (statName === 'warCriticalRatio') {
+    if (statName === "warCriticalRatio") {
       return value + 0.3;
     }
-    if (statName === 'criticalDamageRange') {
+    if (statName === "criticalDamageRange") {
       const [rangeMin, rangeMax] = value as [number, number];
       return [(rangeMin + rangeMax) / 2, rangeMax];
     }

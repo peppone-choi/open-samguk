@@ -1,4 +1,4 @@
-import { City as ICity, Delta } from '../entities.js';
+import { City as ICity, Delta } from "../entities.js";
 
 /**
  * 도시(City) 도메인 엔티티
@@ -79,15 +79,23 @@ export class City {
    * 레거시: 상업(comm) -> 금 수입, 농지(agri) -> 쌀 수입
    */
   public calcIncome(taxRate: number): { gold: number; rice: number } {
-    const goldIncome = Math.floor(this.props.comm * (this.props.pop / 10000) * (taxRate / 100));
-    const riceIncome = Math.floor(this.props.agri * (this.props.pop / 10000) * (taxRate / 100));
-    
+    const goldIncome = Math.floor(
+      this.props.comm * (this.props.pop / 10000) * (taxRate / 100),
+    );
+    const riceIncome = Math.floor(
+      this.props.agri * (this.props.pop / 10000) * (taxRate / 100),
+    );
+
     return {
       gold: goldIncome,
       rice: riceIncome,
     };
   }
 
-  public get id(): number { return this.props.id; }
-  public toJSON(): ICity { return { ...this.props }; }
+  public get id(): number {
+    return this.props.id;
+  }
+  public toJSON(): ICity {
+    return { ...this.props };
+  }
 }

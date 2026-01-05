@@ -1,4 +1,4 @@
-import type { AuctionBidItemData } from './AuctionBidItemData';
+import type { AuctionBidItemData } from "./AuctionBidItemData";
 
 export interface AuctionBidItem {
   no?: number;

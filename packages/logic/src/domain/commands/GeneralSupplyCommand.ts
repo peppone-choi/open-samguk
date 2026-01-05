@@ -1,15 +1,15 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 물자조달 커맨드
  * 레거시: che_물자조달
  */
 export class GeneralSupplyCommand extends GeneralCommand {
-  readonly actionName = '물자조달';
+  readonly actionName = "물자조달";
 
   constructor() {
     super();
@@ -21,10 +21,17 @@ export class GeneralSupplyCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
-      return { logs: { general: { [actorId]: [`물자조달 실패: ${check.reason}`] } } };
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
+      return {
+        logs: { general: { [actorId]: [`물자조달 실패: ${check.reason}`] } },
+      };
     }
 
     const iGeneral = snapshot.generals[actorId];
@@ -34,22 +41,27 @@ export class GeneralSupplyCommand extends GeneralCommand {
     if (!iCity) throw new Error(`도시 ${iGeneral.cityId}를 찾을 수 없습니다.`);
 
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation)
+      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     // Randomly choose resource type
     const resourceTypes = [
-      { name: '금', key: 'gold' as const },
-      { name: '쌀', key: 'rice' as const },
+      { name: "금", key: "gold" as const },
+      { name: "쌀", key: "rice" as const },
     ];
     const { name: resName, key: resKey } = rng.choice(resourceTypes);
 
     // Calculate base score
     const general = new General(iGeneral);
-    let score = (iGeneral.leadership ?? 0) + (iGeneral.strength ?? 0) + (iGeneral.intel ?? 0);
+    let score =
+      (iGeneral.leadership ?? 0) +
+      (iGeneral.strength ?? 0) +
+      (iGeneral.intel ?? 0);
 
     // Apply experience level bonus (TODO: implement getDomesticExpLevelBonus)
     // For now, using a simplified calculation based on experience
-    const expBonus = 1 + Math.min(Math.floor((iGeneral.experience ?? 0) / 10000), 10) * 0.05;
+    const expBonus =
+      1 + Math.min(Math.floor((iGeneral.experience ?? 0) / 10000), 10) * 0.05;
     score *= expBonus;
 
     // Apply random variance
@@ -96,7 +108,7 @@ export class GeneralSupplyCommand extends GeneralCommand {
     const ded = Math.round((score * 1.0) / 3);
 
     // Randomly increase one stat
-    const stats = ['leadership', 'strength', 'intel'] as const;
+    const stats = ["leadership", "strength", "intel"] as const;
     const weights = {
       leadership: iGeneral.leadership ?? 1,
       strength: iGeneral.strength ?? 1,
@@ -117,10 +129,10 @@ export class GeneralSupplyCommand extends GeneralCommand {
     };
 
     const scoreText = score.toLocaleString();
-    let logMessage = '';
-    if (pick === 'fail') {
+    let logMessage = "";
+    if (pick === "fail") {
       logMessage = `조달을 실패하여 ${resName}을 ${scoreText} 조달했습니다.`;
-    } else if (pick === 'success') {
+    } else if (pick === "success") {
       logMessage = `조달을 성공하여 ${resName}을 ${scoreText} 조달했습니다.`;
     } else {
       logMessage = `${resName}을 ${scoreText} 조달했습니다.`;

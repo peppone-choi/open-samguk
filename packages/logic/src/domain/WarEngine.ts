@@ -1,5 +1,5 @@
-import { RandUtil } from '@sammo-ts/common';
-import { WorldSnapshot, WorldDelta, General, City } from './entities.js';
+import { RandUtil } from "@sammo-ts/common";
+import { WorldSnapshot, WorldDelta, General, City } from "./entities.js";
 
 /**
  * 전투 유닛 인터페이스
@@ -31,7 +31,7 @@ export class WarEngine {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     attackerId: number,
-    destCityId: number
+    destCityId: number,
   ): WarResult {
     const battleLog: string[] = [];
     const delta: WorldDelta = {
@@ -44,7 +44,11 @@ export class WarEngine {
     const city = snapshot.cities[destCityId];
 
     if (!attacker || !city) {
-      return { delta, battleLog: ['전투 대상을 찾을 수 없습니다.'], victory: false };
+      return {
+        delta,
+        battleLog: ["전투 대상을 찾을 수 없습니다."],
+        victory: false,
+      };
     }
 
     battleLog.push(`${attacker.name} 부대가 ${city.name} 성을 공격합니다!`);
@@ -54,7 +58,7 @@ export class WarEngine {
 
     // 2. 전투 루프 (최대 100페이즈)
     // TODO: 레거시 processWar_NG_Loop() 구현 필요
-    
+
     // 임시 로직: 공격 성공 판정
     const victory = rng.nextBool(0.5);
     if (victory) {
@@ -62,7 +66,7 @@ export class WarEngine {
       // 점령 시 도시 소속 변경
       delta.cities![city.id] = { nationId: attacker.nationId };
     } else {
-      battleLog.push('공격에 실패하여 퇴각합니다.');
+      battleLog.push("공격에 실패하여 퇴각합니다.");
     }
 
     return { delta, battleLog, victory };

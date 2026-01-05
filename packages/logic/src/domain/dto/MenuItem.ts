@@ -1,5 +1,5 @@
 export interface MenuItem {
-  type: 'item';
+  type: "item";
   name: string;
   url: string;
   funcCall?: string;

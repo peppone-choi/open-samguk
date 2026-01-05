@@ -1,9 +1,9 @@
-import { WorldSnapshot, WorldDelta, GameTime } from './entities.js';
-import { City } from './models/City.js';
-import { Nation } from './models/Nation.js';
-import { EventRegistry, EventTarget } from './events/types.js';
-import { DeltaUtil } from '../utils/DeltaUtil.js';
-import { MapUtil } from './MapData.js';
+import { WorldSnapshot, WorldDelta, GameTime } from "./entities.js";
+import { City } from "./models/City.js";
+import { Nation } from "./models/Nation.js";
+import { EventRegistry, EventTarget } from "./events/types.js";
+import { DeltaUtil } from "../utils/DeltaUtil.js";
+import { MapUtil } from "./MapData.js";
 
 /**
  * 월간 처리 파이프라인
@@ -17,13 +17,16 @@ export class MonthlyPipeline {
    */
   public preUpdateMonthly(snapshot: WorldSnapshot): WorldDelta {
     // 0. Pre-Month 이벤트 실행 (레거시: runEventHandler(EventTarget::PreMonth))
-    const eventDelta = this.eventRegistry.runEvents(EventTarget.PRE_MONTH, snapshot);
+    const eventDelta = this.eventRegistry.runEvents(
+      EventTarget.PRE_MONTH,
+      snapshot,
+    );
 
     const delta: WorldDelta = {
       nations: {},
       cities: {},
       generals: {},
-      logs: { global: ['월간 수입 정산을 시작합니다.'] },
+      logs: { global: ["월간 수입 정산을 시작합니다."] },
     };
 
     // 1. 장수, 국가, 도시 상태 갱신 (Legacy: preUpdateMonthly)
@@ -50,7 +53,7 @@ export class MonthlyPipeline {
         nDelta = {};
         dNations[nation.id] = nDelta;
       }
-      
+
       if (nation.strategicCmdLimit > 0) {
         nDelta.strategicCmdLimit = Math.max(0, nation.strategicCmdLimit - 1);
       }
@@ -64,7 +67,7 @@ export class MonthlyPipeline {
         const newSpy = { ...nation.spy };
         let changed = false;
         for (const [cityId, duration] of Object.entries(newSpy)) {
-          if (typeof duration === 'number') {
+          if (typeof duration === "number") {
             if (duration <= 1) {
               delete newSpy[cityId];
               changed = true;
@@ -81,12 +84,12 @@ export class MonthlyPipeline {
     }
 
     // 1-3. 환경 변수 (개발비) 갱신
-    const startYear = snapshot.env['startyear'] || 184;
+    const startYear = snapshot.env["startyear"] || 184;
     const currentYear = snapshot.gameTime.year;
     const develCost = (currentYear - startYear + 10) * 2;
     if (!delta.env) delta.env = {};
     const dEnv = delta.env!;
-    dEnv['develcost'] = develCost;
+    dEnv["develcost"] = develCost;
 
     // 1-4. 도시 상태, 전쟁 기한, 계략 표시 해제
     for (const city of Object.values(snapshot.cities)) {
@@ -97,7 +100,11 @@ export class MonthlyPipeline {
         newConflict = {};
       }
 
-      if (newState !== city.state || newTerm !== city.term || newConflict !== city.conflict) {
+      if (
+        newState !== city.state ||
+        newTerm !== city.term ||
+        newConflict !== city.conflict
+      ) {
         let cDelta = dCities[city.id];
         if (!cDelta) {
           cDelta = {};
@@ -132,9 +139,9 @@ export class MonthlyPipeline {
         cDelta = {};
         dCities[iCity.id] = cDelta;
       }
-      
-      cDelta.gold = (iCity.gold + cityGold);
-      cDelta.rice = (iCity.rice + cityRice);
+
+      cDelta.gold = iCity.gold + cityGold;
+      cDelta.rice = iCity.rice + cityRice;
 
       let nDelta = dNations[iCity.nationId];
       if (!nDelta) {
@@ -153,8 +160,11 @@ export class MonthlyPipeline {
       if (!iNation) continue;
 
       // 공헌도에 비례한 봉록 (최소 10, 최대 500)
-      const salary = Math.min(Math.max(Math.floor(iGeneral.dedication / 100), 10), 500);
-      
+      const salary = Math.min(
+        Math.max(Math.floor(iGeneral.dedication / 100), 10),
+        500,
+      );
+
       // 국가 자금 차감
       let nDelta = dNations[iGeneral.nationId];
       if (!nDelta) {
@@ -169,7 +179,7 @@ export class MonthlyPipeline {
         gDelta = {};
         dGenerals[iGeneral.id] = gDelta;
       }
-      gDelta.gold = (iGeneral.gold + salary);
+      gDelta.gold = iGeneral.gold + salary;
     }
 
     return DeltaUtil.merge(eventDelta, delta);
@@ -200,7 +210,7 @@ export class MonthlyPipeline {
           age: general.age + 1,
         };
       }
-      delta.logs!.global!.push('모든 장수의 나이가 1살 늘어났습니다.');
+      delta.logs!.global!.push("모든 장수의 나이가 1살 늘어났습니다.");
     }
 
     return delta;
@@ -208,12 +218,15 @@ export class MonthlyPipeline {
 
   public postUpdateMonthly(snapshot: WorldSnapshot): WorldDelta {
     // 0. Month 이벤트 실행 (레거시: runEventHandler(EventTarget::Month))
-    const eventDelta = this.eventRegistry.runEvents(EventTarget.MONTH, snapshot);
+    const eventDelta = this.eventRegistry.runEvents(
+      EventTarget.MONTH,
+      snapshot,
+    );
 
     const delta: WorldDelta = {
       nations: {},
       cities: {},
-      logs: { global: ['월간 정산을 완료했습니다.'] },
+      logs: { global: ["월간 정산을 완료했습니다."] },
     };
 
     const dNations = delta.nations!;
@@ -222,16 +235,26 @@ export class MonthlyPipeline {
     // 1. 국가 국력(Power) 계산
     for (const nation of Object.values(snapshot.nations)) {
       let totalPower = 0;
-      
+
       // 해당 국가의 도시 수와 질을 기반으로 국력 계산
-      const nationCities = Object.values(snapshot.cities).filter(c => c.nationId === nation.id);
+      const nationCities = Object.values(snapshot.cities).filter(
+        (c) => c.nationId === nation.id,
+      );
       totalPower += nationCities.length * 100;
-      totalPower += nationCities.reduce((acc, c) => acc + (c.pop / 1000) + (c.agri / 100), 0);
+      totalPower += nationCities.reduce(
+        (acc, c) => acc + c.pop / 1000 + c.agri / 100,
+        0,
+      );
 
       // 해당 국가의 장수 수와 질 기반
-      const nationGenerals = Object.values(snapshot.generals).filter(g => g.nationId === nation.id);
+      const nationGenerals = Object.values(snapshot.generals).filter(
+        (g) => g.nationId === nation.id,
+      );
       totalPower += nationGenerals.length * 50;
-      totalPower += nationGenerals.reduce((acc, g) => acc + (g.leadership + g.strength + g.intel) / 10, 0);
+      totalPower += nationGenerals.reduce(
+        (acc, g) => acc + (g.leadership + g.strength + g.intel) / 10,
+        0,
+      );
 
       let nDelta = dNations[nation.id];
       if (!nDelta) {
@@ -248,8 +271,8 @@ export class MonthlyPipeline {
       let newTerm = term;
 
       // 종전 처리 (state 0 && term <= 1) -> state 2
-      if (state === '0' && term <= 1) {
-        newState = '2'; // 통상
+      if (state === "0" && term <= 1) {
+        newState = "2"; // 통상
         newTerm = 0;
       }
 
@@ -257,13 +280,13 @@ export class MonthlyPipeline {
       newTerm = Math.max(0, newTerm - 1);
 
       // 불가침 만료 (state 7 && term 0) -> state 2
-      if (newState === '7' && newTerm === 0) {
-        newState = '2';
+      if (newState === "7" && newTerm === 0) {
+        newState = "2";
       }
 
       // 선포 만료 (state 1 && term 0) -> state 0 (교전), term 6
-      if (newState === '1' && newTerm === 0) {
-        newState = '0';
+      if (newState === "1" && newTerm === 0) {
+        newState = "0";
         newTerm = 6;
       }
 
@@ -275,19 +298,28 @@ export class MonthlyPipeline {
 
     // 2. 전선(Front) 설정 (Legacy: SetNationFront)
     // 2-1. 국가별 외교 상태 캐싱
-    const nationRelations: Record<number, { enemy: Set<number>, pending: Record<number, number> }> = {};
+    const nationRelations: Record<
+      number,
+      { enemy: Set<number>; pending: Record<number, number> }
+    > = {};
     for (const nation of Object.values(snapshot.nations)) {
       nationRelations[nation.id] = { enemy: new Set(), pending: {} };
     }
-    
+
     for (const diplomacy of Object.values(snapshot.diplomacy)) {
       const { srcNationId, destNationId, state, term } = diplomacy;
-      if (state === '0') { // 교전
-        if (nationRelations[srcNationId]) nationRelations[srcNationId].enemy.add(destNationId);
-        if (nationRelations[destNationId]) nationRelations[destNationId].enemy.add(srcNationId);
-      } else if (state === '1') { // 선포
-        if (nationRelations[srcNationId]) nationRelations[srcNationId].pending[destNationId] = term;
-        if (nationRelations[destNationId]) nationRelations[destNationId].pending[srcNationId] = term;
+      if (state === "0") {
+        // 교전
+        if (nationRelations[srcNationId])
+          nationRelations[srcNationId].enemy.add(destNationId);
+        if (nationRelations[destNationId])
+          nationRelations[destNationId].enemy.add(srcNationId);
+      } else if (state === "1") {
+        // 선포
+        if (nationRelations[srcNationId])
+          nationRelations[srcNationId].pending[destNationId] = term;
+        if (nationRelations[destNationId])
+          nationRelations[destNationId].pending[srcNationId] = term;
       }
     }
 
@@ -324,14 +356,20 @@ export class MonthlyPipeline {
       }
 
       // 내 국가의 도시들 상태 업데이트
-      const myCities = Object.values(snapshot.cities).filter(c => c.nationId === nation.id);
+      const myCities = Object.values(snapshot.cities).filter(
+        (c) => c.nationId === nation.id,
+      );
       for (const city of myCities) {
         let front = 0;
         if (adjEnemy.has(city.id)) {
           front = 3;
         } else if (adjPending.has(city.id)) {
           front = 1;
-        } else if (adjNeutral.has(city.id) && adjEnemy.size === 0 && adjPending.size === 0) {
+        } else if (
+          adjNeutral.has(city.id) &&
+          adjEnemy.size === 0 &&
+          adjPending.size === 0
+        ) {
           // 레거시: 평시이면 공백지 인접을 front=2로 설정
           front = 2;
         }
@@ -365,14 +403,22 @@ export class MonthlyPipeline {
     // WHEN state=43 THEN 42
     // ELSE state
     switch (state) {
-      case 31: return 0;
-      case 32: return 31;
-      case 33: return 0;
-      case 34: return 33;
-      case 41: return 0;
-      case 42: return 41;
-      case 43: return 42;
-      default: return state;
+      case 31:
+        return 0;
+      case 32:
+        return 31;
+      case 33:
+        return 0;
+      case 34:
+        return 33;
+      case 41:
+        return 0;
+      case 42:
+        return 41;
+      case 43:
+        return 42;
+      default:
+        return state;
     }
   }
 }

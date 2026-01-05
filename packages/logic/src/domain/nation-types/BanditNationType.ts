@@ -1,4 +1,4 @@
-import { BaseNationType } from './types';
+import { BaseNationType } from "./types";
 
 /**
  * BanditNationType (도적) - Bandit School
@@ -15,29 +15,29 @@ import { BaseNationType } from './types';
  * - Gold income: -10%
  */
 export class BanditNationType extends BaseNationType {
-  readonly name = '도적';
-  readonly pros = '계략↑';
-  readonly cons = '금수입↓ 치안↓ 민심↓';
+  readonly name = "도적";
+  readonly pros = "계략↑";
+  readonly cons = "금수입↓ 치안↓ 민심↓";
 
   onCalcDomestic(
     turnType: string,
     varType: string,
     value: number,
-    aux?: unknown
+    aux?: unknown,
   ): number {
     // Security penalties
-    if (turnType === '치안') {
-      if (varType === 'score') return value * 0.9;
-      if (varType === 'cost') return value * 1.2;
+    if (turnType === "치안") {
+      if (varType === "score") return value * 0.9;
+      if (varType === "cost") return value * 1.2;
     }
     // Morale or Population penalties
-    else if (turnType === '민심' || turnType === '인구') {
-      if (varType === 'score') return value * 0.9;
-      if (varType === 'cost') return value * 1.2;
+    else if (turnType === "민심" || turnType === "인구") {
+      if (varType === "score") return value * 0.9;
+      if (varType === "cost") return value * 1.2;
     }
     // Stratagem bonus
-    else if (turnType === '계략') {
-      if (varType === 'success') return value + 0.1;
+    else if (turnType === "계략") {
+      if (varType === "success") return value + 0.1;
     }
 
     return value;
@@ -45,7 +45,7 @@ export class BanditNationType extends BaseNationType {
 
   onCalcNationalIncome(type: string, amount: number): number {
     // Gold income penalty
-    if (type === 'gold') {
+    if (type === "gold") {
       return amount * 0.9;
     }
 

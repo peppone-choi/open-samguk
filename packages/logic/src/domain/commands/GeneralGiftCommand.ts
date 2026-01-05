@@ -1,15 +1,15 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GameConst } from '../GameConst.js';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GameConst } from "../GameConst.js";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 증여 커맨드
  * 레거시: che_증여
  */
 export class GeneralGiftCommand extends GeneralCommand {
-  readonly actionName = '증여';
+  readonly actionName = "증여";
 
   constructor() {
     super();
@@ -25,9 +25,14 @@ export class GeneralGiftCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -42,7 +47,7 @@ export class GeneralGiftCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: ['증여 실패: 수량 또는 대상 장수가 올바르지 않습니다.'],
+            [actorId]: ["증여 실패: 수량 또는 대상 장수가 올바르지 않습니다."],
           },
         },
       };
@@ -50,16 +55,20 @@ export class GeneralGiftCommand extends GeneralCommand {
 
     const iGeneral = snapshot.generals[actorId];
     const iDestGeneral = snapshot.generals[destGeneralId];
-    const resKey = isGold ? 'gold' : 'rice';
-    const resName = isGold ? '금' : '쌀';
-    const minRes = isGold ? GameConst.generalMinimumGold : GameConst.generalMinimumRice;
+    const resKey = isGold ? "gold" : "rice";
+    const resName = isGold ? "금" : "쌀";
+    const minRes = isGold
+      ? GameConst.generalMinimumGold
+      : GameConst.generalMinimumRice;
 
     const actualAmount = Math.min(amount, iGeneral[resKey] - minRes);
     if (actualAmount < 100) {
       return {
         logs: {
           general: {
-            [actorId]: [`증여 실패: 여유 ${resName}이 부족합니다. (최소 100 이상 필요)`],
+            [actorId]: [
+              `증여 실패: 여유 ${resName}이 부족합니다. (최소 100 이상 필요)`,
+            ],
           },
         },
       };
@@ -79,8 +88,12 @@ export class GeneralGiftCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [`${iDestGeneral.name}에게 ${resName} ${actualAmount.toLocaleString()}을 증여했습니다.`],
-          [destGeneralId]: [`${iGeneral.name}에게서 ${resName} ${actualAmount.toLocaleString()}을 증여받았습니다.`],
+          [actorId]: [
+            `${iDestGeneral.name}에게 ${resName} ${actualAmount.toLocaleString()}을 증여했습니다.`,
+          ],
+          [destGeneralId]: [
+            `${iGeneral.name}에게서 ${resName} ${actualAmount.toLocaleString()}을 증여받았습니다.`,
+          ],
         },
       },
     };

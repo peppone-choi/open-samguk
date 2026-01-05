@@ -1,20 +1,20 @@
-import { RandUtil, JosaUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 건국 커맨드
  * 레거시: che_건국
  */
 export class GeneralFoundNationCommand extends GeneralCommand {
-  readonly actionName = '건국';
+  readonly actionName = "건국";
 
   constructor() {
     super();
     this.minConditionConstraints = [
-      ConstraintHelper.NoPenalty('NoFoundNation'),
+      ConstraintHelper.NoPenalty("NoFoundNation"),
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
@@ -25,25 +25,39 @@ export class GeneralFoundNationCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
     const { nationName, nationType, colorType } = args;
 
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
-      return { logs: { general: { [actorId]: [`건국 실패: ${check.reason}`] } } };
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
+      return {
+        logs: { general: { [actorId]: [`건국 실패: ${check.reason}`] } },
+      };
     }
 
     // 이름 중복 체크
-    const isDuplicate = Object.values(snapshot.nations).some(n => n.name === nationName);
+    const isDuplicate = Object.values(snapshot.nations).some(
+      (n) => n.name === nationName,
+    );
     if (isDuplicate) {
-      return { logs: { general: { [actorId]: [`건국 실패: 이미 존재하는 국가명입니다.`] } } };
+      return {
+        logs: {
+          general: { [actorId]: [`건국 실패: 이미 존재하는 국가명입니다.`] },
+        },
+      };
     }
 
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
-    
+
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation)
+      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     const general = new General(iGeneral);
     general.addExperience(1000);
@@ -67,8 +81,8 @@ export class GeneralFoundNationCommand extends GeneralCommand {
       },
     };
 
-    const josaUl = JosaUtil.pick(nationName, '을');
-    const josaYi = JosaUtil.pick(iGeneral.name, '이');
+    const josaUl = JosaUtil.pick(nationName, "을");
+    const josaYi = JosaUtil.pick(iGeneral.name, "이");
 
     return {
       generals: { [actorId]: general.toJSON() },
@@ -76,7 +90,9 @@ export class GeneralFoundNationCommand extends GeneralCommand {
       cities: cityDelta,
       logs: {
         general: { [actorId]: [`【${nationName}】${josaUl} 건국하였습니다.`] },
-        global: [`${iGeneral.name}${josaYi} 【${snapshot.cities[iGeneral.cityId]?.name}】에 국가를 건국하였습니다.`],
+        global: [
+          `${iGeneral.name}${josaYi} 【${snapshot.cities[iGeneral.cityId]?.name}】에 국가를 건국하였습니다.`,
+        ],
       },
     };
   }

@@ -1,4 +1,4 @@
-import { WorldSnapshot } from '../domain/entities.js';
+import { WorldSnapshot } from "../domain/entities.js";
 
 /**
  * 스냅샷 레포지토리 인터페이스 (Port)

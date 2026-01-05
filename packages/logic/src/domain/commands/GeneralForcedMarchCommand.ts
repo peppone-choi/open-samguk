@@ -1,17 +1,22 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 강행 커맨드
  * 레거시: che_강행
  */
 export class GeneralForcedMarchCommand extends GeneralCommand {
-  readonly actionName = '강행';
+  readonly actionName = "강행";
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
@@ -28,8 +33,8 @@ export class GeneralForcedMarchCommand extends GeneralCommand {
       ConstraintHelper.ReqGeneralGold(reqGold),
     ];
 
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -40,7 +45,7 @@ export class GeneralForcedMarchCommand extends GeneralCommand {
     }
 
     const general = new General(iGeneral);
-    
+
     // 강행 효과: 도시 이동, 훈련/사기 감소, 경험치/통솔경험 증가
     const expGain = 100;
     const trainLoss = 5;
@@ -79,7 +84,9 @@ export class GeneralForcedMarchCommand extends GeneralCommand {
           };
           if (!delta.logs) delta.logs = {};
           if (!delta.logs.general) delta.logs.general = {};
-          delta.logs.general[gid] = [`방랑군 세력이 ${destCity.name}(으)로 강행했습니다.`];
+          delta.logs.general[gid] = [
+            `방랑군 세력이 ${destCity.name}(으)로 강행했습니다.`,
+          ];
         }
       }
     }

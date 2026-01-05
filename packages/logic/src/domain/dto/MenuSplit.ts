@@ -1,8 +1,8 @@
-import type { MenuItem } from './MenuItem';
-import type { MenuLine } from './MenuLine';
+import type { MenuItem } from "./MenuItem";
+import type { MenuLine } from "./MenuLine";
 
 export interface MenuSplit {
-  type: 'split';
+  type: "split";
   main: MenuItem;
   subMenu: (MenuItem | MenuLine)[];
 }

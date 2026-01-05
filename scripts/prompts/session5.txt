@@ -1,0 +1,18 @@
+전투 특기와 내정 특기를 포팅해줘.
+레거시: legacy/hwe/sammo/ActionSpecialWar/, legacy/hwe/sammo/ActionSpecialDomestic/
+대상: packages/logic/src/domain/specials/ (새로 생성)
+
+먼저 Special 인터페이스를 정의하고:
+
+전투 특기 우선순위:
+1. 돌격 특기
+2. 화공 특기
+3. 계략 특기
+
+내정 특기 우선순위:
+1. 농업 특기
+2. 상업 특기
+3. 기술 특기
+
+기존 Command, Trigger 패턴 참고.
+작업 후 pnpm typecheck && pnpm test 검증.

@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { LiteHashDRBG, RandUtil } from '@sammo-ts/common';
-import { WorldSnapshot } from '../entities.js';
-import { GeneralReinforceSecurityCommand } from './GeneralReinforceSecurityCommand.js';
+import { describe, it, expect } from "vitest";
+import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { WorldSnapshot } from "../entities.js";
+import { GeneralReinforceSecurityCommand } from "./GeneralReinforceSecurityCommand.js";
 
-describe('GeneralReinforceSecurityCommand (TDD)', () => {
-  const seed = 'test-seed';
+describe("GeneralReinforceSecurityCommand (TDD)", () => {
+  const seed = "test-seed";
   const rng = new LiteHashDRBG(seed);
   const rand = new RandUtil(rng);
 
@@ -12,7 +12,7 @@ describe('GeneralReinforceSecurityCommand (TDD)', () => {
     generals: {
       1: {
         id: 1,
-        name: '유비',
+        name: "유비",
         nationId: 1,
         cityId: 1,
         gold: 1000,
@@ -35,9 +35,9 @@ describe('GeneralReinforceSecurityCommand (TDD)', () => {
         train: 0,
         atmos: 0,
         age: 20,
-        special: 'None',
+        special: "None",
         specAge: 0,
-        special2: 'None',
+        special2: "None",
         specAge2: 0,
         turnTime: new Date(),
         killTurn: 10,
@@ -48,7 +48,7 @@ describe('GeneralReinforceSecurityCommand (TDD)', () => {
     cities: {
       1: {
         id: 1,
-        name: '평원',
+        name: "평원",
         nationId: 1,
         pop: 10000,
         agri: 100,
@@ -57,12 +57,12 @@ describe('GeneralReinforceSecurityCommand (TDD)', () => {
         def: 100,
         wall: 100,
         meta: {},
-      }
+      },
     },
     gameTime: { year: 184, month: 1 },
   };
 
-  it('치안 강화 시 도시의 치안 수치가 증가하고 장수의 무력 경험치가 올라야 함', () => {
+  it("치안 강화 시 도시의 치안 수치가 증가하고 장수의 무력 경험치가 올라야 함", () => {
     const cmd = new GeneralReinforceSecurityCommand();
     const delta = cmd.run(rand, mockSnapshot, 1, {});
 
@@ -71,6 +71,6 @@ describe('GeneralReinforceSecurityCommand (TDD)', () => {
     // 장수 무력 경험치 증가 확인
     expect(delta.generals?.[1]?.strengthExp).toBe(1);
     // 로그 확인
-    expect(delta.logs?.general?.[1][0]).toContain('치안을 강화하여');
+    expect(delta.logs?.general?.[1][0]).toContain("치안을 강화하여");
   });
 });

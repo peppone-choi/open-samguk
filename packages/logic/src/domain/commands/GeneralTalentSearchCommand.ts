@@ -1,15 +1,15 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 인재 탐색 커맨드
  * 레거시: che_인재탐색
  */
 export class GeneralTalentSearchCommand extends GeneralCommand {
-  readonly actionName = '인재탐색';
+  readonly actionName = "인재탐색";
 
   constructor() {
     super();
@@ -23,9 +23,14 @@ export class GeneralTalentSearchCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -39,7 +44,9 @@ export class GeneralTalentSearchCommand extends GeneralCommand {
     if (!iGeneral) {
       return {
         logs: {
-          global: [`장수 ${actorId}를 찾을 수 없어 인재탐색을 실행할 수 없습니다.`],
+          global: [
+            `장수 ${actorId}를 찾을 수 없어 인재탐색을 실행할 수 없습니다.`,
+          ],
         },
       };
     }
@@ -54,8 +61,14 @@ export class GeneralTalentSearchCommand extends GeneralCommand {
 
     if (!isFound) {
       // 발견 실패 시 경험치와 랜덤 스탯 증가
-      const statToInc = rng.choice(['leadershipExp', 'strengthExp', 'intelExp', 'politicsExp', 'charmExp'] as const);
-      
+      const statToInc = rng.choice([
+        "leadershipExp",
+        "strengthExp",
+        "intelExp",
+        "politicsExp",
+        "charmExp",
+      ] as const);
+
       const generalDelta = {
         gold: Math.max(iGeneral.gold - costGold, 0),
         experience: iGeneral.experience + 100,
@@ -66,14 +79,14 @@ export class GeneralTalentSearchCommand extends GeneralCommand {
       return {
         generals: { [actorId]: generalDelta },
         logs: {
-          general: { [actorId]: ['인재를 찾을 수 없었습니다.'] },
+          general: { [actorId]: ["인재를 찾을 수 없었습니다."] },
         },
       };
     }
 
     // 발견 성공 시 (현재는 금 발견으로 대체)
     const goldFound = rng.nextRangeInt(100, 500);
-    
+
     return {
       generals: {
         [actorId]: {
@@ -83,7 +96,9 @@ export class GeneralTalentSearchCommand extends GeneralCommand {
         },
       },
       logs: {
-        general: { [actorId]: [`숨겨진 자금 ${goldFound}금을 발견하였습니다!`] },
+        general: {
+          [actorId]: [`숨겨진 자금 ${goldFound}금을 발견하였습니다!`],
+        },
       },
     };
   }

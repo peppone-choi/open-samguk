@@ -1,6 +1,6 @@
-import type { AuctionType } from '../enums/AuctionType';
-import type { ResourceType } from '../enums/ResourceType';
-import type { AuctionInfoDetail } from './AuctionInfoDetail';
+import type { AuctionType } from "../enums/AuctionType";
+import type { ResourceType } from "../enums/ResourceType";
+import type { AuctionInfoDetail } from "./AuctionInfoDetail";
 
 export interface AuctionInfo {
   id?: number;

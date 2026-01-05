@@ -1,11 +1,11 @@
-import { WorldDelta } from '../domain/entities.js';
+import { WorldDelta } from "../domain/entities.js";
 
 export class DeltaUtil {
   public static merge(target: WorldDelta, source: WorldDelta): WorldDelta {
     // Logs
     if (source.logs) {
       if (!target.logs) target.logs = {};
-      
+
       if (source.logs.global) {
         if (!target.logs.global) target.logs.global = [];
         target.logs.global.push(...source.logs.global);

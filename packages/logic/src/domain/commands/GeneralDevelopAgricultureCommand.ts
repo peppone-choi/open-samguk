@@ -1,17 +1,22 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { City } from '../models/City.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { City } from "../models/City.js";
 
 /**
  * 농지 개간 커맨드
  * 레거시: che_농지개간
  */
 export class GeneralDevelopAgricultureCommand extends GeneralCommand {
-  readonly actionName = '농지 개간';
+  readonly actionName = "농지 개간";
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
@@ -22,7 +27,9 @@ export class GeneralDevelopAgricultureCommand extends GeneralCommand {
     const general = new General(iGeneral);
     const city = new City(iCity);
 
-    const { delta: generalDelta, agriGain } = general.developAgriculture(iGeneral.politics);
+    const { delta: generalDelta, agriGain } = general.developAgriculture(
+      iGeneral.politics,
+    );
     const cityDelta = city.increaseAgri(agriGain);
 
     return {

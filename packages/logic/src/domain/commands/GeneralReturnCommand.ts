@@ -1,28 +1,29 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 귀환 커맨드
  * 레거시: che_귀환
  */
 export class GeneralReturnCommand extends GeneralCommand {
-  readonly actionName = '귀환';
+  readonly actionName = "귀환";
 
   constructor() {
     super();
-    this.minConditionConstraints = [
-      ConstraintHelper.NotBeNeutral(),
-    ];
-    this.fullConditionConstraints = [
-      ...this.minConditionConstraints,
-    ];
+    this.minConditionConstraints = [ConstraintHelper.NotBeNeutral()];
+    this.fullConditionConstraints = [...this.minConditionConstraints];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -39,7 +40,7 @@ export class GeneralReturnCommand extends GeneralCommand {
     if (iGeneral.cityId === capitalCityId) {
       return {
         logs: {
-          general: { [actorId]: ['이미 수도에 있습니다.'] },
+          general: { [actorId]: ["이미 수도에 있습니다."] },
         },
       };
     }

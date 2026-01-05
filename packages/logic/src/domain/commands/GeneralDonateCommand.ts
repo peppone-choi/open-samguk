@@ -1,15 +1,15 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GameConst } from '../GameConst.js';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GameConst } from "../GameConst.js";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 헌납 커맨드
  * 레거시: che_헌납
  */
 export class GeneralDonateCommand extends GeneralCommand {
-  readonly actionName = '헌납';
+  readonly actionName = "헌납";
 
   constructor() {
     super();
@@ -18,14 +18,17 @@ export class GeneralDonateCommand extends GeneralCommand {
       ConstraintHelper.OccupiedCity(),
       ConstraintHelper.SuppliedCity(),
     ];
-    this.fullConditionConstraints = [
-      ...this.minConditionConstraints,
-    ];
+    this.fullConditionConstraints = [...this.minConditionConstraints];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -40,7 +43,7 @@ export class GeneralDonateCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: ['헌납 실패: 수량이 올바르지 않습니다.'],
+            [actorId]: ["헌납 실패: 수량이 올바르지 않습니다."],
           },
         },
       };
@@ -51,14 +54,14 @@ export class GeneralDonateCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: ['헌납 실패: 장수 정보를 찾을 수 없습니다.'],
+            [actorId]: ["헌납 실패: 장수 정보를 찾을 수 없습니다."],
           },
         },
       };
     }
 
-    const resKey = isGold ? 'gold' : 'rice';
-    const resName = isGold ? '금' : '쌀';
+    const resKey = isGold ? "gold" : "rice";
+    const resName = isGold ? "금" : "쌀";
 
     const actualAmount = Math.min(amount, iGeneral[resKey]);
     if (actualAmount < 100) {
@@ -73,13 +76,13 @@ export class GeneralDonateCommand extends GeneralCommand {
 
     const iNation = snapshot.nations[iGeneral.nationId];
     if (!iNation) {
-        return {
-            logs: {
-                general: {
-                    [actorId]: ['헌납 실패: 국가 정보를 찾을 수 없습니다.'],
-                },
-            },
-        };
+      return {
+        logs: {
+          general: {
+            [actorId]: ["헌납 실패: 국가 정보를 찾을 수 없습니다."],
+          },
+        },
+      };
     }
 
     return {
@@ -98,7 +101,9 @@ export class GeneralDonateCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [`${resName} ${actualAmount.toLocaleString()}을 헌납했습니다.`],
+          [actorId]: [
+            `${resName} ${actualAmount.toLocaleString()}을 헌납했습니다.`,
+          ],
         },
       },
     };

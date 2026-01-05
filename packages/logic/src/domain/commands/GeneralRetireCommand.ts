@@ -1,20 +1,25 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 은퇴 커맨드 - 60세 이상 장수가 은퇴하여 환생
  * 레거시: che_은퇴
  */
 export class GeneralRetireCommand extends GeneralCommand {
-  readonly actionName = '은퇴';
+  readonly actionName = "은퇴";
   static readonly reqAge = 60;
 
   constructor() {
     super();
     this.fullConditionConstraints = [
-      ConstraintHelper.ReqGeneralValue('age', '나이', '>=', GeneralRetireCommand.reqAge),
+      ConstraintHelper.ReqGeneralValue(
+        "age",
+        "나이",
+        ">=",
+        GeneralRetireCommand.reqAge,
+      ),
     ];
   }
 
@@ -22,9 +27,14 @@ export class GeneralRetireCommand extends GeneralCommand {
     return 1; // 2턴 필요
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -39,7 +49,11 @@ export class GeneralRetireCommand extends GeneralCommand {
     if (iGeneral.age < GeneralRetireCommand.reqAge) {
       return {
         logs: {
-          general: { [actorId]: [`은퇴 실패: 나이가 ${GeneralRetireCommand.reqAge}세 이상이어야 합니다.`] },
+          general: {
+            [actorId]: [
+              `은퇴 실패: 나이가 ${GeneralRetireCommand.reqAge}세 이상이어야 합니다.`,
+            ],
+          },
         },
       };
     }
@@ -57,7 +71,7 @@ export class GeneralRetireCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: ['은퇴하였습니다.'],
+          [actorId]: ["은퇴하였습니다."],
         },
         global: [`${iGeneral.name} 장수가 은퇴하였습니다.`],
       },

@@ -11,8 +11,7 @@
     "test": "vitest run"
   },
   "dependencies": {
-    "@sammo-ts/common": "workspace:*",
-    "zod": "^3.25.76"
+    "@sammo-ts/common": "workspace:*"
   },
   "devDependencies": {
     "tsup": "^8.0.0",

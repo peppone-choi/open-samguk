@@ -1,4 +1,4 @@
 export enum GeneralStorKey {
-  latestReadPrivateMsg = 'latestReadPrivateMsg',
-  latestReadDiplomacyMsg = 'latestReadDiplomacyMsg',
+  latestReadPrivateMsg = "latestReadPrivateMsg",
+  latestReadDiplomacyMsg = "latestReadDiplomacyMsg",
 }

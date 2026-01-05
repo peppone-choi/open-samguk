@@ -1,14 +1,14 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 몰수 커맨드
  * 레거시: che_몰수
  */
 export class NationConfiscateCommand extends GeneralCommand {
-  readonly actionName = '몰수';
+  readonly actionName = "몰수";
 
   constructor() {
     super();
@@ -24,9 +24,14 @@ export class NationConfiscateCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -41,8 +46,8 @@ export class NationConfiscateCommand extends GeneralCommand {
     const iDest = snapshot.generals[destGeneralId]!;
     const nation = snapshot.nations[iActor.nationId]!;
 
-    const resKey = isGold ? 'gold' : 'rice';
-    const resName = isGold ? '금' : '쌀';
+    const resKey = isGold ? "gold" : "rice";
+    const resName = isGold ? "금" : "쌀";
 
     // 실제 몰수 가능한 금액 계산
     const actualAmount = Math.min(amount, iDest[resKey]);
@@ -69,7 +74,9 @@ export class NationConfiscateCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [`${iDest.name}에게서 ${resName} ${actualAmount}을 몰수했습니다.`],
+          [actorId]: [
+            `${iDest.name}에게서 ${resName} ${actualAmount}을 몰수했습니다.`,
+          ],
           [destGeneralId]: [`${resName} ${actualAmount}을 몰수 당했습니다.`],
         },
       },

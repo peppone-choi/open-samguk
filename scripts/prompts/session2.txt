@@ -1,0 +1,17 @@
+docs/architecture/legacy-commands.md를 참고하여 아직 포팅되지 않은 국가 커맨드를 구현해줘.
+packages/logic/src/domain/commands/ 폴더의 기존 패턴을 따라서.
+레거시 코드는 legacy/hwe/sammo/Command/Nation/ 참조.
+
+우선순위:
+1. 선전포고 (NationDeclareWarCommand)
+2. 휴전제의 (NationProposeArmisticeCommand)
+3. 동맹제의 (NationProposeAllianceCommand)
+4. 불가침제의 (NationProposeNonAggressionCommand)
+5. 세금조정 (NationAdjustTaxCommand)
+
+각 커맨드마다:
+1. 레거시 코드 분석
+2. TypeScript 구현
+3. 테스트 작성
+4. pnpm typecheck && pnpm test 검증
+5. 실패시 수정 후 재검증 (성공할 때까지)

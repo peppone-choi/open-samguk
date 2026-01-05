@@ -1,16 +1,16 @@
-import { describe, it, expect } from 'vitest';
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralDraftCommand } from '../../src/domain/commands/GeneralDraftCommand.js';
-import { WorldSnapshot } from '../../src/domain/entities.js';
+import { describe, it, expect } from "vitest";
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralDraftCommand } from "../../src/domain/commands/GeneralDraftCommand.js";
+import { WorldSnapshot } from "../../src/domain/entities.js";
 
-describe('GeneralDraftCommand', () => {
-  const rng = new RandUtil('test');
+describe("GeneralDraftCommand", () => {
+  const rng = new RandUtil("test");
 
   const baseSnapshot: WorldSnapshot = {
     generals: {
       1: {
         id: 1,
-        name: '유비',
+        name: "유비",
         nationId: 1,
         cityId: 1,
         gold: 2000,
@@ -33,9 +33,9 @@ describe('GeneralDraftCommand', () => {
         train: 80,
         atmos: 80,
         age: 30,
-        special: 'None',
+        special: "None",
         specAge: 0,
-        special2: 'None',
+        special2: "None",
         specAge2: 0,
         turnTime: new Date(),
         killTurn: 0,
@@ -45,22 +45,22 @@ describe('GeneralDraftCommand', () => {
     nations: {
       1: {
         id: 1,
-        name: '촉',
-        color: '#ff0000',
+        name: "촉",
+        color: "#ff0000",
         capitalCityId: 1,
         gold: 10000,
         rice: 10000,
         tech: 100,
         power: 1000,
         level: 1,
-        typeCode: 'normal',
+        typeCode: "normal",
         meta: {},
       },
     },
     cities: {
       1: {
         id: 1,
-        name: '성도',
+        name: "성도",
         nationId: 1,
         pop: 100000,
         agri: 500,
@@ -74,7 +74,7 @@ describe('GeneralDraftCommand', () => {
     gameTime: { year: 184, month: 1 },
   };
 
-  it('모병을 수행하면 병사가 늘어나고 금이 감소하며 도시 인구와 치안이 감소한다', () => {
+  it("모병을 수행하면 병사가 늘어나고 금이 감소하며 도시 인구와 치안이 감소한다", () => {
     const command = new GeneralDraftCommand();
     const delta = command.run(rng, baseSnapshot, 1, {});
 
@@ -86,14 +86,14 @@ describe('GeneralDraftCommand', () => {
     expect(delta.generals?.[1].atmos).toBeLessThan(80); // 희석 효과
   });
 
-  it('금이 부족하면 모병에 실패한다', () => {
+  it("금이 부족하면 모병에 실패한다", () => {
     const poorSnapshot = JSON.parse(JSON.stringify(baseSnapshot));
     poorSnapshot.generals[1].gold = 500;
 
     const command = new GeneralDraftCommand();
     const delta = command.run(rng, poorSnapshot, 1, {});
 
-    expect(delta.logs?.general?.[1][0]).toContain('실패');
+    expect(delta.logs?.general?.[1][0]).toContain("실패");
     expect(delta.generals).toBeUndefined();
   });
 });

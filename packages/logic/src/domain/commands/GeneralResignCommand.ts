@@ -1,28 +1,29 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 하야 커맨드
  * 레거시: che_하야
  */
 export class GeneralResignCommand extends GeneralCommand {
-  readonly actionName = '하야';
+  readonly actionName = "하야";
 
   constructor() {
     super();
-    this.minConditionConstraints = [
-      ConstraintHelper.NotBeNeutral(),
-    ];
-    this.fullConditionConstraints = [
-      ...this.minConditionConstraints,
-    ];
+    this.minConditionConstraints = [ConstraintHelper.NotBeNeutral()];
+    this.fullConditionConstraints = [...this.minConditionConstraints];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {

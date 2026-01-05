@@ -1,4 +1,4 @@
-import { Nation as INation, Delta } from '../entities.js';
+import { Nation as INation, Delta } from "../entities.js";
 
 /**
  * 국가(Nation) 도메인 엔티티
@@ -16,7 +16,7 @@ export class Nation {
    */
   public withdrawGold(amount: number): Delta<INation> {
     if (this.props.gold < amount) {
-      throw new Error('국가 자금이 부족합니다.');
+      throw new Error("국가 자금이 부족합니다.");
     }
     this.props.gold -= amount;
     return { gold: this.props.gold };
@@ -35,7 +35,7 @@ export class Nation {
    */
   public withdrawRice(amount: number): Delta<INation> {
     if (this.props.rice < amount) {
-      throw new Error('국가 군량이 부족합니다.');
+      throw new Error("국가 군량이 부족합니다.");
     }
     this.props.rice -= amount;
     return { rice: this.props.rice };
@@ -57,7 +57,13 @@ export class Nation {
     return { tech: this.props.tech };
   }
 
-  public get id(): number { return this.props.id; }
-  public get gold(): number { return this.props.gold; }
-  public toJSON(): INation { return { ...this.props }; }
+  public get id(): number {
+    return this.props.id;
+  }
+  public get gold(): number {
+    return this.props.gold;
+  }
+  public toJSON(): INation {
+    return { ...this.props };
+  }
 }

@@ -34,7 +34,7 @@ export interface NationType {
     turnType: string,
     varType: string,
     value: number,
-    aux?: unknown
+    aux?: unknown,
   ): number;
 
   /**
@@ -75,7 +75,7 @@ export abstract class BaseNationType implements NationType {
     turnType: string,
     varType: string,
     value: number,
-    aux?: unknown
+    aux?: unknown,
   ): number {
     return value;
   }

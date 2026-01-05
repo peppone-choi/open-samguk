@@ -1,15 +1,15 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { Nation } from '../models/Nation.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { Nation } from "../models/Nation.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 포상 커맨드
  * 레거시: che_포상 (국가 커맨드이나 장수가 실행)
  */
 export class NationRewardCommand extends GeneralCommand {
-  readonly actionName = '포상';
+  readonly actionName = "포상";
 
   constructor() {
     super();
@@ -23,9 +23,14 @@ export class NationRewardCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -40,7 +45,9 @@ export class NationRewardCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: ['포상 실패: 대상 장수 또는 금액이 지정되지 않았습니다.'],
+            [actorId]: [
+              "포상 실패: 대상 장수 또는 금액이 지정되지 않았습니다.",
+            ],
           },
         },
       };
@@ -60,7 +67,7 @@ export class NationRewardCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: ['포상 실패: 소속 국가 정보를 찾을 수 없습니다.'],
+            [actorId]: ["포상 실패: 소속 국가 정보를 찾을 수 없습니다."],
           },
         },
       };
@@ -72,7 +79,7 @@ export class NationRewardCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: ['포상 실패: 대상 장수를 찾을 수 없습니다.'],
+            [actorId]: ["포상 실패: 대상 장수를 찾을 수 없습니다."],
           },
         },
       };
@@ -82,7 +89,7 @@ export class NationRewardCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: ['포상 실패: 타국 장수에게는 포상할 수 없습니다.'],
+            [actorId]: ["포상 실패: 타국 장수에게는 포상할 수 없습니다."],
           },
         },
       };
@@ -90,8 +97,8 @@ export class NationRewardCommand extends GeneralCommand {
 
     // DDD 도메인 모델 활용
     const nation = new Nation(iNation);
-    const resKey = isGold ? 'gold' : 'rice';
-    const resName = isGold ? '금' : '쌀';
+    const resKey = isGold ? "gold" : "rice";
+    const resName = isGold ? "금" : "쌀";
 
     try {
       let nationDelta;
@@ -103,23 +110,26 @@ export class NationRewardCommand extends GeneralCommand {
 
       return {
         nations: {
-          [iNation.id]: nationDelta
+          [iNation.id]: nationDelta,
         },
         generals: {
           [destGeneralId]: {
-            [resKey]: (iDestGeneral[resKey as 'gold' | 'rice'] as number) + amount
+            [resKey]:
+              (iDestGeneral[resKey as "gold" | "rice"] as number) + amount,
           },
           [actorId]: {
             experience: iActor.experience + 50,
             dedication: iActor.dedication + 100,
-          }
+          },
         },
         logs: {
           general: {
-            [actorId]: [`${iDestGeneral.name}에게 ${resName} ${amount}을 수여했습니다.`],
-            [destGeneralId]: [`${resName} ${amount}을 포상으로 받았습니다.`]
-          }
-        }
+            [actorId]: [
+              `${iDestGeneral.name}에게 ${resName} ${amount}을 수여했습니다.`,
+            ],
+            [destGeneralId]: [`${resName} ${amount}을 포상으로 받았습니다.`],
+          },
+        },
       };
     } catch (e: any) {
       return {

@@ -1,4 +1,4 @@
-import { WorldSnapshot } from './entities.js';
+import { WorldSnapshot } from "./entities.js";
 
 /**
  * 시드 생성 컨텍스트
@@ -24,10 +24,10 @@ export class SeedGenerator {
    * 월드 스냅샷으로부터 컨텍스트 기반 시드 생성
    */
   public static fromSnapshot(
-    snapshot: WorldSnapshot, 
-    actorId: number, 
-    actionName: string, 
-    hiddenSeed: string = 'default-hidden-seed'
+    snapshot: WorldSnapshot,
+    actorId: number,
+    actionName: string,
+    hiddenSeed: string = "default-hidden-seed",
   ): string {
     return this.generate({
       hiddenSeed,

@@ -1,56 +1,56 @@
 export enum TableName {
-  general = 'general',
-  generalTurn = 'general_turn',
-  generalAccessLog = 'general_access_log',
+  general = "general",
+  generalTurn = "general_turn",
+  generalAccessLog = "general_access_log",
 
-  userRecord = 'user_record',
+  userRecord = "user_record",
 
-  nation = 'nation',
-  nationTurn = 'nation_turn',
-  nationEnv = 'nation_env',
+  nation = "nation",
+  nationTurn = "nation_turn",
+  nationEnv = "nation_env",
 
-  board = 'board',
-  comment = 'comment',
+  board = "board",
+  comment = "comment",
 
-  city = 'city',
+  city = "city",
 
-  troop = 'troop',
+  troop = "troop",
 
-  plock = 'plock',
+  plock = "plock",
 
-  message = 'message',
+  message = "message",
 
-  rankData = 'rank_data',
-  hall = 'hall',
+  rankData = "rank_data",
+  hall = "hall",
 
-  oldNations = 'ng_old_nations',
-  oldGenerals = 'ng_old_generals',
+  oldNations = "ng_old_nations",
+  oldGenerals = "ng_old_generals",
 
-  emperior = 'emperior',
+  emperior = "emperior",
 
-  diplomacy = 'diplomacy',
-  diplomaticNotes = 'ng_diplomacy',
+  diplomacy = "diplomacy",
+  diplomaticNotes = "ng_diplomacy",
 
-  tournament = 'tournament',
-  betting = 'ng_betting',
-  vote = 'vote',
-  voteComment = 'vote_comment',
+  tournament = "tournament",
+  betting = "ng_betting",
+  vote = "vote",
+  voteComment = "vote_comment",
 
-  auction = 'ng_auction',
-  auctionBid = 'ng_auction_bid',
+  auction = "ng_auction",
+  auctionBid = "ng_auction_bid",
 
-  statistic = 'statistic',
+  statistic = "statistic",
 
-  history = 'ng_history',
-  worldHistory = 'world_history',
-  generalRecord = 'general_record',
+  history = "ng_history",
+  worldHistory = "world_history",
+  generalRecord = "general_record",
 
-  event = 'event',
-  storage = 'storage',
+  event = "event",
+  storage = "storage",
 
-  selectNPCToken = 'select_npc_token',
-  selectPool = 'select_pool',
+  selectNPCToken = "select_npc_token",
+  selectPool = "select_pool",
 
-  games = 'ng_games',
-  reservedOpen = 'reserved_open',
+  games = "ng_games",
+  reservedOpen = "reserved_open",
 }

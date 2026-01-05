@@ -1,4 +1,4 @@
-import type { General } from '../entities';
+import type { General } from "../entities";
 import type {
   BaseSpecial as IBaseSpecial,
   GeneralTriggerCaller,
@@ -6,7 +6,7 @@ import type {
   WarUnit,
   DomesticAux,
   StatAux,
-} from './types';
+} from "./types";
 
 /**
  * Abstract base class for special abilities
@@ -22,7 +22,7 @@ export abstract class BaseSpecial implements IBaseSpecial {
   }
 
   getInfo(): string {
-    return this.info || '';
+    return this.info || "";
   }
 
   getPreTurnExecuteTriggerList(_general: General): GeneralTriggerCaller | null {
@@ -33,7 +33,7 @@ export abstract class BaseSpecial implements IBaseSpecial {
     _turnType: string,
     _varType: string,
     value: number,
-    _aux?: DomesticAux
+    _aux?: DomesticAux,
   ): number {
     return value;
   }
@@ -42,7 +42,7 @@ export abstract class BaseSpecial implements IBaseSpecial {
     _general: General,
     _statName: string,
     value: any,
-    _aux?: StatAux
+    _aux?: StatAux,
   ): any {
     return value;
   }
@@ -51,7 +51,7 @@ export abstract class BaseSpecial implements IBaseSpecial {
     _general: General,
     _statName: string,
     value: any,
-    _aux?: StatAux
+    _aux?: StatAux,
   ): any {
     return value;
   }
@@ -72,9 +72,7 @@ export abstract class BaseSpecial implements IBaseSpecial {
     return null;
   }
 
-  getBattlePhaseSkillTriggerList(
-    _unit: WarUnit
-  ): WarUnitTriggerCaller | null {
+  getBattlePhaseSkillTriggerList(_unit: WarUnit): WarUnitTriggerCaller | null {
     return null;
   }
 
@@ -82,7 +80,7 @@ export abstract class BaseSpecial implements IBaseSpecial {
     _general: General,
     _actionType: string,
     _phase?: string | null,
-    aux?: any
+    aux?: any,
   ): any {
     return aux;
   }

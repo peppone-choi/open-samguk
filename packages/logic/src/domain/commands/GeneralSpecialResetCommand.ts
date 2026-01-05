@@ -1,18 +1,23 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
 
 export abstract class GeneralSpecialResetCommand extends GeneralCommand {
-  protected abstract readonly specialType: 'special' | 'special2';
-  protected abstract readonly specAgeType: 'specAge' | 'specAge2';
+  protected abstract readonly specialType: "special" | "special2";
+  protected abstract readonly specAgeType: "specAge" | "specAge2";
   protected abstract readonly specialText: string;
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
     const general = snapshot.generals[actorId];
     if (!general) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
     const oldSpecial = general[this.specialType];
-    if (oldSpecial === 'None') {
+    if (oldSpecial === "None") {
       return {
         logs: {
           general: { [actorId]: [`${this.specialText}가 없습니다.`] },
@@ -26,7 +31,7 @@ export abstract class GeneralSpecialResetCommand extends GeneralCommand {
     return {
       generals: {
         [actorId]: {
-          [this.specialType]: 'None',
+          [this.specialType]: "None",
           [this.specAgeType]: general.age + 1,
         },
       },
@@ -44,10 +49,10 @@ export abstract class GeneralSpecialResetCommand extends GeneralCommand {
  * 레거시: che_내정특기초기화
  */
 export class GeneralDomesticSkillResetCommand extends GeneralSpecialResetCommand {
-  readonly actionName = '내정 특기 초기화';
-  protected readonly specialType = 'special';
-  protected readonly specAgeType = 'specAge';
-  protected readonly specialText = '내정 특기';
+  readonly actionName = "내정 특기 초기화";
+  protected readonly specialType = "special";
+  protected readonly specAgeType = "specAge";
+  protected readonly specialText = "내정 특기";
 }
 
 /**
@@ -55,8 +60,8 @@ export class GeneralDomesticSkillResetCommand extends GeneralSpecialResetCommand
  * 레거시: che_전투특기초기화
  */
 export class GeneralWarSkillResetCommand extends GeneralSpecialResetCommand {
-  readonly actionName = '전투 특기 초기화';
-  protected readonly specialType = 'special2';
-  protected readonly specAgeType = 'specAge2';
-  protected readonly specialText = '전투 특기';
+  readonly actionName = "전투 특기 초기화";
+  protected readonly specialType = "special2";
+  protected readonly specAgeType = "specAge2";
+  protected readonly specialText = "전투 특기";
 }

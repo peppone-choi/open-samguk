@@ -1,16 +1,16 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GameConst } from '../GameConst.js';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { General } from '../models/General.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GameConst } from "../GameConst.js";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { General } from "../models/General.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 전투태세 커맨드 (3턴 연속)
  * 레거시: che_전투태세
  */
 export class GeneralCombatReadinessCommand extends GeneralCommand {
-  readonly actionName = '전투태세';
+  readonly actionName = "전투태세";
 
   constructor() {
     super();
@@ -24,17 +24,25 @@ export class GeneralCombatReadinessCommand extends GeneralCommand {
     ];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
-      return { logs: { general: { [actorId]: [`전투태세 실패: ${check.reason}`] } } };
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
+      return {
+        logs: { general: { [actorId]: [`전투태세 실패: ${check.reason}`] } },
+      };
     }
 
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation)
+      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     // Check last turn to determine progress
     const lastTurn = iGeneral.lastTurn || {};
@@ -61,7 +69,9 @@ export class GeneralCombatReadinessCommand extends GeneralCommand {
           },
         },
         logs: {
-          general: { [actorId]: [`병사들을 열심히 훈련중... (${currentTerm}/3)`] },
+          general: {
+            [actorId]: [`병사들을 열심히 훈련중... (${currentTerm}/3)`],
+          },
         },
       };
     }

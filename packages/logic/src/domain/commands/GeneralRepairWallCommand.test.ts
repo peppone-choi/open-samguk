@@ -1,10 +1,10 @@
-import { describe, it, expect } from 'vitest';
-import { LiteHashDRBG, RandUtil } from '@sammo-ts/common';
-import { WorldSnapshot } from '../entities.js';
-import { GeneralRepairWallCommand } from './GeneralRepairWallCommand.js';
+import { describe, it, expect } from "vitest";
+import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { WorldSnapshot } from "../entities.js";
+import { GeneralRepairWallCommand } from "./GeneralRepairWallCommand.js";
 
-describe('GeneralRepairWallCommand (TDD)', () => {
-  const seed = 'test-seed';
+describe("GeneralRepairWallCommand (TDD)", () => {
+  const seed = "test-seed";
   const rng = new LiteHashDRBG(seed);
   const rand = new RandUtil(rng);
 
@@ -12,7 +12,7 @@ describe('GeneralRepairWallCommand (TDD)', () => {
     generals: {
       1: {
         id: 1,
-        name: '유비',
+        name: "유비",
         nationId: 1,
         cityId: 1,
         gold: 1000,
@@ -35,9 +35,9 @@ describe('GeneralRepairWallCommand (TDD)', () => {
         train: 0,
         atmos: 0,
         age: 20,
-        special: 'None',
+        special: "None",
         specAge: 0,
-        special2: 'None',
+        special2: "None",
         specAge2: 0,
         turnTime: new Date(),
         killTurn: 10,
@@ -48,7 +48,7 @@ describe('GeneralRepairWallCommand (TDD)', () => {
     cities: {
       1: {
         id: 1,
-        name: '평원',
+        name: "평원",
         nationId: 1,
         pop: 10000,
         agri: 100,
@@ -58,12 +58,12 @@ describe('GeneralRepairWallCommand (TDD)', () => {
         wall: 100,
         wallMax: 1000,
         meta: {},
-      }
+      },
     },
     gameTime: { year: 184, month: 1 },
   };
 
-  it('성벽 보수 시 도시의 성벽 수치가 증가하고 장수의 무력 경험치가 올라야 함', () => {
+  it("성벽 보수 시 도시의 성벽 수치가 증가하고 장수의 무력 경험치가 올라야 함", () => {
     const cmd = new GeneralRepairWallCommand();
     const delta = cmd.run(rand, mockSnapshot, 1, {});
 
@@ -72,6 +72,6 @@ describe('GeneralRepairWallCommand (TDD)', () => {
     // 장수 무력 경험치 증가 확인
     expect(delta.generals?.[1]?.strengthExp).toBe(1);
     // 로그 확인
-    expect(delta.logs?.general?.[1][0]).toContain('성벽을 보수하여');
+    expect(delta.logs?.general?.[1][0]).toContain("성벽을 보수하여");
   });
 });

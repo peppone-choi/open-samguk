@@ -1,4 +1,5 @@
-import type { General } from '../entities';
+import type { General } from "../entities";
+import type { RandUtil } from "@sammo-ts/common";
 
 /**
  * Special ability weight types for selection probability
@@ -44,9 +45,29 @@ export interface WarUnit {
   oppose?: WarUnit | WarUnitCity;
   battleLog: WarBattleLogEntry[];
 
+  /** 인스턴스별 RNG */
+  rng: RandUtil;
+  /** 공격측 여부 */
+  isAttacker: boolean;
+  /** 현재 전투 페이즈 */
+  phase: number;
+  /** 전투력 배수 */
+  warPowerMultiplier: number;
+  /** 활성화된 스킬 목록 */
+  activatedSkills: Set<string>;
+
   getGeneral(): General;
   getOppose(): WarUnit | WarUnitCity | undefined;
   hasActivatedSkillOnLog(skillName: string): number;
+
+  /** 스킬 활성화 */
+  activateSkill(skill: string): void;
+  /** 스킬 비활성화 */
+  deactivateSkill(skill: string): void;
+  /** 스킬 활성화 여부 확인 */
+  hasActivatedSkill(skill: string): boolean;
+  /** 전투력 배수 적용 */
+  multiplyWarPower(multiplier: number): void;
 }
 
 /**
@@ -194,7 +215,7 @@ export interface BaseSpecial {
     turnType: string,
     varType: string,
     value: number,
-    aux?: DomesticAux
+    aux?: DomesticAux,
   ): number;
 
   /** Calculate stat modifiers for the general */
@@ -202,7 +223,7 @@ export interface BaseSpecial {
     general: General,
     statName: string,
     value: any,
-    aux?: StatAux
+    aux?: StatAux,
   ): any;
 
   /** Calculate stat modifiers for the opponent */
@@ -210,7 +231,7 @@ export interface BaseSpecial {
     general: General,
     statName: string,
     value: any,
-    aux?: StatAux
+    aux?: StatAux,
   ): any;
 
   /** Calculate strategic command modifiers */
@@ -233,7 +254,7 @@ export interface BaseSpecial {
     general: General,
     actionType: string,
     phase?: string | null,
-    aux?: any
+    aux?: any,
   ): any;
 }
 

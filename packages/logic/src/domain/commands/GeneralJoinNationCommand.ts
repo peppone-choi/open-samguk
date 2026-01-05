@@ -1,28 +1,29 @@
-import { RandUtil } from '@sammo-ts/common';
-import { GeneralCommand } from '../Command.js';
-import { WorldSnapshot, WorldDelta } from '../entities.js';
-import { ConstraintHelper } from '../ConstraintHelper.js';
+import { RandUtil } from "@sammo-ts/common";
+import { GeneralCommand } from "../Command.js";
+import { WorldSnapshot, WorldDelta } from "../entities.js";
+import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
  * 임관 커맨드
  * 레거시: che_임관
  */
 export class GeneralJoinNationCommand extends GeneralCommand {
-  readonly actionName = '임관';
+  readonly actionName = "임관";
 
   constructor() {
     super();
-    this.minConditionConstraints = [
-      ConstraintHelper.BeNeutral(),
-    ];
-    this.fullConditionConstraints = [
-      ...this.minConditionConstraints,
-    ];
+    this.minConditionConstraints = [ConstraintHelper.BeNeutral()];
+    this.fullConditionConstraints = [...this.minConditionConstraints];
   }
 
-  run(rng: RandUtil, snapshot: WorldSnapshot, actorId: number, args: Record<string, any>): WorldDelta {
-    const check = this.checkConstraints(rng, snapshot, actorId, args, 'full');
-    if (check.kind === 'deny') {
+  run(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    actorId: number,
+    args: Record<string, any>,
+  ): WorldDelta {
+    const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
+    if (check.kind === "deny") {
       return {
         logs: {
           general: {
@@ -36,7 +37,7 @@ export class GeneralJoinNationCommand extends GeneralCommand {
     if (!nationId) {
       return {
         logs: {
-          general: { [actorId]: ['임관 실패: 국가가 지정되지 않았습니다.'] },
+          general: { [actorId]: ["임관 실패: 국가가 지정되지 않았습니다."] },
         },
       };
     }
@@ -47,7 +48,7 @@ export class GeneralJoinNationCommand extends GeneralCommand {
     if (!iNation) {
       return {
         logs: {
-          general: { [actorId]: ['임관 실패: 존재하지 않는 국가입니다.'] },
+          general: { [actorId]: ["임관 실패: 존재하지 않는 국가입니다."] },
         },
       };
     }

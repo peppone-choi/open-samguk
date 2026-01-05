@@ -1,4 +1,4 @@
-import type { SelectItem } from './SelectItem';
+import type { SelectItem } from "./SelectItem";
 
 export interface BettingInfo {
   id: number;

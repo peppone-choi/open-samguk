@@ -6,11 +6,14 @@
  */
 
 // Core types and base classes
-export * from './types';
-export { BaseSpecial } from './BaseSpecial';
+export * from "./types";
+export { BaseSpecial } from "./BaseSpecial";
 
 // War special abilities
-export * from './war';
+export * from "./war";
 
 // Domestic special abilities
-export * from './domestic';
+export * from "./domestic";
+
+// Triggers
+export * from "./triggers";
