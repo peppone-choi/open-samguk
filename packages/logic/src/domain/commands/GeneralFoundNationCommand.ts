@@ -18,9 +18,10 @@ export class GeneralFoundNationCommand extends GeneralCommand {
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
-      ConstraintHelper.BeNationLeader(),
-      ConstraintHelper.NationLevel(0), // 방랑군만 가능
+      ConstraintHelper.BeLord(),
+      ConstraintHelper.WanderingNation(),
       ConstraintHelper.ReqNationGeneralCount(2),
+      ConstraintHelper.ConstructableCity(),
     ];
   }
 

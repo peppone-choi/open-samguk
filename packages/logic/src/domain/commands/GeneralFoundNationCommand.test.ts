@@ -45,7 +45,7 @@ describe('GeneralFoundNationCommand', () => {
 
     expect(delta.nations?.[1]?.name).toBe('촉한');
     expect(delta.nations?.[1]?.level).toBe(1);
-    expect(delta.logs?.global?.[0]).toContain('건설하였습니다');
+    expect(delta.logs?.global?.[0]).toContain('건국하였습니다');
   });
 
   it('장수가 1명이면 건국할 수 없음', () => {
@@ -65,7 +65,7 @@ describe('GeneralFoundNationCommand', () => {
         nationType: 'che_덕가'
     });
 
-    expect(delta.logs?.general?.[1][0]).toContain('장수 수가 부족합니다');
+    expect(delta.logs?.general?.[1][0]).toContain('수하 장수가 2명 이상이어야 합니다');
   });
 
   it('이미 정식 국가이면 실패해야 함', () => {
