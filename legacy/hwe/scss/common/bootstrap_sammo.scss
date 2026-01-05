@@ -1,0 +1,127 @@
+@function frontColor($color) {
+  @return color-contrast($color);
+}
+
+@each $colorType,
+$color in $nationColors {
+  .sam-color-#{$colorType} {
+    .sam-nation-own-bgcolor {
+      background-color: $color;
+      color: frontColor($color);
+    }
+
+    .btn-sammo-nation {
+      @include button-variant($color, $color);
+
+      &:hover,
+      &:active,
+      &:focus {
+        background-color: $color;
+      }
+
+      &,
+      &:not(.disabled):hover,
+      &:not(.disabled):active,
+      &:focus {
+        border-color: shade-color($color, 10%);
+      }
+    }
+  }
+
+  .sam-nation-bg-#{$colorType} {
+    background-color: $color;
+    color: frontColor($color);
+  }
+
+  .btn-sammo-nation-#{$colorType} {
+    @include button-variant($color, $color);
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $color;
+    }
+
+    &,
+    &:not(.disabled):hover,
+    &:not(.disabled):active,
+    &:focus {
+      border-color: shade-color($color, 10%);
+    }
+  }
+}
+
+@each $colorType,
+$color in $sammoColors {
+  .btn-sammo-#{$colorType} {
+    @include button-variant($color, $color);
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $color;
+    }
+
+    &,
+    &:not(.disabled):hover,
+    &:not(.disabled):active,
+    &:focus {
+      border-color: shade-color($color, 10%);
+    }
+  }
+
+  .btn-sammo-#{$colorType}.highlight {
+    @include button-variant($color, $color, magenta, $hover-color: magenta, $active-color: magenta);
+
+    &:hover,
+    &:active,
+    &:focus {
+      background-color: $color;
+    }
+
+    &,
+    &:not(.disabled):hover,
+    &:not(.disabled):active,
+    &:focus {
+      border-color: shade-color($color, 10%);
+    }
+  }
+}
+
+
+.buttonPlate {
+  .toolbarButton {
+      @extend .btn;
+      @extend .btn-sammo-base2;
+      width: 100%;
+      font-weight: bold;
+      font-size: 14px;
+  }
+
+  .toolbarButton2 {
+      @extend .btn;
+      @extend .btn-sammo-base2;
+      color: magenta;
+      width: 100%;
+      font-weight: bold;
+      font-size: 14px;
+
+      &:hover,
+      &:focus,
+      &:active {
+          color: magenta;
+      }
+  }
+
+  .commandButton {
+      width: 100%;
+      font-weight: bold;
+      font-size: 14px;
+      display: block;
+  }
+}
+
+//FIXME: toast의 scss가 바뀌면 삭제해야함
+#app .b-toast .toast .toast-body{
+  color: black !important;
+}

@@ -1,0 +1,86 @@
+@charset "utf-8";
+
+#user_info_container{
+    width:550px;
+    position:absolute;
+    left:50%;
+    margin-left:-250px;
+}
+
+#user_info_table{
+    width:100%;
+    margin-top:30px;
+}
+
+#user_info_table th{
+    padding:5px;
+}
+
+#btn_back1{
+    position:absolute;
+    right: 6px;
+    margin:6px;
+    height:40px;
+    line-height:40px;
+}
+
+#btn_delete_me{
+    bottom:0;
+    left:0;
+    margin:0 1px;
+    position:absolute;
+    width:100%;
+}
+
+#change_pw{
+    width:100%;
+}
+
+#image_upload_filename{
+    position:absolute;
+    height:20px;
+    left:10px;
+    width:130px;
+    top:12px;
+}
+
+#image_upload_fake_btn{
+    top:12px;
+    height:22px;
+    right:10px;
+    position:absolute;
+}
+
+#image_upload{
+    opacity: 0;
+    position:absolute;
+    top:12px;
+    left:0;
+    height:20px;
+    width:100%;
+}
+
+#slot_new_icon{
+    visibility: hidden;
+}
+
+
+#btn_image_submit{
+    position:absolute;
+    bottom:0;
+    left:0;
+    width:50%;
+}
+
+#btn_remove_icon{
+    position:absolute;
+    bottom:0;
+    right:0;
+    width:50%;
+}
+
+#third_use_disallow{
+    display:none;
+    margin-left:10px;
+    width:40px;
+}

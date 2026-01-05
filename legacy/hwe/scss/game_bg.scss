@@ -1,0 +1,65 @@
+@import '../../d_shared/common.css';
+@import 'common/variables.scss';
+
+html {
+    background: black;
+    max-height: 1000000px;
+    color: white;
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        background: black;
+        color: white;
+    }
+}
+
+//TODO: 삭제!!
+table.tb_layout {
+    border-collapse: collapse;
+    padding: 0px;
+    font-size: 14px;
+    word-break: break-all;
+}
+
+html,
+body {
+    font-size: 14px;
+    background-position: center;
+    background-repeat: repeat-y;
+}
+
+.tb_layout td,
+.tb_layout th {
+    border: solid 1px gray;
+    padding: 0px;
+    word-break: break-all;
+    ;
+}
+
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
+
+
+.a-right {
+    text-align: right;
+}
+
+.a-left {
+    text-align: left;
+}
+
+.a-center {
+    text-align: center;
+}
+
+
+.c-bg2{
+    background: $nbase2color;
+}

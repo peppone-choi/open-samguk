@@ -1,0 +1,33 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/logs/**/*.txt": true,
+        "**/session/sess*":true,
+        "/che":true,
+        "/kwe":true,
+        "/pwe":true,
+        "/nya":true,
+        "/pya":true,
+        "/twe":true,
+
+    },
+    "search.exclude": {
+        "e_lib/*":true,
+        "vendor/*":true,
+        "/che":true,
+        "/kwe":true,
+        "/pwe":true,
+        "/nya":true,
+        "/pya":true,
+        "/twe":true,
+    },
+    "cSpell.words": [
+        "josa",
+        "sammo"
+    ],
+    "editor.tabSize": 4
+}
