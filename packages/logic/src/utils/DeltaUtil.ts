@@ -65,6 +65,21 @@ export class DeltaUtil {
       target.gameTime = source.gameTime;
     }
 
+    // Diplomacy
+    if (source.diplomacy) {
+      if (!target.diplomacy) target.diplomacy = {};
+      for (const [key, dDelta] of Object.entries(source.diplomacy)) {
+        if (!target.diplomacy[key]) target.diplomacy[key] = {};
+        Object.assign(target.diplomacy[key], dDelta);
+      }
+    }
+
+    // Env
+    if (source.env) {
+      if (!target.env) target.env = {};
+      Object.assign(target.env, source.env);
+    }
+
     return target;
   }
 }

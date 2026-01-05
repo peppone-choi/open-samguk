@@ -10,4 +10,7 @@ export const GameConst = {
   conscriptSecuLoss: 15, // 징병 시 치안 감소
 
   exchangeFee: 0.01, // 매매 수수료
+
+  maxAvailableWarSettingCnt: 10, // 최대 전쟁 설정 가능 횟수
+  incAvailableWarSettingCnt: 2, // 월간 전쟁 설정 횟수 회복량
 } as const;

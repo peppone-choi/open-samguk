@@ -40,6 +40,7 @@ export interface General {
   item: string; // 보물 코드
   turnTime: Date;
   recentWarTime: Date | null;
+  makeLimit: number;
   killTurn: number;
   block: number; // 차단 상태
   meta: Record<string, any>;
@@ -53,6 +54,8 @@ export interface Nation {
   capitalCityId: number;
   gold: number;
   rice: number;
+  rate: number; // 세율
+  rateTmp: number; // 세율 (변동)
   tech: number;
   power: number;
   level: number;
@@ -60,6 +63,7 @@ export interface Nation {
   scoutLevel: number; // 첩보 레벨
   warState: number; // 전쟁 상태
   strategicCmdLimit: number;
+  surrenderLimit: number;
   spy: Record<string, any>;
   meta: Record<string, any>;
 }
@@ -69,6 +73,7 @@ export interface City {
   name: string;
   nationId: number;
   level: number;
+  front: number; // 전방 상태 (0:후방, 1:교전, 2:접경, 3:적진)
   pop: number;
   popMax: number;
   agri: number;

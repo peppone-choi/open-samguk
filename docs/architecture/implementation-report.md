@@ -1,22 +1,22 @@
 # 구현 진행 보고서
 
 ## 요약
-- `packages/logic`에 **Event System** 기초 구현 완료 (`EventRegistry`, `GameEvent`, `EventTarget`).
-- `packages/logic`에 `DeltaUtil` 유틸리티 추가 (WorldDelta 병합 로직).
-- `MonthlyPipeline`을 개선하여 `EventRegistry`를 주입받고 `PRE_MONTH` 및 `MONTH` 이벤트를 실행하도록 변경.
-- `apps/engine`의 `EngineService`에 `EventRegistry`를 연동하고 `TestPreMonthEvent`를 등록하여 이벤트 시스템 동작 검증 준비 완료.
-- `WorldSnapshot` 타입 불일치로 인한 `apps/engine` 빌드 에러 수정 (`diplomacy`, `troops`, `env` 초기화 추가).
+- `packages/logic`의 `MonthlyPipeline`에 **Monthly Economy Logic** 구현 완료.
+  - `preUpdateMonthly`: 장수/국가/도시 상태 갱신 (제한, 세율, 도시 상태, 첩보, 개발비).
+  - `postUpdateMonthly`: 외교 상태 갱신 (기한, 상태 전이), 전선(Front) 설정(placeholder).
+- `packages/logic/src/domain/entities.ts`에 누락된 필드 추가 (`makeLimit`, `rate`, `rateTmp`, `surrenderLimit`, `front`).
+- `packages/logic/src/utils/DeltaUtil.ts`에 `diplomacy`, `env` 병합 로직 추가.
+- `GameConst`에 전쟁 설정 관련 상수 추가.
+- `Event System` (이전 단계 완료)과 함께 월간 처리 파이프라인의 핵심 로직이 대부분 포팅됨.
 
 ## 실행한 명령
 - `pnpm --filter @sammo-ts/logic build` (성공)
 - `pnpm --filter @sammo-ts/engine build` (성공)
 
 ## 결과
-- `packages/logic/src/domain/events/` 구조 생성 및 타입 정의.
-- `packages/logic/src/utils/DeltaUtil.ts` 생성.
-- `MonthlyPipeline.ts`가 이제 이벤트 시스템과 통합되어 레거시의 `EventTarget::PreMonth` -> `preUpdateMonthly` -> `EventTarget::Month` -> `postUpdateMonthly` 흐름을 지원함.
-- `apps/engine`이 성공적으로 빌드됨.
+- `MonthlyPipeline.ts`가 레거시 `preUpdateMonthly` 및 `postUpdateMonthly`의 주요 로직을 포함하게 됨.
+- `entities.ts`가 레거시 데이터 구조를 더 정확하게 반영함.
 
 ## 비고
-- `TestPreMonthEvent`는 이벤트 시스템 동작 확인을 위한 임시 이벤트임. 향후 실제 게임 로직 이벤트로 대체 필요.
-- 다음 단계로 `legacy-engine-economy.md`에 명시된 월간 경제 로직(세율 조정, 유지비 등)이나 정적 이벤트를 추가 구현해야 함.
+- `Front` 라인 설정 로직(`SetNationFront`)은 `MapData`와 `City.path` 정보가 필요하여 현재는 주석 처리됨. 향후 `MapData` 구현 시 완성 필요.
+- 외교 상태 변경 시 메타데이터(`dead` 등) 처리와 로그 기록은 MVP 수준으로 구현됨. 상세 로직 보강 필요.
