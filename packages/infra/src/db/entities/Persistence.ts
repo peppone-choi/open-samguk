@@ -11,10 +11,10 @@ export class SnapshotMeta {
   @Column('text')
   profile!: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn()
   created_at!: Date;
 
-  @Column({ type: 'timestamptz' })
+  @Column()
   turn_time!: Date;
 
   @Column('text')
@@ -35,7 +35,7 @@ export class SnapshotBlob {
   @PrimaryColumn('int')
   chunk_idx!: number;
 
-  @Column({ type: 'bytea', nullable: true })
+  @Column({ type: 'blob', nullable: true })
   payload!: Buffer;
 }
 
@@ -56,10 +56,10 @@ export class Journal {
   @Column('text')
   type!: string;
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'simple-json' })
   payload!: any;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn()
   created_at!: Date;
 }
 
@@ -74,6 +74,6 @@ export class JournalOffset {
   @Column({ type: 'bigint' })
   last_seq!: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column()
   applied_at!: Date;
 }

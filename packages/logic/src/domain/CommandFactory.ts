@@ -23,6 +23,7 @@ import { GeneralResignCommand } from './commands/GeneralResignCommand.js';
 import { GeneralJoinNationCommand } from './commands/GeneralJoinNationCommand.js';
 import { GeneralDischargeCommand } from './commands/GeneralDischargeCommand.js';
 import { GeneralFireAttackCommand } from './commands/GeneralFireAttackCommand.js';
+import { GeneralForcedMarchCommand } from './commands/GeneralForcedMarchCommand.js';
 import { GeneralAgitateCommand } from './commands/GeneralAgitateCommand.js';
 import { GeneralDisciplineCommand } from './commands/GeneralDisciplineCommand.js';
 import { GeneralFoundNationCommand } from './commands/GeneralFoundNationCommand.js';
@@ -81,6 +82,9 @@ export class CommandFactory {
       case '화계':
       case 'che_화계':
         return new GeneralFireAttackCommand();
+      case '강행':
+      case 'che_강행':
+        return new GeneralForcedMarchCommand();
       case '선동':
       case 'che_선동':
         return new GeneralAgitateCommand();

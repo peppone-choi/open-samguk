@@ -108,7 +108,24 @@ export class ConstraintHelper {
   }
 
   /**
-   * 점령된 도시여야 함 (공백지 불가)
+   * 페널티가 없어야 함
+   */
+  static NoPenalty(penaltyKey: string): Constraint {
+    return {
+      name: `NoPenalty:${penaltyKey}`,
+      requires: (ctx) => [{ kind: 'general', id: ctx.actorId }],
+      test: (ctx, view) => {
+        const general = view.get({ kind: 'general', id: ctx.actorId });
+        if (general?.penalty?.[penaltyKey]) {
+          return { kind: 'deny', reason: '제약 사항이 있어 명령을 수행할 수 없습니다.' };
+        }
+        return { kind: 'allow' };
+      },
+    };
+  }
+
+  /**
+   * 군주여야 함
    */
   static OccupiedCity(): Constraint {
     return {
@@ -351,7 +368,7 @@ export class ConstraintHelper {
             const nation = view.get({ kind: 'nation', id: ctx.nationId ?? 0 });
             if (!nation) return { kind: 'deny', reason: '국가 정보를 찾을 수 없습니다.' };
             if (nation.gennum < minCount) {
-                return { kind: 'deny', reason: `장수 수가 부족합니다. (요구: ${minCount})` };
+                return { kind: 'deny', reason: `수하 장수가 ${minCount}명 이상이어야 합니다.` };
             }
             return { kind: 'allow' };
         }

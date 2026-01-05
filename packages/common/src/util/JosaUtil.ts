@@ -589,3 +589,11 @@ export function batch(text: string, decorator = ';'){
 
     return result.join('');
 }
+
+export const JosaUtil = {
+    check,
+    pick,
+    put,
+    fix,
+    batch,
+};

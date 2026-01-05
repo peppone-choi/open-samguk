@@ -584,10 +584,16 @@ export class General {
     return { injury: this.props.injury };
   }
 
+  public updateLastTurn(action: string, args: Record<string, any>): Delta<IGeneral> {
+    this.props.lastTurn = { action, args, time: new Date() };
+    return { lastTurn: this.props.lastTurn };
+  }
+
   public get id(): number { return this.props.id; }
   public get nationId(): number { return this.props.nationId; }
   public get dedication(): number { return this.props.dedication; }
   public get gold(): number { return this.props.gold; }
+  public get rice(): number { return this.props.rice; }
   public get age(): number { return this.props.age; }
   public toJSON(): IGeneral { return { ...this.props }; }
 }

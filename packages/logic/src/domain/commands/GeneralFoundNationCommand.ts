@@ -18,10 +18,9 @@ export class GeneralFoundNationCommand extends GeneralCommand {
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
-      ConstraintHelper.BeLord(),
-      ConstraintHelper.WanderingNation(),
+      ConstraintHelper.BeNationLeader(),
+      ConstraintHelper.NationLevel(0), // 방랑군만 가능
       ConstraintHelper.ReqNationGeneralCount(2),
-      ConstraintHelper.ConstructableCity(),
     ];
   }
 
@@ -76,7 +75,7 @@ export class GeneralFoundNationCommand extends GeneralCommand {
       cities: cityDelta,
       logs: {
         general: { [actorId]: [`【${nationName}】${josaUl} 건국하였습니다.`] },
-        global: [`${iGeneral.name}${josaYi} 【${snapshot.cities[iGeneral.cityId]?.name}】에 국가를 건설하였습니다.`],
+        global: [`${iGeneral.name}${josaYi} 【${snapshot.cities[iGeneral.cityId]?.name}】에 국가를 건국하였습니다.`],
       },
     };
   }

@@ -7,6 +7,7 @@ export * from './GeneralDonateCommand.js';
 export * from './GeneralDraftCommand.js';
 export * from './GeneralEncourageCommand.js';
 export * from './GeneralFireAttackCommand.js';
+export * from './GeneralForcedMarchCommand.js';
 export * from './GeneralFoundNationCommand.js';
 export * from './GeneralGiftCommand.js';
 export * from './GeneralJoinNationCommand.js';

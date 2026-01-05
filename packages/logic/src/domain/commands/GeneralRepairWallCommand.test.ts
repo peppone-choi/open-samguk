@@ -56,6 +56,7 @@ describe('GeneralRepairWallCommand (TDD)', () => {
         secu: 100,
         def: 100,
         wall: 100,
+        wallMax: 1000,
         meta: {},
       }
     },

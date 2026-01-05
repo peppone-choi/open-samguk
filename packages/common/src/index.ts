@@ -7,3 +7,4 @@ export * from './util/RandUtil.js';
 export * from './util/Nullable.js';
 export * from './util/unwrap_err.js';
 export * from './util/JosaUtil.js';
+export { JosaUtil } from './util/JosaUtil.js';

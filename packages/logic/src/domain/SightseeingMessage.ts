@@ -145,6 +145,9 @@ export class SightseeingMessage {
 
     // fallback
     const fallback = MESSAGES[0];
+    if (!fallback) {
+      throw new Error('MESSAGES is empty');
+    }
     return { type: fallback.type, text: rng.choice(fallback.texts) };
   }
 }

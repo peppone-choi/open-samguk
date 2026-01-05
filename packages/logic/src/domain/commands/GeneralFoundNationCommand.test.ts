@@ -27,7 +27,7 @@ describe('GeneralFoundNationCommand', () => {
       }
     },
     nations: {
-      1: { id: 1, name: '유비군', level: 0, chiefGeneralId: 1, color: '#FFF', capitalCityId: 0, gold: 0, rice: 0, bill: 0, rate: 0, rateTmp: 0, secretLimit: 0, scoutLevel: 0, warState: 0, strategicCmdLimit: 0, surrenderLimit: 0, tech: 0, power: 0, typeCode: 'che_중립', spy: {}, meta: {} },
+      1: { id: 1, name: '유비군', level: 0, chiefGeneralId: 1, color: '#FFF', capitalCityId: 0, gold: 0, rice: 0, bill: 0, rate: 0, rateTmp: 0, secretLimit: 0, scoutLevel: 0, warState: 0, strategicCmdLimit: 0, surrenderLimit: 0, tech: 0, power: 0, typeCode: 'che_중립', gennum: 2, spy: {}, meta: {} },
     },
     cities: {
       1: { id: 1, name: '평원', nationId: 1, level: 5, supply: 1, pop: 1000, popMax: 1000, agri: 1000, agriMax: 1000, comm: 1000, commMax: 1000, secu: 100, secuMax: 100, def: 100, defMax: 100, wall: 100, wallMax: 100, trust: 100, gold: 0, rice: 0, region: 1, state: 0, term: 0, conflict: {}, meta: {}, front: 0 },
@@ -45,7 +45,7 @@ describe('GeneralFoundNationCommand', () => {
 
     expect(delta.nations?.[1]?.name).toBe('촉한');
     expect(delta.nations?.[1]?.level).toBe(1);
-    expect(delta.logs?.global?.[0]).toContain('건국하였습니다');
+    expect(delta.logs?.global?.[0]).toContain('건설하였습니다');
   });
 
   it('장수가 1명이면 건국할 수 없음', () => {
@@ -56,6 +56,7 @@ describe('GeneralFoundNationCommand', () => {
     soloSnapshot.generals[1].turnTime = new Date();
     // Delete general 2
     delete soloSnapshot.generals[2];
+    soloSnapshot.nations[1].gennum = 1;
 
     const cmd = new GeneralFoundNationCommand();
     const delta = cmd.run(rand, soloSnapshot, 1, {
@@ -64,7 +65,7 @@ describe('GeneralFoundNationCommand', () => {
         nationType: 'che_덕가'
     });
 
-    expect(delta.logs?.general?.[1][0]).toContain('수하 장수가 2명 이상이어야 합니다');
+    expect(delta.logs?.general?.[1][0]).toContain('장수 수가 부족합니다');
   });
 
   it('이미 정식 국가이면 실패해야 함', () => {

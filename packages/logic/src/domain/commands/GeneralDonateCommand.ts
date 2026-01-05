@@ -47,6 +47,16 @@ export class GeneralDonateCommand extends GeneralCommand {
     }
 
     const iGeneral = snapshot.generals[actorId];
+    if (!iGeneral) {
+      return {
+        logs: {
+          general: {
+            [actorId]: ['헌납 실패: 장수 정보를 찾을 수 없습니다.'],
+          },
+        },
+      };
+    }
+
     const resKey = isGold ? 'gold' : 'rice';
     const resName = isGold ? '금' : '쌀';
 

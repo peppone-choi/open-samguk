@@ -42,6 +42,7 @@ export class InMemoryWorldService implements OnModuleInit {
         cities: {},
         diplomacy: {},
         troops: {},
+        messages: {},
         env: {},
         gameTime: { year: 184, month: 1 },
       });
