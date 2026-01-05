@@ -14,6 +14,24 @@ export const appRouter = router({
   status: publicProcedure.query(async ({ ctx }: any) => {
     return ctx.engineService.getStatus();
   }),
+  getMap: publicProcedure.query(async ({ ctx }: any) => {
+    const snapshot = ctx.engineService.getSnapshot();
+    return {
+      cities: Object.values(snapshot.cities),
+      nations: Object.values(snapshot.nations),
+      gameTime: snapshot.gameTime,
+    };
+  }),
+  getGeneral: publicProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input, ctx }: any) => {
+      const snapshot = ctx.engineService.getSnapshot();
+      const general = snapshot.generals[input.id];
+      if (!general) {
+        throw new Error(`General ${input.id} not found`);
+      }
+      return general;
+    }),
   run: publicProcedure
     .input(z.object({ reason: z.enum(['manual', 'poke']).default('manual') }))
     .mutation(async ({ input, ctx }: any) => {

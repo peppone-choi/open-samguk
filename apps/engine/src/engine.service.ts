@@ -2,7 +2,7 @@ import { Injectable, Logger, Inject } from '@nestjs/common';
 import { TurnDaemonStatus, DaemonCommand, DaemonEvent, TurnMetrics } from './types.js';
 import { JournalService } from './journal.service.js';
 import { InMemoryWorldService } from './world.service.js';
-import { ITurnRepository, TriggerRegistry, CommandFactory, SeedGenerator, TurnExecutionPipeline, MonthlyPipeline, SoldierMaintenanceTrigger, EventRegistry, TestPreMonthEvent } from '@sammo-ts/logic';
+import { ITurnRepository, TriggerRegistry, CommandFactory, SeedGenerator, TurnExecutionPipeline, MonthlyPipeline, SoldierMaintenanceTrigger, EventRegistry, TestPreMonthEvent, WandererDisbandEvent } from '@sammo-ts/logic';
 import { RandUtil, LiteHashDRBG } from '@sammo-ts/common';
 
 @Injectable()
@@ -31,6 +31,7 @@ export class EngineService {
     this.triggerRegistry.register(new SoldierMaintenanceTrigger());
     // Phase 3 - 이벤트 시스템 연동
     this.eventRegistry.register(new TestPreMonthEvent());
+    this.eventRegistry.register(new WandererDisbandEvent());
   }
 
   getStatus(): TurnDaemonStatus {
@@ -38,6 +39,10 @@ export class EngineService {
       state: this.state,
       metrics: { ...this.metrics },
     };
+  }
+
+  getSnapshot() {
+    return this.worldService.getSnapshot();
   }
 
   /**
@@ -190,8 +195,9 @@ export class EngineService {
         });
       }
 
-      // 11. Phase H2: 주기적 스냅샷 저장
+      // 11. Phase H2: 주기적 스냅샷 저장 및 관계형 테이블 플러시
       await this.worldService.saveSnapshot(new Date());
+      await this.worldService.flushToRelational();
 
       this.state = 'idle';
       const duration = Date.now() - startTime;

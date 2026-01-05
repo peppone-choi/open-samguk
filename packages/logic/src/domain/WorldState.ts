@@ -60,6 +60,36 @@ export class WorldState {
       }
     }
 
+    if (delta.diplomacy) {
+      for (const [key, dDelta] of Object.entries(delta.diplomacy)) {
+        const current = this.state.diplomacy[key];
+        if (current) {
+          this.state.diplomacy[key] = { ...current, ...dDelta } as any;
+        } else if ((dDelta as any).srcNationId) {
+          // 신규 외교 관계 (필요 시)
+          this.state.diplomacy[key] = dDelta as any;
+        }
+      }
+    }
+
+    if (delta.troops) {
+      for (const [id, tDelta] of Object.entries(delta.troops)) {
+        const nid = Number(id);
+        const current = this.state.troops[nid];
+        if (current) {
+          this.state.troops[nid] = { ...current, ...tDelta } as any;
+        } else if ((tDelta as any).nationId) {
+          this.state.troops[nid] = tDelta as any;
+        }
+      }
+    }
+
+    if (delta.messages) {
+      for (const message of delta.messages) {
+        this.state.messages[message.id] = message;
+      }
+    }
+
     if (delta.gameTime) {
       this.state.gameTime = { ...this.state.gameTime, ...delta.gameTime };
     }
