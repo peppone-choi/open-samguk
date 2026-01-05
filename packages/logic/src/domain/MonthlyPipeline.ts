@@ -3,6 +3,7 @@ import { City } from './models/City.js';
 import { Nation } from './models/Nation.js';
 import { EventRegistry, EventTarget } from './events/types.js';
 import { DeltaUtil } from '../utils/DeltaUtil.js';
+import { MapUtil } from './MapData.js';
 
 /**
  * 월간 처리 파이프라인
@@ -193,8 +194,9 @@ export class MonthlyPipeline {
     // 1월인 경우 모든 장수의 나이 증가
     if (month === 1) {
       delta.generals = {};
+      const dGenerals = delta.generals!;
       for (const general of Object.values(snapshot.generals)) {
-        delta.generals[general.id] = {
+        dGenerals[general.id] = {
           age: general.age + 1,
         };
       }
@@ -204,17 +206,18 @@ export class MonthlyPipeline {
     return delta;
   }
 
-  /**
-   * 월간 처리 후처리
-   */
   public postUpdateMonthly(snapshot: WorldSnapshot): WorldDelta {
     // 0. Month 이벤트 실행 (레거시: runEventHandler(EventTarget::Month))
     const eventDelta = this.eventRegistry.runEvents(EventTarget.MONTH, snapshot);
 
     const delta: WorldDelta = {
       nations: {},
+      cities: {},
       logs: { global: ['월간 정산을 완료했습니다.'] },
     };
+
+    const dNations = delta.nations!;
+    const dCities = delta.cities!;
 
     // 1. 국가 국력(Power) 계산
     for (const nation of Object.values(snapshot.nations)) {
@@ -230,64 +233,15 @@ export class MonthlyPipeline {
       totalPower += nationGenerals.length * 50;
       totalPower += nationGenerals.reduce((acc, g) => acc + (g.leadership + g.strength + g.intel) / 10, 0);
 
-      delta.nations![nation.id] = {
-        power: Math.floor(totalPower),
-      };
+      let nDelta = dNations[nation.id];
+      if (!nDelta) {
+        nDelta = {};
+        dNations[nation.id] = nDelta;
+      }
+      nDelta.power = Math.floor(totalPower);
     }
 
     // 1.5. 외교 상태 갱신 (Legacy: postUpdateMonthly diplomacy logic)
-    for (const diplomacy of Object.values(snapshot.diplomacy)) {
-      const { srcNationId, destNationId, state, term } = diplomacy;
-      let newState = state;
-      let newTerm = term;
-      // let newDead = diplomacy.meta?.dead ?? 0;
-
-      // TODO: 전쟁 기한 연장 로직 (state === '0') - MVP 생략
-
-      // 종전 처리 (state 0 && term <= 1) -> state 2
-      if (state === '0' && term <= 1) {
-        newState = '2'; // 통상
-        newTerm = 0;
-        // TODO: Log 종전
-      }
-
-      // 기한 감소
-      newTerm = Math.max(0, newTerm - 1);
-
-      // 불가침 만료 (state 7 && term 0) -> state 2
-      if (newState === '7' && newTerm === 0) {
-        newState = '2';
-      }
-
-      // 선포 만료 (state 1 && term 0) -> state 0 (교전), term 6
-      if (newState === '1' && newTerm === 0) {
-        newState = '0';
-        newTerm = 6;
-      }
-
-      // 상태 변경 감지
-      if (newState !== state || newTerm !== term) {
-        // ID는 복합키일 수 있음. entities.ts에 따르면 id string (key). 
-        // 아, entities.ts: diplomacy is Record<string, Diplomacy>. key is "src:dest"? 
-        // No, key in snapshot is string, but Diplomacy object has id: number.
-        // Wait, snapshot.diplomacy keys.
-        // Let's assume snapshot keys map to something identifying the diplomacy.
-        // In legacy, diplomacy is identified by 'me' and 'you'.
-        // logic/src/domain/entities.ts says: diplomacy: Record<string, Diplomacy>; // key: "src:dest"
-        // But Diplomacy interface has `id: number`.
-        // I should use the key from the loop.
-        // `for (const [key, diplomacy] of Object.entries(snapshot.diplomacy))`
-        
-        // I was iterating values. I need keys if I want to update delta by key.
-        // But `delta.diplomacy` is Record<string, Delta<Diplomacy>>.
-        // So I can't use `diplomacy.id` (number) as key if the delta expects the map key (string "src:dest").
-        // I should verify `WorldDelta` definition.
-        // `diplomacy?: Record<string, Delta<Diplomacy>>;`
-        // So I must use the same key.
-      }
-    }
-    
-    // Loop with keys
     for (const [key, diplomacy] of Object.entries(snapshot.diplomacy)) {
       const { state, term } = diplomacy;
       let newState = state;
@@ -320,39 +274,78 @@ export class MonthlyPipeline {
     }
 
     // 2. 전선(Front) 설정 (Legacy: SetNationFront)
-    // - 적국(state=0) 도시와 인접한 내 도시는 front=3
-    // - 준적국(state=1, term<=5) 도시와 인접한 내 도시는 front=1
-    // - 평시(적/준적 없음) 공백지와 인접한 내 도시는 front=2
-    // - 나머지 front=0
-    
     // 2-1. 국가별 외교 상태 캐싱
-    const nationRelations: Record<number, { enemy: number[], pending: number[] }> = {};
+    const nationRelations: Record<number, { enemy: Set<number>, pending: Record<number, number> }> = {};
     for (const nation of Object.values(snapshot.nations)) {
-      nationRelations[nation.id] = { enemy: [], pending: [] };
+      nationRelations[nation.id] = { enemy: new Set(), pending: {} };
     }
     
-    // 외교 상태 조회
     for (const diplomacy of Object.values(snapshot.diplomacy)) {
       const { srcNationId, destNationId, state, term } = diplomacy;
-      // state 0: 교전, 1: 선포(준적)
       if (state === '0') { // 교전
-        nationRelations[srcNationId]?.enemy.push(destNationId);
-        nationRelations[destNationId]?.enemy.push(srcNationId);
-      } else if (state === '1' && term <= 5) { // 선포 및 기한 임박
-        nationRelations[srcNationId]?.pending.push(destNationId);
-        nationRelations[destNationId]?.pending.push(srcNationId);
+        if (nationRelations[srcNationId]) nationRelations[srcNationId].enemy.add(destNationId);
+        if (nationRelations[destNationId]) nationRelations[destNationId].enemy.add(srcNationId);
+      } else if (state === '1') { // 선포
+        if (nationRelations[srcNationId]) nationRelations[srcNationId].pending[destNationId] = term;
+        if (nationRelations[destNationId]) nationRelations[destNationId].pending[srcNationId] = term;
       }
     }
 
-    // TODO: MapData 연동 후 전선 로직 완성 필요
-    // for (const city of Object.values(snapshot.cities)) {
-    //   let front = 0;
-    //   // ... calculation ...
-    //   if (city.front !== front) {
-    //      if (!delta.cities![city.id]) delta.cities![city.id] = {};
-    //      delta.cities![city.id].front = front;
-    //   }
-    // }
+    // 2-2. 국가별 전선 계산
+    for (const nation of Object.values(snapshot.nations)) {
+      const relations = nationRelations[nation.id];
+      if (!relations) continue;
+
+      const adjEnemy = new Set<number>(); // state=0
+      const adjPending = new Set<number>(); // state=1 && term<=5
+      const adjNeutral = new Set<number>(); // nation=0
+
+      // 전토 도시 검색
+      for (const enemyCity of Object.values(snapshot.cities)) {
+        // 교전국 도시인 경우 그 인접 도시들을 adjEnemy에 추가
+        if (relations.enemy.has(enemyCity.nationId)) {
+          for (const connId of MapUtil.getConnections(enemyCity.id)) {
+            adjEnemy.add(connId);
+          }
+        }
+        // 선포국 도시인 경우 (term <= 5)
+        const term = relations.pending[enemyCity.nationId];
+        if (term !== undefined && term <= 5) {
+          for (const connId of MapUtil.getConnections(enemyCity.id)) {
+            adjPending.add(connId);
+          }
+        }
+        // 공백지인 경우
+        if (enemyCity.nationId === 0) {
+          for (const connId of MapUtil.getConnections(enemyCity.id)) {
+            adjNeutral.add(connId);
+          }
+        }
+      }
+
+      // 내 국가의 도시들 상태 업데이트
+      const myCities = Object.values(snapshot.cities).filter(c => c.nationId === nation.id);
+      for (const city of myCities) {
+        let front = 0;
+        if (adjEnemy.has(city.id)) {
+          front = 3;
+        } else if (adjPending.has(city.id)) {
+          front = 1;
+        } else if (adjNeutral.has(city.id) && adjEnemy.size === 0 && adjPending.size === 0) {
+          // 레거시: 평시이면 공백지 인접을 front=2로 설정
+          front = 2;
+        }
+
+        if (city.front !== front) {
+          let cDelta = dCities[city.id];
+          if (!cDelta) {
+            cDelta = {};
+            dCities[city.id] = cDelta;
+          }
+          cDelta.front = front;
+        }
+      }
+    }
 
     return DeltaUtil.merge(eventDelta, delta);
   }

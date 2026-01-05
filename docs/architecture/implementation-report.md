@@ -1,22 +1,22 @@
 # 구현 진행 보고서
 
 ## 요약
-- `packages/logic`의 `MonthlyPipeline`에 **Monthly Economy Logic** 구현 완료.
-  - `preUpdateMonthly`: 장수/국가/도시 상태 갱신 (제한, 세율, 도시 상태, 첩보, 개발비).
-  - `postUpdateMonthly`: 외교 상태 갱신 (기한, 상태 전이), 전선(Front) 설정(placeholder).
-- `packages/logic/src/domain/entities.ts`에 누락된 필드 추가 (`makeLimit`, `rate`, `rateTmp`, `surrenderLimit`, `front`).
-- `packages/logic/src/utils/DeltaUtil.ts`에 `diplomacy`, `env` 병합 로직 추가.
-- `GameConst`에 전쟁 설정 관련 상수 추가.
-- `Event System` (이전 단계 완료)과 함께 월간 처리 파이프라인의 핵심 로직이 대부분 포팅됨.
+- `packages/logic`에 **지도 데이터 및 유틸리티** 구현 완료 (`MapUtil.ts`).
+  - 레거시 `CityConstBase.php`의 도시 목록, 좌표, 연결 데이터(Path) 포팅 완료.
+  - `MapUtil.getConnections`, `MapUtil.areAdjacent` 등 지형 관련 유틸리티 제공.
+- `MonthlyPipeline.ts`의 **전선 설정(SetNationFront)** 로직 완성.
+  - `MapUtil`을 사용하여 인접 국가(적국, 선포국, 공백지)에 따른 도시 전선 상태(`front`) 계산 로직 이관.
+- `packages/logic` 및 `apps/engine` 빌드 성공 (TypeScript 타입 안정성 확보).
 
 ## 실행한 명령
 - `pnpm --filter @sammo-ts/logic build` (성공)
 - `pnpm --filter @sammo-ts/engine build` (성공)
 
 ## 결과
-- `MonthlyPipeline.ts`가 레거시 `preUpdateMonthly` 및 `postUpdateMonthly`의 주요 로직을 포함하게 됨.
-- `entities.ts`가 레거시 데이터 구조를 더 정확하게 반영함.
+- `MapUtil.ts`를 통해 게임 로직 내에서 도시 간의 연결 관계를 파악할 수 있게 됨.
+- 월간 정산 시 각 국가의 전선 상태가 레거시 규칙(0:후방, 1:준전선, 2:공백인접, 3:전선)에 따라 자동 갱신됨.
+- `ConstraintHelper.ts` 및 `GeneralMoveCommand.ts` 등 지도 데이터가 필요한 기존 코드들의 빌드 에러 해결.
 
 ## 비고
-- `Front` 라인 설정 로직(`SetNationFront`)은 `MapData`와 `City.path` 정보가 필요하여 현재는 주석 처리됨. 향후 `MapData` 구현 시 완성 필요.
-- 외교 상태 변경 시 메타데이터(`dead` 등) 처리와 로그 기록은 MVP 수준으로 구현됨. 상세 로직 보강 필요.
+- 현재 `MapUtil`은 정적 데이터를 내장하고 있음. 시나리오별 지도 변경 대응이 필요할 경우 데이터 로딩 방식으로 개선 가능.
+- 다음 단계로 이동/출병 등 지도 데이터를 활용하는 핵심 커맨드들의 정합성을 검증할 수 있음.

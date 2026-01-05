@@ -6,6 +6,7 @@ export * from './port/IFlushHook.js';
 export * from './port/ITurnRepository.js';
 export * from './domain/entities.js';
 export * from './domain/WorldState.js';
+export * from './domain/MapData.js';
 export * from './domain/Trigger.js';
 export * from './domain/SeedGenerator.js';
 export * from './domain/TurnExecutionPipeline.js';
