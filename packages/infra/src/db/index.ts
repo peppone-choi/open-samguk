@@ -11,6 +11,8 @@ import { MemberEntity } from './entities/Member.js';
 import { MemberLogEntity } from './entities/MemberLog.js';
 import { LoginTokenEntity } from './entities/LoginToken.js';
 import { SystemEntity } from './entities/System.js';
+import { ApiLogEntity } from './entities/ApiLog.js';
+import { ErrLogEntity } from './entities/ErrLog.js';
 
 export * from './entities/Persistence.js';
 export * from './entities/GeneralTurn.js';
@@ -22,6 +24,8 @@ export * from './entities/Member.js';
 export * from './entities/MemberLog.js';
 export * from './entities/LoginToken.js';
 export * from './entities/System.js';
+export * from './entities/ApiLog.js';
+export * from './entities/ErrLog.js';
 
 let dataSource: DataSource | null = null;
 

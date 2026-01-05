@@ -4,6 +4,7 @@ import { env } from '@sammo-ts/infra';
 import { 
   SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn,
   MemberEntity, MemberLogEntity, LoginTokenEntity, SystemEntity,
+  ApiLogEntity, ErrLogEntity,
   GeneralEntity, NationEntity, CityEntity, NationTurn
 } from '@sammo-ts/infra';
 
@@ -20,6 +21,7 @@ export const AppDataSource = new DataSource({
   entities: [
     SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn,
     MemberEntity, MemberLogEntity, LoginTokenEntity, SystemEntity,
+    ApiLogEntity, ErrLogEntity,
     GeneralEntity, NationEntity, CityEntity, NationTurn
   ],
   migrations: ['src/migrations/*.ts'],
