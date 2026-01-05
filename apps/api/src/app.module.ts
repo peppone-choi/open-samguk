@@ -5,6 +5,8 @@ import { AppModule as EngineModule } from '@sammo-ts/engine';
 import { TrpcRouter } from './trpc/trpc.router.js';
 import { RedisStreamDaemonClient, env } from '@sammo-ts/infra';
 import { AuthModule } from './auth/auth.module.js';
+import { GeneralModule } from './general/general.module.js';
+import { NationModule } from './nation/nation.module.js';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor.js';
 import { 
   SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn,
@@ -27,6 +29,8 @@ import {
     TypeOrmModule.forFeature([ApiLogEntity, ErrLogEntity]),
     EngineModule,
     AuthModule,
+    GeneralModule,
+    NationModule,
   ],
   providers: [
     TrpcRouter,
