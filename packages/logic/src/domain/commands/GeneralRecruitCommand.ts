@@ -61,6 +61,17 @@ export class GeneralRecruitCommand extends GeneralCommand {
       generals: {
         [actorId]: generalDelta,
       },
+      messages: [
+        {
+          id: 0, // 임시 ID, 저장 시 할당됨
+          mailbox: 'private',
+          srcId: actorId,
+          destId: iDestGeneral.id,
+          text: `${iGeneral.name} 장수가 당신에게 등용 권유 서신을 보냈습니다.`,
+          sentAt: new Date(), // TODO: snapshot의 현재 시간을 사용해야 할 수도 있음
+          meta: { type: 'recruit', nationId: iGeneral.nationId },
+        }
+      ],
       logs: {
         general: {
           [actorId]: [`${iDestGeneral.name}에게 등용 권유 서신을 보냈습니다. (소모 자금: ${reqGold})`],

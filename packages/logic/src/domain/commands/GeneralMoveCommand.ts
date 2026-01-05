@@ -39,7 +39,7 @@ export class GeneralMoveCommand extends GeneralCommand {
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
     const destCityId = args.destCityId;
-    const destCityName = MapUtil.getCityNameById(destCityId) ?? `도시 ${destCityId}`;
+    const destCityName = MapUtil.getCity(destCityId)?.name ?? `도시 ${destCityId}`;
 
     // DDD: 도메인 모델 활용
     const general = new General(iGeneral);

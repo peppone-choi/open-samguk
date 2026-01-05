@@ -10,6 +10,9 @@ import { GeneralMoveCommand } from './commands/GeneralMoveCommand.js';
 import { GeneralRecruitCommand } from './commands/GeneralRecruitCommand.js';
 import { GeneralTalentSearchCommand } from './commands/GeneralTalentSearchCommand.js';
 import { NationRewardCommand } from './commands/NationRewardCommand.js';
+import { NationChangeNameCommand } from './commands/NationChangeNameCommand.js';
+import { NationChangeColorCommand } from './commands/NationChangeColorCommand.js';
+import { NationChangeCapitalCommand } from './commands/NationChangeCapitalCommand.js';
 import { GeneralDraftCommand } from './commands/GeneralDraftCommand.js';
 import { GeneralConscriptCommand } from './commands/GeneralConscriptCommand.js';
 import { GeneralTradeCommand } from './commands/GeneralTradeCommand.js';
@@ -19,6 +22,15 @@ import { GeneralReturnCommand } from './commands/GeneralReturnCommand.js';
 import { GeneralResignCommand } from './commands/GeneralResignCommand.js';
 import { GeneralJoinNationCommand } from './commands/GeneralJoinNationCommand.js';
 import { GeneralDischargeCommand } from './commands/GeneralDischargeCommand.js';
+import { GeneralFireAttackCommand } from './commands/GeneralFireAttackCommand.js';
+import { GeneralAgitateCommand } from './commands/GeneralAgitateCommand.js';
+import { GeneralDisciplineCommand } from './commands/GeneralDisciplineCommand.js';
+import { GeneralFoundNationCommand } from './commands/GeneralFoundNationCommand.js';
+import { GeneralRaiseArmyCommand } from './commands/GeneralRaiseArmyCommand.js';
+import { GeneralResearchTechCommand } from './commands/GeneralResearchTechCommand.js';
+import { GeneralEncourageCommand } from './commands/GeneralEncourageCommand.js';
+import { GeneralStrengthenDefenseCommand } from './commands/GeneralStrengthenDefenseCommand.js';
+import { GeneralAssembleCommand } from './commands/GeneralAssembleCommand.js';
 
 /**
  * 커맨드 팩토리
@@ -66,9 +78,34 @@ export class CommandFactory {
       case '출격':
       case 'che_출격':
         return new GeneralWarCommand();
+      case '화계':
+      case 'che_화계':
+        return new GeneralFireAttackCommand();
+      case '선동':
+      case 'che_선동':
+        return new GeneralAgitateCommand();
+      case '건국':
+      case 'che_건국':
+        return new GeneralFoundNationCommand();
+      case '거병':
+      case 'che_거병':
+        return new GeneralRaiseArmyCommand();
+      case '기술연구':
+      case 'che_기술연구':
+        return new GeneralResearchTechCommand();
+      case '사기진작':
+      case 'che_사기진작':
+        return new GeneralEncourageCommand();
+      case '수비강화':
+      case 'che_수비강화':
+        return new GeneralStrengthenDefenseCommand();
+      case '집합':
+      case 'che_집합':
+        return new GeneralAssembleCommand();
       case '귀환':
       case 'che_귀환':
         return new GeneralReturnCommand();
+
       case '하야':
       case 'che_하야':
         return new GeneralResignCommand();
@@ -90,6 +127,15 @@ export class CommandFactory {
       case '포상':
       case 'che_포상':
         return new NationRewardCommand();
+      case '국호변경':
+      case 'che_국호변경':
+        return new NationChangeNameCommand();
+      case '국기변경':
+      case 'che_국기변경':
+        return new NationChangeColorCommand();
+      case '천도':
+      case 'che_천도':
+        return new NationChangeCapitalCommand();
       default:
         // 알 수 없는 커맨드는 기본적으로 휴식 처리
         return new GeneralRestCommand();
