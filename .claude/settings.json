@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm:*)",
+      "Bash(git:*)",
+      "Bash(docker compose:*)",
+      "Bash(node:*)",
+      "Bash(npx:*)",
+      "Read",
+      "Edit",
+      "Write",
+      "Glob",
+      "Grep"
+    ]
+  },
+  "hooks": {
+    "postToolExecution": []
+  }
+}
