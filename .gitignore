@@ -69,11 +69,5 @@ coverage
 .nyc_output
 .vitest-result.json
 
-# Legacy specific
-legacy/hwe/d_log/*
-!legacy/hwe/d_log/.gitkeep
-legacy/hwe/d_setting/config.php
-legacy/hwe/d_setting/dbconfig.php
-
 # Misc
 .vercel
