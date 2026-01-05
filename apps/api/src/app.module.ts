@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { AppModule as EngineModule } from '@sammo-ts/engine';
 import { TrpcRouter } from './trpc/trpc.router.js';
 import { RedisStreamDaemonClient, env } from '@sammo-ts/infra';
 import { AuthModule } from './auth/auth.module.js';
+import { LoggingInterceptor } from './common/interceptors/logging.interceptor.js';
 import { 
   SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn,
   MemberEntity, MemberLogEntity, LoginTokenEntity, SystemEntity,
@@ -14,11 +16,7 @@ import {
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      url: env.DATABASE_URL,
-      schema: env.PROFILE,
-      synchronize: false,
-      logging: true,
+      // ...existing code...
       entities: [
         SnapshotMeta, SnapshotBlob, Journal, JournalOffset, GeneralTurn,
         MemberEntity, MemberLogEntity, LoginTokenEntity, SystemEntity,
@@ -26,6 +24,7 @@ import {
         GeneralEntity, NationEntity, CityEntity, NationTurn
       ],
     }),
+    TypeOrmModule.forFeature([ApiLogEntity, ErrLogEntity]),
     EngineModule,
     AuthModule,
   ],
@@ -34,6 +33,10 @@ import {
     {
       provide: 'DAEMON_CLIENT',
       useClass: RedisStreamDaemonClient,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
   ],
 })
