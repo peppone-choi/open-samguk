@@ -55,6 +55,7 @@ export interface Nation {
   id: number;
   name: string;
   color: string;
+  chiefGeneralId: number; // 군주 ID
   capitalCityId: number;
   gold: number;
   rice: number;

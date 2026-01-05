@@ -33,6 +33,19 @@ import { GeneralResearchTechCommand } from './commands/GeneralResearchTechComman
 import { GeneralEncourageCommand } from './commands/GeneralEncourageCommand.js';
 import { GeneralStrengthenDefenseCommand } from './commands/GeneralStrengthenDefenseCommand.js';
 import { GeneralAssembleCommand } from './commands/GeneralAssembleCommand.js';
+import { GeneralConvertDexCommand } from './commands/GeneralConvertDexCommand.js';
+import { GeneralDevelopPopulationCommand } from './commands/GeneralDevelopPopulationCommand.js';
+import { GeneralDevelopTrustCommand } from './commands/GeneralDevelopTrustCommand.js';
+import { GeneralDonateCommand } from './commands/GeneralDonateCommand.js';
+import { GeneralEquipmentTradeCommand } from './commands/GeneralEquipmentTradeCommand.js';
+import { GeneralGiftCommand } from './commands/GeneralGiftCommand.js';
+import { GeneralNPCActiveCommand } from './commands/GeneralNPCActiveCommand.js';
+import { GeneralRecruitAcceptCommand } from './commands/GeneralRecruitAcceptCommand.js';
+import { GeneralRecuperateCommand } from './commands/GeneralRecuperateCommand.js';
+import { GeneralSabotageCommand } from './commands/GeneralSabotageCommand.js';
+import { GeneralSightseeingCommand } from './commands/GeneralSightseeingCommand.js';
+import { GeneralSpyCommand } from './commands/GeneralSpyCommand.js';
+import { GeneralWanderCommand } from './commands/GeneralWanderCommand.js';
 
 /**
  * 커맨드 팩토리
@@ -110,6 +123,46 @@ export class CommandFactory {
       case '귀환':
       case 'che_귀환':
         return new GeneralReturnCommand();
+
+      case '숙련전환':
+      case 'che_숙련전환':
+        return new GeneralConvertDexCommand();
+      case '정착장려':
+      case 'che_정착장려':
+        return new GeneralDevelopPopulationCommand();
+      case '주민선정':
+      case 'che_주민선정':
+        return new GeneralDevelopTrustCommand();
+      case '헌납':
+      case 'che_헌납':
+        return new GeneralDonateCommand();
+      case '장비매매':
+      case 'che_장비매매':
+        return new GeneralEquipmentTradeCommand();
+      case '증여':
+      case 'che_증여':
+        return new GeneralGiftCommand();
+      case 'NPC능동':
+      case 'che_NPC능동':
+        return new GeneralNPCActiveCommand();
+      case '등용수락':
+      case 'che_등용수락':
+        return new GeneralRecruitAcceptCommand();
+      case '요양':
+      case 'che_요양':
+        return new GeneralRecuperateCommand();
+      case '파괴':
+      case 'che_파괴':
+        return new GeneralSabotageCommand();
+      case '견문':
+      case 'che_견문':
+        return new GeneralSightseeingCommand();
+      case '첩보':
+      case 'che_첩보':
+        return new GeneralSpyCommand();
+      case '방랑':
+      case 'che_방랑':
+        return new GeneralWanderCommand();
 
       case '하야':
       case 'che_하야':

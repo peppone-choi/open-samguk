@@ -25,6 +25,12 @@
       "sqlite3",
       "esbuild",
       "@swc/core"
+    ],
+    "ignoredBuiltDependencies": [
+      "@nestjs/core",
+      "bcrypt",
+      "sharp",
+      "sqlite3"
     ]
   }
 }
