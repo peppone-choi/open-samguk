@@ -1,7 +1,7 @@
 interface Window {
-    pathConfig: {
-        root: string,
-        sharedIcon: string,
-        gameImage: string,
-    }
+  pathConfig: {
+    root: string;
+    sharedIcon: string;
+    gameImage: string;
+  };
 }

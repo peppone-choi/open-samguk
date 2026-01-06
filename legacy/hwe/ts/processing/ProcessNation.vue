@@ -127,7 +127,7 @@ watch(
     }
     nationList.value = tmpNationList;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const selectedNationID = ref(procRes.nationList[0].id);
@@ -153,7 +153,7 @@ watch(selectedCityObj, (city?: MapCityParsed) => {
   if (city === undefined) {
     return;
   }
-  if(city.nationID === undefined){
+  if (city.nationID === undefined) {
     return;
   }
 
@@ -161,10 +161,9 @@ watch(selectedCityObj, (city?: MapCityParsed) => {
 });
 
 onMounted(async () => {
-  try{
-    map.value = await SammoAPI.Global.GetMap({neutralView:0, showMe: 1});
-  }
-  catch(e){
+  try {
+    map.value = await SammoAPI.Global.GetMap({ neutralView: 0, showMe: 1 });
+  } catch (e) {
     console.error(e);
   }
 });

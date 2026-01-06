@@ -118,9 +118,12 @@ const orderedInvGeneralKeyIndex = ref(new Map<number, number>());
 const orderBy = ref<keyof typeof textMap>("turntime");
 const targetGeneral = ref<GeneralListItemP1>();
 const targetGeneralID = ref(props.generalID);
-watch(()=>props.generalID, (generalID)=>{
-  targetGeneralID.value = generalID;
-})
+watch(
+  () => props.generalID,
+  (generalID) => {
+    targetGeneralID.value = generalID;
+  },
+);
 
 type GeneralLogs = {
   [key in GeneralLogType]: Map<number, string>;
@@ -150,7 +153,7 @@ watch([generalList, targetGeneralID], async ([generalList, generalID]) => {
     waiter.push(
       SammoAPI.Nation.GetGeneralLog({ generalID: generalID, reqType }).then(
         (res) => {
-          if(res.generalID !== targetGeneralID.value){
+          if (res.generalID !== targetGeneralID.value) {
             return;
           }
 
@@ -170,8 +173,8 @@ watch([generalList, targetGeneralID], async ([generalList, generalID]) => {
               body: `${err}`,
             });
           }
-        }
-      )
+        },
+      ),
     );
   }
   await Promise.all(waiter);

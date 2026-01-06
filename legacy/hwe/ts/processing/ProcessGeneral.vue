@@ -55,7 +55,7 @@ import {
   type procGeneralRawItemList,
 } from "./processingRes";
 import { getNPCColor } from "@/utilGame";
-import { getGameConstStore, type GameConstStore } from '@/GameConstStore';
+import { getGameConstStore, type GameConstStore } from "@/GameConstStore";
 
 const asyncReady = ref<boolean>(false);
 const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
@@ -76,10 +76,10 @@ const citiesMap = ref(
       name: string;
       info?: string;
     }
-  >()
+  >(),
 );
-watch(gameConstStore, (store)=>{
-  if(!store){
+watch(gameConstStore, (store) => {
+  if (!store) {
     return;
   }
   const tmpCitiesMap = new Map<
@@ -90,26 +90,26 @@ watch(gameConstStore, (store)=>{
     }
   >();
 
-  for(const city of Object.values(store.cityConst)){
+  for (const city of Object.values(store.cityConst)) {
     tmpCitiesMap.set(city.id, {
       name: city.name,
     });
   }
   citiesMap.value = tmpCitiesMap;
-})
+});
 function textHelpGeneral(gen: procGeneralItem): string {
-  const troops = (()=>{
-    if(!gen.troopID){
+  const troops = (() => {
+    if (!gen.troopID) {
       return "";
     }
 
     const troopInfo = procRes.troops[gen.troopID];
-    if(!troopInfo){
+    if (!troopInfo) {
       return "";
     }
     const troopName = troopInfo.name;
 
-    if(gen.no !== gen.troopID){
+    if (gen.no !== gen.troopID) {
       return `,${troopName}`;
     }
 
@@ -131,9 +131,8 @@ async function submit(e: Event) {
   unwrap(e.target).dispatchEvent(event);
 }
 
-const { commandName,entryInfo } = staticValues;
+const { commandName, entryInfo } = staticValues;
 const searchable = getProcSearchable();
 
 const procEntryMode: "chief" | "normal" = entryInfo[0] == "Nation" ? "chief" : "normal";
-
 </script>

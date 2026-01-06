@@ -18,148 +18,147 @@ type ChiefCommandName = GameObjClassKey;
 
 /** GameConst.php */
 export type GameConstType = {
-    title: string;
-    banner: RawHTMLString;
-    mapName: MapTypeKey;
-    unitSet: UnitSetKey;
-    develrate: number;
-    upgradeLimit: number;
-    dexLimit: number;
-    defaultAtmosLow: number;
-    defaultTrainLow: number;
-    defaultAtmosHigh: number;
-    defaultTrainHigh: number;
-    maxAtmosByCommand: number;
-    maxTrainByCommand: number;
-    maxAtmosByWar: number;
-    maxTrainByWar: number;
-    trainDelta: number;
-    atmosDelta: number;
-    atmosSideEffectByTraining: number;
-    trainSideEffectByAtmosTurn: number;
-    sabotageDefaultProb: number;
-    sabotageProbCoefByStat: number;
-    sabotageDamageMin: number;
-    sabotageDamageMax: number;
-    basecolor: CSSRGBColor;
-    basecolor2: CSSRGBColor;
-    basecolor3: CSSRGBColor;
-    basecolor4: CSSRGBColor;
-    armperphase: number;
-    basegold: number;
-    baserice: number;
-    minNationalGold: number;
-    minNationalRice: number;
-    exchangeFee: number;
-    adultAge: number;
-    minPushHallAge: number;
-    maxDedLevel: number;
-    maxTechLevel: number;
-    maxBetrayCnt: number;
+  title: string;
+  banner: RawHTMLString;
+  mapName: MapTypeKey;
+  unitSet: UnitSetKey;
+  develrate: number;
+  upgradeLimit: number;
+  dexLimit: number;
+  defaultAtmosLow: number;
+  defaultTrainLow: number;
+  defaultAtmosHigh: number;
+  defaultTrainHigh: number;
+  maxAtmosByCommand: number;
+  maxTrainByCommand: number;
+  maxAtmosByWar: number;
+  maxTrainByWar: number;
+  trainDelta: number;
+  atmosDelta: number;
+  atmosSideEffectByTraining: number;
+  trainSideEffectByAtmosTurn: number;
+  sabotageDefaultProb: number;
+  sabotageProbCoefByStat: number;
+  sabotageDamageMin: number;
+  sabotageDamageMax: number;
+  basecolor: CSSRGBColor;
+  basecolor2: CSSRGBColor;
+  basecolor3: CSSRGBColor;
+  basecolor4: CSSRGBColor;
+  armperphase: number;
+  basegold: number;
+  baserice: number;
+  minNationalGold: number;
+  minNationalRice: number;
+  exchangeFee: number;
+  adultAge: number;
+  minPushHallAge: number;
+  maxDedLevel: number;
+  maxTechLevel: number;
+  maxBetrayCnt: number;
 
-    techLevelIncYear: number;
-    initialAllowedTechLevel: number;
+  techLevelIncYear: number;
+  initialAllowedTechLevel: number;
 
-    basePopIncreaseAmount: number;
-    expandCityPopIncreaseAmount: number;
-    expandCityDevelIncreaseAmount: number;
-    expandCityWallIncreaseAmount: number;
-    expandCityDefaultCost: number;
-    expandCityCostCoef: number;
-    minAvailableRecruitPop: number;
-    initialNationGenLimitForRandInit: number;
-    initialNationGenLimit: number;
+  basePopIncreaseAmount: number;
+  expandCityPopIncreaseAmount: number;
+  expandCityDevelIncreaseAmount: number;
+  expandCityWallIncreaseAmount: number;
+  expandCityDefaultCost: number;
+  expandCityCostCoef: number;
+  minAvailableRecruitPop: number;
+  initialNationGenLimitForRandInit: number;
+  initialNationGenLimit: number;
 
-    defaultMaxGeneral: number;
-    defaultMaxNation: number;
-    defaultMaxGenius: number;
-    defaultStartYear: number;
+  defaultMaxGeneral: number;
+  defaultMaxNation: number;
+  defaultMaxGenius: number;
+  defaultStartYear: number;
 
-    joinRuinedNPCProp: number;
+  joinRuinedNPCProp: number;
 
-    defaultGold: number;
-    defaultRice: number;
+  defaultGold: number;
+  defaultRice: number;
 
-    coefAidAmount: number;
+  coefAidAmount: number;
 
-    maxResourceActionAmount: number;
-    resourceActionAmountGuide: number[];
+  maxResourceActionAmount: number;
+  resourceActionAmountGuide: number[];
 
-    generalMinimumGold: number;
-    generalMinimumRice: number;
+  generalMinimumGold: number;
+  generalMinimumRice: number;
 
-    maxTurn: number;
-    maxChiefTurn: number;
+  maxTurn: number;
+  maxChiefTurn: number;
 
-    statGradeLevel: number;
+  statGradeLevel: number;
 
-    openingPartYear: number;
-    joinActionLimit: number;
+  openingPartYear: number;
+  joinActionLimit: number;
 
-    bornMinStatBonus: number;
-    bornMaxStatBonus: number;
+  bornMinStatBonus: number;
+  bornMaxStatBonus: number;
 
-    availableNationType: NationTypeKey[];
-    neutralNationType: NationTypeKey;
+  availableNationType: NationTypeKey[];
+  neutralNationType: NationTypeKey;
 
-    defaultSpecialDomestic: SpecialDomesticKey;
-    availableSpecialDomestic: SpecialDomesticKey[];
-    optionalSpecialDomestic: SpecialDomesticKey[];
+  defaultSpecialDomestic: SpecialDomesticKey;
+  availableSpecialDomestic: SpecialDomesticKey[];
+  optionalSpecialDomestic: SpecialDomesticKey[];
 
-    defaultSpecialWar: SpecialWarKey;
-    availableSpecialWar: SpecialWarKey[];
-    optionalSpecialWar: SpecialWarKey[];
+  defaultSpecialWar: SpecialWarKey;
+  availableSpecialWar: SpecialWarKey[];
+  optionalSpecialWar: SpecialWarKey[];
 
-    neutralPersonality: GamePersonalityKey;
-    availablePersonality: GamePersonalityKey[];
-    optionalPersonality: GamePersonalityKey[];
+  neutralPersonality: GamePersonalityKey;
+  availablePersonality: GamePersonalityKey[];
+  optionalPersonality: GamePersonalityKey[];
 
-    maxUniqueItemLimit: [number, number][];
+  maxUniqueItemLimit: [number, number][];
 
-    maxAvailableWarSettingCnt: number;
-    incAvailableWarSettingCnt: number;
+  maxAvailableWarSettingCnt: number;
+  incAvailableWarSettingCnt: number;
 
-    minMonthToAllowInheritItem: number;
-    inheritBornSpecialPoint: number;
-    inheritBornTurntimePoint: number;
-    inheritBornCityPoint: number;
-    inheritBornStatPoint: number;
-    inheritItemUniqueMinPoint: number;
-    inheritItemRandomPoint: number;
-    inheritBuffPoints: number[];
-    inheritSpecificSpecialPoint: number;
-    inheritResetAttrPointBase: number[];
+  minMonthToAllowInheritItem: number;
+  inheritBornSpecialPoint: number;
+  inheritBornTurntimePoint: number;
+  inheritBornCityPoint: number;
+  inheritBornStatPoint: number;
+  inheritItemUniqueMinPoint: number;
+  inheritItemRandomPoint: number;
+  inheritBuffPoints: number[];
+  inheritSpecificSpecialPoint: number;
+  inheritResetAttrPointBase: number[];
 
-    allItems: Record<ItemTypeKey, Record<GameItemKey, number>>;
+  allItems: Record<ItemTypeKey, Record<GameItemKey, number>>;
 
-    availableGeneralCommand: Record<string, GeneralCommandName[]>;
-    availableChiefCommand: Record<string, ChiefCommandName[]>;
+  availableGeneralCommand: Record<string, GeneralCommandName[]>;
+  availableChiefCommand: Record<string, ChiefCommandName[]>;
 
-    retirementYear: number;
+  retirementYear: number;
 
-    targetGeneralPool: GameObjClassKey;
-    generalPoolAllowOption: string[];
+  targetGeneralPool: GameObjClassKey;
+  generalPoolAllowOption: string[];
 
-    randGenFirstName: string[];
-    randGenMiddleName: string[];
-    randGenLastName: string[];
+  randGenFirstName: string[];
+  randGenMiddleName: string[];
+  randGenLastName: string[];
 
-    npcBanMessageProb: number;
-    npcSeizureMessageProb: number;
-    npcMessageFreqByDay: number;
+  npcBanMessageProb: number;
+  npcSeizureMessageProb: number;
+  npcMessageFreqByDay: number;
 
-    /**
-     * Scenario::getGameConf
-     */
+  /**
+   * Scenario::getGameConf
+   */
 
-    defaultStatTotal: number;
-    defaultStatMin: number;
-    defaultStatMax: number;
-    defaultStatNPCTotal: number;
-    defaultStatNPCMax: number;
-    defaultStatNPCMin: number;
-    chiefStatMin: number;
-
+  defaultStatTotal: number;
+  defaultStatMin: number;
+  defaultStatMax: number;
+  defaultStatNPCTotal: number;
+  defaultStatNPCMax: number;
+  defaultStatNPCMin: number;
+  chiefStatMin: number;
 };
 
 export type CrewTypeID = number;
@@ -169,44 +168,44 @@ export type MapRegionID = number;
 export type CityID = number;
 
 export type GameUnitType = {
-    id: CrewTypeID;
-    armType: ArmTypeID;
-    name: string;
-    attack: number;
-    defence: number;
-    speed: number;
-    avoid: number;
-    magicCoef: number;
-    cost: number;
-    rice: number;
-    reqConstraints: Record<string, unknown>[];
-    attackCoef: Record<CrewTypeID | ArmTypeID, number> | null | [];
-    defenceCoef: Record<CrewTypeID | ArmTypeID, number> | null | [];
-    info: string | string[];
-    initSkillTrigger: GameObjClassKey[] | null;
-    phaseSkillTrigger: GameObjClassKey[] | null;
+  id: CrewTypeID;
+  armType: ArmTypeID;
+  name: string;
+  attack: number;
+  defence: number;
+  speed: number;
+  avoid: number;
+  magicCoef: number;
+  cost: number;
+  rice: number;
+  reqConstraints: Record<string, unknown>[];
+  attackCoef: Record<CrewTypeID | ArmTypeID, number> | null | [];
+  defenceCoef: Record<CrewTypeID | ArmTypeID, number> | null | [];
+  info: string | string[];
+  initSkillTrigger: GameObjClassKey[] | null;
+  phaseSkillTrigger: GameObjClassKey[] | null;
 };
 
 export type GameCityDefault = {
-    id: CityID;
-    name: string;
-    level: CityLevel;
-    population: number;
-    agriculture: number;
-    commerce: number;
-    security: number;
-    defence: number;
-    wall: number;
-    region: number;
-    posX: number;
-    posY: number;
-    path: Record<CityID, string>;
+  id: CityID;
+  name: string;
+  level: CityLevel;
+  population: number;
+  agriculture: number;
+  commerce: number;
+  security: number;
+  defence: number;
+  wall: number;
+  region: number;
+  posX: number;
+  posY: number;
+  path: Record<CityID, string>;
 };
 
 export type GameIActionCategory = "nationType" | "specialDomestic" | "specialWar" | "personality" | "item" | "crewtype";
 
 export type GameIActionInfo = {
-    value: string;
-    name: string;
-    info?: string | null;
-}
+  value: string;
+  name: string;
+  info?: string | null;
+};

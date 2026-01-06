@@ -68,7 +68,6 @@ const props = defineProps({
   },
 });
 
-
 const city = toRef(props, "city");
 const cityPos = ref({
   left: "0px",
@@ -90,7 +89,7 @@ watch(
       };
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 function getCityState(): string {
   const state = city.value.state;
@@ -134,8 +133,7 @@ function touchend(event: TouchEvent) {
   if (touchOnTrack) {
     event.stopPropagation();
     emit("click", event);
-  }
-  else{
+  } else {
     emit("touchleave", event);
   }
 }

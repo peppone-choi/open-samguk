@@ -6,7 +6,6 @@ export type BettingListResponse = ValidResponse & {
   month: number;
 };
 
-
 export type BettingDetailResponse = ValidResponse & {
   bettingInfo: BettingInfo;
   bettingDetail: [string, number][];
@@ -18,7 +17,7 @@ export type BettingDetailResponse = ValidResponse & {
 
 export type BettingInfo = {
   id: number;
-  type: 'nationBetting',
+  type: "nationBetting";
   name: string;
   finished: boolean;
   selectCnt: number;
@@ -28,11 +27,11 @@ export type BettingInfo = {
   closeYearMonth: number;
   candidates: Record<string, SelectItem>;
   winner?: number[];
-}
+};
 
 export type SelectItem = {
   title: string;
   info?: string;
   isHtml?: boolean;
   aux?: Record<string, unknown>;
-}
+};

@@ -103,7 +103,7 @@ watch(
       };
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const imagePath = toRef(props, "imagePath");
@@ -136,8 +136,7 @@ function touchend(event: TouchEvent) {
   if (touchOnTrack) {
     event.stopPropagation();
     emit("click", event);
-  }
-  else{
+  } else {
     emit("touchleave", event);
   }
 }

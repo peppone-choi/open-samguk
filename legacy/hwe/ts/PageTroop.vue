@@ -271,7 +271,7 @@ async function refresh() {
         rawGeneralList.map((v) => {
           return { permission, st0: true, st1: false, st2: false, ...v };
         }),
-        "no"
+        "no",
       );
     } else if (permission == 1) {
       const rawGeneralList = merge2DArrToObjectArr(column, list);
@@ -279,7 +279,7 @@ async function refresh() {
         rawGeneralList.map((v) => {
           return { permission, st0: true, st1: true, st2: false, ...v };
         }),
-        "no"
+        "no",
       );
     } else if ([2, 3, 4].includes(permission)) {
       const rawGeneralList = merge2DArrToObjectArr(column, list);
@@ -287,7 +287,7 @@ async function refresh() {
         rawGeneralList.map((v) => {
           return { permission, st0: true, st1: true, st2: true, ...v };
         }),
-        "no"
+        "no",
       );
     } else {
       throw `?? ${permission}`;

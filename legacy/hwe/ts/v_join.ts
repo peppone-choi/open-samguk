@@ -1,8 +1,8 @@
-import { createApp } from 'vue'
-import PageJoin from '@/PageJoin.vue';
-import { auto500px } from './util/auto500px';
-import { installVue3Components } from './util/installVue3Components';
+import { createApp } from "vue";
+import PageJoin from "@/PageJoin.vue";
+import { auto500px } from "./util/auto500px";
+import { installVue3Components } from "./util/installVue3Components";
 
 auto500px();
 
-installVue3Components(createApp(PageJoin)).mount('#app')
+installVue3Components(createApp(PageJoin)).mount("#app");

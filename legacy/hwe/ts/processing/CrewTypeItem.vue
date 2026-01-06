@@ -100,9 +100,7 @@ onMounted(() => {
   beFilled();
 });
 
-
 watch(amount, (value) => {
   emit("update:amount", value);
 });
-
 </script>

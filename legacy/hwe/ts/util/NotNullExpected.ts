@@ -1,4 +1,3 @@
-
 export class NotNullExpected extends TypeError {
-    public name = 'NotNullExpected';
+  public name = "NotNullExpected";
 }

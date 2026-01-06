@@ -23,6 +23,7 @@
   - 출력: `{ result, memberId, name, roles, serverAccess }`
 
 토큰 정책(Phase 1):
+
 - 액세스 토큰은 짧은 만료의 JWT(예: 15분)로 발급한다.
 - 리프레시 토큰은 `login_token`에 저장하며, 원문 대신 해시를 저장한다.
 - 로그인/로그아웃 시 `member_log`에 action 기록.

@@ -12,9 +12,7 @@
     <a href="v_nationStratFinan.php" :class="`${showSecret ? '' : 'disabled'} btn btn-sammo-nation`">내 무 부</a>
     <a href="v_chiefCenter.php" :class="`${showSecret ? '' : 'disabled'} btn btn-sammo-nation`">사 령 부</a>
     <a href="v_NPCControl.php" :class="`${showSecret ? '' : 'disabled'} btn btn-sammo-nation`">NPC 정책</a>
-    <a href="b_genList.php" target="_blank" :class="`btn btn-sammo-nation ${showSecret ? '' : 'disabled'}`"
-      >암 행 부</a
-    >
+    <a href="b_genList.php" target="_blank" :class="`btn btn-sammo-nation ${showSecret ? '' : 'disabled'}`">암 행 부</a>
     <a
       href="b_tournament.php"
       target="_blank"
@@ -28,10 +26,7 @@
     <a href="v_nationGeneral.php" :class="`btn btn-sammo-nation ${myLevel >= 1 ? '' : 'disabled'}`">세력 장수</a>
     <a href="v_globalDiplomacy.php" class="btn btn-sammo-nation">중원 정보</a>
     <a href="b_currentCity.php" class="btn btn-sammo-nation">현재 도시</a>
-    <a
-      href="v_battleCenter.php"
-      target="_blank"
-      :class="`btn btn-sammo-nation ${showSecret ? '' : 'disabled'}`"
+    <a href="v_battleCenter.php" target="_blank" :class="`btn btn-sammo-nation ${showSecret ? '' : 'disabled'}`"
       >감 찰 부</a
     >
     <a href="v_inheritPoint.php" class="btn btn-sammo-nation">유산 관리</a>

@@ -81,9 +81,9 @@ import {
   type procTroopList,
 } from "../processingRes";
 import { getNPCColor } from "@/utilGame";
-import type { MapResult } from '@/defs';
-import { SammoAPI } from '@/SammoAPI';
-import { getGameConstStore, type GameConstStore } from '@/GameConstStore';
+import type { MapResult } from "@/defs";
+import { SammoAPI } from "@/SammoAPI";
+import { getGameConstStore, type GameConstStore } from "@/GameConstStore";
 
 const serverNick = staticValues.serverNick;
 const serverID = staticValues.serverID;
@@ -113,10 +113,10 @@ const citiesMap = ref(
       name: string;
       info?: string;
     }
-  >()
+  >(),
 );
-watch(gameConstStore, (store)=>{
-  if(!store){
+watch(gameConstStore, (store) => {
+  if (!store) {
     return;
   }
   const tmpCitiesMap = new Map<
@@ -127,13 +127,13 @@ watch(gameConstStore, (store)=>{
     }
   >();
 
-  for(const city of Object.values(store.cityConst)){
+  for (const city of Object.values(store.cityConst)) {
     tmpCitiesMap.set(city.id, {
       name: city.name,
     });
   }
   citiesMap.value = tmpCitiesMap;
-})
+});
 
 //TODO: onMount로 이전하고 장수 목록은 실시간으로 받아와야함
 const generalList = convertGeneralList(procRes.generalsKey, procRes.generals);
@@ -142,18 +142,18 @@ const troops = procRes.troops;
 const selectedGeneralID = ref(generalList[0].no);
 
 function textHelpGeneral(gen: procGeneralItem): string {
-  const troops = (()=>{
-    if(!gen.troopID){
+  const troops = (() => {
+    if (!gen.troopID) {
       return "";
     }
 
     const troopInfo = procRes.troops[gen.troopID];
-    if(!troopInfo){
+    if (!troopInfo) {
       return "";
     }
     const troopName = troopInfo.name;
 
-    if(gen.no !== gen.troopID){
+    if (gen.no !== gen.troopID) {
       return `,${troopName}`;
     }
 
@@ -176,7 +176,6 @@ async function submit(e: Event) {
   unwrap(e.target).dispatchEvent(event);
 }
 
-
 const searchable = getProcSearchable();
 
 const selectedCityObj = ref<MapCityParsed>();
@@ -190,10 +189,9 @@ watch(selectedCityObj, (city?: MapCityParsed) => {
 });
 
 onMounted(async () => {
-  try{
-    map.value = await SammoAPI.Global.GetMap({neutralView:0, showMe: 1});
-  }
-  catch(e){
+  try {
+    map.value = await SammoAPI.Global.GetMap({ neutralView: 0, showMe: 1 });
+  } catch (e) {
     console.error(e);
   }
 });

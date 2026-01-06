@@ -1,36 +1,35 @@
 {
-  "name": "open-samguk",
+  "name": "sammo-ts",
+  "version": "0.0.1",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "description": "삼국지 모의전투 HiDCHe - TypeScript 리라이트",
   "scripts": {
-    "dev:api": "pnpm --filter @sammo-ts/api dev",
-    "dev:web": "pnpm --filter @sammo-ts/web dev",
-    "dev:engine": "pnpm --filter @sammo-ts/engine dev",
     "build": "pnpm -r build",
-    "build:api": "pnpm --filter @sammo-ts/api build",
-    "build:web": "pnpm --filter @sammo-ts/web build",
-    "db:migrate": "pnpm --filter @sammo-ts/api db:migrate",
-    "docker:up": "docker compose up -d",
-    "docker:down": "docker compose down",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "pnpm -r lint",
-    "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean",
+    "dev:api": "pnpm --filter @sammo/api dev",
+    "dev:engine": "pnpm --filter @sammo/engine dev",
+    "dev:web": "pnpm --filter @sammo/web dev",
+    "db:generate": "pnpm --filter @sammo/infra db:generate",
+    "db:migrate": "pnpm --filter @sammo/infra db:migrate",
+    "db:push": "pnpm --filter @sammo/infra db:push"
   },
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "sqlite3",
-      "esbuild",
-      "@swc/core"
-    ],
-    "ignoredBuiltDependencies": [
-      "@nestjs/core",
-      "bcrypt",
-      "sharp",
-      "sqlite3"
-    ]
-  }
+  "devDependencies": {
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^20.10.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.0",
+    "tsdown": "^0.2.0",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@9.15.0"
 }

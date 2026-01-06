@@ -1,21 +1,30 @@
 {
-  "name": "@sammo-ts/logic",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@sammo/logic",
+  "version": "0.0.1",
+  "description": "순수 게임 로직 - 엔티티, 액션, 상태 관리",
   "type": "module",
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts",
-    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
-    "test": "vitest run"
+    "build": "tsdown src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@sammo-ts/common": "workspace:*"
+    "@sammo/common": "workspace:*"
   },
   "devDependencies": {
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
-  }
+    "typescript": "^5.3.3",
+    "tsdown": "^0.2.0"
+  },
+  "files": [
+    "dist"
+  ]
 }

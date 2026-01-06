@@ -1,26 +1,4 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module.js';
-import { EngineService } from './engine.service.js';
-import { Logger } from '@nestjs/common';
+// @sammo/engine - 턴 데몬 (게임 루프 실행기)
+// TODO: 턴 처리, 스냅샷/저널 복구 로직 구현 예정
 
-async function bootstrap() {
-  const logger = new Logger('Bootstrap');
-  const app = await NestFactory.createApplicationContext(AppModule);
-  const engineService = app.get(EngineService);
-
-  logger.log(`Engine started. Initial status: ${engineService.getStatus()}`);
-
-  // D2: Simple internal test
-  setTimeout(async () => {
-    await engineService.handleCommand({
-      type: 'run',
-      reason: 'manual',
-      requestId: 'init-test',
-    });
-  }, 2000);
-
-  // Keep alive
-  process.stdin.resume();
-}
-
-bootstrap();
+console.log("@sammo/engine placeholder");

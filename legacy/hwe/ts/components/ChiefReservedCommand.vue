@@ -176,10 +176,10 @@
                     isDragToggle && selected.has(`${turnIdx}`)
                       ? 'light'
                       : selectedTurnList.has(turnIdx)
-                      ? 'info'
-                      : selectedTurnList.size == 0 && prevSelectedTurnList.has(turnIdx)
-                      ? 'success'
-                      : 'primary'
+                        ? 'info'
+                        : selectedTurnList.size == 0 && prevSelectedTurnList.has(turnIdx)
+                          ? 'success'
+                          : 'primary'
                   "
                 >
                   {{ turnIdx + 1 }}
@@ -187,7 +187,11 @@
               </div>
             </DragSelect>
             <div :style="rowGridStyle">
-              <div v-for="(turnObj, turnIdx) in reservedCommandList.map(postFilterTurnBrief)" :key="turnIdx" class="turn_pad center">
+              <div
+                v-for="(turnObj, turnIdx) in reservedCommandList.map(postFilterTurnBrief)"
+                :key="turnIdx"
+                class="turn_pad center"
+              >
                 <span v-b-tooltip.hover="turnObj.tooltip" class="turn_text" :style="turnObj.style">
                   <!-- eslint-disable-next-line vue/no-v-html -->
                   <span v-html="turnObj.brief" />
@@ -274,7 +278,15 @@ import { QueryActionHelper, type TurnObjWithTime } from "@/util/QueryActionHelpe
 import type { Args } from "@/processing/args";
 import type { StoredActionsHelper } from "@/util/StoredActionsHelper";
 import { getNPCColor } from "@/utilGame";
-import { BButton, BDropdownItem, BDropdownText, BButtonGroup, BDropdownDivider, BDropdown, useToast } from "bootstrap-vue-next";
+import {
+  BButton,
+  BDropdownItem,
+  BDropdownText,
+  BButtonGroup,
+  BDropdownDivider,
+  BDropdown,
+  useToast,
+} from "bootstrap-vue-next";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
 import SimpleClock from "@/components/SimpleClock.vue";
 import type { ChiefResponse } from "@/defs/API/NationCommand";
@@ -407,7 +419,7 @@ async function repeatNationCommand(amount: number) {
   try {
     await SammoAPI.NationCommand.RepeatCommand({ amount });
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -439,7 +451,7 @@ async function pushNationCommand(amount: number) {
   try {
     await SammoAPI.NationCommand.PushCommand({ amount });
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -454,7 +466,7 @@ async function pushNationCommand(amount: number) {
 const gameConstStore = unwrap_err(
   inject<Ref<GameConstStore>>("gameConstStore"),
   Error,
-  "gameConstStore가 주입되지 않았습니다."
+  "gameConstStore가 주입되지 않았습니다.",
 );
 
 const postFilterTurnBrief = postFilterNationCommandGen<TurnObjWithTime>(props.troopList, gameConstStore.value);
@@ -482,7 +494,7 @@ async function reserveCommandDirect(args: [number[], TurnObj][], reload = true):
     await SammoAPI.NationCommand.ReserveBulkCommand(query);
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -578,7 +590,7 @@ async function reserveCommand() {
 
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -676,7 +688,6 @@ function clipboardTextCopy(releaseSelect = true) {
   }
 }
 
-
 async function subRepeatCommand(releaseSelect = true): Promise<boolean> {
   const reqTurnList = queryActionHelper.getSelectedTurnList();
   const selectedMinTurnIdx = reqTurnList[0];
@@ -686,7 +697,7 @@ async function subRepeatCommand(releaseSelect = true): Promise<boolean> {
   const rawActions = queryActionHelper.extractQueryActions();
   const actions = queryActionHelper.amplifyQueryActions(
     rawActions,
-    range(selectedMinTurnIdx, props.maxTurn, queryLength)
+    range(selectedMinTurnIdx, props.maxTurn, queryLength),
   );
 
   const result = await reserveCommandDirect(actions);
@@ -845,31 +856,31 @@ watch(
   () => props.date,
   () => {
     triggerUpdateCommandList("date");
-  }
+  },
 );
 watch(
   () => props.year,
   () => {
     triggerUpdateCommandList("year");
-  }
+  },
 );
 watch(
   () => props.month,
   () => {
     triggerUpdateCommandList("month");
-  }
+  },
 );
 watch(
   () => props.turnTime,
   () => {
     triggerUpdateCommandList("turnTime");
-  }
+  },
 );
 watch(
   () => props.commandList,
   () => {
     triggerUpdateCommandList("commandList");
-  }
+  },
 );
 watch(
   () => props.selectedTurn,
@@ -883,7 +894,7 @@ watch(
     for (const t of val.values()) {
       selectedTurnList.value.add(t);
     }
-  }
+  },
 );
 
 watch(selectedTurnList, () => {

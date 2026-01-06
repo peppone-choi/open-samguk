@@ -157,10 +157,10 @@
               isDragToggle && selected.has(`${turnIdx}`)
                 ? 'light'
                 : selectedTurnList.has(turnIdx)
-                ? 'info'
-                : selectedTurnList.size == 0 && prevSelectedTurnList.has(turnIdx)
-                ? 'success'
-                : 'primary'
+                  ? 'info'
+                  : selectedTurnList.size == 0 && prevSelectedTurnList.has(turnIdx)
+                    ? 'success'
+                    : 'primary'
             "
           >
             {{ turnIdx + 1 }}
@@ -289,7 +289,15 @@ import DragSelect from "@/components/DragSelect.vue";
 import { SammoAPI } from "./SammoAPI";
 import type { CommandItem, CommandTableResponse } from "@/defs";
 import CommandSelectForm from "@/components/CommandSelectForm.vue";
-import { BButton, BButtonGroup, BDropdownItem, BDropdown, BDropdownText, BDropdownDivider, useToast } from "bootstrap-vue-next";
+import {
+  BButton,
+  BButtonGroup,
+  BDropdownItem,
+  BDropdown,
+  BDropdownText,
+  BDropdownDivider,
+  useToast,
+} from "bootstrap-vue-next";
 import { StoredActionsHelper } from "./util/StoredActionsHelper";
 import type { TurnObj } from "@/defs";
 import type { Args } from "./processing/args";
@@ -301,42 +309,41 @@ import { unwrap } from "./util/unwrap";
 defineExpose({
   updateCommandTable,
   reloadCommandList,
-})
+});
 
 const toasts = unwrap(useToast());
 
 const { maxTurn, maxPushTurn } = staticValues;
 
-const commandList = ref<CommandTableResponse['commandTable']>([]);
+const commandList = ref<CommandTableResponse["commandTable"]>([]);
 const listReqArgCommand = new Set<string>();
 
 const nullCommand: CommandItem = {
-  'value': '휴식',
-  'compensation': 0,
-  'simpleName': '휴식',
-  'possible': true,
-  'info': '휴식',
-  'title': '휴식',
-  'reqArg': false,
-}
+  value: "휴식",
+  compensation: 0,
+  simpleName: "휴식",
+  possible: true,
+  info: "휴식",
+  title: "휴식",
+  reqArg: false,
+};
 
 const selectedCommand = ref<CommandItem>(nullCommand);
 const commandSelectForm = ref<InstanceType<typeof CommandSelectForm> | null>(null);
 const invCommandMap = new Map<string, CommandItem>();
 
-async function updateCommandTable(){
-  try{
+async function updateCommandTable() {
+  try {
     const response = await SammoAPI.General.GetCommandTable();
     console.log(response);
     commandList.value = response.commandTable;
-  }
-  catch(e){
+  } catch (e) {
     console.error(e);
   }
 }
 
-watch(commandList, (commandList)=>{
-  if(!commandList){
+watch(commandList, (commandList) => {
+  if (!commandList) {
     return;
   }
 
@@ -359,7 +366,7 @@ watch(commandList, (commandList)=>{
     }
   }
 
-  if(selectedCommand.value === nullCommand || !invCommandMap.has(selectedCommand.value.value)){
+  if (selectedCommand.value === nullCommand || !invCommandMap.has(selectedCommand.value.value)) {
     selectedCommand.value = commandList[0].values[0];
   }
 });
@@ -400,7 +407,7 @@ const storedActionsHelper = new StoredActionsHelper(
   staticValues.serverNick,
   "general",
   staticValues.mapName,
-  staticValues.unitSet
+  staticValues.unitSet,
 );
 
 const reservedCommandList = queryActionHelper.reservedCommandList;
@@ -438,7 +445,7 @@ async function repeatGeneralCommand(amount: number) {
   try {
     await SammoAPI.Command.RepeatCommand({ amount });
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -454,7 +461,7 @@ async function pushGeneralCommand(amount: number) {
   try {
     await SammoAPI.Command.PushCommand({ amount });
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -495,7 +502,7 @@ async function reloadCommandList() {
   try {
     result = await SammoAPI.Command.GetReservedCommand();
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -568,7 +575,7 @@ async function reserveCommandDirect(args: [number[], TurnObj][], reload = true):
     await SammoAPI.Command.ReserveBulkCommand(query);
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,
@@ -614,7 +621,7 @@ async function reserveCommand() {
 
     queryActionHelper.releaseSelectedTurnList();
   } catch (e) {
-    if(isString(e)){
+    if (isString(e)) {
       toasts.danger({
         title: "에러",
         body: e,

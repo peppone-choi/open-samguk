@@ -1,80 +1,82 @@
 @charset "UTF-8";
 
-.chiefSubTable{
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-start;
-    text-align:center;
+.chiefSubTable {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  text-align: center;
 }
 
-#chiefTurnSelector{
-    width:50px;
-    color:white;
-    background-color:black;
-    font-size:14px;
+#chiefTurnSelector {
+  width: 50px;
+  color: white;
+  background-color: black;
+  font-size: 14px;
 }
 
-.chiefTurnIdx{
-    flex-grow:1;
-    border-top:solid 0.67px #888888;
-    line-height:21px;
+.chiefTurnIdx {
+  flex-grow: 1;
+  border-top: solid 0.67px #888888;
+  line-height: 21px;
 }
 
-.chiefTurnIdxPanel{
-    width:18px;display:flex;flex-flow:column;
+.chiefTurnIdxPanel {
+  width: 18px;
+  display: flex;
+  flex-flow: column;
 }
 
-.chiefTurnIdxPanel.tail{
-    border-left:solid 0.67px #888888;
+.chiefTurnIdxPanel.tail {
+  border-left: solid 0.67px #888888;
 }
 
-.chiefPlate{
-    display:flex;
-    flex-flow:column;
-    border-left:solid 0.67px #888888;
+.chiefPlate {
+  display: flex;
+  flex-flow: column;
+  border-left: solid 0.67px #888888;
 }
 
-.chiefTurnBox{
-    flex-grow: 1;
-    display:flex;
-    flex-flow: row;
-    max-height:22px;
+.chiefTurnBox {
+  flex-grow: 1;
+  display: flex;
+  flex-flow: row;
+  max-height: 22px;
 }
 
-.chiefTurnBox .turnHeader{
-    font-weight: 500;
-    text-align: center;
+.chiefTurnBox .turnHeader {
+  font-weight: 500;
+  text-align: center;
 }
 
-.chiefNamePlate{
-    border-top:solid 0.67px #888888;
-    font-weight: 500;
-    text-align: center;
-    flex-grow: 1;
-    line-height:21px;
+.chiefNamePlate {
+  border-top: solid 0.67px #888888;
+  font-weight: 500;
+  text-align: center;
+  flex-grow: 1;
+  line-height: 21px;
 }
 
-.turnIdxHeader{
-    font-weight: 500;
-    text-align: center;
-    width:20px;
+.turnIdxHeader {
+  font-weight: 500;
+  text-align: center;
+  width: 20px;
 }
 
-.chiefTurnTime{
-    border-top:solid 0.67px #888888;
-    border-right:solid 0.67px #888888;
-    font-weight: 500;
-    background: black;
-    text-align: center;
-    width:44px;
-    line-height:21px;
+.chiefTurnTime {
+  border-top: solid 0.67px #888888;
+  border-right: solid 0.67px #888888;
+  font-weight: 500;
+  background: black;
+  text-align: center;
+  width: 44px;
+  line-height: 21px;
 }
 
-.chiefTurnPad{
-    border-top:solid 0.67px #888888;
-    table-layout: fixed;
-    width:192px;
-    line-height:21px;
-    flex-grow: 1;
-    white-space:nowrap;
+.chiefTurnPad {
+  border-top: solid 0.67px #888888;
+  table-layout: fixed;
+  width: 192px;
+  line-height: 21px;
+  flex-grow: 1;
+  white-space: nowrap;
 }

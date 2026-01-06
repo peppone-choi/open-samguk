@@ -49,7 +49,7 @@ const amount = ref(1000);
 const buyRice = ref(true);
 
 async function submit(e: SubmitEvent) {
-  if(!e.target){
+  if (!e.target) {
     return;
   }
   const event = new CustomEvent<Args>("customSubmit", {

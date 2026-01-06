@@ -4,43 +4,42 @@ import $ from "jquery";
 import { trim } from "lodash-es";
 
 export function initTooltip($obj?: JQuery<HTMLElement>): void {
-    if ($obj === undefined) {
-        $obj = $('.obj_tooltip');
-    } else if (!$obj.hasClass('obj_tooltip')) {
-        $obj = $obj.find('.obj_tooltip');
+  if ($obj === undefined) {
+    $obj = $(".obj_tooltip");
+  } else if (!$obj.hasClass("obj_tooltip")) {
+    $obj = $obj.find(".obj_tooltip");
+  }
+
+  $obj.each(function () {
+    const $target = $(this);
+
+    if ($target.data("installHandler")) {
+      return;
     }
+    $target.data("installHandler", true);
 
-    $obj.each(function () {
-        const $target = $(this);
+    $target.on("mouseover", function () {
+      const $objTooltip = $(this);
+      if ($objTooltip.data("setObjTooltip")) {
+        return;
+      }
 
-        if ($target.data('installHandler')) {
-            return;
-        }
-        $target.data('installHandler', true);
+      let tooltipClassText = $objTooltip.data("tooltip-class");
+      if (!tooltipClassText) {
+        tooltipClassText = "";
+      }
+      const template = `<div class="tooltip ${tooltipClassText}" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>`;
 
-        $target.on('mouseover', function () {
-            const $objTooltip = $(this);
-            if ($objTooltip.data('setObjTooltip')) {
-                return;
-            }
+      const oTooltip = new Tooltip(this, {
+        title: function () {
+          return trim(this.querySelector(".tooltiptext")?.innerHTML);
+        },
+        template: template,
+        html: true,
+      });
+      oTooltip.show();
 
-            let tooltipClassText = $objTooltip.data('tooltip-class');
-            if (!tooltipClassText) {
-                tooltipClassText = '';
-            }
-            const template = `<div class="tooltip ${tooltipClassText}" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>`;
-
-            const oTooltip = new Tooltip(this, {
-                title: function () {
-                    return trim(this.querySelector('.tooltiptext')?.innerHTML);
-                },
-                template: template,
-                html: true
-            });
-            oTooltip.show();
-
-            $objTooltip.data('setObjTooltip', true);
-        });
+      $objTooltip.data("setObjTooltip", true);
     });
-
+  });
 }

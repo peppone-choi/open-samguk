@@ -69,7 +69,7 @@
         <div class="conflictNation col">
           <div
             v-for="[nation, percent] of Object.entries(conflictNations).map(
-              ([nationID, percent])=>[nationMap.get(parseInt(nationID)),percent] as [SimpleNationObj, number]
+              ([nationID, percent]) => [nationMap.get(parseInt(nationID)), percent] as [SimpleNationObj, number],
             )"
             :key="nation.nation"
             class="row gx-0"

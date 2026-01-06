@@ -164,13 +164,7 @@
         </NumberInputWithInfo>
       </div>
       <div class="col">
-        <NumberInputWithInfo
-          v-model="nationPolicy.cureThreshold"
-          :step="5"
-          :min="10"
-          :max="100"
-          title="요양 기준"
-        >
+        <NumberInputWithInfo v-model="nationPolicy.cureThreshold" :step="5" :min="10" :max="100" title="요양 기준">
           요양 기준 %입니다. 이보다 많이 부상을 입으면 요양합니다.
         </NumberInputWithInfo>
       </div>
@@ -227,10 +221,7 @@
                     <div class="priority_info">
                       <i class="bi bi-list" />
                       <span>{{ element.id }}</span>
-                      <button
-                      v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm btn-secondary py-0 px-1"
-                    >
+                      <button v-b-tooltip.hover="actionHelpText[element.id]" class="btn btn-sm btn-secondary py-0 px-1">
                         <i class="bi bi-question-lg" />
                       </button>
                     </div>
@@ -251,10 +242,7 @@
                     <div class="priority_info">
                       <i class="bi bi-list" />
                       <span>{{ element.id }}</span>
-                      <button
-                      v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm btn-secondary py-0 px-1"
-                    >
+                      <button v-b-tooltip.hover="actionHelpText[element.id]" class="btn btn-sm btn-secondary py-0 px-1">
                         <i class="bi bi-question-lg" />
                       </button>
                     </div>
@@ -307,10 +295,7 @@
                     <div class="priority_info">
                       <i class="bi bi-list" />
                       <span>{{ element.id }}</span>
-                      <button
-                      v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm btn-secondary py-0 px-1"
-                    >
+                      <button v-b-tooltip.hover="actionHelpText[element.id]" class="btn btn-sm btn-secondary py-0 px-1">
                         <i class="bi bi-question-lg" />
                       </button>
                     </div>
@@ -331,10 +316,7 @@
                     <div class="priority_info">
                       <i class="bi bi-list" />
                       <span>{{ element.id }}</span>
-                      <button
-                      v-b-tooltip.hover="actionHelpText[element.id]"
-                      class="btn btn-sm btn-secondary py-0 px-1"
-                    >
+                      <button v-b-tooltip.hover="actionHelpText[element.id]" class="btn btn-sm btn-secondary py-0 px-1">
                         <i class="bi bi-question-lg" />
                       </button>
                     </div>
@@ -731,8 +713,8 @@ async function submitGeneralPriority() {
   padding-left: 0;
 }
 
-.priority_info{
-  display:grid;
+.priority_info {
+  display: grid;
   grid-template-columns: 24px 1fr 24px;
 }
 </style>

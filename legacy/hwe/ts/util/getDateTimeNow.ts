@@ -1,4 +1,4 @@
-import { formatTime } from '@util/formatTime';
+import { formatTime } from "@util/formatTime";
 export function getDateTimeNow(withFraction = false): string {
-    return formatTime(new Date(), withFraction);
+  return formatTime(new Date(), withFraction);
 }

@@ -11,14 +11,14 @@
 
 ## 처리 흐름 (상세)
 
-1) `warSeed`로 RNG 생성
-2) 공격자 `WarUnitGeneral` 생성
-3) 수비 장수 목록 구성 -> `WarUnitGeneral` 생성
-4) 도시 `WarUnitCity` 포함 여부 결정
-5) `extractBattleOrder()`로 수비 순서 정렬
-6) `processWar_NG()`로 전투 진행
-7) 결과 후처리 (도시 사망자, 기술, 외교 사상자)
-8) 점령 시 `ConquerCity()` 호출
+1. `warSeed`로 RNG 생성
+2. 공격자 `WarUnitGeneral` 생성
+3. 수비 장수 목록 구성 -> `WarUnitGeneral` 생성
+4. 도시 `WarUnitCity` 포함 여부 결정
+5. `extractBattleOrder()`로 수비 순서 정렬
+6. `processWar_NG()`로 전투 진행
+7. 결과 후처리 (도시 사망자, 기술, 외교 사상자)
+8. 점령 시 `ConquerCity()` 호출
 
 ## 전투 후처리 (레거시)
 

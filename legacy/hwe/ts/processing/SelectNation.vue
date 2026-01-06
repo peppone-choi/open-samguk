@@ -69,14 +69,11 @@ const props = defineProps({
   },
 });
 
-const modelValue = toRef(props, 'modelValue');
-watch(
-  modelValue,
-  (val: number) => {
-    const target = targets.value.get(val);
-    selectedNation.value = target;
-  }
-);
+const modelValue = toRef(props, "modelValue");
+watch(modelValue, (val: number) => {
+  const target = targets.value.get(val);
+  selectedNation.value = target;
+});
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: number): void;
@@ -112,5 +109,4 @@ onMounted(() => {
     targets.value.set(nationItem.id, obj);
   }
 });
-
 </script>

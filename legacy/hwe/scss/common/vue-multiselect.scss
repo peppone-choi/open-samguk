@@ -29,8 +29,8 @@ $vue-multiselect-tag-icon-size: 1.7rem !default;
 $vue-multiselect-tag-icon-color: $vue-multiselect-tag-color !default;
 $vue-multiselect-tag-icon-color-hover: white !default;
 $vue-multiselect-tag-icon-bg-hover: $danger !default;
-$vue-multiselect-tag-padding-x: .4rem !default;
-$vue-multiselect-tag-padding-y: .25rem !default;
+$vue-multiselect-tag-padding-x: 0.4rem !default;
+$vue-multiselect-tag-padding-y: 0.25rem !default;
 $vue-multiselect-tag-border-radius: $badge-border-radius !default;
 
 $vue-multiselect-arrow-color: $form-select-color !default;
@@ -146,7 +146,7 @@ fieldset[disabled] .multiselect {
 }
 
 .multiselect__tags-wrap {
-  display: inline
+  display: inline;
 }
 
 .multiselect__tags {
@@ -163,7 +163,8 @@ fieldset[disabled] .multiselect {
 .multiselect__tag {
   position: relative;
   display: inline-block;
-  padding: $vue-multiselect-tag-padding-y ($vue-multiselect-tag-icon-size + $vue-multiselect-tag-padding-x) $vue-multiselect-tag-padding-y $vue-multiselect-tag-padding-x;
+  padding: $vue-multiselect-tag-padding-y ($vue-multiselect-tag-icon-size + $vue-multiselect-tag-padding-x)
+    $vue-multiselect-tag-padding-y $vue-multiselect-tag-padding-x;
   border-radius: $vue-multiselect-tag-border-radius;
   margin-right: $vue-multiselect-tag-padding-x;
   color: $vue-multiselect-tag-color;
@@ -463,10 +464,10 @@ fieldset[disabled] .multiselect {
 
 @keyframes spinning {
   from {
-    transform: rotate(0)
+    transform: rotate(0);
   }
   to {
-    transform: rotate(2turn)
+    transform: rotate(2turn);
   }
 }
 
@@ -543,12 +544,16 @@ fieldset[disabled] .multiselect {
 
     @if $enable-validation-icons {
       padding-right: $form-select-feedback-icon-padding-end;
-      background: escape-svg($icon) $form-select-bg no-repeat $form-select-feedback-icon-position / $form-select-feedback-icon-size;
+      background: escape-svg($icon)
+        $form-select-bg
+        no-repeat
+        $form-select-feedback-icon-position /
+        $form-select-feedback-icon-size;
     }
 
     &:focus {
       border-color: $color;
-      box-shadow: 0 0 0 $input-focus-width rgba($color, .25);
+      box-shadow: 0 0 0 $input-focus-width rgba($color, 0.25);
     }
   }
 }

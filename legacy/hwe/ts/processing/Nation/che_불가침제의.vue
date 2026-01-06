@@ -86,7 +86,6 @@ import type { MapResult } from "@/defs";
 import { SammoAPI } from "@/SammoAPI";
 import { getGameConstStore, type GameConstStore } from "@/GameConstStore";
 
-
 const serverNick = staticValues.serverNick;
 const serverID = staticValues.serverID;
 

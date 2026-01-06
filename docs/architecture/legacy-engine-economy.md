@@ -9,11 +9,11 @@
 
 ## 월간 처리 순서 (레거시)
 
-1) `preUpdateMonthly()`
-2) `turnDate()`로 연/월 갱신
-3) `checkStatistic()` (연간/월간 통계)
-4) `EventTarget::Month` 이벤트 실행
-5) `postUpdateMonthly()`
+1. `preUpdateMonthly()`
+2. `turnDate()`로 연/월 갱신
+3. `checkStatistic()` (연간/월간 통계)
+4. `EventTarget::Month` 이벤트 실행
+5. `postUpdateMonthly()`
 
 ## preUpdateMonthly 세부 작업
 

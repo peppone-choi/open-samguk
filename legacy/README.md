@@ -2,23 +2,22 @@
 
 삼국지 모의전투 유기체서버를 기반으로 더욱 더 진화한 서버입니다.
 
-
 ## 요구사항
 
-* Apache2 또는 nginx
-  * Apache2인 경우 `mpm_event` 권장
-* PHP 8.0 이상
-  * `php-fpm` 권장
-  * php에서 curl, pdo-sqlite을 실행가능해야 합니다.
-  * mysqli, mysqlnd
-  * gd
-  * mbstring
-* NodeJS 14 이상
-  * 내부의 git을 통해 upgrade 때 `webpack build` 용도로 필요합니다.
-* MariaDB 10.2.1 이상
-  * 현재 MySQL은 지원하지 않습니다.
-* `git`
-* `curl`
+- Apache2 또는 nginx
+  - Apache2인 경우 `mpm_event` 권장
+- PHP 8.0 이상
+  - `php-fpm` 권장
+  - php에서 curl, pdo-sqlite을 실행가능해야 합니다.
+  - mysqli, mysqlnd
+  - gd
+  - mbstring
+- NodeJS 14 이상
+  - 내부의 git을 통해 upgrade 때 `webpack build` 용도로 필요합니다.
+- MariaDB 10.2.1 이상
+  - 현재 MySQL은 지원하지 않습니다.
+- `git`
+- `curl`
 
 Linux는 Ubuntu 18.04, 20.04, Windows는 WSL2를 사용한 환경에서 테스트되었습니다.
 
@@ -52,19 +51,17 @@ Database 수는 로그인 관리 서버 1개, 내부 서버 7개로, 총 8개의
 
 설치 이후에는 서버관리 페이지에서 **업데이트** 명령을 통해 원 클릭 업데이트가 가능합니다.
 
-
 ## 카카오로그인 연동
 
 서버 설치 시 카카오 로그인 연동을 위한 API KEY를 입력받습니다.
 
 만약 설치 이후 API KEY를 변경하고자 하는 경우 <code>d_setting/KakaoKey.php</code>에서 API키를 변경해야 합니다.
 
-
 ## 라이선스
 
 본 게임을 수정하거나 재배포할 경우 다음 중 하나의 라이선스를 선택하여 적용할 수 있습니다.
 
-* MIT License
-* GPL 2.0 또는 이후
+- MIT License
+- GPL 2.0 또는 이후
 
 만약 별도의 라이선스를 적용하고자 할 경우 Hide_D에게 문의하여 주십시오.

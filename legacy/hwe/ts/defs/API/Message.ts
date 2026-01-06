@@ -16,7 +16,7 @@ export type MsgTarget = {
   icon: string;
 };
 
-export type MsgActionType = 'scout' | 'noAggression' | 'cancelNA' | 'stopWar';
+export type MsgActionType = "scout" | "noAggression" | "cancelNA" | "stopWar";
 
 export type MsgItem = {
   id: number;
@@ -61,20 +61,20 @@ export type MsgResponse = {
   latestRead?: {
     private: number;
     diplomacy: number;
-  }
+  };
 };
 
 export type MailboxItem = {
-  id: number,
-  mailbox: number,
-  color: string,
-  name: string,
-  nationID: number,
+  id: number;
+  mailbox: number;
+  color: string;
+  name: string;
+  nationID: number;
   //nation: string,
-  general: [number, string, number][]
-}
+  general: [number, string, number][];
+};
 
 export type MabilboxListResponse = {
-  result: true,
-  nation: MailboxItem[]
-}
+  result: true;
+  nation: MailboxItem[];
+};

@@ -32,12 +32,12 @@ legacy/hwe/scenario/
 
 ## 2. 시나리오 번호 체계
 
-| 범위 | 카테고리 |
-|------|----------|
-| 0-2 | 공백지 시나리오 (빈 맵) |
-| 900-913 | 특수 시나리오 (충차전, 난투전 등) |
-| 1010-1120 | 역사모드 1 (후한~삼국 시대) |
-| 2010-2901 | 역사모드 2+ (가상/오리지널) |
+| 범위      | 카테고리                          |
+| --------- | --------------------------------- |
+| 0-2       | 공백지 시나리오 (빈 맵)           |
+| 900-913   | 특수 시나리오 (충차전, 난투전 등) |
+| 1010-1120 | 역사모드 1 (후한~삼국 시대)       |
+| 2010-2901 | 역사모드 2+ (가상/오리지널)       |
 
 ## 3. JSON 스키마
 
@@ -46,30 +46,30 @@ legacy/hwe/scenario/
 ```typescript
 interface Scenario {
   // === 필수 필드 ===
-  title: string;              // 시나리오 제목 (예: "【역사모드1】 황건적의 난")
-  startYear: number;          // 시작 연도 (예: 181)
+  title: string; // 시나리오 제목 (예: "【역사모드1】 황건적의 난")
+  startYear: number; // 시작 연도 (예: 181)
 
   // === 선택 필드 ===
-  life?: 0 | 1;               // 0: 가상, 1: 역사 기반
-  fiction?: 0 | 1;            // 0: 정사, 1: 연의 기반
+  life?: 0 | 1; // 0: 가상, 1: 역사 기반
+  fiction?: 0 | 1; // 0: 정사, 1: 연의 기반
 
   // === 데이터 필드 ===
-  nation?: NationData[];      // 초기 국가 배열
+  nation?: NationData[]; // 초기 국가 배열
   diplomacy?: DiplomacyData[]; // 외교 관계
-  general?: GeneralData[];    // NPC 장수 배열
+  general?: GeneralData[]; // NPC 장수 배열
   general_ex?: GeneralData[]; // 추가 NPC 장수 (조건부 등장)
   general_neutral?: GeneralData[]; // 중립 NPC 장수
-  cities?: CityOverride[];    // 도시 오버라이드
+  cities?: CityOverride[]; // 도시 오버라이드
 
   // === 설정 필드 ===
-  map?: MapConfig;            // 맵 설정
-  stat?: StatConfig;          // 스탯 범위 설정
-  const?: GameConstOverride;  // 게임 상수 오버라이드
+  map?: MapConfig; // 맵 설정
+  stat?: StatConfig; // 스탯 범위 설정
+  const?: GameConstOverride; // 게임 상수 오버라이드
 
   // === 이벤트 ===
-  history?: string[];         // 역사 로그
+  history?: string[]; // 역사 로그
   initialEvents?: InitialEvent[]; // 초기화 이벤트
-  events?: GameEvent[];       // 게임 진행 이벤트
+  events?: GameEvent[]; // 게임 진행 이벤트
   ignoreDefaultEvents?: boolean; // 기본 이벤트 무시 여부
 }
 ```
@@ -78,19 +78,20 @@ interface Scenario {
 
 ```typescript
 type NationData = [
-  name: string,           // 국가명 (예: "후한", "위", "촉")
-  color: string,          // RGB 컬러 (예: "#800000")
-  gold: number,           // 초기 금
-  rice: number,           // 초기 쌀
-  infoText: string,       // 국가 설명
-  tech: number,           // 기술력
-  type: string,           // 성향 (예: "유가", "태평도", "법가")
-  nationLevel: number,    // 국가 규모 (0:방랑군 ~ 7:황제)
-  cities: string[]        // 소속 도시 목록 (첫 번째가 수도)
+  name: string, // 국가명 (예: "후한", "위", "촉")
+  color: string, // RGB 컬러 (예: "#800000")
+  gold: number, // 초기 금
+  rice: number, // 초기 쌀
+  infoText: string, // 국가 설명
+  tech: number, // 기술력
+  type: string, // 성향 (예: "유가", "태평도", "법가")
+  nationLevel: number, // 국가 규모 (0:방랑군 ~ 7:황제)
+  cities: string[], // 소속 도시 목록 (첫 번째가 수도)
 ];
 ```
 
 **국가 규모 (nationLevel):**
+
 - 0: 방랑군
 - 1: 호족
 - 2: 군벌
@@ -104,14 +105,15 @@ type NationData = [
 
 ```typescript
 type DiplomacyData = [
-  nation1: number,        // 국가 1 인덱스
-  nation2: number,        // 국가 2 인덱스
-  diplomacyType: number,  // 외교 종류
-  duration: number        // 기간 (개월)
+  nation1: number, // 국가 1 인덱스
+  nation2: number, // 국가 2 인덱스
+  diplomacyType: number, // 외교 종류
+  duration: number, // 기간 (개월)
 ];
 ```
 
 **외교 종류:**
+
 - 0: 전쟁
 - 1: 선포
 - 7: 불가침
@@ -120,29 +122,31 @@ type DiplomacyData = [
 
 ```typescript
 type GeneralData = [
-  affinity: number | null,    // 상성 (1~150, 999:영구재야, null:랜덤)
-  name: string,               // 장수명
+  affinity: number | null, // 상성 (1~150, 999:영구재야, null:랜덤)
+  name: string, // 장수명
   picturePath: string | null, // 전투 이미지 경로 (null: 없음)
   nationName: string | number | null, // 소속 국가 (null/0: 재야)
   locatedCity: string | null, // 위치 도시 (null: 랜덤)
-  leadership: number,         // 통솔
-  strength: number,           // 무력
-  intel: number,              // 지력
-  officerLevel: number,       // 관직 (0:재야, 1:장수, 5~10:수뇌, 11:참모, 12:군주)
-  birth: number,              // 생년
-  death: number,              // 몰년
-  ego: string | null,         // 성격 (null: 랜덤)
-  speciality: string | null,  // 특기 (null: 미정)
-  text?: string               // 대사 (선택)
+  leadership: number, // 통솔
+  strength: number, // 무력
+  intel: number, // 지력
+  officerLevel: number, // 관직 (0:재야, 1:장수, 5~10:수뇌, 11:참모, 12:군주)
+  birth: number, // 생년
+  death: number, // 몰년
+  ego: string | null, // 성격 (null: 랜덤)
+  speciality: string | null, // 특기 (null: 미정)
+  text?: string, // 대사 (선택)
 ];
 ```
 
 **affinity 특수 값:**
+
 - `-150`: 플레이어 캐릭터 (가상 시나리오)
 - `999`: 영구 재야 (등용 불가)
 - `-1` ~ `-2`: 특수 상태
 
 **officerLevel:**
+
 - 0: 재야
 - 1: 장수
 - 5~10: 수뇌진
@@ -150,9 +154,11 @@ type GeneralData = [
 - 12: 군주
 
 **ego (성격) 목록:**
+
 - 왕좌, 패권, 할거, 정복, 출세, 대의, 의협, 유지, 재간, 안전, 은둔
 
 **speciality (특기) 목록:**
+
 - 기병, 보병, 궁병, 무쌍, 위압, 돌격, 필살, 견고, 집중
 - 신중, 신산, 반계, 귀병, 귀모, 경작, 인덕, 상재, 환술, 척사
 - 의술, 축성, 수비, 저격, 공성, 발명, 징병, 통찰
@@ -161,12 +167,13 @@ type GeneralData = [
 
 ```typescript
 interface MapConfig {
-  mapName?: string;       // 맵 이름 (기본: "che")
-  unitSet?: string;       // 유닛 세트 (기본: "che")
+  mapName?: string; // 맵 이름 (기본: "che")
+  unitSet?: string; // 유닛 세트 (기본: "che")
 }
 ```
 
 **맵 종류:**
+
 - `che`: 기본 중국 지도
 - `miniche`: 소형 중국 지도
 - `miniche_b`: 소형 지도 B 변형
@@ -179,13 +186,13 @@ interface MapConfig {
 
 ```typescript
 interface StatConfig {
-  total?: number;         // 플레이어 스탯 총합 (기본: 165)
-  min?: number;           // 스탯 최소값 (기본: 15)
-  max?: number;           // 스탯 최대값 (기본: 80)
-  npcTotal?: number;      // NPC 스탯 총합 (기본: 150)
-  npcMax?: number;        // NPC 스탯 최대값 (기본: 75)
-  npcMin?: number;        // NPC 스탯 최소값 (기본: 10)
-  chiefMin?: number;      // 수뇌 스탯 최소값 (기본: 65)
+  total?: number; // 플레이어 스탯 총합 (기본: 165)
+  min?: number; // 스탯 최소값 (기본: 15)
+  max?: number; // 스탯 최대값 (기본: 80)
+  npcTotal?: number; // NPC 스탯 총합 (기본: 150)
+  npcMax?: number; // NPC 스탯 최대값 (기본: 75)
+  npcMin?: number; // NPC 스탯 최소값 (기본: 10)
+  chiefMin?: number; // 수뇌 스탯 최소값 (기본: 65)
 }
 ```
 
@@ -193,12 +200,12 @@ interface StatConfig {
 
 ```typescript
 interface GameConstOverride {
-  defaultMaxGeneral?: number;         // 최대 장수 수 (기본: 300)
-  joinRuinedNPCProp?: number;         // 망국 NPC 합류 확률
-  npcBanMessageProb?: number;         // NPC 금지 메시지 확률
-  expandCityPopIncreaseAmount?: number;   // 도시 확장 시 인구 증가량
+  defaultMaxGeneral?: number; // 최대 장수 수 (기본: 300)
+  joinRuinedNPCProp?: number; // 망국 NPC 합류 확률
+  npcBanMessageProb?: number; // NPC 금지 메시지 확률
+  expandCityPopIncreaseAmount?: number; // 도시 확장 시 인구 증가량
   expandCityDevelIncreaseAmount?: number; // 도시 확장 시 개발 증가량
-  expandCityWallIncreaseAmount?: number;  // 도시 확장 시 성벽 증가량
+  expandCityWallIncreaseAmount?: number; // 도시 확장 시 성벽 증가량
   // ... 기타 GameConst 필드
 }
 ```
@@ -211,8 +218,8 @@ interface GameConstOverride {
 
 ```typescript
 type InitialEvent = [
-  condition: boolean | Condition,  // 실행 조건
-  ...actions: Action[]             // 실행할 액션들
+  condition: boolean | Condition, // 실행 조건
+  ...actions: Action[], // 실행할 액션들
 ];
 ```
 
@@ -222,14 +229,15 @@ type InitialEvent = [
 
 ```typescript
 type GameEvent = [
-  target: EventTarget,       // 트리거 타입
-  priority: number,          // 우선순위 (높을수록 먼저 실행)
-  condition: Condition,      // 실행 조건
-  ...actions: Action[]       // 실행할 액션들
+  target: EventTarget, // 트리거 타입
+  priority: number, // 우선순위 (높을수록 먼저 실행)
+  condition: Condition, // 실행 조건
+  ...actions: Action[], // 실행할 액션들
 ];
 ```
 
 **EventTarget (트리거 타입):**
+
 - `month`: 매월 체크
 - `destroy_nation`: 국가 멸망 시
 
@@ -240,7 +248,12 @@ type GameEvent = [
 type LogicCondition = ["and" | "or", ...conditions: Condition[]];
 
 // 날짜 조건
-type DateCondition = ["Date", op: "==" | ">=" | "<=" | ">" | "<", year: number | null, month: number | null];
+type DateCondition = [
+  "Date",
+  op: "==" | ">=" | "<=" | ">" | "<",
+  year: number | null,
+  month: number | null,
+];
 
 // 상대 날짜 조건
 type DateRelativeCondition = ["DateRelative", op: string, years: number];
@@ -253,24 +266,22 @@ type ConstBool = boolean;
 ```
 
 **예시:**
+
 ```json
-["and",
-  ["Date", ">=", 183, 1],
-  ["RemainNation", "<=", 8]
-]
+["and", ["Date", ">=", 183, 1], ["RemainNation", "<=", 8]]
 ```
 
 ### 4.4 액션 (Action)
 
-| 액션 이름 | 설명 | 예시 |
-|-----------|------|------|
-| `CreateManyNPC` | 다수 NPC 생성 | `["CreateManyNPC", 10, 10]` |
-| `RaiseNPCNation` | NPC 국가 거병 | `["RaiseNPCNation"]` |
-| `OpenNationBetting` | 국가 배팅 오픈 | `["OpenNationBetting", 4, 5000]` |
-| `BlockScoutAction` | 정찰 액션 차단 | `["BlockScoutAction"]` |
-| `DeleteEvent` | 이벤트 삭제 | `["DeleteEvent"]` |
-| `ChangeCity` | 도시 속성 변경 | `["ChangeCity", "free", {...}]` |
-| `NoticeToHistoryLog` | 역사 로그 기록 | `["NoticeToHistoryLog", "..."]` |
+| 액션 이름            | 설명           | 예시                             |
+| -------------------- | -------------- | -------------------------------- |
+| `CreateManyNPC`      | 다수 NPC 생성  | `["CreateManyNPC", 10, 10]`      |
+| `RaiseNPCNation`     | NPC 국가 거병  | `["RaiseNPCNation"]`             |
+| `OpenNationBetting`  | 국가 배팅 오픈 | `["OpenNationBetting", 4, 5000]` |
+| `BlockScoutAction`   | 정찰 액션 차단 | `["BlockScoutAction"]`           |
+| `DeleteEvent`        | 이벤트 삭제    | `["DeleteEvent"]`                |
+| `ChangeCity`         | 도시 속성 변경 | `["ChangeCity", "free", {...}]`  |
+| `NoticeToHistoryLog` | 역사 로그 기록 | `["NoticeToHistoryLog", "..."]`  |
 
 ## 5. 맵 데이터 구조 (PHP)
 
@@ -291,6 +302,7 @@ class CityConst extends CityConstBase {
 ```
 
 **도시 규모:**
+
 - `특`: 특대도시
 - `대`: 대도시
 - `중`: 중도시
@@ -326,6 +338,7 @@ class GameUnitConst extends GameUnitConstBase {
 ```
 
 **유닛 타입 상수:**
+
 - `T_CASTLE`: 성벽
 - `T_FOOTMAN`: 보병
 - `T_ARCHER`: 궁병

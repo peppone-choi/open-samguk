@@ -7,11 +7,11 @@ export type ValidResponse = {
 
 export type APIRecoveryType = "login" | "2fa" | "gateway" | "game_login" | "game_quota";
 export const APIRecoveryConst = {
-    Login: 'login',
-    TwoFactorAuth: '2fa',
-    Gateway: 'gateway',
-    GameLogin: 'game_login',
-    GameQuota: 'game_quota',
+  Login: "login",
+  TwoFactorAuth: "2fa",
+  Gateway: "gateway",
+  GameLogin: "game_login",
+  GameQuota: "game_quota",
 } as const;
 
 export type InvalidResponse = {
@@ -26,7 +26,7 @@ export type RawArgType = Record<string, unknown> | Record<string, unknown>[] | u
 interface BasicAPICallT<
   ArgType extends RawArgType,
   ResultType extends ValidResponse,
-  ErrorType extends InvalidResponse
+  ErrorType extends InvalidResponse,
 > {
   (args: ArgType): Promise<ResultType>;
   (args: ArgType, returnError: false): Promise<ResultType>;
@@ -46,7 +46,7 @@ export type ArgTypeOf<T> = T extends APICallT<infer A, any, any> ? A : never;
 export type APICallT<
   ArgType extends RawArgType,
   ResultType extends ValidResponse = ValidResponse,
-  ErrorType extends InvalidResponse = InvalidResponse
+  ErrorType extends InvalidResponse = InvalidResponse,
 > = ArgType extends undefined ? EmptyAPICallT<ResultType, ErrorType> : BasicAPICallT<ArgType, ResultType, ErrorType>;
 
 type HttpMethod = "get" | "post" | "put" | "patch" | "head" | "delete";
@@ -76,28 +76,28 @@ export async function callSammoAPI<ResultType extends ValidResponse>(
   method: HttpMethod,
   path: string | string[],
   args: RawArgType,
-  paramArgs: Record<string, string | number> | undefined
+  paramArgs: Record<string, string | number> | undefined,
 ): Promise<ResultType>;
 export async function callSammoAPI<ResultType extends ValidResponse>(
   method: HttpMethod,
   path: string | string[],
   args: RawArgType,
   paramArgs: Record<string, string | number> | undefined,
-  returnError: false
+  returnError: false,
 ): Promise<ResultType>;
 export async function callSammoAPI<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(
   method: HttpMethod,
   path: string | string[],
   args: RawArgType,
   paramArgs: Record<string, string | number> | undefined,
-  returnError: true
+  returnError: true,
 ): Promise<ResultType | ErrorType>;
 export async function callSammoAPI<ResultType extends ValidResponse, ErrorType extends InvalidResponse>(
   method: HttpMethod,
   path: string | string[],
   args: RawArgType,
   paramArgs: Record<string, string | number> | undefined,
-  returnError = false
+  returnError = false,
 ): Promise<ResultType | ErrorType> {
   if (isArray(path)) {
     path = path.join("/");
@@ -148,126 +148,126 @@ export async function callSammoAPI<ResultType extends ValidResponse, ErrorType e
 }
 
 export async function GET<ResultType extends ValidResponse, ArgType extends undefined = undefined>(
-  args?: ArgType
+  args?: ArgType,
 ): Promise<ResultType>;
 export async function GET<ResultType extends ValidResponse, ArgType extends undefined = undefined>(
   args: ArgType | undefined,
-  returnError: false
+  returnError: false,
 ): Promise<ResultType>;
 export async function GET<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends undefined = undefined
+  ArgType extends undefined = undefined,
 >(args: ArgType | undefined, returnError: true): Promise<ResultType | ErrorType>;
 export async function GET<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends undefined = undefined
+  ArgType extends undefined = undefined,
 >(args?: ArgType, returnError = false): Promise<ResultType | ErrorType> {
   console.error(`Can't directly call GET. ${args}, ${returnError}. Use auto-generated path API.`);
   return callSammoAPI<ResultType, ErrorType>("get", [], args, undefined, true);
 }
 
 export async function POST<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
-  args?: ArgType
+  args?: ArgType,
 ): Promise<ResultType>;
 export async function POST<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
   args: ArgType | undefined,
-  returnError: false
+  returnError: false,
 ): Promise<ResultType>;
 export async function POST<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args: ArgType | undefined, returnError: true): Promise<ResultType | ErrorType>;
 export async function POST<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args?: ArgType, returnError = false): Promise<ResultType | ErrorType> {
   console.error(`Can't directly call POST. ${args}, ${returnError}. Use auto-generated path API.`);
   return callSammoAPI<ResultType, ErrorType>("post", [], args, undefined, true);
 }
 
 export async function PUT<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
-  args?: ArgType
+  args?: ArgType,
 ): Promise<ResultType>;
 export async function PUT<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
   args: ArgType | undefined,
-  returnError: false
+  returnError: false,
 ): Promise<ResultType>;
 export async function PUT<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args: ArgType | undefined, returnError: true): Promise<ResultType | ErrorType>;
 export async function PUT<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args?: ArgType, returnError = false): Promise<ResultType | ErrorType> {
   console.error(`Can't directly call PUT. ${args}, ${returnError}. Use auto-generated path API.`);
   return callSammoAPI<ResultType, ErrorType>("put", [], args, undefined, true);
 }
 
 export async function PATCH<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
-  args?: ArgType
+  args?: ArgType,
 ): Promise<ResultType>;
 export async function PATCH<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
   args: ArgType | undefined,
-  returnError: false
+  returnError: false,
 ): Promise<ResultType>;
 export async function PATCH<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args: ArgType | undefined, returnError: true): Promise<ResultType | ErrorType>;
 export async function PATCH<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args?: ArgType, returnError = false): Promise<ResultType | ErrorType> {
   console.error(`Can't directly call PATCH. ${args}, ${returnError}. Use auto-generated path API.`);
   return callSammoAPI<ResultType, ErrorType>("patch", [], args, undefined, true);
 }
 
 export async function HEAD<ResultType extends ValidResponse, ArgType extends undefined = undefined>(
-  args?: ArgType
+  args?: ArgType,
 ): Promise<ResultType>;
 export async function HEAD<ResultType extends ValidResponse, ArgType extends undefined = undefined>(
   args: ArgType | undefined,
-  returnError: false
+  returnError: false,
 ): Promise<ResultType>;
 export async function HEAD<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends undefined = undefined
+  ArgType extends undefined = undefined,
 >(args: ArgType | undefined, returnError: true): Promise<ResultType | ErrorType>;
 export async function HEAD<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends undefined = undefined
+  ArgType extends undefined = undefined,
 >(args?: ArgType, returnError = false): Promise<ResultType | ErrorType> {
   console.error(`Can't directly call HEAD. ${args}, ${returnError}. Use auto-generated path API.`);
   return callSammoAPI<ResultType, ErrorType>("head", [], args, undefined, true);
 }
 
 export async function DELETE<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
-  args?: ArgType
+  args?: ArgType,
 ): Promise<ResultType>;
 export async function DELETE<ResultType extends ValidResponse, ArgType extends RawArgType = RawArgType>(
   args: ArgType | undefined,
-  returnError: false
+  returnError: false,
 ): Promise<ResultType>;
 export async function DELETE<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args: ArgType | undefined, returnError: true): Promise<ResultType | ErrorType>;
 export async function DELETE<
   ResultType extends ValidResponse,
   ErrorType extends InvalidResponse,
-  ArgType extends RawArgType = RawArgType
+  ArgType extends RawArgType = RawArgType,
 >(args?: ArgType, returnError = false): Promise<ResultType | ErrorType> {
   console.error(`Can't directly call DELETE. ${args}, ${returnError}. Use auto-generated path API.`);
   return callSammoAPI<ResultType, ErrorType>("patch", [], args, undefined, true);

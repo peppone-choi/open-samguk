@@ -1,30 +1,29 @@
-
 /**
  * object의 array를 id를 key로 삼는 object로 재 변환
  */
 export function convertDictById<K extends string | number, T extends { id: K }>(arr: ArrayLike<T>): Record<K, T> {
-    const result: Record<string | number, T> = {};
-    for (const v of Object.values(arr)) {
-        result[v.id] = v;
-    }
-    return result;
+  const result: Record<string | number, T> = {};
+  for (const v of Object.values(arr)) {
+    result[v.id] = v;
+  }
+  return result;
 }
 
 /**
  * array를 set 형태의 object로 변환
  */
 export function convertSet<K extends string | number>(arr: ArrayLike<K>): Record<K, true> {
-    const result: Record<string | number, true> = {};
-    for (const v of Object.values(arr)) {
-        result[v] = true;
-    }
-    return result;
+  const result: Record<string | number, true> = {};
+  for (const v of Object.values(arr)) {
+    result[v] = true;
+  }
+  return result;
 }
 
 export function stringFormat(text: string, ...args: (string | number)[]): string {
-    return text.replace(/{(\d+)}/g, function (match, number) {
-        return (typeof args[number] != 'undefined') ? args[number].toString() : match;
-    });
+  return text.replace(/{(\d+)}/g, function (match, number) {
+    return typeof args[number] != "undefined" ? args[number].toString() : match;
+  });
 }
 
 /**
@@ -33,44 +32,71 @@ export function stringFormat(text: string, ...args: (string | number)[]): string
  * @returns {string}
  */
 export function convColorValue(color: string): string {
-    if (color.charAt(0) == '#') {
-        color = color.substr(1);
-    }
-    color = color.toUpperCase();
+  if (color.charAt(0) == "#") {
+    color = color.substr(1);
+  }
+  color = color.toUpperCase();
 
-    const colorBase = new Set([
-        '000080', '0000FF', '008000', '008080', '00BFFF', '00FF00', '00FFFF', '20B2AA',
-        '2E8B57', '483D8B', '6495ED', '7B68EE', '7CFC00', '7FFFD4', '800000', '800080',
-        '808000', '87CEEB', 'A0522D', 'A9A9A9', 'AFEEEE', 'BA55D3', 'E0FFFF', 'F5F5DC',
-        'FF0000', 'FF00FF', 'FF6347', 'FFA500', 'FFC0CB', 'FFD700', 'FFDAB9', 'FFFF00',
-        'FFFFFF'
-    ]);
+  const colorBase = new Set([
+    "000080",
+    "0000FF",
+    "008000",
+    "008080",
+    "00BFFF",
+    "00FF00",
+    "00FFFF",
+    "20B2AA",
+    "2E8B57",
+    "483D8B",
+    "6495ED",
+    "7B68EE",
+    "7CFC00",
+    "7FFFD4",
+    "800000",
+    "800080",
+    "808000",
+    "87CEEB",
+    "A0522D",
+    "A9A9A9",
+    "AFEEEE",
+    "BA55D3",
+    "E0FFFF",
+    "F5F5DC",
+    "FF0000",
+    "FF00FF",
+    "FF6347",
+    "FFA500",
+    "FFC0CB",
+    "FFD700",
+    "FFDAB9",
+    "FFFF00",
+    "FFFFFF",
+  ]);
 
-    if (!colorBase.has(color)) {
-        return '000000';
-    }
+  if (!colorBase.has(color)) {
+    return "000000";
+  }
 
-    return color;
+  return color;
 }
-
 
 //linkify가 불러와 있어야함
 declare global {
-    interface Window {
-        linkifyStr: (v: string, k?: Record<string, string | number>) => string;
-    }
+  interface Window {
+    linkifyStr: (v: string, k?: Record<string, string | number>) => string;
+  }
 }
 export function combineObject<K extends string, V>(item: V[], columnList: K[]): Record<K, V> {
-    const newItem: Record<string, V> = {};
-    for (const columnIdx in columnList) {
-        const columnName = columnList[columnIdx];
-        newItem[columnName] = item[columnIdx];
-    }
-    return newItem;
+  const newItem: Record<string, V> = {};
+  for (const columnIdx in columnList) {
+    const columnName = columnList[columnIdx];
+    newItem[columnName] = item[columnIdx];
+  }
+  return newItem;
 }
 
 export function errUnknown(): void {
-    alert('작업을 실패했습니다.');
+  alert("작업을 실패했습니다.");
 }
 
 /*
@@ -79,21 +105,23 @@ function br2nl (text) {
 }
 */
 
-export function getNPCColor(npcType: number): 'skyblue' | 'cyan' | 'deepskyblue' | 'darkcyan' | 'mediumaquamarine' | undefined {
-    if (npcType == 6){
-        return 'mediumaquamarine';
-    }
-    if (npcType == 5){
-        return 'darkcyan';
-    }
-    if (npcType == 4){
-        return 'deepskyblue';
-    }
-    if (npcType >= 2) {
-        return 'cyan';
-    }
-    if (npcType == 1) {
-        return 'skyblue';
-    }
-    return undefined;
+export function getNPCColor(
+  npcType: number,
+): "skyblue" | "cyan" | "deepskyblue" | "darkcyan" | "mediumaquamarine" | undefined {
+  if (npcType == 6) {
+    return "mediumaquamarine";
+  }
+  if (npcType == 5) {
+    return "darkcyan";
+  }
+  if (npcType == 4) {
+    return "deepskyblue";
+  }
+  if (npcType >= 2) {
+    return "cyan";
+  }
+  if (npcType == 1) {
+    return "skyblue";
+  }
+  return undefined;
 }

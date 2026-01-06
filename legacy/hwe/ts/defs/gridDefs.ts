@@ -315,7 +315,7 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
       },
       {
         groupId: "warResults",
-        open: false
+        open: false,
       },
     ],
   },
@@ -559,60 +559,60 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
         colId: "killcrew",
         hide: true,
         sort: null,
-      }
+      },
     ],
     columnGroup: [
       {
         groupId: "0",
-        open: false
+        open: false,
       },
       {
         groupId: "1",
-        open: false
+        open: false,
       },
       {
         groupId: "stat",
-        open: true
+        open: true,
       },
       {
         groupId: "2",
-        open: false
+        open: false,
       },
       {
         groupId: "expDedLv",
-        open: true
+        open: true,
       },
       {
         groupId: "goldRice",
-        open: true
+        open: true,
       },
       {
         groupId: "3",
-        open: false
+        open: false,
       },
       {
         groupId: "4",
-        open: false
+        open: false,
       },
       {
         groupId: "crewtypeAndCrew",
-        open: false
+        open: false,
       },
       {
         groupId: "trainAtmos",
-        open: false
+        open: false,
       },
       {
         groupId: "specials",
-        open: false
+        open: false,
       },
       {
         groupId: "reservedCommandShort",
-        open: true
+        open: true,
       },
       {
         groupId: "5",
-        open: false
+        open: false,
       },
       {
         groupId: "6",
@@ -620,15 +620,15 @@ export const defaultDisplaySetting: Record<"war" | "normal", GridDisplaySetting>
       },
       {
         groupId: "years",
-        open: false
+        open: false,
       },
       {
         groupId: "killturnAndRefresh",
-        open: true
+        open: true,
       },
       {
         groupId: "warResults",
-        open: false
+        open: false,
       },
     ],
   },

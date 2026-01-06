@@ -7,7 +7,7 @@
         textDecoration: isMe ? 'underline' : undefined,
       }"
     >
-      {{ officer ? officer?.name ?? "-" : "" }}
+      {{ officer ? (officer?.name ?? "-") : "" }}
     </div>
     <div class="bg1 center row gx-0">
       <div class="col">
@@ -37,21 +37,21 @@ import type { PropType } from "vue";
 import VueTypes from "vue-types";
 
 defineProps({
-    chiefLevel: VueTypes.integer.isRequired,
-    style: VueTypes.object.isRequired,
-    officer: {
-      type: Object as PropType<ChiefResponse['chiefList'][0]>,
-      default: undefined,
-    },
-    isMe: VueTypes.bool.isRequired,
-  });
+  chiefLevel: VueTypes.integer.isRequired,
+  style: VueTypes.object.isRequired,
+  officer: {
+    type: Object as PropType<ChiefResponse["chiefList"][0]>,
+    default: undefined,
+  },
+  isMe: VueTypes.bool.isRequired,
+});
 
 const emit = defineEmits<{
-  (event: "click", value: HTMLElement): void,
+  (event: "click", value: HTMLElement): void;
 }>();
 
-function onClick(event: MouseEvent){
-  if(!event.target){
+function onClick(event: MouseEvent) {
+  if (!event.target) {
     return;
   }
   const elem = event.target as HTMLElement;

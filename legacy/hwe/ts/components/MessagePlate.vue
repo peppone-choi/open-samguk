@@ -165,7 +165,7 @@ watch(
   () => {
     isValidMsg.value = testValidMsg(msg.value);
     deletable.value = testDeletable(msg.value);
-  }
+  },
 );
 
 watch(msg, (msg) => {

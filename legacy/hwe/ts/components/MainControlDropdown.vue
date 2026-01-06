@@ -5,7 +5,9 @@
       <a href="v_board.php?isSecret=true" :class="`dropdown-item ${permission >= 2 ? '' : 'disabled'} `">기밀실</a>
     </li>
     <li>
-      <a href="v_troop.php" :class="`dropdown-item ${myLevel >= 1 && nationLevel >= 1 ? '' : 'disabled'} `">부대 편성</a>
+      <a href="v_troop.php" :class="`dropdown-item ${myLevel >= 1 && nationLevel >= 1 ? '' : 'disabled'} `"
+        >부대 편성</a
+      >
     </li>
     <li><a href="t_diplomacy.php" :class="`dropdown-item ${showSecret ? '' : 'disabled'} `">외교부</a></li>
     <li><a href="b_myBossInfo.php" :class="`dropdown-item ${myLevel >= 1 ? '' : 'disabled'} `">인사부</a></li>

@@ -83,7 +83,7 @@ async function reload() {
         return { permission, st0: true, st1: true, st2: true, ...v };
       });
 
-      for (const {id: troopID, name:troopName} of troops) {
+      for (const { id: troopID, name: troopName } of troops) {
         troopList.value[troopID] = troopName;
       }
     } else {
@@ -96,8 +96,8 @@ async function reload() {
   }
 }
 
-function openBattleCenter(generalID: number){
-  window.open(`v_battleCenter.php?gen=${generalID}`)
+function openBattleCenter(generalID: number) {
+  window.open(`v_battleCenter.php?gen=${generalID}`);
 }
 
 onMounted(async () => {

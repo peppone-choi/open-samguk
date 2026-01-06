@@ -1,22 +1,30 @@
 {
-  "name": "@sammo-ts/common",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@sammo/common",
+  "version": "0.0.1",
+  "description": "공용 유틸리티 - RNG, JosaUtil, 타입 정의",
   "type": "module",
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts",
-    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
-    "test": "vitest run"
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
-  "dependencies": {
-    "es-toolkit": "^1.0.0",
-    "js-sha512": "^0.9.0"
+  "scripts": {
+    "build": "tsdown src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --dir .",
+    "test:watch": "vitest --dir ."
   },
   "devDependencies": {
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
-  }
+    "typescript": "^5.3.3",
+    "tsdown": "^0.2.0",
+    "vitest": "^2.1.0"
+  },
+  "files": [
+    "dist"
+  ]
 }

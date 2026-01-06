@@ -27,7 +27,7 @@ watch(
   (newValue) => {
     const clientNow = new Date();
     timeDiff.value = newValue.getTime() - clientNow.getTime();
-  }
+  },
 );
 
 function updateNow() {

@@ -18,7 +18,11 @@ import type { BettingDetailResponse, BettingListResponse } from "./defs/API/Bett
 import type { ReserveBulkCommandResponse, ReserveCommandResponse, ReservedCommandResponse } from "./defs/API/Command";
 import type { ChiefResponse } from "./defs/API/NationCommand";
 import type { inheritBuffType, InheritLogResponse, InheritResetStat } from "./defs/API/InheritAction";
-import type { SetBlockWarResponse, GeneralListResponse as NationGeneralListResponse, NationInfoResponse } from "./defs/API/Nation";
+import type {
+  SetBlockWarResponse,
+  GeneralListResponse as NationGeneralListResponse,
+  NationInfoResponse,
+} from "./defs/API/Nation";
 import type { UploadImageResponse } from "./defs/API/Misc";
 import type { GeneralLogType, GetGeneralLogResponse, JoinArgs } from "./defs/API/General";
 import type {
@@ -33,7 +37,12 @@ import type {
 } from "./defs/API/Global";
 import type { CachedMapResult, CommandTableResponse, GeneralListResponse, ItemTypeKey, MapResult } from "./defs";
 import type { VoteDetailResult, VoteListResult } from "./defs/API/Vote";
-import type { ActiveResourceAuctionList, OpenAuctionResponse, UniqueItemAuctionDetail, UniqueItemAuctionList } from "./defs/API/Auction";
+import type {
+  ActiveResourceAuctionList,
+  OpenAuctionResponse,
+  UniqueItemAuctionDetail,
+  UniqueItemAuctionList,
+} from "./defs/API/Auction";
 import type { MabilboxListResponse, MsgResponse, MsgType } from "./defs/API/Message";
 
 const apiRealPath = {
@@ -70,14 +79,20 @@ const apiRealPath = {
       auctionID: number;
       amount: number;
     }>,
-    GetUniqueItemAuctionDetail: GET as APICallT<{
-      auctionID: number;
-    }, UniqueItemAuctionDetail>,
+    GetUniqueItemAuctionDetail: GET as APICallT<
+      {
+        auctionID: number;
+      },
+      UniqueItemAuctionDetail
+    >,
     GetUniqueItemAuctionList: GET as APICallT<undefined, UniqueItemAuctionList>,
-    OpenUniqueAuction: POST as APICallT<{
-      itemID: string,
-      amount: number,
-    }, OpenAuctionResponse>,
+    OpenUniqueAuction: POST as APICallT<
+      {
+        itemID: string;
+        amount: number;
+      },
+      OpenAuctionResponse
+    >,
   },
   Betting: {
     Bet: PUT as APICallT<{
@@ -134,11 +149,14 @@ const apiRealPath = {
     InstantRetreat: POST as APICallT<undefined>,
     BuildNationCandidate: POST as APICallT<undefined>,
     GetCommandTable: GET as APICallT<undefined, CommandTableResponse>,
-    GetFrontInfo: GET as APICallT<{
-      lastNationNoticeDate?: string,
-      lastGeneralRecordID?: number,
-      lastWorldHistoryID?: number,
-    }, GetFrontInfoResponse>,
+    GetFrontInfo: GET as APICallT<
+      {
+        lastNationNoticeDate?: string;
+        lastGeneralRecordID?: number;
+        lastWorldHistoryID?: number;
+      },
+      GetFrontInfoResponse
+    >,
   },
   Global: {
     GeneralList: GET as APICallT<undefined, GeneralListResponse>,
@@ -155,11 +173,15 @@ const apiRealPath = {
     >,
     GetCachedMap: GET as APICallT<undefined, CachedMapResult>,
     GetDiplomacy: GET as APICallT<undefined, GetDiplomacyResponse>,
-    ExecuteEngine: POST as APICallT<{
-      serverID: string | undefined
-    }, ExecuteResponse, InvalidResponse & {
-      reqRefresh?: boolean
-    }>,
+    ExecuteEngine: POST as APICallT<
+      {
+        serverID: string | undefined;
+      },
+      ExecuteResponse,
+      InvalidResponse & {
+        reqRefresh?: boolean;
+      }
+    >,
     /*GetRecentRecord: GET as APICallT<{
       lastGeneralRecordID: number;
       lastWorldHistoryID: number;
@@ -177,9 +199,12 @@ const apiRealPath = {
     SetNextSpecialWar: PUT as APICallT<{
       type: string;
     }>,
-    GetMoreLog: GET as APICallT<{
-      lastID: number
-    }, InheritLogResponse>,
+    GetMoreLog: GET as APICallT<
+      {
+        lastID: number;
+      },
+      InheritLogResponse
+    >,
     CheckOwner: PUT as APICallT<{
       destGeneralID: number;
     }>,
@@ -187,28 +212,37 @@ const apiRealPath = {
   },
   Message: {
     DeleteMessage: PATCH as APICallT<{
-      msgID: number,
+      msgID: number;
     }>,
     DecideMessageResponse: POST as APICallT<{
-      msgID: number,
-      response: boolean,
+      msgID: number;
+      response: boolean;
     }>,
     GetContactList: GET as APICallT<undefined, MabilboxListResponse>,
-    GetRecentMessage: GET as APICallT<{
-      sequence?: number;
-    }, MsgResponse>,
-    GetOldMessage: GET as APICallT<{
-      to: number;
-      type: MsgType;
-    }, MsgResponse>,
-    SendMessage: POST as APICallT<{
-      mailbox: number;
-      text: string;
-    }, ValidResponse & { msgID: number, msgType: MsgType }>,
+    GetRecentMessage: GET as APICallT<
+      {
+        sequence?: number;
+      },
+      MsgResponse
+    >,
+    GetOldMessage: GET as APICallT<
+      {
+        to: number;
+        type: MsgType;
+      },
+      MsgResponse
+    >,
+    SendMessage: POST as APICallT<
+      {
+        mailbox: number;
+        text: string;
+      },
+      ValidResponse & { msgID: number; msgType: MsgType }
+    >,
     ReadLatestMessage: PATCH as APICallT<{
-      type: 'diplomacy' | 'private';
+      type: "diplomacy" | "private";
       msgID: number;
-    }>
+    }>,
   },
   Misc: {
     UploadImage: POST as APICallT<
@@ -299,7 +333,7 @@ const apiRealPath = {
     KickFromTroop: PATCH as APICallT<{
       troopID: number;
       generalID: number;
-    }>
+    }>,
   },
   Vote: {
     AddComment: POST as APICallT<{

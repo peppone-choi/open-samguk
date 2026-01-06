@@ -297,20 +297,8 @@ import { unwrap } from "./util/unwrap";
 
 const toasts = unwrap(useToast());
 const self = reactive(staticValues);
-const {
-  editable,
-  nationMsg,
-  scoutMsg,
-  nationID,
-  year,
-  month,
-  nationsList,
-  gold,
-  rice,
-  income,
-  policy,
-  warSettingCnt,
-} = toRefs(self);
+const { editable, nationMsg, scoutMsg, nationID, year, month, nationsList, gold, rice, income, policy, warSettingCnt } =
+  toRefs(self);
 
 let oldNationMsg = staticValues.nationMsg;
 const inEditNationMsg = ref(false);
@@ -543,10 +531,9 @@ async function setBlockScout() {
     console.error(e);
   }
 }
-
 </script>
 <style lang="scss" scoped>
-:deep(.ProseMirror){
+:deep(.ProseMirror) {
   min-height: 3em;
 }
 </style>

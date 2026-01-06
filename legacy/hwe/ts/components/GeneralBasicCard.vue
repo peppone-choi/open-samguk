@@ -152,7 +152,9 @@
     </div>
     <div class="bg1">벌점</div>
     <div class="general-refresh-score-total">
-      {{ formatRefreshScore(general.refreshScoreTotal) }} {{ (general.refreshScoreTotal ?? 0).toLocaleString() }}점({{ general.refreshScore ?? 0 }})
+      {{ formatRefreshScore(general.refreshScoreTotal) }} {{ (general.refreshScoreTotal ?? 0).toLocaleString() }}점({{
+        general.refreshScore ?? 0
+      }})
     </div>
   </div>
 </template>
@@ -215,7 +217,7 @@ watch(
       general.leadership,
       general.strength,
       general.intel,
-      gameConstStore.value.gameConst
+      gameConstStore.value.gameConst,
     );
 
     ageColor.value = (() => {
@@ -230,7 +232,7 @@ watch(
       return "red";
     })();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const dummyInfo: GameIActionInfo = { value: "None", name: "-", info: "" };
@@ -269,7 +271,7 @@ watch(
       ? { value: "None", name: `${Math.max(general.age + 1, general.specage2)}세`, info: "-" }
       : gameConstStore.value.iActionInfo.specialWar[general.specialWar];
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const nextExecuteMinute = ref(999);
@@ -282,7 +284,7 @@ watch(
     }
     nextExecuteMinute.value = Math.floor(clamp((turnTime.getTime() - props.lastExecuted.getTime()) / 60000, 0, 999));
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 

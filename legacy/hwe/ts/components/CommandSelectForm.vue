@@ -112,7 +112,7 @@ watch(
   () => props.activatedCategory,
   (newValue) => {
     chosenCategory.value = newValue;
-  }
+  },
 );
 
 const showForm = ref(false);
@@ -137,7 +137,7 @@ const commandList = ref(
       deco: CategoryDecoration;
       values: CommandItem[];
     }
-  >()
+  >(),
 );
 
 function updateCommandList(rawCommandList: typeof props.commandList) {
@@ -152,10 +152,9 @@ function updateCommandList(rawCommandList: typeof props.commandList) {
   }
   categories.value = newCategories;
 
-  if(categories.value.size === 0) {
+  if (categories.value.size === 0) {
     chosenCategory.value = "";
-  }
-  else if (!categories.value.has(props.activatedCategory)) {
+  } else if (!categories.value.has(props.activatedCategory)) {
     chosenCategory.value = rawCommandList[0].category;
   } else {
     chosenCategory.value = props.activatedCategory;
@@ -222,7 +221,6 @@ defineExpose({
   justify-content: center;
 }
 
-
 .compensatePositive {
   color: $cyan;
   display: inline-block;
@@ -235,7 +233,7 @@ defineExpose({
   width: 1rem;
 }
 
-.compensateNeutral{
+.compensateNeutral {
   display: inline-block;
   width: 1rem;
 }
@@ -244,6 +242,4 @@ defineExpose({
   color: $red;
   text-decoration: line-through $red;
 }
-
-
 </style>

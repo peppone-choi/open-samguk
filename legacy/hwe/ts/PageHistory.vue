@@ -3,7 +3,7 @@
     <TopBackBar title="연감" type="close">
       <div>&nbsp;</div>
       <!-- HACK: variant에 정상적인 값을 넣어야 해서...-->
-      <BDropdown class="optionMenu" right :variant="('sammo-base2' as 'primary')">
+      <BDropdown class="optionMenu" right :variant="'sammo-base2' as 'primary'">
         <template #button-content><i class="bi bi-gear-fill"></i>&nbsp;설정</template>
         <BDropdownItem @click="isNationRankingBottom = !isNationRankingBottom"
           >국가 순서 위치 변경(모바일 전용)</BDropdownItem
@@ -221,11 +221,10 @@ onMounted(() => {
     }
   }
 }
-
 </style>
 <style>
 .hidden_but_copyable {
-    color: rgba(0, 0, 0, 0);
-    font-size: 0;
+  color: rgba(0, 0, 0, 0);
+  font-size: 0;
 }
 </style>

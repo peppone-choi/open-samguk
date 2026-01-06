@@ -88,7 +88,7 @@ watch(
   (value) => {
     rawValue.value = value;
     printValue.value = value.toLocaleString();
-  }
+  },
 );
 
 function updateValue() {

@@ -198,7 +198,7 @@ onMounted(() => {
         document.addEventListener("mouseup", endDrag);
         document.addEventListener("touchend", endDrag);
       }
-    }
+    },
   );
 
   if (!props.disabled) {

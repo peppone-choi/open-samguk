@@ -101,7 +101,7 @@ watch(
     if (targets.has(value)) {
       selectedCity.value = targets.get(value);
     }
-  }
+  },
 );
 
 watch(selectedCity, (value) => {

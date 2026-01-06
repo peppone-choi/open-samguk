@@ -134,7 +134,7 @@
           :max="10000"
           :step="10"
         ></NumberInputWithInfo>
-              </div>
+      </div>
       <div class="col col-lg-2">
         마감가 ({{ openAuctionInfo.type == "buyRice" ? "금" : "쌀" }})
         <NumberInputWithInfo

@@ -12,11 +12,7 @@
       getMapSeasonClassName(),
     ]"
   >
-    <div
-      v-b-tooltip.hover.top="titleTooltip"
-      :title="titleTooltip"
-      class="map_title"
-    >
+    <div v-b-tooltip.hover.top="titleTooltip" :title="titleTooltip" class="map_title">
       <!-- eslint-disable-next-line vue/max-attributes-per-line -->
       <span class="map_title_text" :style="{ color: getTitleColor() }"
         >{{ mapData?.year }}年 {{ mapData?.month }}月</span
@@ -182,7 +178,7 @@ const uuid = uuidv4();
 const gameConstStore = unwrap_err(
   inject<Ref<GameConstStore>>("gameConstStore"),
   Error,
-  "gameConstStore가 주입되지 않았습니다."
+  "gameConstStore가 주입되지 않았습니다.",
 );
 
 const tooltipDom = ref<ComponentPublicInstance<HTMLDivElement>>();
@@ -197,7 +193,7 @@ watch(
     if (newWidth == 0) return;
     tooltipWidth.value = newWidth;
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const { sourceType: cursorType } = useMouse();
@@ -279,7 +275,7 @@ function getBeginGameLimitTooltip(): string | undefined {
   return `초반제한 기간 : ${remainYear}년${remainMonth > 0 ? ` ${remainMonth}개월` : ""} (${startYear + 3}년)`;
 }
 
-const titleTooltip = computed(()=>{
+const titleTooltip = computed(() => {
   const result: string[] = [];
   const beginLimit = getBeginGameLimitTooltip();
   if (beginLimit) {
@@ -291,7 +287,13 @@ const titleTooltip = computed(()=>{
   const maxTechLevel = gameConstStore.value.gameConst.maxTechLevel;
   const initialAllowedTechLevel = gameConstStore.value.gameConst.initialAllowedTechLevel;
   const techLevelIncYear = gameConstStore.value.gameConst.techLevelIncYear;
-  const currentTechLimit = getMaxRelativeTechLevel(startYear, year, maxTechLevel, initialAllowedTechLevel, techLevelIncYear);
+  const currentTechLimit = getMaxRelativeTechLevel(
+    startYear,
+    year,
+    maxTechLevel,
+    initialAllowedTechLevel,
+    techLevelIncYear,
+  );
 
   if (currentTechLimit == maxTechLevel) {
     result.push(`기술등급 제한 : ${currentTechLimit}등급 (최종)`);
@@ -433,7 +435,7 @@ watch(
   (mapInfo) => {
     activatedCity.value = undefined;
     drawableMap.value = convertCityObjs(mapInfo);
-  }
+  },
 );
 
 const touchState = ref(0);
@@ -472,12 +474,11 @@ function mouseenter(city: MapCityParsed, $event: MouseEvent): void {
   }
 }
 
-function pointerleave(city: MapCityParsed, $event: MouseEvent|TouchEvent): void {
+function pointerleave(city: MapCityParsed, $event: MouseEvent | TouchEvent): void {
   if (cursorType.value == "touch") {
     activatedCity.value = undefined;
     touchState.value = 0;
-  }
-  else if (cursorType.value == "mouse") {
+  } else if (cursorType.value == "mouse") {
     activatedCity.value = undefined;
     touchState.value = 0;
   }

@@ -110,19 +110,24 @@ Use Redis Streams for daemon control and mutation requests, and Redis pub/sub fo
 API 서버 명령은 제어 채널(Redis Stream 또는 프로세스 내)을 통해 데몬에 전달됨. 데몬은 상태 및 실행 이벤트로 응답함.
 
 ```ts
-export type RunReason = 'schedule' | 'manual' | 'poke';
+export type RunReason = "schedule" | "manual" | "poke";
 
 export type DaemonCommand =
-    | { type: 'run'; reason: RunReason; targetTime?: string; budget?: TurnRunBudget }
-    | { type: 'pause'; reason?: string }
-    | { type: 'resume'; reason?: string }
-    | { type: 'getStatus'; requestId: string };
+  | {
+      type: "run";
+      reason: RunReason;
+      targetTime?: string;
+      budget?: TurnRunBudget;
+    }
+  | { type: "pause"; reason?: string }
+  | { type: "resume"; reason?: string }
+  | { type: "getStatus"; requestId: string };
 
 export type DaemonEvent =
-    | { type: 'status'; requestId?: string; status: TurnDaemonStatus }
-    | { type: 'runStarted'; at: string; reason: RunReason }
-    | { type: 'runCompleted'; at: string; result: TurnRunResult }
-    | { type: 'runFailed'; at: string; error: string };
+  | { type: "status"; requestId?: string; status: TurnDaemonStatus }
+  | { type: "runStarted"; at: string; reason: RunReason }
+  | { type: "runCompleted"; at: string; result: TurnRunResult }
+  | { type: "runFailed"; at: string; error: string };
 ```
 
 ### API 서버 흐름
@@ -193,19 +198,24 @@ export type DaemonEvent =
 API server commands are delivered to the daemon over the control channel (Redis Stream or in-process). The daemon replies with status and run events.
 
 ```ts
-export type RunReason = 'schedule' | 'manual' | 'poke';
+export type RunReason = "schedule" | "manual" | "poke";
 
 export type DaemonCommand =
-    | { type: 'run'; reason: RunReason; targetTime?: string; budget?: TurnRunBudget }
-    | { type: 'pause'; reason?: string }
-    | { type: 'resume'; reason?: string }
-    | { type: 'getStatus'; requestId: string };
+  | {
+      type: "run";
+      reason: RunReason;
+      targetTime?: string;
+      budget?: TurnRunBudget;
+    }
+  | { type: "pause"; reason?: string }
+  | { type: "resume"; reason?: string }
+  | { type: "getStatus"; requestId: string };
 
 export type DaemonEvent =
-    | { type: 'status'; requestId?: string; status: TurnDaemonStatus }
-    | { type: 'runStarted'; at: string; reason: RunReason }
-    | { type: 'runCompleted'; at: string; result: TurnRunResult }
-    | { type: 'runFailed'; at: string; error: string };
+  | { type: "status"; requestId?: string; status: TurnDaemonStatus }
+  | { type: "runStarted"; at: string; reason: RunReason }
+  | { type: "runCompleted"; at: string; result: TurnRunResult }
+  | { type: "runFailed"; at: string; error: string };
 ```
 
 ## Authentication and Session Management (Draft)

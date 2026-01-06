@@ -1,7 +1,7 @@
 import "@scss/troop.scss";
 
-import { createApp } from 'vue'
-import PageTroop from '@/PageTroop.vue';
+import { createApp } from "vue";
+import PageTroop from "@/PageTroop.vue";
 import { auto500px } from "./util/auto500px";
 import { htmlReady } from "./util/htmlReady";
 import { insertCustomCSS } from "./util/customCSS";
@@ -12,4 +12,4 @@ auto500px();
 htmlReady(() => {
   insertCustomCSS();
 });
-installVue3Components(createApp(PageTroop)).mount('#app')
+installVue3Components(createApp(PageTroop)).mount("#app");

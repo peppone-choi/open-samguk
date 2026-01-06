@@ -200,7 +200,7 @@ if (!props.officer || !props.officer.turnTime) {
   const baseTurnTime = parseTime(props.officer.turnTime);
   for (const idx of range(props.officer.turn.length)) {
     turnTimes.value.push(
-      formatTime(addMinutes(baseTurnTime, idx * props.turnTerm), props.turnTerm >= 5 ? "HH:mm" : "mm:ss")
+      formatTime(addMinutes(baseTurnTime, idx * props.turnTerm), props.turnTerm >= 5 ? "HH:mm" : "mm:ss"),
     );
   }
 }

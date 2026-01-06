@@ -125,7 +125,7 @@ watch(
       general.leadership,
       general.strength,
       general.intel,
-      gameConstStore.value.gameConst
+      gameConstStore.value.gameConst,
     );
 
     ageColor.value = (() => {
@@ -140,7 +140,7 @@ watch(
       return "red";
     })();
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const dummyInfo: GameIActionInfo = { value: "None", name: "-", info: "" };
@@ -163,7 +163,7 @@ watch(
       ? dummyInfo
       : gameConstStore.value.iActionInfo.specialWar[general.specialWar];
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 

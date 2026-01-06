@@ -10,194 +10,193 @@
 $modcolor2: color.adjust($nbase2color, $lightness: -5%);
 
 .turn_pad {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background-color: $nbase2color;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background-color: $nbase2color;
 }
 
 #mainTable {
-    .subRows {
-        display: grid;
-        grid-template-columns: 1fr;
-        line-height: 1.05em;
+  .subRows {
+    display: grid;
+    grid-template-columns: 1fr;
+    line-height: 1.05em;
+  }
+
+  .chiefCommand {
+    .time_pad {
+      align-self: center;
+      text-align: center;
+      background-color: black;
+      line-height: 30px;
     }
 
-    .chiefCommand {
-        .time_pad {
-            align-self: center;
-            text-align: center;
-            background-color: black;
-            line-height: 30px;
-        }
-
-        .time_pad.inverted{
-            background-color: gray;
-            color: white;
-        }
-
-        .turn_pad {
-            line-height: 30px;
-        }
-
-        .row:nth-of-type(odd) .turn_pad {
-            background-color: $modcolor2;
-        }
+    .time_pad.inverted {
+      background-color: gray;
+      color: white;
     }
+
+    .turn_pad {
+      line-height: 30px;
+    }
+
+    .row:nth-of-type(odd) .turn_pad {
+      background-color: $modcolor2;
+    }
+  }
 }
 
 .commandBox {
-    position: relative;
+  position: relative;
 }
 
 @include media-1000px {
-    #container {
-        width: 1000px;
-        margin: 0 auto;
-        position: relative;
+  #container {
+    width: 1000px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  #mainTable {
+    display: grid;
+    grid-template-columns: 24px repeat(4, 1fr) 24px;
+
+    .commandPad {
+      margin-left: 0;
     }
 
-    #mainTable {
-        display: grid;
-        grid-template-columns: 24px repeat(4, 1fr) 24px;
-
-        .commandPad {
-            margin-left: 0;
-        }
-
-        .subRows {
-            display: grid;
-            grid-template-columns: 1fr;
-        }
-
-        .turnIdx {
-            text-align: center;
-        }
-
-        .time_pad {
-            height: 30px;
-        }
+    .subRows {
+      display: grid;
+      grid-template-columns: 1fr;
     }
 
-    #bottomChiefBox {
-        display: none;
+    .turnIdx {
+      text-align: center;
     }
 
-    .only500px {
-        display: none !important;
+    .time_pad {
+      height: 30px;
     }
+  }
 
-    .commandBox .controlPad {
-        .turn_pad:nth-of-type(even) {
-            background-color: $modcolor2;
-        }
-    }
+  #bottomChiefBox {
+    display: none;
+  }
 
-    #bottomBar{
-        width: 1000px;
-        margin: 0 auto;
-        position: relative;
+  .only500px {
+    display: none !important;
+  }
+
+  .commandBox .controlPad {
+    .turn_pad:nth-of-type(even) {
+      background-color: $modcolor2;
     }
+  }
+
+  #bottomBar {
+    width: 1000px;
+    margin: 0 auto;
+    position: relative;
+  }
 }
 
 @include media-500px {
-    .only1000px {
-        display: none !important;
+  .only1000px {
+    display: none !important;
+  }
+
+  .targetIsNotMe {
+    display: none;
+  }
+
+  #container {
+    position: relative;
+    width: 500px;
+    height: 460px;
+    margin: auto;
+  }
+
+  #mainTable {
+    display: block;
+    height: 420px;
+  }
+
+  #mainTable.targetIsNotMe {
+    display: grid;
+    grid-template-columns: 24px 260px 24px;
+    margin-top: 10px;
+    margin-left: calc((500px - 24px - 260px - 24px) / 2);
+
+    .commandBox {
+      display: none;
+    }
+  }
+
+  .commandBox .controlPad {
+    margin-top: 10px;
+
+    .turn_pad:nth-of-type(even) {
+      background-color: $modcolor2;
+    }
+  }
+
+  #bottomChiefBox {
+    position: relative;
+    left: calc(50% - 250px);
+
+    width: 500px;
+    height: 320px;
+    overflow: hidden;
+
+    .turn_pad:nth-of-type(even) {
+      background-color: $modcolor2;
+    }
+  }
+
+  #bottomChiefList {
+    bottom: 0;
+    left: 0;
+    width: 1000px;
+    font-size: 20px;
+    transform-origin: left top;
+    transform: scale(0.5);
+
+    display: grid;
+    grid-template-columns: 24px repeat(4, 1fr) 24px;
+
+    .subRows {
+      display: grid;
+      grid-template-columns: 1fr;
+      line-height: 1.05em;
     }
 
-    .targetIsNotMe {
-        display: none;
+    .subRows:not(:first-child) {
+      border-left: solid 1px white;
     }
 
-    #container {
-        position: relative;
-        width: 500px;
-        height: 460px;
-        margin: auto;
+    .tableCell {
+      overflow: hidden;
+      white-space: nowrap;
+      text-align: center;
     }
 
-    #mainTable {
-        display: block;
-        height: 420px;
+    .nameHeader {
+      text-align: center;
+      font-size: 28px;
+      line-height: 36px;
+      overflow: hidden;
+      white-space: nowrap;
     }
 
-    #mainTable.targetIsNotMe {
-        display: grid;
-        grid-template-columns: 24px 260px 24px;
-        margin-top: 10px;
-        margin-left: calc((500px - 24px - 260px - 24px) / 2);
-
-        .commandBox {
-            display: none;
-        }
+    .turnIdx {
+      font-size: 20px;
+      text-align: center;
     }
+  }
 
-    .commandBox .controlPad {
-        margin-top: 10px;
-
-        .turn_pad:nth-of-type(even) {
-            background-color: $modcolor2;
-        }
-    }
-
-    #bottomChiefBox {
-        position: relative;
-        left: calc(50% - 250px);
-
-        width: 500px;
-        height: 320px;
-        overflow: hidden;
-
-
-        .turn_pad:nth-of-type(even) {
-            background-color: $modcolor2;
-        }
-    }
-
-    #bottomChiefList {
-        bottom: 0;
-        left: 0;
-        width: 1000px;
-        font-size: 20px;
-        transform-origin: left top;
-        transform: scale(0.5);
-
-        display: grid;
-        grid-template-columns: 24px repeat(4, 1fr) 24px;
-
-        .subRows {
-            display: grid;
-            grid-template-columns: 1fr;
-            line-height: 1.05em;
-        }
-
-        .subRows:not(:first-child) {
-            border-left: solid 1px white;
-        }
-
-        .tableCell {
-            overflow: hidden;
-            white-space: nowrap;
-            text-align: center;
-        }
-
-        .nameHeader {
-            text-align: center;
-            font-size: 28px;
-            line-height: 36px;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-
-        .turnIdx {
-            font-size: 20px;
-            text-align: center;
-        }
-    }
-
-    #bottomBar {
-        width: 500px;
-        margin: 0 auto;
-        position: relative;
-    }
+  #bottomBar {
+    width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
 }

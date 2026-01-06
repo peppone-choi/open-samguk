@@ -115,8 +115,8 @@ export type GetFrontInfoResponse = {
     year: number;
     month: number;
     autorunUser: {
-      limit_minutes: number,
-      options: Record<AutorunUserMode, number>,
+      limit_minutes: number;
+      options: Record<AutorunUserMode, number>;
     };
     turnterm: number;
     lastExecuted: string;
@@ -169,7 +169,7 @@ export type GetFrontInfoResponse = {
       cons: string;
     };
     color: string;
-    level: NationLevel
+    level: NationLevel;
     capital: number;
     gold: number;
     rice: number;
@@ -226,13 +226,12 @@ export type GetFrontInfoResponse = {
   };
 };
 
-
 export type MenuLine = {
-  type: 'line';
-}
+  type: "line";
+};
 
 export type MenuItem = {
-  type: 'item';
+  type: "item";
   name: string;
   url: string;
   funcCall?: string;
@@ -240,22 +239,21 @@ export type MenuItem = {
   newTab?: boolean;
   condHightlightVar?: string;
   condShowVar?: string;
-}
+};
 
 export type MenuSplit = {
-  type: 'split';
+  type: "split";
   main: MenuItem;
   subMenu: (MenuItem | MenuLine)[];
-}
+};
 
 export type MenuMulti = {
-  type: 'multi';
+  type: "multi";
   name: string;
   subMenu: (MenuItem | MenuLine)[];
-}
-
+};
 
 export type GetMenuResponse = {
   result: true;
   menu: (MenuItem | MenuSplit | MenuMulti)[];
-}
+};

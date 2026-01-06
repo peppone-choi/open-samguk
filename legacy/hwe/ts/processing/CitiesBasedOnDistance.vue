@@ -4,7 +4,7 @@
     <template v-for="(cityID, key) in cityList" :key="key">
       <template v-if="key !== 0"> , </template>
       <a
-        :style="{ color: colorMap[distance as keyof typeof colorMap] ?? undefined, textDecoration:'underline' }"
+        :style="{ color: colorMap[distance as keyof typeof colorMap] ?? undefined, textDecoration: 'underline' }"
         @click="emit('selected', cityID)"
         >{{ citiesMap.get(cityID)?.name }}</a
       >

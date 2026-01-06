@@ -85,7 +85,7 @@ watch(
   () => props.modelValue,
   (value) => {
     selectedColor.value = targets.value.get(value);
-  }
+  },
 );
 
 watch(selectedColor, (value) => {
@@ -94,7 +94,6 @@ watch(selectedColor, (value) => {
   }
   emit("update:modelValue", value.value);
 });
-
 
 onMounted(() => {
   forFind.value = [];
@@ -109,5 +108,4 @@ onMounted(() => {
   }
   selectedColor.value = forFind.value[0];
 });
-
 </script>

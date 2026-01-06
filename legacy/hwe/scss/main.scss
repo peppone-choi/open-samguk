@@ -3,345 +3,336 @@
 @import "./util.scss";
 
 body {
-    color: white;
-    background-color: black;
-    border-width: 1px;
-    border-color: gray;
-    background-position: center;
-    background-repeat: repeat-y;
+  color: white;
+  background-color: black;
+  border-width: 1px;
+  border-color: gray;
+  background-position: center;
+  background-repeat: repeat-y;
 }
 
 @include media-1000px {
-    #container {
-        width: 1000px;
-        margin: 0 auto;
-    }
+  #container {
+    width: 1000px;
+    margin: 0 auto;
+  }
 }
 
 @include media-500px {
-    body {
-        overflow-x: hidden;
-    }
+  body {
+    overflow-x: hidden;
+  }
 
-    #container {
-        width: 500px;
-        margin: 0 auto;
-        margin-bottom: 40px !important;
-    }
+  #container {
+    width: 500px;
+    margin: 0 auto;
+    margin-bottom: 40px !important;
+  }
 
-    input[type='text'],
-    input[type='number'],
-    textarea {
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    font-size: 16px;
+  }
+
+  #navbar500 {
+    .nav-item ul.dropdown-menu {
+      max-height: calc(100vh - 50px);
+      overflow-y: auto;
+
+      li {
         font-size: 16px;
+      }
     }
 
-    #navbar500 {
-        .nav-item ul.dropdown-menu {
-            max-height: calc(100vh - 50px);
-            overflow-y: auto;
-
-            li {
-                font-size: 16px;
-            }
-        }
-
-        .nav-item>.btn {
-            margin-bottom: -6px;
-            text-align: center;
-            width: 125px;
-            font-size: 16px;
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-        }
-
-        box-shadow: 0 -1px 0 $dark;
-        border-left: none !important;
-        border-right: none !important;
-
-        .toolbarButton2 {
-            text-decoration: underline;
-        }
+    .nav-item > .btn {
+      margin-bottom: -6px;
+      text-align: center;
+      width: 125px;
+      font-size: 16px;
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
     }
 
-    #navbarGlobalItems {
-        columns: 2;
-    }
+    box-shadow: 0 -1px 0 $dark;
+    border-left: none !important;
+    border-right: none !important;
 
-    #navbarNationItems {
-        columns: 3;
+    .toolbarButton2 {
+      text-decoration: underline;
     }
+  }
 
-    #navbarQuickItems {
-        columns: 3;
-    }
+  #navbarGlobalItems {
+    columns: 2;
+  }
+
+  #navbarNationItems {
+    columns: 3;
+  }
+
+  #navbarQuickItems {
+    columns: 3;
+  }
 }
 
 .avoid-wrap {
-    display: inline-block;
+  display: inline-block;
 }
 
-
 #map_view {
-    display: grid;
+  display: grid;
 }
 
 .mainCityInfo {
+  display: grid;
+  border-right: solid 1px gray;
+  border-bottom: solid 1px gray;
+
+  .gPanel {
     display: grid;
-    border-right: solid 1px gray;
-    border-bottom: solid 1px gray;
+    grid-template-columns: 1fr 2fr;
+    border-top: solid 1px gray;
+    border-left: solid 1px gray;
 
-    .gPanel {
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        border-top: solid 1px gray;
-        border-left: solid 1px gray;
-
-        .gHead {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    .gHead {
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+  }
 
-    .cityNamePanel,
-    .nationNamePanel {
-        font-weight: bold;
-        text-align: center;
-        border-top: solid 1px gray;
-        border-left: solid 1px gray;
-    }
+  .cityNamePanel,
+  .nationNamePanel {
+    font-weight: bold;
+    text-align: center;
+    border-top: solid 1px gray;
+    border-left: solid 1px gray;
+  }
 
-    .popPanel {
-        grid-column: 1 / 3;
-        grid-template-columns: 1fr 5fr;
-    }
+  .popPanel {
+    grid-column: 1 / 3;
+    grid-template-columns: 1fr 5fr;
+  }
 }
 
 .vote-cell {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @include media-1000px {
-    #map_view {
-        grid-template-columns: 500px 200px 300px;
-        grid-template-rows: 520px 130px;
+  #map_view {
+    grid-template-columns: 500px 200px 300px;
+    grid-template-rows: 520px 130px;
+  }
+
+  #mapZone {
+    height: 520px;
+    grid-column: 1 / 3;
+    grid-row: 1 / 2;
+  }
+
+  #cityInfo {
+    grid-column: 1 / 3;
+    grid-row: 2 / 3;
+  }
+
+  #reservedCommandZone {
+    width: 300px;
+    grid-column: 3 / 4;
+    grid-row: 1 / 3;
+    position: relative;
+  }
+
+  #actionMiniPlate {
+    position: absolute;
+    right: 0;
+    bottom: 1em;
+    width: 290px;
+  }
+
+  #actionMiniPlateSub {
+    display: none;
+  }
+
+  .commandPad {
+    position: absolute;
+    z-index: 7;
+  }
+
+  #nation-position {
+    grid-column: 1 / 2;
+  }
+
+  #general-position {
+    grid-column: 2 / 4;
+  }
+
+  #generalCommandButton {
+    grid-column: 1 / 4;
+  }
+
+  .buttonPlate {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    padding: 0;
+    gap: 1px;
+  }
+
+  .toolbars > .buttonPlate {
+    grid-template-columns: repeat(8, 1fr);
+  }
+
+  .buttonPlate > a {
+    display: block;
+    text-decoration: none;
+  }
+
+  .mainCityInfo {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+
+    .cityNamePanel,
+    .nationNamePanel {
+      grid-column: 1 / 5;
     }
 
-    #mapZone {
-        height: 520px;
-        grid-column: 1 / 3;
-        grid-row: 1 / 2;
+    .officer4Panel {
+      grid-column: 4 / 5;
+      grid-row: 3 / 4;
     }
 
-    #cityInfo {
-        grid-column: 1 / 3;
-        grid-row: 2 / 3;
+    .officer3Panel {
+      grid-column: 4 / 5;
+      grid-row: 4 / 5;
     }
 
-
-    #reservedCommandZone {
-        width: 300px;
-        grid-column: 3 / 4;
-        grid-row: 1 / 3;
-        position: relative;
+    .officer2Panel {
+      grid-column: 4 / 5;
+      grid-row: 5 / 6;
     }
-
-    #actionMiniPlate {
-        position: absolute;
-        right: 0;
-        bottom: 1em;
-        width: 290px;
-    }
-
-    #actionMiniPlateSub {
-        display: none;
-    }
-
-    .commandPad {
-        position: absolute;
-        z-index: 7;
-    }
-
-    #nation-position {
-        grid-column: 1 / 2;
-    }
-
-    #general-position {
-        grid-column: 2 / 4;
-    }
-
-    #generalCommandButton {
-        grid-column: 1 / 4;
-    }
-
-
-    .buttonPlate {
-        display: grid;
-        grid-template-columns: repeat(10, 1fr);
-        padding: 0;
-        gap: 1px;
-    }
-
-    .toolbars>.buttonPlate {
-        grid-template-columns: repeat(8, 1fr);
-    }
-
-    .buttonPlate>a {
-        display: block;
-        text-decoration: none;
-    }
-
-    .mainCityInfo {
-        grid-template-columns: 1fr 1fr 1fr 1fr;
-
-        .cityNamePanel,
-        .nationNamePanel {
-            grid-column: 1 / 5;
-        }
-
-        .officer4Panel {
-            grid-column: 4 / 5;
-            grid-row: 3 / 4;
-        }
-
-        .officer3Panel {
-            grid-column: 4 / 5;
-            grid-row: 4 / 5;
-        }
-
-        .officer2Panel {
-            grid-column: 4 / 5;
-            grid-row: 5 / 6;
-        }
-    }
+  }
 }
 
-#nation-msg{
-    word-break: break-all;
+#nation-msg {
+  word-break: break-all;
 
-    p {
-        min-height: 1em;
-    }
+  p {
+    min-height: 1em;
+  }
 }
 
 #nation-msg-box {
-    position: relative;
-    overflow: hidden;
+  position: relative;
+  overflow: hidden;
 }
 
 @include media-500px {
-    .buttonPlate {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        padding: 0;
-        gap: 1px;
+  .buttonPlate {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    padding: 0;
+    gap: 1px;
+  }
+
+  .toolbars > .buttonPlate {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .buttonPlate > a {
+    display: block;
+    text-decoration: none;
+  }
+
+  #nation-msg {
+    transform-origin: 0px 0px;
+    width: 1000px;
+    transform: scale(0.5);
+  }
+
+  #map_view {
+    grid-template-columns: 1fr;
+  }
+
+  #reservedCommandZone {
+    grid-row: 1 / 2;
+  }
+
+  #generalCommandButton {
+    grid-row: 2 / 3;
+  }
+
+  #nation-position {
+    grid-row: 3 / 4;
+  }
+
+  #general-position {
+    grid-row: 4 / 5;
+  }
+
+  #mapZone {
+    grid-row: 6 / 7;
+
+    .world_map {
+      width: 500px;
+      height: calc((500px + 20px) * 500 / 700);
     }
 
-    .toolbars>.buttonPlate {
-        grid-template-columns: repeat(4, 1fr);
+    .map_title {
+      transform-origin: 0px 0px;
+      transform: scale(calc(500 / 700));
+      margin-bottom: calc(-20px * 200 / 700);
     }
 
-    .buttonPlate>a {
-        display: block;
-        text-decoration: none;
+    .map_body {
+      transform-origin: 0px 0px;
+      transform: scale(calc(500 / 700));
     }
+  }
 
+  #actionMiniPlate {
+    display: none;
+  }
 
-    #nation-msg {
-        transform-origin: 0px 0px;
-        width: 1000px;
-        transform: scale(0.5);
+  #actionMiniPlate {
+    margin-bottom: 0.5em;
+  }
+
+  .mainCityInfo {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+
+    .cityNamePanel,
+    .nationNamePanel {
+      grid-column: 1 / 4;
     }
-
-    #map_view {
-        grid-template-columns: 1fr;
-    }
-
-    #reservedCommandZone {
-        grid-row: 1 / 2;
-    }
-
-
-    #generalCommandButton {
-        grid-row: 2 / 3;
-    }
-
-    #nation-position {
-        grid-row: 3 / 4;
-    }
-
-    #general-position {
-        grid-row: 4 / 5;
-    }
-
-
-
-    #mapZone {
-        grid-row: 6 / 7;
-
-        .world_map {
-            width: 500px;
-            height: calc((500px + 20px) * 500 / 700);
-        }
-
-        .map_title {
-            transform-origin: 0px 0px;
-            transform: scale(calc(500 / 700));
-            margin-bottom: calc(-20px * 200 / 700);
-        }
-
-        .map_body {
-            transform-origin: 0px 0px;
-            transform: scale(calc(500 / 700));
-        }
-    }
-
-
-    #actionMiniPlate {
-        display: none;
-    }
-
-    #actionMiniPlate {
-        margin-bottom: 0.5em;
-    }
-
-
-    .mainCityInfo {
-        display: grid;
-        grid-template-columns: 1fr 1fr 1fr;
-
-        .cityNamePanel,
-        .nationNamePanel {
-            grid-column: 1 / 4;
-        }
-    }
+  }
 }
 
 .nation_info td {
-    height: 18px;
+  height: 18px;
 }
 
 #sidebar {
-    position: fixed;
-    right: 0;
-    top: 50%;
-    transform: translateY(-50%);
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /*임시용 */
 
 #container {
-    /*width:1000px;*/
-    margin: auto;
-    font-size: 14px;
+  /*width:1000px;*/
+  margin: auto;
+  font-size: 14px;
 }
 
 /*임시용 끝*/
 
 #message_board {
-    position: relative;
+  position: relative;
 }
 
 /*
@@ -351,126 +342,123 @@ body {
 }
 */
 .msg_plate {
-    width: 100%;
-    outline-style: solid;
-    outline-width: 1px;
-    outline-color: gray;
-    min-height: 64px;
-    font-size: 12.5px;
-    word-break: break-all;
-    color: white;
+  width: 100%;
+  outline-style: solid;
+  outline-width: 1px;
+  outline-color: gray;
+  min-height: 64px;
+  font-size: 12.5px;
+  word-break: break-all;
+  color: white;
 }
 
 .msg_plate_private {
-    background-color: #5d1e1a;
+  background-color: #5d1e1a;
 }
 
 .msg_plate_private.msg_plate_dest {
-    background-color: #5d461a;
+  background-color: #5d461a;
 }
 
 .msg_plate_public {
-    background-color: #141c65;
-
+  background-color: #141c65;
 }
 
 @include media-1000px {
-    #message_board section {
-        overflow-y: auto;
-        overflow-x: hidden;
-        height: 650px;
-    }
+  #message_board section {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 650px;
+  }
 
-
-    .public_message,
-    .diplomacy_message,
-    .national_message,
-    .private_message {
-        min-height: 300px;
-    }
+  .public_message,
+  .diplomacy_message,
+  .national_message,
+  .private_message {
+    min-height: 300px;
+  }
 }
 
 @include media-500px {
+  #message_board .message_input_form {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0px;
+    z-index: 5;
+  }
 
-    #message_board .message_input_form {
-        position: -webkit-sticky;
-        position: sticky;
-        top: 0px;
-        z-index: 5;
+  #public_talk_position,
+  #national_talk_position,
+  #private_talk_position,
+  #diplomacy_talk_position {
+    display: block;
+    position: relative;
+    top: -72px;
+    visibility: hidden;
+  }
+
+  #message_board .board_side {
+    position: relative;
+
+    > .board_header {
+      position: -webkit-sticky;
+      position: sticky;
+      top: 72px;
+      z-index: 4;
     }
+  }
 
-    #public_talk_position,
-    #national_talk_position,
-    #private_talk_position,
-    #diplomacy_talk_position {
-        display: block;
-        position: relative;
-        top: -72px;
-        visibility: hidden;
-    }
-
-    #message_board .board_side {
-        position: relative;
-
-        >.board_header {
-            position: -webkit-sticky;
-            position: sticky;
-            top: 72px;
-            z-index: 4;
-        }
-    }
-
-    .public_message,
-    .diplomacy_message,
-    .national_message,
-    .private_message {
-        min-height: 150px;
-    }
+  .public_message,
+  .diplomacy_message,
+  .national_message,
+  .private_message {
+    min-height: 150px;
+  }
 }
 
 .msg_plate_national,
 .msg_plate_diplomacy {
-    background-color: #00582c;
+  background-color: #00582c;
 }
 
 .msg_plate_national.msg_plate_dest,
 .msg_plate_diplomacy.msg_plate_dest {
-    background-color: #704615;
+  background-color: #704615;
 }
 
 .msg_plate_national.msg_plate_src,
 .msg_plate_diplomacy.msg_plate_src {
-    background-color: #70153b;
+  background-color: #70153b;
 }
 
 .msg_icon {
-    float: left;
-    width: 64px;
-    height: 64px;
-    border-right: solid 1px gray;
+  float: left;
+  width: 64px;
+  height: 64px;
+  border-right: solid 1px gray;
 }
 
 .msg_time {
-    font-size: 0.75em;
-    font-weight: normal;
+  font-size: 0.75em;
+  font-weight: normal;
 }
 
 .msg_header {
-    font-weight: bold;
-    margin-bottom: 3px;
-    color: white;
-    position: relative;
+  font-weight: bold;
+  margin-bottom: 3px;
+  color: white;
+  position: relative;
 }
 
 #mailbox_list {
-    font-weight: bold;
+  font-weight: bold;
 }
 
 .board_header {
-    color: white;
-    outline-style: solid;
-    outline-width: 1px;
-    outline-color: gray;
+  color: white;
+  outline-style: solid;
+  outline-width: 1px;
+  outline-color: gray;
 }
 
 /*
@@ -491,44 +479,42 @@ body {
 }
 */
 .msg_invalid {
-    color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .msg_body {
-    padding-left: 64px;
+  padding-left: 64px;
 }
 
 .msg_target {
-    margin: 2px 2px 0 2px;
-    padding: 2px 3px;
-    display: inline-block;
-    box-shadow: 2px 2px black;
-    border-radius: 3px;
+  margin: 2px 2px 0 2px;
+  padding: 2px 3px;
+  display: inline-block;
+  box-shadow: 2px 2px black;
+  border-radius: 3px;
 }
 
 .btn-delete-msg {
-    position: absolute;
-    right: 0;
-    top: 0;
-    margin: 2px 2px 0 2px;
-    font-size: 8px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 2px 2px 0 2px;
+  font-size: 8px;
 }
-
 
 @include media-500px {
-    #mailbox_list-col {
-        order: 1;
-    }
+  #mailbox_list-col {
+    order: 1;
+  }
 
-    #msg_submit-col {
-        order: 2;
-    }
+  #msg_submit-col {
+    order: 2;
+  }
 
-    #msg_input-col {
-        order: 3;
-    }
+  #msg_input-col {
+    order: 3;
+  }
 }
-
 
 /*
 .public_message .msg_target{
@@ -537,73 +523,72 @@ body {
 */
 
 .msg_target.msg_bright {
-    color: black;
+  color: black;
 }
 
 .msg_target.msg_dark {
-    color: white;
+  color: white;
 }
 
 .msg_from_to {
-    display: inline-block;
+  display: inline-block;
 }
 
 .msg_content {
-    margin-left: 10px;
-    margin-right: 5px;
-    overflow: hidden;
+  margin-left: 10px;
+  margin-right: 5px;
+  overflow: hidden;
 }
 
 .msg_prompt {
-    text-align: right;
-    margin-top: 5px;
-    margin-right: 5px;
+  text-align: right;
+  margin-top: 5px;
+  margin-right: 5px;
 }
 
 #mailbox_list option {
-    color: white;
-    background-color: black;
+  color: white;
+  background-color: black;
 }
 
-
 @include media-1000px {
-    #float-tabs {
-        display: none;
-    }
+  #float-tabs {
+    display: none;
+  }
 }
 
 @include media-500px {
-    #float-tabs {
-        position: fixed;
-        right: -1rem;
-        top: 10%;
-        width: 3rem;
-        z-index: 24;
+  #float-tabs {
+    position: fixed;
+    right: -1rem;
+    top: 10%;
+    width: 3rem;
+    z-index: 24;
 
-        .btn-group-vertical {
-            margin-bottom: 0.5em;
-        }
-
-        .btn {
-            padding-left: 0.5em;
-            padding-right: 1.5rem;
-            line-height: 1em;
-        }
+    .btn-group-vertical {
+      margin-bottom: 0.5em;
     }
+
+    .btn {
+      padding-left: 0.5em;
+      padding-right: 1.5rem;
+      line-height: 1em;
+    }
+  }
 }
 
 @media (max-width: 560px) {
-    #float-tabs {
-        .btn {
-            opacity: 0.7;
-        }
-
-        .btn.active {
-            opacity: 1.0;
-        }
-
-        .btn:active {
-            opacity: 0.7;
-        }
+  #float-tabs {
+    .btn {
+      opacity: 0.7;
     }
+
+    .btn.active {
+      opacity: 1;
+    }
+
+    .btn:active {
+      opacity: 0.7;
+    }
+  }
 }

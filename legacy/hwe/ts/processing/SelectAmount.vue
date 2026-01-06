@@ -37,12 +37,12 @@ import { ref, watch } from "vue";
 import VueTypes from "vue-types";
 
 const props = defineProps({
-    modelValue: VueTypes.number.isRequired,
-    minAmount: VueTypes.number.isRequired,
-    maxAmount: VueTypes.number.isRequired,
-    amountGuide: VueTypes.arrayOf(Number).def([1000, 2000, 5000, 10000]),
-    step: VueTypes.number.def(1),
-  });
+  modelValue: VueTypes.number.isRequired,
+  minAmount: VueTypes.number.isRequired,
+  maxAmount: VueTypes.number.isRequired,
+  amountGuide: VueTypes.arrayOf(Number).def([1000, 2000, 5000, 10000]),
+  step: VueTypes.number.def(1),
+});
 
 const emit = defineEmits<{
   (event: "update:modelValue", value: number): void;
@@ -54,7 +54,7 @@ watch(
   () => props.modelValue,
   (value) => {
     amount.value = value;
-  }
+  },
 );
 
 watch(amount, (value) => {

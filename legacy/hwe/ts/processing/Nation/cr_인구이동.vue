@@ -14,9 +14,7 @@
       :image-path="imagePath"
     />
 
-    <div>
-      현재 도시의 인구를 인접 도시로 이동합니다.<br />
-    </div>
+    <div>현재 도시의 인구를 인접 도시로 이동합니다.<br /></div>
     <div class="row">
       <div class="col-6 col-lg-4">
         도시 :
@@ -63,12 +61,10 @@ import { unwrap } from "@/util/unwrap";
 import type { Args } from "@/processing/args";
 import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
-import {
-  getProcSearchable,
-} from "../processingRes";
-import type { MapResult } from '@/defs';
-import { SammoAPI } from '@/SammoAPI';
-import { getGameConstStore, type GameConstStore } from '@/GameConstStore';
+import { getProcSearchable } from "../processingRes";
+import type { MapResult } from "@/defs";
+import { SammoAPI } from "@/SammoAPI";
+import { getGameConstStore, type GameConstStore } from "@/GameConstStore";
 
 const serverNick = staticValues.serverNick;
 const serverID = staticValues.serverID;
@@ -88,14 +84,7 @@ void Promise.all([storeP]).then(() => {
   asyncReady.value = true;
 });
 
-const amountGuide = [
-  5000,
-  10000,
-  20000,
-  30000,
-  50000,
-  100000,
-];
+const amountGuide = [5000, 10000, 20000, 30000, 50000, 100000];
 const maxAmount = 100000;
 const minAmount = 100;
 const selectedCityID = ref(staticValues.currentCity);
@@ -108,10 +97,10 @@ const citiesMap = ref(
       name: string;
       info?: string;
     }
-  >()
+  >(),
 );
-watch(gameConstStore, (store)=>{
-  if(!store){
+watch(gameConstStore, (store) => {
+  if (!store) {
     return;
   }
   const tmpCitiesMap = new Map<
@@ -122,13 +111,13 @@ watch(gameConstStore, (store)=>{
     }
   >();
 
-  for(const city of Object.values(store.cityConst)){
+  for (const city of Object.values(store.cityConst)) {
     tmpCitiesMap.set(city.id, {
       name: city.name,
     });
   }
   citiesMap.value = tmpCitiesMap;
-})
+});
 
 async function submit(e: Event) {
   const event = new CustomEvent<Args>("customSubmit", {
@@ -139,7 +128,6 @@ async function submit(e: Event) {
   });
   unwrap(e.target).dispatchEvent(event);
 }
-
 
 const amount = ref(0);
 
@@ -156,10 +144,9 @@ watch(selectedCityObj, (city?: MapCityParsed) => {
 });
 
 onMounted(async () => {
-  try{
-    map.value = await SammoAPI.Global.GetMap({neutralView:0, showMe: 1});
-  }
-  catch(e){
+  try {
+    map.value = await SammoAPI.Global.GetMap({ neutralView: 0, showMe: 1 });
+  } catch (e) {
     console.error(e);
   }
 });

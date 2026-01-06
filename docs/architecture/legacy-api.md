@@ -12,6 +12,7 @@
   - 클래스 위치: `legacy/src/sammo/API/*`
 
 공통 규칙:
+
 - 요청은 `path` 쿼리 파라미터로 라우팅됨 (예: `path=Global/GetMap`).
 - `sammo\API\<Category>\<Action>` 네임스페이스/클래스로 매핑됨.
 - GET은 쿼리 파라미터로, 그 외 메서드는 JSON 바디로 인자 전달.
@@ -27,6 +28,7 @@
 ## 게임 API (legacy/hwe/api.php)
 
 Auction:
+
 - `PUT Auction/BidBuyRiceAuction` `{ auctionID, amount }`
 - `PUT Auction/BidSellRiceAuction` `{ auctionID, amount }`
 - `GET Auction/GetActiveResourceAuctionList`
@@ -38,11 +40,13 @@ Auction:
 - `POST Auction/OpenUniqueAuction` `{ itemID, amount }`
 
 Betting:
+
 - `PUT Betting/Bet` `{ bettingID, bettingType[], amount }`
 - `GET Betting/GetBettingDetail` `{ betting_id }`
 - `GET Betting/GetBettingList` `{ req? }`
 
 Command:
+
 - `GET Command/GetReservedCommand`
 - `PUT Command/PushCommand` `{ amount }`
 - `PUT Command/RepeatCommand` `{ amount }`
@@ -50,6 +54,7 @@ Command:
 - `PUT Command/ReserveBulkCommand` `[{ turnList[], action, arg? }, ...]`
 
 General:
+
 - `POST General/Join` `{ ... }`
 - `GET General/GetGeneralLog` `{ reqType, reqTo? }`
 - `PUT General/DropItem` `{ itemType }`
@@ -60,6 +65,7 @@ General:
 - `GET General/GetFrontInfo` `{ lastNationNoticeDate?, lastGeneralRecordID?, lastWorldHistoryID? }`
 
 Global:
+
 - `GET Global/GeneralList`
 - `GET Global/GeneralListWithToken`
 - `GET Global/GetConst`
@@ -72,6 +78,7 @@ Global:
 - `GET Global/GetGlobalMenu`
 
 InheritAction:
+
 - `PUT InheritAction/BuyHiddenBuff` `{ type, level }`
 - `PUT InheritAction/BuyRandomUnique`
 - `PUT InheritAction/ResetSpecialWar`
@@ -82,6 +89,7 @@ InheritAction:
 - `PUT InheritAction/ResetStat` `{ ... }`
 
 Message:
+
 - `PATCH Message/DeleteMessage` `{ msgID }`
 - `POST Message/DecideMessageResponse` `{ msgID, response }`
 - `GET Message/GetContactList`
@@ -91,9 +99,11 @@ Message:
 - `PATCH Message/ReadLatestMessage` `{ type, msgID }`
 
 Misc:
+
 - `POST Misc/UploadImage` `{ imageData }`
 
 NationCommand:
+
 - `GET NationCommand/GetReservedCommand`
 - `PUT NationCommand/PushCommand` `{ amount }`
 - `PUT NationCommand/RepeatCommand` `{ amount }`
@@ -101,6 +111,7 @@ NationCommand:
 - `PUT NationCommand/ReserveBulkCommand` `[{ turnList[], action, arg? }, ...]`
 
 Nation:
+
 - `GET Nation/GeneralList`
 - `PUT Nation/SetNotice` `{ msg }`
 - `PUT Nation/SetScoutMsg` `{ msg }`
@@ -114,6 +125,7 @@ Nation:
 - `GET Nation/GetNationInfo` `{ full? }`
 
 Troop:
+
 - `POST Troop/NewTroop` `{ troopName }`
 - `PATCH Troop/JoinTroop` `{ troopID }`
 - `PATCH Troop/ExitTroop`
@@ -121,6 +133,7 @@ Troop:
 - `PATCH Troop/KickFromTroop` `{ troopID, generalID }`
 
 Vote:
+
 - `POST Vote/AddComment` `{ voteID, text }`
 - `GET Vote/GetVoteList`
 - `GET Vote/GetVoteDetail` `{ voteID }`
@@ -130,4 +143,5 @@ Vote:
 ## 기타 OAuth 엔드포인트
 
 카카오 OAuth 흐름은 별도 스크립트를 사용합니다:
+
 - `legacy/oauth_kakao/j_login_oauth.php`, `legacy/oauth_kakao/j_change_pw.php`, `legacy/oauth_kakao/j_join_process.php` 등

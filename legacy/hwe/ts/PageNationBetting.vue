@@ -38,8 +38,6 @@ import { BContainer, useToast } from "bootstrap-vue-next";
 import { unwrap } from "./util/unwrap";
 import type { BettingListResponse } from "./defs/API/Betting";
 
-
-
 const toasts = unwrap(useToast());
 const year = ref<number>();
 const month = ref<number>();
@@ -56,7 +54,7 @@ console.log("시작!");
 onMounted(async () => {
   try {
     const result = await SammoAPI.Betting.GetBettingList({
-      req: 'bettingNation'
+      req: "bettingNation",
     });
     year.value = result.year;
     month.value = result.month;

@@ -2,9 +2,9 @@ import { useLocalStorage, useMediaQuery } from "@vueuse/core";
 import { keyScreenMode, type ScreenModeType } from "@/defs";
 import { ref, watch } from "vue";
 
-export const is1000pxMode = useMediaQuery('(min-width:940px');
+export const is1000pxMode = useMediaQuery("(min-width:940px");
 export const isFullWidth = ref(true);
-export const widthMode = useLocalStorage<ScreenModeType>(keyScreenMode, "auto")
+export const widthMode = useLocalStorage<ScreenModeType>(keyScreenMode, "auto");
 
 function setWidthMode([widthMode, is1000pxMode]: [ScreenModeType, boolean]): void {
   if (widthMode == "1000px") {

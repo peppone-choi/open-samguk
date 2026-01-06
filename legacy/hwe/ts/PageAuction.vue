@@ -51,10 +51,10 @@ const isResAuction = ref(props.isResAuction);
 async function tryReload() {
   console.log(auctionResource.value);
   console.log(auctionUniqueItem.value);
-  if(isResAuction.value && auctionResource.value){
+  if (isResAuction.value && auctionResource.value) {
     await auctionResource.value.refresh();
   }
-  if(!isResAuction.value && auctionUniqueItem.value){
+  if (!isResAuction.value && auctionUniqueItem.value) {
     await auctionUniqueItem.value.refresh();
   }
 }

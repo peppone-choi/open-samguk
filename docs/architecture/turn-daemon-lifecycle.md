@@ -38,31 +38,31 @@ The daemon interleaves API request handling between scheduled turn executions. A
 
 ```ts
 while (!stopping) {
-    const signal = await waitForNextSignal(nextTurnTime, wakeSignal);
-    if (signal.type === 'pause') {
-        paused = true;
-    }
-    if (signal.type === 'resume') {
-        paused = false;
-    }
-    if (paused || running) {
-        continue;
-    }
+  const signal = await waitForNextSignal(nextTurnTime, wakeSignal);
+  if (signal.type === "pause") {
+    paused = true;
+  }
+  if (signal.type === "resume") {
+    paused = false;
+  }
+  if (paused || running) {
+    continue;
+  }
 
-    await drainApiRequestsUntil(nextTurnTime);
+  await drainApiRequestsUntil(nextTurnTime);
 
-    if (now() < nextTurnTime && signal.type !== 'run') {
-        continue;
-    }
+  if (now() < nextTurnTime && signal.type !== "run") {
+    continue;
+  }
 
-    running = true;
-    try {
-        await runUntil(now(), budget);
-        await flushChanges();
-        publishTurnEvents();
-    } finally {
-        running = false;
-    }
+  running = true;
+  try {
+    await runUntil(now(), budget);
+    await flushChanges();
+    publishTurnEvents();
+  } finally {
+    running = false;
+  }
 }
 ```
 
@@ -99,22 +99,22 @@ Admin controls should toggle `paused`, trigger manual run, and request catch-up.
 
 ```json
 {
-    "profile": "che:default",
-    "state": "idle",
-    "running": false,
-    "paused": false,
-    "lastRunAt": "2026-01-01T12:00:00Z",
-    "lastDurationMs": 842,
-    "lastTurnTime": "2026-01-01 12:00:00",
-    "nextTurnTime": "2026-01-01 12:10:00",
-    "pendingReason": "schedule",
-    "queueDepth": 3,
-    "checkpoint": {
-        "turnTime": "2026-01-01 12:00:00",
-        "generalId": 1201,
-        "year": 12,
-        "month": 3
-    }
+  "profile": "che:default",
+  "state": "idle",
+  "running": false,
+  "paused": false,
+  "lastRunAt": "2026-01-01T12:00:00Z",
+  "lastDurationMs": 842,
+  "lastTurnTime": "2026-01-01 12:00:00",
+  "nextTurnTime": "2026-01-01 12:10:00",
+  "pendingReason": "schedule",
+  "queueDepth": 3,
+  "checkpoint": {
+    "turnTime": "2026-01-01 12:00:00",
+    "generalId": 1201,
+    "year": 12,
+    "month": 3
+  }
 }
 ```
 
@@ -131,47 +131,47 @@ Admin controls should toggle `paused`, trigger manual run, and request catch-up.
 ## TypeScript Sketch (Draft)
 
 ```ts
-export type TurnDaemonState = 'idle' | 'running' | 'flushing' | 'paused' | 'stopping';
+export type TurnDaemonState = "idle" | "running" | "flushing" | "paused" | "stopping";
 
 export interface TurnRunBudget {
-    budgetMs: number;
-    maxGenerals: number;
-    catchUpCap: number;
+  budgetMs: number;
+  maxGenerals: number;
+  catchUpCap: number;
 }
 
 export interface TurnCheckpoint {
-    turnTime: string;
-    generalId?: number;
-    year: number;
-    month: number;
+  turnTime: string;
+  generalId?: number;
+  year: number;
+  month: number;
 }
 
 export interface TurnRunResult {
-    lastTurnTime: string;
-    processedGenerals: number;
-    processedTurns: number;
-    durationMs: number;
-    partial: boolean;
-    checkpoint?: TurnCheckpoint;
+  lastTurnTime: string;
+  processedGenerals: number;
+  processedTurns: number;
+  durationMs: number;
+  partial: boolean;
+  checkpoint?: TurnCheckpoint;
 }
 
 export interface TurnDaemonStatus {
-    state: TurnDaemonState;
-    running: boolean;
-    paused: boolean;
-    lastRunAt?: string;
-    lastDurationMs?: number;
-    lastTurnTime?: string;
-    nextTurnTime?: string;
-    pendingReason?: RunReason;
-    queueDepth: number;
-    checkpoint?: TurnCheckpoint;
+  state: TurnDaemonState;
+  running: boolean;
+  paused: boolean;
+  lastRunAt?: string;
+  lastDurationMs?: number;
+  lastTurnTime?: string;
+  nextTurnTime?: string;
+  pendingReason?: RunReason;
+  queueDepth: number;
+  checkpoint?: TurnCheckpoint;
 }
 
 export interface TurnRunner {
-    getStatus(): Promise<TurnDaemonStatus>;
-    requestRun(reason: RunReason, targetTime?: string, budget?: TurnRunBudget): Promise<void>;
-    pause(reason?: string): Promise<void>;
-    resume(reason?: string): Promise<void>;
+  getStatus(): Promise<TurnDaemonStatus>;
+  requestRun(reason: RunReason, targetTime?: string, budget?: TurnRunBudget): Promise<void>;
+  pause(reason?: string): Promise<void>;
+  resume(reason?: string): Promise<void>;
 }
 ```

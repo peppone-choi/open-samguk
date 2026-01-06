@@ -151,7 +151,7 @@ async function refreshDetail() {
   try {
     currentAuction.value = await SammoAPI.Auction.GetUniqueItemAuctionDetail({ auctionID });
     const bidList = currentAuction.value.bidList;
-    const highestBidAmount = Math.max(bidList[0].amount, bidList[bidList.length-1].amount);
+    const highestBidAmount = Math.max(bidList[0].amount, bidList[bidList.length - 1].amount);
     bidAmount.value = Math.ceil(highestBidAmount * 1.01);
   } catch (e) {
     console.error(e);
@@ -175,7 +175,7 @@ const toasts = unwrap(useToast());
 const gameConstStore = unwrap_err(
   inject<Ref<GameConstStore>>("gameConstStore"),
   Error,
-  "gameConstStore가 주입되지 않았습니다."
+  "gameConstStore가 주입되지 않았습니다.",
 );
 
 function cutDateTime(dateTime: string, showSecond = false) {
@@ -190,10 +190,10 @@ async function refreshList() {
     const result = await SammoAPI.Auction.GetUniqueItemAuctionList();
     obfuscatedName.value = result.obfuscatedName;
     finishedAuctionList.value = new Map(
-      result.list.filter((auction) => auction.finished).map((auction) => [auction.id, auction])
+      result.list.filter((auction) => auction.finished).map((auction) => [auction.id, auction]),
     );
     ongoingAuctionList.value = new Map(
-      result.list.filter((auction) => !auction.finished).map((auction) => [auction.id, auction])
+      result.list.filter((auction) => !auction.finished).map((auction) => [auction.id, auction]),
     );
     if (currentAuctionID.value === undefined && ongoingAuctionList.value.size > 0) {
       const auctionIterator = ongoingAuctionList.value.values().next();

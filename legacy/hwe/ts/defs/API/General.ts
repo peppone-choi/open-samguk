@@ -11,11 +11,11 @@ export type JoinArgs = {
   inheritBonusStat?: [number, number, number];
 };
 
-export type GeneralLogType = 'generalHistory'|'generalAction'|'battleResult'|'battleDetail';
+export type GeneralLogType = "generalHistory" | "generalAction" | "battleResult" | "battleDetail";
 
 export type GetGeneralLogResponse = {
-  result: true,
-  reqType: GeneralLogType,
-  generalID: number,
-  log: Record<string, string>
-}
+  result: true;
+  reqType: GeneralLogType;
+  generalID: number;
+  log: Record<string, string>;
+};

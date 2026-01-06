@@ -254,7 +254,7 @@ $(function ($) {
           data: generalData,
         },
         null,
-        4
+        4,
       );
 
       download(saveData, filename, "application/json");
@@ -283,7 +283,7 @@ $(function ($) {
           data: battleData,
         },
         null,
-        4
+        4,
       );
 
       download(saveData, filename, "application/json");
@@ -939,7 +939,7 @@ $(function ($) {
       },
       function () {
         alert("전투 개시 실패!");
-      }
+      },
     );
   };
 
@@ -979,7 +979,7 @@ $(function ($) {
       },
       function () {
         alert("재정렬 실패!");
-      }
+      },
     );
   };
 
@@ -1076,7 +1076,7 @@ $(function ($) {
         addNation(
           combineArray(data.list[myNationID], data.column) as GeneralInfo[],
           nations[myNationID].name,
-          nations[myNationID].color
+          nations[myNationID].color,
         );
 
         for (const nationID of Object.keys(data.list)) {
@@ -1086,7 +1086,7 @@ $(function ($) {
           addNation(
             combineArray(data.list[nationID], data.column) as GeneralInfo[],
             nations[nationID].name,
-            nations[nationID].color
+            nations[nationID].color,
           );
         }
         initGeneralList = true;

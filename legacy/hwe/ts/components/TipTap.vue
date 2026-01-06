@@ -75,7 +75,6 @@
     <BButtonGroup class="mx-1">
       <BButton
         v-b-tooltip.hover="'색상 취소'"
-
         @click="editor?.chain().focus().unsetColor().unsetBackgroundColor().run()"
       >
         <i class="bi bi-droplet" />
@@ -85,7 +84,13 @@
         type="color"
         class="form-control form-control-color"
         :value="colorConvert(editor.getAttributes('textStyle').color, '#ffffff')"
-        @input="editor?.chain().focus().setColor(($event.target as HTMLInputElement).value).run()"
+        @input="
+          editor
+            ?.chain()
+            .focus()
+            .setColor(($event.target as HTMLInputElement).value)
+            .run()
+        "
       />
       <input
         v-b-tooltip.hover="'배경색'"
@@ -93,7 +98,11 @@
         class="form-control form-control-color"
         :value="colorConvert(editor.getAttributes('textStyle').backgroundColor, '#000000')"
         @input="
-          editor?.chain().focus().setBackgroundColor(($event.target as HTMLInputElement).value).run()
+          editor
+            ?.chain()
+            .focus()
+            .setBackgroundColor(($event.target as HTMLInputElement).value)
+            .run()
         "
       />
     </BButtonGroup>
@@ -370,7 +379,7 @@ watch(
     }
 
     editor.value?.commands.setContent(value, false);
-  }
+  },
 );
 
 watch(
@@ -383,7 +392,7 @@ watch(
     if (value == true) {
       editor.value.commands.focus();
     }
-  }
+  },
 );
 
 onMounted(() => {

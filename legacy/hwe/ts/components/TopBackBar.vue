@@ -57,7 +57,7 @@ const props = defineProps({
 
 const slots = useSlots();
 console.log(slots);
-const hasSlot = !!slots['default'];
+const hasSlot = !!slots["default"];
 
 const emit = defineEmits(["update:searchable", "reload"]);
 

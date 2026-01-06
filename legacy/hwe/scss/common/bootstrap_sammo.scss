@@ -2,8 +2,7 @@
   @return color-contrast($color);
 }
 
-@each $colorType,
-$color in $nationColors {
+@each $colorType, $color in $nationColors {
   .sam-color-#{$colorType} {
     .sam-nation-own-bgcolor {
       background-color: $color;
@@ -51,8 +50,7 @@ $color in $nationColors {
   }
 }
 
-@each $colorType,
-$color in $sammoColors {
+@each $colorType, $color in $sammoColors {
   .btn-sammo-#{$colorType} {
     @include button-variant($color, $color);
 
@@ -88,40 +86,39 @@ $color in $sammoColors {
   }
 }
 
-
 .buttonPlate {
   .toolbarButton {
-      @extend .btn;
-      @extend .btn-sammo-base2;
-      width: 100%;
-      font-weight: bold;
-      font-size: 14px;
+    @extend .btn;
+    @extend .btn-sammo-base2;
+    width: 100%;
+    font-weight: bold;
+    font-size: 14px;
   }
 
   .toolbarButton2 {
-      @extend .btn;
-      @extend .btn-sammo-base2;
-      color: magenta;
-      width: 100%;
-      font-weight: bold;
-      font-size: 14px;
+    @extend .btn;
+    @extend .btn-sammo-base2;
+    color: magenta;
+    width: 100%;
+    font-weight: bold;
+    font-size: 14px;
 
-      &:hover,
-      &:focus,
-      &:active {
-          color: magenta;
-      }
+    &:hover,
+    &:focus,
+    &:active {
+      color: magenta;
+    }
   }
 
   .commandButton {
-      width: 100%;
-      font-weight: bold;
-      font-size: 14px;
-      display: block;
+    width: 100%;
+    font-weight: bold;
+    font-size: 14px;
+    display: block;
   }
 }
 
 //FIXME: toast의 scss가 바뀌면 삭제해야함
-#app .b-toast .toast .toast-body{
+#app .b-toast .toast .toast-body {
   color: black !important;
 }

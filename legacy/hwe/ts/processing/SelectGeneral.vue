@@ -96,7 +96,7 @@ watch(
   (val) => {
     const target = targets.get(val);
     selectedGeneral.value = target;
-  }
+  },
 );
 
 watch(selectedGeneral, (val) => {
@@ -121,7 +121,7 @@ const forFindGroup = ref(new Map<number, SelectedGeneral[]>());
 watch(
   () => props.generals,
   (generals) => {
-    const tmpFind: typeof forFind["value"] = [];
+    const tmpFind: (typeof forFind)["value"] = [];
     const tmpFindGroup = new Map<number, SelectedGeneral[]>();
 
     for (const gen of generals) {
@@ -170,7 +170,7 @@ watch(
     forFindGroup.value = tmpFindGroup;
     forFind.value = tmpFind;
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 <style lang="scss">

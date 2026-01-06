@@ -40,6 +40,6 @@ watch(
   () => props.params,
   (newParams) => {
     displayValue.value = convertValue(newParams.value);
-  }
+  },
 );
 </script>

@@ -82,8 +82,8 @@
 
 <script lang="ts">
 declare const staticValues: {
-  serverNick: string,
-  serverID: string,
+  serverNick: string;
+  serverID: string;
   currentCity: number;
   commandName: string;
   entryInfo: ["General" | "Nation", unknown];
@@ -97,7 +97,7 @@ declare const formatCityInfo: (city: MapCityParsedRaw) => MapCityParsed;
 </script>
 
 <script lang="ts" setup>
-import MapViewer, { type CityPositionMap, type MapCityParsed, type MapCityParsedRaw} from '@/components/MapViewer.vue';
+import MapViewer, { type CityPositionMap, type MapCityParsed, type MapCityParsedRaw } from "@/components/MapViewer.vue";
 import SelectCity from "@/processing/SelectCity.vue";
 import CityBasedOnDistance from "@/processing/CitiesBasedOnDistance.vue";
 import { ref, type Ref, watch, onMounted, provide } from "vue";
@@ -107,9 +107,9 @@ import TopBackBar from "@/components/TopBackBar.vue";
 import BottomBar from "@/components/BottomBar.vue";
 import { pick as JosaPick } from "@util/JosaUtil";
 import { getProcSearchable } from "./processingRes";
-import type { MapResult } from '@/defs';
-import { SammoAPI } from '@/SammoAPI';
-import { getGameConstStore, type GameConstStore } from '@/GameConstStore';
+import type { MapResult } from "@/defs";
+import { SammoAPI } from "@/SammoAPI";
+import { getGameConstStore, type GameConstStore } from "@/GameConstStore";
 
 const serverNick = staticValues.serverNick;
 const serverID = staticValues.serverID;
@@ -141,10 +141,10 @@ const citiesMap = ref(
       name: string;
       info?: string;
     }
-  >()
+  >(),
 );
-watch(gameConstStore, (store)=>{
-  if(!store){
+watch(gameConstStore, (store) => {
+  if (!store) {
     return;
   }
   const tmpCitiesMap = new Map<
@@ -155,14 +155,13 @@ watch(gameConstStore, (store)=>{
     }
   >();
 
-  for(const city of Object.values(store.cityConst)){
+  for (const city of Object.values(store.cityConst)) {
     tmpCitiesMap.set(city.id, {
       name: city.name,
     });
   }
   citiesMap.value = tmpCitiesMap;
-})
-
+});
 
 function selected(cityID: number) {
   selectedCityID.value = cityID;
@@ -191,10 +190,9 @@ watch(selectedCityObj, (city?: MapCityParsed) => {
 });
 
 onMounted(async () => {
-  try{
-    map.value = await SammoAPI.Global.GetMap({neutralView:0, showMe: 1});
-  }
-  catch(e){
+  try {
+    map.value = await SammoAPI.Global.GetMap({ neutralView: 0, showMe: 1 });
+  } catch (e) {
     console.error(e);
   }
 });

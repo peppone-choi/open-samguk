@@ -19,6 +19,6 @@ export function formatRefreshScore(refreshScore: number | null) {
   if (idx >= 0) {
     return refreshScoreMap[idx][1] ?? "?";
   }
-  const uidx = (~idx) - 1;
+  const uidx = ~idx - 1;
   return refreshScoreMap[uidx][1];
 }

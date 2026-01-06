@@ -1,36 +1,14 @@
-'use client';
+import type { Metadata } from "next";
 
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { httpBatchLink } from '@trpc/client';
-import React, { useState } from 'react';
-import { trpc } from '../utils/trpc';
-import './globals.css';
+export const metadata: Metadata = {
+  title: "삼국지 모의전투",
+  description: "HiDCHe 삼국지 모의전투 게임",
+};
 
-export default function RootLayout({
-    children,
-}: {
-    children: React.ReactNode;
-}) {
-    const [queryClient] = useState(() => new QueryClient());
-    const [trpcClient] = useState(() =>
-        trpc.createClient({
-            links: [
-                httpBatchLink({
-                    url: 'http://localhost:4000/trpc',
-                }),
-            ],
-        }),
-    );
-
-    return (
-        <trpc.Provider client={trpcClient} queryClient={queryClient}>
-            <QueryClientProvider client={queryClient}>
-                <html lang="ko">
-                    <body className="min-h-screen bg-background antialiased">
-                        {children}
-                    </body>
-                </html>
-            </QueryClientProvider>
-        </trpc.Provider>
-    );
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="ko">
+      <body>{children}</body>
+    </html>
+  );
 }

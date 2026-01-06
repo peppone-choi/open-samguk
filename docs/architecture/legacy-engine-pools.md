@@ -28,9 +28,9 @@
 
 ## 흐름 요약
 
-1) 이름 예약 (`select_pool`)
-2) 후보 생성/선택 (`select_npc_token`)
-3) 장수 생성 및 초기 배치
+1. 이름 예약 (`select_pool`)
+2. 후보 생성/선택 (`select_npc_token`)
+3. 장수 생성 및 초기 배치
 
 ## 포팅 포인트
 

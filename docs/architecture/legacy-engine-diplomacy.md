@@ -22,11 +22,11 @@
 
 ## 수락 처리 흐름 (레거시)
 
-1) 메시지 유효성 검사
-2) 외교권자 여부 확인
-3) `buildNationCommandClass()`로 수락 커맨드 구성
-4) 조건 검사(`hasFullConditionMet`) 후 실행
-5) 메시지 `used` 플래그 처리 및 알림 발송
+1. 메시지 유효성 검사
+2. 외교권자 여부 확인
+3. `buildNationCommandClass()`로 수락 커맨드 구성
+4. 조건 검사(`hasFullConditionMet`) 후 실행
+5. 메시지 `used` 플래그 처리 및 알림 발송
 
 ## 포팅 포인트
 

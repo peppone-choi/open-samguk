@@ -236,7 +236,7 @@ const menuCallList: Record<string, () => unknown> = {
   showVersion: () => {
     console.log("version");
     showVersionInfo.value = !showVersionInfo.value;
-  }
+  },
 };
 
 function reqMenuCall(key: string) {
@@ -321,7 +321,7 @@ async function tryRefresh() {
       }
       toasts.danger({
         title: "갱신 실패",
-        body: response.reason
+        body: response.reason,
       });
       return;
     }
@@ -334,7 +334,7 @@ async function tryRefresh() {
     if (isString(e)) {
       toasts.danger({
         title: "에러",
-        body: e
+        body: e,
       });
     }
     console.error(e);
@@ -355,7 +355,7 @@ onMounted(async () => {
     if (isString(e)) {
       toasts.danger({
         title: "메뉴 갱신 실패",
-        body: `${e}`
+        body: `${e}`,
       });
     }
     console.error(e);
@@ -375,10 +375,10 @@ const generalRecords = ref(new Denque<[number, string]>());
 const globalRecords = ref(new Denque<[number, string]>());
 const worldHistory = ref(new Denque<[number, string]>());
 
-const nationColorClass = ref('sam-color-000000');
-watch(nationStaticInfo, (newNation)=>{
-  if(!newNation){
-    nationColorClass.value = 'sam-color-000000';
+const nationColorClass = ref("sam-color-000000");
+watch(nationStaticInfo, (newNation) => {
+  if (!newNation) {
+    nationColorClass.value = "sam-color-000000";
     return;
   }
   nationColorClass.value = `sam-color-${newNation.color.substring(1, 7)}`;
@@ -394,7 +394,7 @@ watch(refreshCounter, async () => {
     generalInfoLock = true;
     const response = await SammoAPI.General.GetFrontInfo({
       lastGeneralRecordID: lastGeneralRecordID.value,
-      lastWorldHistoryID: lastWorldHistoryID.value
+      lastWorldHistoryID: lastWorldHistoryID.value,
     });
     generalInfoLock = false;
 
@@ -417,14 +417,14 @@ watch(refreshCounter, async () => {
       level: rawNation.level,
       capital: rawNation.capital,
       gennum: rawNation.gennum,
-      power: rawNation.power
+      power: rawNation.power,
     };
 
     const recentRecord = response.recentRecord;
     const recordIter = [
       ["flushGeneral", generalRecords, "general", lastGeneralRecordID],
       ["flushGlobal", globalRecords, "global", lastGeneralRecordID],
-      ["flushHistory", worldHistory, "history", lastWorldHistoryID]
+      ["flushHistory", worldHistory, "history", lastWorldHistoryID],
     ] as const;
 
     let haveNewRecord = false;
@@ -456,16 +456,16 @@ watch(refreshCounter, async () => {
       toasts.info(
         {
           title: "갱신 완료",
-          body: `동향 변경이 있습니다.`
+          body: `동향 변경이 있습니다.`,
         },
-        { delay: 100 * 15 }
+        { delay: 100 * 15 },
       );
     } else {
       toasts.success(
         {
-          title: "갱신 완료"
+          title: "갱신 완료",
         },
-        { delay: 100 * 5 }
+        { delay: 100 * 5 },
       );
     }
 
@@ -475,11 +475,11 @@ watch(refreshCounter, async () => {
       toasts.warning(
         {
           title: "설문조사 안내",
-          body: `새로운 설문조사가 있습니다.`
+          body: `새로운 설문조사가 있습니다.`,
         },
         {
-          delay: 1000 * 60
-        }
+          delay: 1000 * 60,
+        },
       );
     }
   } catch (e) {
@@ -487,7 +487,7 @@ watch(refreshCounter, async () => {
     console.error(e);
     toasts.danger({
       title: "최근 정보 갱신 실패",
-      body: `${e}`
+      body: `${e}`,
     });
   }
 });
@@ -517,13 +517,13 @@ watch(refreshCounter, async () => {
   try {
     map.value = await SammoAPI.Global.GetMap({
       neutralView: 0,
-      showMe: 1
+      showMe: 1,
     });
   } catch (e) {
     console.error(e);
     toasts.danger({
       title: "지도 갱신 실패",
-      body: `${e}`
+      body: `${e}`,
     });
   }
 });

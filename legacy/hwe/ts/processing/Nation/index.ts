@@ -13,27 +13,27 @@ import { default as che_발령 } from "./che_발령.vue";
 import { default as ProcessCity } from "../ProcessCity.vue";
 
 export const commandMap: Record<string, typeof ProcessNation | typeof ProcessCity> = {
-    che_국기변경,
-    che_국호변경,
-    che_급습: ProcessNation,
-    che_몰수: ProcessGeneralAmount,
-    che_물자원조,
-    che_발령: che_발령,
-    che_부대탈퇴지시: ProcessGeneral,
-    che_백성동원: ProcessCity,
-    che_불가침제의,
-    che_불가침파기제의: ProcessNation,
-    che_선전포고: ProcessNation,
-    che_수몰: ProcessCity,
-    che_이호경식: ProcessNation,
-    che_종전제의: ProcessNation,
-    che_천도: ProcessCity,
-    che_초토화: ProcessCity,
-    che_포상: ProcessGeneralAmount,
-    che_피장파장,
-    che_허보: ProcessCity,
-    cr_인구이동,
-}
+  che_국기변경,
+  che_국호변경,
+  che_급습: ProcessNation,
+  che_몰수: ProcessGeneralAmount,
+  che_물자원조,
+  che_발령: che_발령,
+  che_부대탈퇴지시: ProcessGeneral,
+  che_백성동원: ProcessCity,
+  che_불가침제의,
+  che_불가침파기제의: ProcessNation,
+  che_선전포고: ProcessNation,
+  che_수몰: ProcessCity,
+  che_이호경식: ProcessNation,
+  che_종전제의: ProcessNation,
+  che_천도: ProcessCity,
+  che_초토화: ProcessCity,
+  che_포상: ProcessGeneralAmount,
+  che_피장파장,
+  che_허보: ProcessCity,
+  cr_인구이동,
+};
 
 /*
 - 항목들

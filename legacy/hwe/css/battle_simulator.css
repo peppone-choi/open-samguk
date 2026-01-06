@@ -1,19 +1,18 @@
 @charset "UTF-8";
 
-#container{
-    width:1024px;
-    margin:auto;
+#container {
+  width: 1024px;
+  margin: auto;
 }
 
-.defender_add_form .general_detail{
-    display:none !important;
+.defender_add_form .general_detail {
+  display: none !important;
 }
 
-
-.form_sample{
-    display:none !important;
+.form_sample {
+  display: none !important;
 }
 
-input[type=number]{
-    text-align:right;
+input[type="number"] {
+  text-align: right;
 }

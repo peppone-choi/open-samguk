@@ -29,9 +29,13 @@
       <div class="gHead bg1">민심</div>
       <div class="gBody">
         <SammoBar :height="7" :percent="city.trust" />
-        <div class="cellText">{{ city.trust.toLocaleString(undefined, {
-          maximumFractionDigits: 1,
-        }) }}</div>
+        <div class="cellText">
+          {{
+            city.trust.toLocaleString(undefined, {
+              maximumFractionDigits: 1,
+            })
+          }}
+        </div>
       </div>
     </div>
     <div class="gPanel agriPanel">
@@ -144,7 +148,7 @@ watch(
     cityRegionText.value = gameConstStore.value.cityConstMap.region[cityInfo.region] as string;
     cityLevelText.value = gameConstStore.value.cityConstMap.level[city.level] as string;
 
-    if(city.trade) {
+    if (city.trade) {
       tradeAltText.value = `${city.trade}%`;
       // FIXME: 수치가 고정이라는 가정임
       tradeBarPercent.value = (city.trade - 95) * 10;
@@ -153,7 +157,7 @@ watch(
       tradeBarPercent.value = 0;
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 <style lang="scss" scoped>

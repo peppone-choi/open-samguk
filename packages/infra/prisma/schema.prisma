@@ -1,0 +1,844 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ========================================
+// 계정 및 접근
+// ========================================
+
+model Member {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  icon      String?
+  grade     Int      @default(0)
+  blockUntil DateTime?
+  createdAt DateTime @default(now())
+  aux       Json     @default("{}")
+
+  generals      General[]
+  memberLogs    MemberLog[]
+  loginTokens   LoginToken[]
+  userRecords   UserRecord[]
+  auctionBids   AuctionBid[]
+  bettings      Betting[]
+
+  @@map("member")
+}
+
+model MemberLog {
+  id        Int      @id @default(autoincrement())
+  memberId  Int
+  action    String
+  date      DateTime @default(now())
+  aux       Json?
+
+  member    Member   @relation(fields: [memberId], references: [id])
+
+  @@index([memberId, date])
+  @@map("member_log")
+}
+
+model LoginToken {
+  id        Int      @id @default(autoincrement())
+  memberId  Int
+  token     String   @unique
+  validUntil DateTime
+  createdAt DateTime @default(now())
+
+  member    Member   @relation(fields: [memberId], references: [id])
+
+  @@index([memberId])
+  @@map("login_token")
+}
+
+model BannedMember {
+  id          Int      @id @default(autoincrement())
+  emailHash   String   @unique
+  reason      String?
+  bannedAt    DateTime @default(now())
+
+  @@map("banned_member")
+}
+
+// ========================================
+// 핵심 게임: 장수
+// ========================================
+
+model General {
+  no            Int      @id @default(autoincrement())
+  owner         Int      @default(0)
+  npcMsg        String   @default("")
+  npc           Int      @default(0)
+  npcOrg        Int      @default(0)
+  affinity      Int      @default(0)
+  bornYear      Int      @default(180)
+  deadYear      Int      @default(300)
+  newMsg        Int      @default(0)
+  picture       String
+  imgSvr        Int      @default(0)
+  name          String
+  ownerName     String?
+
+  nationId      Int      @default(0)
+  cityId        Int      @default(3)
+  troopId       Int      @default(0)
+
+  leadership    Int      @default(50)
+  leadershipExp Int      @default(0)
+  strength      Int      @default(50)
+  strengthExp   Int      @default(0)
+  intel         Int      @default(50)
+  intelExp      Int      @default(0)
+
+  injury        Int      @default(0)
+  experience    Int      @default(0)
+  dedication    Int      @default(0)
+
+  dex1          Int      @default(0)
+  dex2          Int      @default(0)
+  dex3          Int      @default(0)
+  dex4          Int      @default(0)
+  dex5          Int      @default(0)
+
+  officerLevel  Int      @default(0)
+  officerCity   Int      @default(0)
+  permission    String   @default("normal")
+
+  gold          Int      @default(1000)
+  rice          Int      @default(1000)
+  crew          Int      @default(0)
+  crewType      Int      @default(0)
+  train         Int      @default(0)
+  atmos         Int      @default(0)
+
+  weapon        String   @default("None")
+  book          String   @default("None")
+  horse         String   @default("None")
+  item          String   @default("None")
+
+  turnTime      DateTime @db.Timestamptz(6)
+  recentWar     DateTime? @db.Timestamptz(6)
+  makeLimit     Int      @default(0)
+  killTurn      Int?
+  block         Int      @default(0)
+
+  dedLevel      Int      @default(0)
+  expLevel      Int      @default(0)
+  age           Int      @default(20)
+  startAge      Int      @default(20)
+  belong        Int      @default(1)
+  betray        Int      @default(0)
+
+  personal      String   @default("None")
+  special       String   @default("None")
+  specAge       Int      @default(0)
+  special2      String   @default("None")
+  specAge2      Int      @default(0)
+
+  defenceTrain  Int      @default(80)
+  tnmt          Int      @default(1)
+  myset         Int      @default(6)
+  tournament    Int      @default(0)
+  newVote       Int      @default(0)
+
+  lastTurn      Json     @default("{}")
+  aux           Json     @default("{}")
+  penalty       Json     @default("{}")
+
+  ownerMember   Member?  @relation(fields: [owner], references: [id])
+  nation        Nation?  @relation(fields: [nationId], references: [nation])
+  city          City?    @relation(fields: [cityId], references: [city])
+
+  turns         GeneralTurn[]
+  accessLog     GeneralAccessLog?
+  records       GeneralRecord[]
+  rankData      RankData[]
+  messages      Message[]      @relation("MessageSrc")
+  auctionHosts  Auction[]
+  auctionBids   AuctionBid[]
+  votes         Vote[]
+  voteComments  VoteComment[]
+  boards        Board[]
+  comments      Comment[]
+
+  @@index([nationId, npc])
+  @@index([cityId])
+  @@index([turnTime, no])
+  @@index([owner])
+  @@index([troopId, turnTime])
+  @@index([name])
+  @@map("general")
+}
+
+model GeneralTurn {
+  id         Int      @id @default(autoincrement())
+  generalId  Int
+  turnIdx    Int
+  action     String
+  arg        Json?
+  brief      String?
+
+  general    General  @relation(fields: [generalId], references: [no], onDelete: Cascade)
+
+  @@unique([generalId, turnIdx])
+  @@map("general_turn")
+}
+
+model GeneralAccessLog {
+  id                Int      @id @default(autoincrement())
+  generalId         Int      @unique
+  userId            Int?
+  lastRefresh       DateTime?
+  refresh           Int      @default(0)
+  refreshTotal      Int      @default(0)
+  refreshScore      Int      @default(0)
+  refreshScoreTotal Int      @default(0)
+
+  general           General  @relation(fields: [generalId], references: [no], onDelete: Cascade)
+
+  @@map("general_access_log")
+}
+
+model GeneralRecord {
+  id         Int      @id @default(autoincrement())
+  generalId  Int
+  logType    String
+  year       Int
+  month      Int
+  text       String
+
+  general    General  @relation(fields: [generalId], references: [no], onDelete: Cascade)
+
+  @@index([generalId, logType, year, month])
+  @@map("general_record")
+}
+
+// ========================================
+// 핵심 게임: 국가
+// ========================================
+
+model Nation {
+  nation           Int      @id @default(autoincrement())
+  name             String
+  color            String
+  capital          Int      @default(0)
+  capset           Int      @default(0)
+  gennum           Int      @default(1)
+
+  gold             Int      @default(0)
+  rice             Int      @default(0)
+  bill             Int      @default(0)
+  rate             Int      @default(0)
+  rateTmp          Int      @default(0)
+  secretLimit      Int      @default(3)
+
+  chiefSet         Int      @default(0)
+  scout            Int      @default(0)
+  war              Int      @default(0)
+  strategicCmdLimit Int     @default(36)
+  surLimit         Int      @default(72)
+  tech             Float    @default(0)
+  power            Int      @default(0)
+  level            Int      @default(0)
+  type             String   @default("che_중립")
+
+  spy              Json     @default("{}")
+  aux              Json     @default("{}")
+
+  generals         General[]
+  cities           City[]
+  troops           Troop[]
+  nationTurns      NationTurn[]
+  nationEnvs       NationEnv[]
+  worldHistories   WorldHistory[]
+  boards           Board[]
+  comments         Comment[]
+
+  diplomacyMe      Diplomacy[]  @relation("DiplomacyMe")
+  diplomacyYou     Diplomacy[]  @relation("DiplomacyYou")
+  diplomacySrc     DiplomacyDoc[] @relation("DiplomacySrc")
+  diplomacyDest    DiplomacyDoc[] @relation("DiplomacyDest")
+
+  @@map("nation")
+}
+
+model NationTurn {
+  id           Int      @id @default(autoincrement())
+  nationId     Int
+  officerLevel Int
+  turnIdx      Int
+  action       String
+  arg          Json?
+  brief        String?
+
+  nation       Nation   @relation(fields: [nationId], references: [nation], onDelete: Cascade)
+
+  @@unique([nationId, officerLevel, turnIdx])
+  @@map("nation_turn")
+}
+
+model NationEnv {
+  id         Int      @id @default(autoincrement())
+  namespace  Int
+  key        String
+  value      Json
+
+  nation     Nation   @relation(fields: [namespace], references: [nation], onDelete: Cascade)
+
+  @@unique([namespace, key])
+  @@map("nation_env")
+}
+
+// ========================================
+// 핵심 게임: 도시
+// ========================================
+
+model City {
+  city        Int      @id @default(autoincrement())
+  name        String
+  level       Int
+  nationId    Int      @default(0)
+  supply      Int      @default(1)
+  front       Int      @default(0)
+
+  pop         Int
+  popMax      Int
+  dead        Int      @default(0)
+
+  agri        Int
+  agriMax     Int
+  comm        Int
+  commMax     Int
+  secu        Int
+  secuMax     Int
+  trust       Float
+  trade       Int?
+
+  def         Int
+  defMax      Int
+  wall        Int
+  wallMax     Int
+
+  officerSet  Int      @default(0)
+  state       Int      @default(0)
+  region      Int
+  term        Int      @default(0)
+
+  conflict    Json     @default("{}")
+
+  nation      Nation?  @relation(fields: [nationId], references: [nation])
+  generals    General[]
+
+  @@index([nationId])
+  @@map("city")
+}
+
+// ========================================
+// 핵심 게임: 부대
+// ========================================
+
+model Troop {
+  troopLeader Int      @id
+  nationId    Int
+  name        String
+
+  nation      Nation   @relation(fields: [nationId], references: [nation], onDelete: Cascade)
+
+  @@map("troop")
+}
+
+// ========================================
+// 외교
+// ========================================
+
+model Diplomacy {
+  no       Int       @id @default(autoincrement())
+  meId     Int
+  youId    Int
+  state    Int       @default(0)
+  term     Int       @default(0)
+  dead     Int       @default(0)
+  showing  DateTime?
+
+  me       Nation    @relation("DiplomacyMe", fields: [meId], references: [nation], onDelete: Cascade)
+  you      Nation    @relation("DiplomacyYou", fields: [youId], references: [nation], onDelete: Cascade)
+
+  @@unique([meId, youId])
+  @@map("diplomacy")
+}
+
+model DiplomacyDoc {
+  no            Int       @id @default(autoincrement())
+  srcNationId   Int
+  destNationId  Int
+  prevNo        Int?
+  state         String    @default("proposed")
+  textBrief     String
+  textDetail    String
+  date          DateTime  @default(now())
+  srcSigner     Int
+  destSigner    Int?
+  aux           Json?
+
+  srcNation     Nation    @relation("DiplomacySrc", fields: [srcNationId], references: [nation], onDelete: Cascade)
+  destNation    Nation    @relation("DiplomacyDest", fields: [destNationId], references: [nation], onDelete: Cascade)
+
+  @@index([srcNationId, destNationId, state, date])
+  @@map("ng_diplomacy")
+}
+
+// ========================================
+// 커뮤니케이션
+// ========================================
+
+model Message {
+  id         Int       @id @default(autoincrement())
+  mailbox    Int
+  type       String
+  srcId      Int
+  destId     Int
+  time       DateTime  @default(now())
+  validUntil DateTime  @default(dbgenerated("'9999-12-31 23:59:59'::timestamp"))
+  message    Json
+
+  src        General   @relation("MessageSrc", fields: [srcId], references: [no], onDelete: Cascade)
+
+  @@index([mailbox, type, id])
+  @@map("message")
+}
+
+model Board {
+  no          Int       @id @default(autoincrement())
+  nationId    Int
+  isSecret    Boolean
+  date        DateTime
+  generalId   Int
+  author      String
+  authorIcon  String?
+  title       String
+  text        String
+
+  nation      Nation    @relation(fields: [nationId], references: [nation], onDelete: Cascade)
+  general     General   @relation(fields: [generalId], references: [no], onDelete: Cascade)
+  comments    Comment[]
+
+  @@index([nationId, isSecret, date])
+  @@map("board")
+}
+
+model Comment {
+  no          Int       @id @default(autoincrement())
+  nationId    Int
+  isSecret    Boolean
+  date        DateTime
+  documentNo  Int
+  generalId   Int
+  author      String
+  text        String
+
+  nation      Nation    @relation(fields: [nationId], references: [nation], onDelete: Cascade)
+  document    Board     @relation(fields: [documentNo], references: [no], onDelete: Cascade)
+  general     General   @relation(fields: [generalId], references: [no], onDelete: Cascade)
+
+  @@index([documentNo, date])
+  @@map("comment")
+}
+
+// ========================================
+// 기록과 히스토리
+// ========================================
+
+model WorldHistory {
+  id        Int      @id @default(autoincrement())
+  nationId  Int
+  year      Int
+  month     Int
+  text      String
+
+  nation    Nation   @relation(fields: [nationId], references: [nation], onDelete: Cascade)
+
+  @@index([nationId, year, month])
+  @@map("world_history")
+}
+
+model RankData {
+  id         Int      @id @default(autoincrement())
+  nationId   Int      @default(0)
+  generalId  Int
+  type       String
+  value      Int      @default(0)
+
+  general    General  @relation(fields: [generalId], references: [no], onDelete: Cascade)
+
+  @@unique([generalId, type])
+  @@index([type, value])
+  @@map("rank_data")
+}
+
+model Hall {
+  id         Int      @id @default(autoincrement())
+  serverId   String
+  season     Int
+  scenario   Int
+  generalNo  Int
+  type       String
+  value      Float
+  owner      Int?
+  aux        Json     @default("{}")
+
+  @@unique([serverId, type, generalNo])
+  @@index([serverId, type, value])
+  @@map("hall")
+}
+
+model NgGames {
+  id            Int       @id @default(autoincrement())
+  serverId      String    @unique
+  date          DateTime
+  winnerNation  Int?
+  map           String?
+  season        Int
+  scenario      Int
+  scenarioName  String
+  env           Json
+
+  @@index([date])
+  @@map("ng_games")
+}
+
+model NgOldNations {
+  id        Int       @id @default(autoincrement())
+  serverId  String
+  nationNo  Int
+  data      Json      @default("{}")
+  date      DateTime  @default(now())
+
+  @@index([serverId, nationNo])
+  @@map("ng_old_nations")
+}
+
+model NgOldGenerals {
+  id            Int       @id @default(autoincrement())
+  serverId      String
+  generalNo     Int
+  owner         Int?
+  name          String
+  lastYearMonth Int
+  turnTime      DateTime  @db.Timestamptz(6)
+  data          Json
+
+  @@unique([serverId, generalNo])
+  @@index([serverId, name])
+  @@map("ng_old_generals")
+}
+
+model Emperior {
+  no            Int       @id @default(autoincrement())
+  serverId      String?
+  phase         String?
+  nationCount   String?
+  nationName    String?
+  nationHist    String?
+  genCount      String?
+  personalHist  String?
+  specialHist   String?
+  name          String?
+  type          String?
+  color         String?
+  year          Int?
+  month         Int?
+  power         Int?
+  gennum        Int?
+  citynum       Int?
+  pop           String?
+  poprate       String?
+  gold          Int?
+  rice          Int?
+  l12name       String?
+  l12pic        String?
+  l11name       String?
+  l11pic        String?
+  l10name       String?
+  l10pic        String?
+  l9name        String?
+  l9pic         String?
+  l8name        String?
+  l8pic         String?
+  l7name        String?
+  l7pic         String?
+  l6name        String?
+  l6pic         String?
+  l5name        String?
+  l5pic         String?
+  tiger         String?
+  eagle         String?
+  gen           String?
+  history       Json      @default("{}")
+  aux           Json      @default("{}")
+
+  @@map("emperior")
+}
+
+model Statistic {
+  no           Int      @id @default(autoincrement())
+  year         Int?
+  month        Int?
+  nationCount  Int?
+  nationName   String?
+  nationHist   String?
+  genCount     String?
+  personalHist String?
+  specialHist  String?
+  powerHist    String?
+  crewtype     String?
+  etc          String?
+  aux          Json?
+
+  @@map("statistic")
+}
+
+model NgHistory {
+  no            Int       @id @default(autoincrement())
+  serverId      String
+  year          Int?
+  month         Int?
+  map           Json?
+  globalHistory Json?
+  globalAction  Json?
+  nations       Json?
+
+  @@index([serverId, year, month])
+  @@map("ng_history")
+}
+
+// ========================================
+// 경제/시장/랭킹
+// ========================================
+
+model Storage {
+  id        Int      @id @default(autoincrement())
+  namespace String
+  key       String
+  value     Json
+
+  @@unique([namespace, key])
+  @@map("storage")
+}
+
+model Auction {
+  id             Int       @id @default(autoincrement())
+  type           String
+  finished       Boolean
+  target         String?
+  hostGeneralId  Int
+  reqResource    String
+  openDate       DateTime
+  closeDate      DateTime
+  detail         Json
+
+  hostGeneral    General   @relation(fields: [hostGeneralId], references: [no], onDelete: Cascade)
+  bids           AuctionBid[]
+
+  @@index([finished, type, closeDate])
+  @@map("ng_auction")
+}
+
+model AuctionBid {
+  no         Int       @id @default(autoincrement())
+  auctionId  Int
+  owner      Int?
+  generalId  Int
+  amount     Int
+  date       DateTime
+  aux        Json
+
+  auction    Auction   @relation(fields: [auctionId], references: [id], onDelete: Cascade)
+  general    General   @relation(fields: [generalId], references: [no], onDelete: Cascade)
+  member     Member?   @relation(fields: [owner], references: [id])
+
+  @@unique([generalId, auctionId, amount])
+  @@unique([auctionId, amount])
+  @@map("ng_auction_bid")
+}
+
+model Betting {
+  id          Int      @id @default(autoincrement())
+  bettingId   Int
+  generalId   Int
+  userId      Int?
+  bettingType Json
+  amount      Int
+
+  member      Member?  @relation(fields: [userId], references: [id])
+
+  @@unique([generalId, bettingId])
+  @@index([userId, bettingId])
+  @@map("ng_betting")
+}
+
+// ========================================
+// 투표
+// ========================================
+
+model Vote {
+  id         Int      @id @default(autoincrement())
+  voteId     Int
+  generalId  Int
+  nationId   Int
+  selection  Json
+
+  general    General  @relation(fields: [generalId], references: [no], onDelete: Cascade)
+
+  @@unique([generalId, voteId])
+  @@index([voteId])
+  @@map("vote")
+}
+
+model VoteComment {
+  id          Int       @id @default(autoincrement())
+  voteId      Int
+  generalId   Int
+  nationId    Int
+  generalName String
+  nationName  String
+  text        String
+  date        DateTime?
+
+  general     General   @relation(fields: [generalId], references: [no], onDelete: Cascade)
+
+  @@index([voteId])
+  @@map("vote_comment")
+}
+
+// ========================================
+// 선택 및 라이프사이클
+// ========================================
+
+model ReservedOpen {
+  id       Int       @id @default(autoincrement())
+  options  Json?
+  date     DateTime?
+
+  @@index([date])
+  @@map("reserved_open")
+}
+
+model SelectNpcToken {
+  id           Int       @id @default(autoincrement())
+  owner        Int       @unique
+  validUntil   DateTime
+  pickMoreFrom DateTime
+  pickResult   Json
+  nonce        Int
+
+  @@index([validUntil])
+  @@map("select_npc_token")
+}
+
+model SelectPool {
+  id            Int       @id @default(autoincrement())
+  uniqueName    String    @unique
+  owner         Int?
+  generalId     Int?      @unique
+  reservedUntil DateTime?
+  info          String
+
+  @@index([owner])
+  @@map("select_pool")
+}
+
+model InheritanceResult {
+  id         Int      @id @default(autoincrement())
+  serverId   String
+  owner      Int
+  generalId  Int
+  year       Int
+  month      Int
+  value      Json
+
+  @@index([serverId, owner, generalId, year, month])
+  @@map("inheritance_result")
+}
+
+// ========================================
+// 유저 로그
+// ========================================
+
+model UserRecord {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  serverId  String
+  logType   String
+  year      Int
+  month     Int
+  date      DateTime?
+  text      String
+
+  member    Member    @relation(fields: [userId], references: [id])
+
+  @@index([userId, serverId, logType, year, month])
+  @@index([serverId, date])
+  @@map("user_record")
+}
+
+// ========================================
+// 이벤트 핸들러
+// ========================================
+
+model Event {
+  id        Int      @id @default(autoincrement())
+  target    String   @default("MONTH")
+  priority  Int      @default(1000)
+  condition Json
+  action    Json
+
+  @@index([target, priority, id])
+  @@map("event")
+}
+
+// ========================================
+// 락
+// ========================================
+
+model PLock {
+  no       Int       @id @default(autoincrement())
+  type     String    @unique @default("GAME")
+  plock    Int       @default(0)
+  lockTime DateTime  @db.Timestamptz(6)
+
+  @@map("plock")
+}
+
+// ========================================
+// 토너먼트
+// ========================================
+
+model Tournament {
+  seq        Int      @id @default(autoincrement())
+  no         Int      @default(0)
+  npc        Int      @default(0)
+  name       String   @default("")
+  w          String   @default("None")
+  b          String   @default("None")
+  h          String   @default("None")
+  leadership Int      @default(0)
+  strength   Int      @default(0)
+  intel      Int      @default(0)
+  lvl        Int      @default(0)
+  grp        Int      @default(0)
+  grpNo      Int      @default(0)
+  win        Int      @default(0)
+  draw       Int      @default(0)
+  lose       Int      @default(0)
+  gl         Int      @default(0)
+  prmt       Int      @default(0)
+
+  @@index([grp, grpNo])
+  @@map("tournament")
+}

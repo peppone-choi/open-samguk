@@ -1,12 +1,12 @@
 @import "bootstrap/scss/vendor/rfs";
-@import 'bootstrap/scss/mixins/grid';
+@import "bootstrap/scss/mixins/grid";
 
 $container-max-widths: (
-    md: 500px,
-    lg: 1000px,
-    xl: 1140px,
-    xxl: 1320px
-  );
+  md: 500px,
+  lg: 1000px,
+  xl: 1140px,
+  xxl: 1320px,
+);
 
 $grid-breakpoints: (
   xs: 0,
@@ -14,7 +14,7 @@ $grid-breakpoints: (
   md: 760px,
   lg: 940px,
   xl: 1200px,
-  xxl: 1400px
+  xxl: 1400px,
 );
 
 @for $i from 1 through 10 {
@@ -23,8 +23,8 @@ $grid-breakpoints: (
   }
 }
 
-@mixin media-1000px{
-  @media (min-width: map-get($grid-breakpoints, 'lg')) {
+@mixin media-1000px {
+  @media (min-width: map-get($grid-breakpoints, "lg")) {
     @content;
   }
 
@@ -35,8 +35,8 @@ $grid-breakpoints: (
   }
 }
 
-@mixin media-500px{
-  @media (max-width: calc(map-get($grid-breakpoints, 'lg') - .02px)) {
+@mixin media-500px {
+  @media (max-width: calc(map-get($grid-breakpoints, "lg") - 0.02px)) {
     @content;
   }
 }

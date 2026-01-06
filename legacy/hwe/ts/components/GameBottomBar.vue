@@ -56,7 +56,9 @@
               <button type="button" class="dropdown-item" @click="scrollToSelector('.nationNotice')">방침</button>
             </li>
             <li>
-              <button type="button" class="dropdown-item" @click="scrollToSelector('#reservedCommandPanel')">명령</button>
+              <button type="button" class="dropdown-item" @click="scrollToSelector('#reservedCommandPanel')">
+                명령
+              </button>
             </li>
             <li>
               <button type="button" class="dropdown-item" @click="scrollToSelector('.nationInfo')">국가</button>
@@ -69,9 +71,7 @@
             <hr class="dropdown-divider" />
             <li><button type="button" class="dropdown-item" @click="scrollToSelector('.mapView')">지도</button></li>
             <li>
-              <button type="button" class="dropdown-item" @click="scrollToSelector('.PublicRecord')">
-                동향
-              </button>
+              <button type="button" class="dropdown-item" @click="scrollToSelector('.PublicRecord')">동향</button>
             </li>
             <li>
               <button type="button" class="dropdown-item" @click="scrollToSelector('.GeneralLog')">개인</button>
@@ -83,16 +83,24 @@
             <li><a class="dropdown-item disabled">메시지</a></li>
             <hr class="dropdown-divider" />
             <li>
-              <button type="button" class="dropdown-item" @click="scrollToSelector('.PublicTalk > .stickyAnchor')">전체</button>
+              <button type="button" class="dropdown-item" @click="scrollToSelector('.PublicTalk > .stickyAnchor')">
+                전체
+              </button>
             </li>
             <li>
-              <button type="button" class="dropdown-item" @click="scrollToSelector('.NationalTalk > .stickyAnchor')">국가</button>
+              <button type="button" class="dropdown-item" @click="scrollToSelector('.NationalTalk > .stickyAnchor')">
+                국가
+              </button>
             </li>
             <li>
-              <button type="button" class="dropdown-item" @click="scrollToSelector('.PrivateTalk > .stickyAnchor')">개인</button>
+              <button type="button" class="dropdown-item" @click="scrollToSelector('.PrivateTalk > .stickyAnchor')">
+                개인
+              </button>
             </li>
             <li>
-              <button type="button" class="dropdown-item" @click="scrollToSelector('.DiplomacyTalk > .stickyAnchor')">외교</button>
+              <button type="button" class="dropdown-item" @click="scrollToSelector('.DiplomacyTalk > .stickyAnchor')">
+                외교
+              </button>
             </li>
             <li>
               <button type="button" class="btn btn-sammo-base2" @click="moveLobby">로비로</button>

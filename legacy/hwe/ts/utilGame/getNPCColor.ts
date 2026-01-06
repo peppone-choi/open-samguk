@@ -1,5 +1,5 @@
 export function getNPCColor(
-  npcType: number
+  npcType: number,
 ): "skyblue" | "cyan" | "deepskyblue" | "darkcyan" | "mediumaquamarine" | undefined {
   if (npcType == 6) {
     return "mediumaquamarine";

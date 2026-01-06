@@ -124,14 +124,27 @@ watch(
   (nation) => {
     const { startyear, year } = global.value;
     console.log(gameConstStore);
-    
+
     const initialAllowedTechLevel = gameConstStore.value.gameConst.initialAllowedTechLevel;
     const techLevelIncYear = gameConstStore.value.gameConst.techLevelIncYear;
-    maxTechLevel.value = getMaxRelativeTechLevel(startyear, year, gameConstStore.value.gameConst.maxTechLevel, initialAllowedTechLevel, techLevelIncYear);
+    maxTechLevel.value = getMaxRelativeTechLevel(
+      startyear,
+      year,
+      gameConstStore.value.gameConst.maxTechLevel,
+      initialAllowedTechLevel,
+      techLevelIncYear,
+    );
     currentTechLevel.value = convTechLevel(nation.tech, maxTechLevel.value);
-    onTechLimit.value = isTechLimited(startyear, year, nation.tech, gameConstStore.value.gameConst.maxTechLevel, initialAllowedTechLevel, techLevelIncYear);
+    onTechLimit.value = isTechLimited(
+      startyear,
+      year,
+      nation.tech,
+      gameConstStore.value.gameConst.maxTechLevel,
+      initialAllowedTechLevel,
+      techLevelIncYear,
+    );
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const impossibleStrategicCommandText = ref<string>("");
@@ -151,7 +164,7 @@ watch(
     }
     impossibleStrategicCommandText.value = texts.join("<br>\n");
   },
-  { immediate: true }
+  { immediate: true },
 );
 </script>
 <style lang="scss" scoped>

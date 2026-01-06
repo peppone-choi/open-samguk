@@ -1,5 +1,5 @@
-import {parseISO} from 'date-fns';
+import { parseISO } from "date-fns";
 
-export function parseTime(dateString: string): Date{
-    return parseISO(dateString);
+export function parseTime(dateString: string): Date {
+  return parseISO(dateString);
 }

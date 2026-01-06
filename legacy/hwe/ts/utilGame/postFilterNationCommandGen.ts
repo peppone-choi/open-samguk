@@ -3,13 +3,16 @@ import { unwrap } from "@/util/unwrap";
 import { pick as josaPick } from "@/util/JosaUtil";
 import type { TurnObj } from "@/defs";
 
-export function postFilterNationCommandGen<T extends TurnObj>(troopList: Record<number, string>, gameConst: GameConstStore){
-  return function(turnObj: T): T{
-    if(turnObj.action != 'che_발령'){
+export function postFilterNationCommandGen<T extends TurnObj>(
+  troopList: Record<number, string>,
+  gameConst: GameConstStore,
+) {
+  return function (turnObj: T): T {
+    if (turnObj.action != "che_발령") {
       return turnObj;
     }
     const destGeneralID = unwrap(turnObj.arg.destGeneralID);
-    if(!(destGeneralID in troopList)){
+    if (!(destGeneralID in troopList)) {
       return turnObj;
     }
 
@@ -24,7 +27,6 @@ export function postFilterNationCommandGen<T extends TurnObj>(troopList: Record<
       ...turnObj,
       brief,
       tooltip,
-    }
-  }
-
+    };
+  };
 }

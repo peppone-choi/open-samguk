@@ -192,7 +192,7 @@
               <select v-model.number="inheritTurnTimeZone" class="form-select form-inline" style="max-width: 24ch">
                 <option :value="undefined">사용안함</option>
                 <option v-for="(zone, idx) in turnTimeZoneList" :key="idx" :value="idx">
-                    {{ zone }}
+                  {{ zone }}
                 </option>
               </select>
             </div>
@@ -204,25 +204,16 @@
             <div class="col col-6 a-right align-self-center">추가 능력치 고정(통/무/지)</div>
             <div class="col col-6 align-self-center">
               <div class="row g-1">
-            <div class="col">
-              <NumberInputWithInfo
-                v-model="(args.inheritBonusStat ?? [0, 0, 0])[0]"
-                :max="stats.bonusMax"
-              />
-            </div>
-            <div class="col">
-              <NumberInputWithInfo
-                v-model="(args.inheritBonusStat ?? [0, 0, 0])[1]"
-                :max="stats.bonusMax"
-              />
-            </div>
-            <div class="col">
-              <NumberInputWithInfo
-                v-model="(args.inheritBonusStat ?? [0, 0, 0])[2]"
-                :max="stats.bonusMax"
-              />
-            </div>
-          </div>
+                <div class="col">
+                  <NumberInputWithInfo v-model="(args.inheritBonusStat ?? [0, 0, 0])[0]" :max="stats.bonusMax" />
+                </div>
+                <div class="col">
+                  <NumberInputWithInfo v-model="(args.inheritBonusStat ?? [0, 0, 0])[1]" :max="stats.bonusMax" />
+                </div>
+                <div class="col">
+                  <NumberInputWithInfo v-model="(args.inheritBonusStat ?? [0, 0, 0])[2]" :max="stats.bonusMax" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -258,7 +249,7 @@ declare const staticValues: {
   config: {
     show_img_level: number;
     blockCustomGeneralName: boolean;
-  }
+  };
 
   serverID: string;
   inheritTotalPoint: number;
@@ -410,7 +401,7 @@ async function submitForm() {
   if (totalStat < defaultStatTotal) {
     if (
       !confirm(
-        `설정한 능력치가 ${totalStat}으로, 실제 최대치인 ${defaultStatTotal}보다 적습니다.\r\n그래도 진행할까요?`
+        `설정한 능력치가 ${totalStat}으로, 실제 최대치인 ${defaultStatTotal}보다 적습니다.\r\n그래도 진행할까요?`,
       )
     ) {
       return false;
@@ -481,13 +472,12 @@ watch(inheritCity, (newValue: undefined | number) => {
   args.value.inheritCity = inheritCity.value;
 });
 
-
 const inheritTurnTimeZone = ref<number>();
-const turnTimeZoneList: string[] = (()=>{
+const turnTimeZoneList: string[] = (() => {
   const result: string[] = [];
   const zoneSec = turnterm; // * 60 / 60
   let zoneCur = 0;
-  for(const idx of range(60)){
+  for (const idx of range(60)) {
     const zoneNext = zoneCur + zoneSec;
 
     const zoneCurMin = Math.floor(zoneCur / 60);
@@ -511,7 +501,6 @@ watch(inheritTurnTimeZone, (newValue: undefined | number) => {
   if (!args.value) throw "nyc";
   args.value.inheritTurntimeZone = inheritTurnTimeZone.value;
 });
-
 </script>
 <style lang="scss">
 @import "@scss/common/base.scss";

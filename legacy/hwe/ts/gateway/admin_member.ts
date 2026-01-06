@@ -1,38 +1,39 @@
-import { SammoRootAPI, type InvalidResponse } from '@/SammoRootAPI';
-import axios from 'axios';
-import $ from 'jquery';
-import { isNumber } from 'lodash-es';
-import { TemplateEngine } from '@util/TemplateEngine';
-import { setAxiosXMLHttpRequest } from '@util/setAxiosXMLHttpRequest';
-import { unwrap_any } from '@util/unwrap_any';
-import { convertFormData } from '@util/convertFormData';
-import { exportWindow } from '@util/exportWindow';
-import '@/gateway/common';
-import { setSammoAPIPrefix } from '@/util/callSammoAPI';
+import { SammoRootAPI, type InvalidResponse } from "@/SammoRootAPI";
+import axios from "axios";
+import $ from "jquery";
+import { isNumber } from "lodash-es";
+import { TemplateEngine } from "@util/TemplateEngine";
+import { setAxiosXMLHttpRequest } from "@util/setAxiosXMLHttpRequest";
+import { unwrap_any } from "@util/unwrap_any";
+import { convertFormData } from "@util/convertFormData";
+import { exportWindow } from "@util/exportWindow";
+import "@/gateway/common";
+import { setSammoAPIPrefix } from "@/util/callSammoAPI";
 
 type UserEntry = {
-    userID: string,
-    userName: string,
-    email: string,
-    authType: string | null,
-    userGrade: number,
-    blockUntil: string | null,
-    nickname: string,
-    icon: string,
-    joinDate: string,
-    loginDate: string,
-    deleteAfter: string | null,
-}
+  userID: string;
+  userName: string;
+  email: string;
+  authType: string | null;
+  userGrade: number;
+  blockUntil: string | null;
+  nickname: string;
+  icon: string;
+  joinDate: string;
+  loginDate: string;
+  deleteAfter: string | null;
+};
 
 type UserListResponse = {
-    result: true,
-    users: UserEntry[],
-    servers: string[],
-    allowJoin: boolean,
-    allowLogin: boolean,
-}
+  result: true;
+  users: UserEntry[];
+  servers: string[];
+  allowJoin: boolean;
+  allowLogin: boolean;
+};
 
-const userFrame = '\
+const userFrame =
+  '\
 <tr id="userinfo_<%userID%>" data-username="<%userName%>" data-id="<%userID%>" data-email="<%email%>">\
     <th scope="row"><%userID%></th>\
     <td><%userName%></td>\
@@ -57,252 +58,248 @@ const userFrame = '\
 </tr>';
 
 function convUserGrade(grade: number): string {
-    const userGradeMap = {
-        0: '차단',
-        1: '일반',
-        4: '특별',
-        5: '부운영자',
-        6: '운영자'
-    };
+  const userGradeMap = {
+    0: "차단",
+    1: "일반",
+    4: "특별",
+    5: "부운영자",
+    6: "운영자",
+  };
 
-    if (grade in userGradeMap) {
-        return userGradeMap[grade as (keyof typeof userGradeMap)];
-    }
-    return grade.toString();
+  if (grade in userGradeMap) {
+    return userGradeMap[grade as keyof typeof userGradeMap];
+  }
+  return grade.toString();
 }
 
 function fillAllowJoinLogin(result: UserListResponse) {
-    if (result.allowJoin) {
-        $('#allow_join_y').trigger('click');
-    }
-    else {
-        $('#allow_join_n').trigger('click');
-    }
+  if (result.allowJoin) {
+    $("#allow_join_y").trigger("click");
+  } else {
+    $("#allow_join_n").trigger("click");
+  }
 
-    if (result.allowLogin) {
-        $('#allow_login_y').trigger('click');
-    }
-    else {
-        $('#allow_login_n').trigger('click');
-    }
+  if (result.allowLogin) {
+    $("#allow_login_y").trigger("click");
+  } else {
+    $("#allow_login_n").trigger("click");
+  }
 }
 
 function fillUserList(result: UserListResponse) {
-    const $user_list = $('#user_list');
+  const $user_list = $("#user_list");
 
+  $user_list.empty();
 
-    $user_list.empty();
+  const slotGeneralList = $.map(result.servers, function (value) {
+    return `<span class="server_generalName_${value}"></span>`;
+  }).join("<br>");
 
-    const slotGeneralList = $.map(result.servers, function (value) {
-        return `<span class="server_generalName_${value}"></span>`;
-    }).join('<br>');
+  const emailFunc = function (text: string) {
+    return String(text).replace("@", "@<br>");
+  };
+  const brFunc = function (text: string) {
+    return String(text).split(" ").join("<br>");
+  };
 
-    const emailFunc = function (text: string) {
-        return String(text).replace('@', '@<br>');
+  const shortDateFunc = function (date: string | null) {
+    if (!date) {
+      return "-";
     }
-    const brFunc = function (text: string) {
-        return String(text).split(' ').join('<br>');
+    return brFunc(date.substr(2));
+  };
+
+  $.each(result.users, function (idx, user) {
+    const templateItem = {
+      ...user,
+      email: user.email ?? "-",
+      br: brFunc,
+      shortDate: shortDateFunc,
+      emailFunc: emailFunc,
+      slotGeneralList: slotGeneralList,
+      userGradeText: convUserGrade(user.userGrade),
     };
 
-    const shortDateFunc = function (date: string | null) {
-        if (!date) {
-            return '-';
-        }
-        return brFunc(date.substr(2));
-    }
+    $user_list.append(TemplateEngine(userFrame, templateItem));
+  });
 
-    $.each(result.users, function (idx, user) {
-        const templateItem = {
-            ...user,
-            email: user.email ?? '-',
-            br: brFunc,
-            shortDate: shortDateFunc,
-            emailFunc: emailFunc,
-            slotGeneralList: slotGeneralList,
-            userGradeText: convUserGrade(user.userGrade),
-        }
-
-        $user_list.append(
-            TemplateEngine(userFrame, templateItem)
-        )
-    });
-
-    //TODO: slotGeneralList에 값을 채워야함. ajax로 받아올 필요 있음
+  //TODO: slotGeneralList에 값을 채워야함. ajax로 받아올 필요 있음
 }
 
 async function changeSystem(action: string, param?: string): Promise<void> {
-    const text = `${action}${param ? (', ' + param) : ''}을 진행합니다.`;
-    if (!confirm(text)) {
-        return;
-    }
+  const text = `${action}${param ? ", " + param : ""}을 진행합니다.`;
+  if (!confirm(text)) {
+    return;
+  }
 
-    let result: InvalidResponse | {
-        result: true,
-        affected?: number,
-    };
+  let result:
+    | InvalidResponse
+    | {
+        result: true;
+        affected?: number;
+      };
 
-    try {
-        const response = await axios({
-            url: 'j_set_userlist.php',
-            method: 'post',
-            responseType: 'json',
-            data: convertFormData({
-                'action': action,
-                'param': param ?? null
-            })
-        })
-        result = response.data;
-    }
-    catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-    }
+  try {
+    const response = await axios({
+      url: "j_set_userlist.php",
+      method: "post",
+      responseType: "json",
+      data: convertFormData({
+        action: action,
+        param: param ?? null,
+      }),
+    });
+    result = response.data;
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
 
-    if (!result.result) {
-        alert(result.reason);
-        return;
-    }
+  if (!result.result) {
+    alert(result.reason);
+    return;
+  }
 
-    if (result.affected) {
-        alert(`${result.affected}건이 처리되었습니다.`);
-        await refreshAll();
-    }
-    else {
-        alert('완료되었습니다.');
-    }
+  if (result.affected) {
+    alert(`${result.affected}건이 처리되었습니다.`);
+    await refreshAll();
+  } else {
+    alert("완료되었습니다.");
+  }
 }
 
 async function banEmailAddress(target: Element): Promise<void> {
-    const email: string = $(target).parents('tr').data('email');
+  const email: string = $(target).parents("tr").data("email");
 
-    if (!confirm(`${email}에 대해서 영구차단을 진행합니다.`)) {
-        return;
-    }
+  if (!confirm(`${email}에 대해서 영구차단을 진행합니다.`)) {
+    return;
+  }
 
-    const result = await SammoRootAPI.Admin.BanEmailAddress({
-        email,
-    }, true);
+  const result = await SammoRootAPI.Admin.BanEmailAddress(
+    {
+      email,
+    },
+    true,
+  );
 
-    if (!result.result) {
-        alert(result.reason);
-        return;
-    }
+  if (!result.result) {
+    alert(result.reason);
+    return;
+  }
 
-    alert('완료되었습니다.');
+  alert("완료되었습니다.");
 }
 
 async function changeUserStatus(action: string, userID: Element | number, param?: number): Promise<void> {
-    if (userID instanceof Element) {
-        userID = parseInt($(userID).parents('tr').data('id'));
-    }
-    if (!isNumber(userID)) {
-        alert('userID가 올바르게 지정되지 않았습니다!');
-        return;
-    }
+  if (userID instanceof Element) {
+    userID = parseInt($(userID).parents("tr").data("id"));
+  }
+  if (!isNumber(userID)) {
+    alert("userID가 올바르게 지정되지 않았습니다!");
+    return;
+  }
 
-    if (action == 'set_userlevel') {
-        if (!isNumber(param)) {
-            param = parseInt(prompt('원하는 등급을 입력해주세요.(1:일반, 4:특별, 5:부운영자, 6:운영자)', '1') ?? '0');
-        }
-
-        if (param < 1 || param > 6) {
-            alert('올바르지 않습니다.');
-            return;
-        }
+  if (action == "set_userlevel") {
+    if (!isNumber(param)) {
+      param = parseInt(prompt("원하는 등급을 입력해주세요.(1:일반, 4:특별, 5:부운영자, 6:운영자)", "1") ?? "0");
     }
 
-    if (action == 'block') {
-        if (!isNumber(param)) {
-            param = parseInt(prompt('블록 기간을 입력해주세요. <= 0은 반영구(50년)입니다.', '7') ?? '7');
-        }
+    if (param < 1 || param > 6) {
+      alert("올바르지 않습니다.");
+      return;
     }
+  }
 
-    const userName = unwrap_any<string>($('#userinfo_' + userID).data('username'));
-
-    const text = `${userName}에 대해서 ${action}${param ? (', ' + param) : ''}을 진행합니다.`;
-    if (!confirm(text)) {
-        return;
+  if (action == "block") {
+    if (!isNumber(param)) {
+      param = parseInt(prompt("블록 기간을 입력해주세요. <= 0은 반영구(50년)입니다.", "7") ?? "7");
     }
+  }
 
-    let result: InvalidResponse | {
-        result: true,
-        detail?: string,
-    };
+  const userName = unwrap_any<string>($("#userinfo_" + userID).data("username"));
 
-    try {
-        const response = await axios({
-            url: 'j_set_userlist.php',
-            method: 'post',
-            responseType: 'json',
-            data: convertFormData({
-                'action': action,
-                'user_id': userID,
-                'param': param ?? null
-            })
-        })
-        result = response.data;
-    }
-    catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-    }
+  const text = `${userName}에 대해서 ${action}${param ? ", " + param : ""}을 진행합니다.`;
+  if (!confirm(text)) {
+    return;
+  }
 
-    if (!result.result) {
-        alert(result.reason);
-        return;
-    }
+  let result:
+    | InvalidResponse
+    | {
+        result: true;
+        detail?: string;
+      };
 
-    if (result.detail) {
-        alert(`완료되었습니다: ${result.detail}`);
-    }
-    else {
-        alert('완료되었습니다.');
-    }
+  try {
+    const response = await axios({
+      url: "j_set_userlist.php",
+      method: "post",
+      responseType: "json",
+      data: convertFormData({
+        action: action,
+        user_id: userID,
+        param: param ?? null,
+      }),
+    });
+    result = response.data;
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
 
-    await refreshAll();
+  if (!result.result) {
+    alert(result.reason);
+    return;
+  }
+
+  if (result.detail) {
+    alert(`완료되었습니다: ${result.detail}`);
+  } else {
+    alert("완료되었습니다.");
+  }
+
+  await refreshAll();
 }
 
 async function refreshAll() {
-    let result: InvalidResponse | UserListResponse;
+  let result: InvalidResponse | UserListResponse;
 
-    try {
-        const response = await axios({
-            url: 'j_get_userlist.php',
-            method: 'post',
-            responseType: 'json',
-        });
-        result = response.data;
-    }
-    catch (e) {
-        console.error(e);
-        alert(`실패했습니다: ${e}`);
-        return;
-    }
+  try {
+    const response = await axios({
+      url: "j_get_userlist.php",
+      method: "post",
+      responseType: "json",
+    });
+    result = response.data;
+  } catch (e) {
+    console.error(e);
+    alert(`실패했습니다: ${e}`);
+    return;
+  }
 
-    if (!result.result) {
-        alert(result.reason);
-        return;
-    }
+  if (!result.result) {
+    alert(result.reason);
+    return;
+  }
 
-    fillAllowJoinLogin(result);
-    fillUserList(result);
+  fillAllowJoinLogin(result);
+  fillUserList(result);
 }
 
 $(async function () {
-    setAxiosXMLHttpRequest();
-    await refreshAll();
+  setAxiosXMLHttpRequest();
+  await refreshAll();
 
-    $('input[name=allow_join], input[name=allow_login]').on('change', async function () {
-        const $this = $(this);
-        await changeSystem(unwrap_any<string>($this.attr('name')), unwrap_any<string>($this.val()));
-    })
+  $("input[name=allow_join], input[name=allow_login]").on("change", async function () {
+    const $this = $(this);
+    await changeSystem(unwrap_any<string>($this.attr("name")), unwrap_any<string>($this.val()));
+  });
 });
 
+setSammoAPIPrefix("..");
 
-setSammoAPIPrefix('..');
-
-exportWindow(changeSystem, 'changeSystem');
-exportWindow(changeUserStatus, 'changeUserStatus');
-exportWindow(banEmailAddress, 'banEmailAddress');
+exportWindow(changeSystem, "changeSystem");
+exportWindow(changeUserStatus, "changeUserStatus");
+exportWindow(banEmailAddress, "banEmailAddress");

@@ -1,31 +1,36 @@
 {
-  "name": "@sammo-ts/infra",
-  "version": "0.1.0",
-  "private": true,
+  "name": "@sammo/infra",
+  "version": "0.0.1",
+  "description": "인프라 - Prisma, Redis, 환경 검증",
   "type": "module",
   "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsup src/index.ts --format esm,cjs --dts",
-    "dev": "tsup src/index.ts --format esm,cjs --watch --dts",
-    "test": "vitest run"
+    "build": "tsdown src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push"
   },
   "dependencies": {
-    "@sammo-ts/common": "workspace:*",
-    "@sammo-ts/logic": "workspace:*",
-    "ioredis": "^5.4.0",
-    "pg": "^8.11.0",
-    "reflect-metadata": "^0.2.0",
-    "typeorm": "^0.3.20",
-    "zod": "^3.23.0"
+    "@prisma/client": "^5.22.0",
+    "ioredis": "^5.4.0"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.8",
-    "@types/node": "^20.0.0",
-    "@types/pg": "^8.11.0",
-    "better-sqlite3": "^12.5.0",
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0",
-    "vitest": "^1.0.0"
-  }
+    "typescript": "^5.3.3",
+    "tsdown": "^0.2.0",
+    "prisma": "^5.22.0"
+  },
+  "files": [
+    "dist",
+    "prisma"
+  ]
 }

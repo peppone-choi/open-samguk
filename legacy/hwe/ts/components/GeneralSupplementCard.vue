@@ -38,7 +38,7 @@
       <div class="bg1">피살</div>
       <div>{{ general.deathcrew.toLocaleString() }}</div>
     </div>
-    <div :class="[(props.showCommandList && general.reservedCommand) ? 'col-8' : 'col', 'general-card-dex']">
+    <div :class="[props.showCommandList && general.reservedCommand ? 'col-8' : 'col', 'general-card-dex']">
       <div class="part-title bg1">숙련도</div>
       <template v-for="[dexType, dex, dexInfo] of dexList" :key="dexType">
         <div class="bg1">{{ dexType }}</div>
@@ -167,7 +167,7 @@ const dexList = computed((): [string, number, DexInfo][] => {
     border-right: solid 1px gray;
   }
 
-  > .command{
+  > .command {
     font-size: 90%;
     display: grid;
     align-content: center;

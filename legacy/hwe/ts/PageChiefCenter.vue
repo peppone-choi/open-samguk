@@ -119,7 +119,6 @@ const props = defineProps({
   maxChiefTurn: VueTypes.number.isRequired,
 });
 
-
 const toasts = unwrap(useToast());
 
 const asyncReady = ref<boolean>(false);
@@ -167,8 +166,8 @@ watch([tableObj, gameConstStore], ([tableObj, gameConstStore]) => {
 });
 
 type OfficerObj = ChiefResponse["chiefList"][0];
-function postFilterOfficer(officer: OfficerObj|undefined): OfficerObj|undefined {
-  if(officer === undefined) {
+function postFilterOfficer(officer: OfficerObj | undefined): OfficerObj | undefined {
+  if (officer === undefined) {
     return undefined;
   }
   return {
@@ -248,7 +247,7 @@ const storedActionsHelper = new StoredActionsHelper(
   staticValues.serverNick,
   "nation",
   staticValues.mapName,
-  staticValues.unitSet
+  staticValues.unitSet,
 );
 provide("storedNationActionsHelper", storedActionsHelper);
 </script>

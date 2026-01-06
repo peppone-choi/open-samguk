@@ -13,41 +13,41 @@ This document defines a shared constraint contract for the rewrite so both the t
 
 ```ts
 export type ConstraintResult =
-    | { kind: 'allow' }
-    | { kind: 'deny'; reason: string; code?: string }
-    | { kind: 'unknown'; missing: RequirementKey[] };
+  | { kind: "allow" }
+  | { kind: "deny"; reason: string; code?: string }
+  | { kind: "unknown"; missing: RequirementKey[] };
 
 export type RequirementKey =
-    | { kind: 'general'; id: number }
-    | { kind: 'city'; id: number }
-    | { kind: 'nation'; id: number }
-    | { kind: 'destGeneral'; id: number }
-    | { kind: 'destCity'; id: number }
-    | { kind: 'destNation'; id: number }
-    | { kind: 'arg'; key: string }
-    | { kind: 'env'; key: string };
+  | { kind: "general"; id: number }
+  | { kind: "city"; id: number }
+  | { kind: "nation"; id: number }
+  | { kind: "destGeneral"; id: number }
+  | { kind: "destCity"; id: number }
+  | { kind: "destNation"; id: number }
+  | { kind: "arg"; key: string }
+  | { kind: "env"; key: string };
 
 export interface ConstraintContext {
-    actorId: number;
-    cityId?: number;
-    nationId?: number;
-    destGeneralId?: number;
-    destCityId?: number;
-    destNationId?: number;
-    args: Record<string, unknown>;
-    env: Record<string, unknown>;
-    mode: 'full' | 'precheck';
+  actorId: number;
+  cityId?: number;
+  nationId?: number;
+  destGeneralId?: number;
+  destCityId?: number;
+  destNationId?: number;
+  args: Record<string, unknown>;
+  env: Record<string, unknown>;
+  mode: "full" | "precheck";
 }
 
 export interface StateView {
-    has(req: RequirementKey): boolean;
-    get(req: RequirementKey): unknown | null;
+  has(req: RequirementKey): boolean;
+  get(req: RequirementKey): unknown | null;
 }
 
 export interface Constraint {
-    name: string;
-    requires(ctx: ConstraintContext): RequirementKey[];
-    test(ctx: ConstraintContext, view: StateView): ConstraintResult;
+  name: string;
+  requires(ctx: ConstraintContext): RequirementKey[];
+  test(ctx: ConstraintContext, view: StateView): ConstraintResult;
 }
 ```
 
@@ -62,21 +62,21 @@ export interface Constraint {
 
 ```ts
 function evaluateConstraints(
-    constraints: Constraint[],
-    ctx: ConstraintContext,
-    view: StateView,
+  constraints: Constraint[],
+  ctx: ConstraintContext,
+  view: StateView
 ): ConstraintResult {
-    for (const constraint of constraints) {
-        const missing = constraint.requires(ctx).filter((req) => !view.has(req));
-        if (missing.length && ctx.mode === 'precheck') {
-            return { kind: 'unknown', missing };
-        }
-        const result = constraint.test(ctx, view);
-        if (result.kind !== 'allow') {
-            return result;
-        }
+  for (const constraint of constraints) {
+    const missing = constraint.requires(ctx).filter((req) => !view.has(req));
+    if (missing.length && ctx.mode === "precheck") {
+      return { kind: "unknown", missing };
     }
-    return { kind: 'allow' };
+    const result = constraint.test(ctx, view);
+    if (result.kind !== "allow") {
+      return result;
+    }
+  }
+  return { kind: "allow" };
 }
 ```
 

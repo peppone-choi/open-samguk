@@ -118,7 +118,7 @@ const forFind = ref<
 >([]);
 
 //판매 처리
-const forSell = ref<typeof forFind.value[0]>({
+const forSell = ref<(typeof forFind.value)[0]>({
   category: "소유 물품 판매",
   values: [],
 });
@@ -148,7 +148,7 @@ onMounted(() => {
 
   for (const [type, itemSubList] of entriesWithType(procRes.itemList)) {
     const values: selectItemKey[] = [];
-    const forBuy: typeof forFind.value[0] = {
+    const forBuy: (typeof forFind.value)[0] = {
       category: `${ItemTypeNameMap[type]} 구매`,
       values,
     };
@@ -172,7 +172,7 @@ onMounted(() => {
 });
 
 async function submit(e: Event) {
-  if(!selectedItemObj.value) return;
+  if (!selectedItemObj.value) return;
 
   const event = new CustomEvent<Args>("customSubmit", {
     detail: {
@@ -184,5 +184,4 @@ async function submit(e: Event) {
 }
 
 const searchable = getProcSearchable();
-
 </script>

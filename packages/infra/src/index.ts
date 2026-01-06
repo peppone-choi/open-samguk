@@ -1,7 +1,3 @@
-export * from './env.js';
-export * from './db/index.js';
-export * from './db/repositories/TypeOrmJournalRepository.js';
-export * from './db/repositories/TypeOrmSnapshotRepository.js';
-export * from './db/repositories/TypeOrmTurnRepository.js';
-export * from './db/repositories/RedisStreamDaemonClient.js';
-export * from './redis/index.js';
+export { createPrismaClient, type PrismaClientType } from "./prisma/client.js";
+export { createRedisClient, type RedisClientType } from "./redis/client.js";
+export { validateEnv, type EnvConfig } from "./env/validate.js";

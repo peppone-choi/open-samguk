@@ -1,6 +1,7 @@
 # 도메인 엔티티 (레거시 기준)
 
 다음 카탈로그는 레거시 스키마에서 추출되었습니다.
+
 - `legacy/hwe/sql/schema.sql`
 - `legacy/f_install/sql/common_schema.sql`
 - `legacy/f_install/sql/api_log.sql`

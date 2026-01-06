@@ -72,13 +72,15 @@ import {
 } from "./processingRes";
 import { getNPCColor } from "@/utilGame";
 
-const citiesMap = ref(new Map<
-  number,
-  {
-    name: string;
-    info?: string;
-  }
->());
+const citiesMap = ref(
+  new Map<
+    number,
+    {
+      name: string;
+      info?: string;
+    }
+  >(),
+);
 for (const [id, name] of procRes.cities) {
   citiesMap.value.set(id, { name });
 }
@@ -108,15 +110,10 @@ async function submit(e: Event) {
   unwrap(e.target).dispatchEvent(event);
 }
 
-const { commandName,entryInfo } = staticValues;
+const { commandName, entryInfo } = staticValues;
 const searchable = getProcSearchable();
 
 const procEntryMode: "chief" | "normal" = entryInfo[0] == "Nation" ? "chief" : "normal";
 
-const {
-  minAmount,
-  maxAmount,
-  amountGuide
-} = procRes;
-
+const { minAmount, maxAmount, amountGuide } = procRes;
 </script>

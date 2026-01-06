@@ -276,7 +276,7 @@ function readLatestMsg(msgType: MsgType) {
     toasts.remove(toastID);
   }
 
-  if(msgType == "private" || msgType == "diplomacy"){
+  if (msgType == "private" || msgType == "diplomacy") {
     void SammoAPI.Message.ReadLatestMessage({
       type: msgType,
       msgID: lastestReceivedID,
@@ -313,7 +313,7 @@ function _updateLatestMsg(msg: MsgItem) {
       {
         delay: 1000 * 60 * 10,
         variant: "warning",
-      }
+      },
     ).options.id;
     latestPrivateMsgToastInfo.value = [newToastID, latestMsgID, msg.id];
     return;
@@ -347,7 +347,7 @@ function _updateLatestMsg(msg: MsgItem) {
       {
         delay: 1000 * 60 * 10,
         variant: "warning",
-      }
+      },
     ).options.id;
     latestDiplomacyMsgToastInfo.value = [newToastID, latestMsgID, msg.id];
     return;
@@ -375,7 +375,7 @@ function processMsg(msg: MsgItem) {
   }
   if (msg.option.overwrite) {
     (() => {
-      for(const targetID of msg.option.overwrite) {
+      for (const targetID of msg.option.overwrite) {
         const targetMsg = messageStorage.get(targetID);
         if (!targetMsg) {
           continue;
@@ -397,11 +397,11 @@ function updateMsgResponse(response: MsgResponse) {
     return;
   }
 
-  if(response.latestRead){
+  if (response.latestRead) {
     const newDiplomacyIdx = response.latestRead.diplomacy;
     const [diplomacyToastID, diplomacyLatestMsgID] = latestDiplomacyMsgToastInfo.value;
-    if(diplomacyLatestMsgID < newDiplomacyIdx){
-      if(diplomacyToastID){
+    if (diplomacyLatestMsgID < newDiplomacyIdx) {
+      if (diplomacyToastID) {
         toasts.remove(diplomacyToastID);
       }
       latestDiplomacyMsgToastInfo.value = [undefined, newDiplomacyIdx, newDiplomacyIdx];
@@ -409,14 +409,13 @@ function updateMsgResponse(response: MsgResponse) {
 
     const newPrivateIdx = response.latestRead.private;
     const [privateToastID, privateLatestMsgID] = latestPrivateMsgToastInfo.value;
-    if(privateLatestMsgID < newPrivateIdx){
-      if(privateToastID){
+    if (privateLatestMsgID < newPrivateIdx) {
+      if (privateToastID) {
         toasts.remove(privateToastID);
       }
       latestPrivateMsgToastInfo.value = [undefined, newPrivateIdx, newPrivateIdx];
     }
   }
-
 
   lastSequence.value = Math.max(lastSequence.value, response.sequence);
 
@@ -495,7 +494,7 @@ function beginRefreshTimer() {
           },
           {
             delay: 1000 * 3600,
-          }
+          },
         );
         return;
       }
@@ -580,7 +579,7 @@ function setTarget(type: MsgType, target: MsgTarget): void {
         return target.nation_id + 9000;
       }
       return target.id;
-    })()
+    })(),
   );
   if (!item) {
     return;

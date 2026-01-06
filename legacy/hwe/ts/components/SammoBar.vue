@@ -33,7 +33,6 @@
         backgroundImage: `url('${imagePath}/pb${props.height - 2}.gif')`,
         backgroundRepeat: 'repeat-x',
         backgroundPosition: 'left center',
-
       }"
     />
   </div>
@@ -51,7 +50,7 @@ const props = defineProps<{
 }>();
 
 const tooltipText = computed(() => {
-  if(props.altText){
+  if (props.altText) {
     return props.altText;
   }
   return `${props.percent.toLocaleString(undefined, { maximumFractionDigits: 2 })}%`;

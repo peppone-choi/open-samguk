@@ -12,11 +12,11 @@ export type ReservedCommandResponse = {
 };
 
 export type ReserveCommandResponse = {
-  result: true,
-  brief: string,
-}
+  result: true;
+  brief: string;
+};
 
 export type ReserveBulkCommandResponse = {
-  result: true,
-  briefList: string[],
-}
+  result: true;
+  briefList: string[];
+};
