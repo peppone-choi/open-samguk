@@ -102,8 +102,6 @@ export interface City {
   wall: number;
   wallMax: number;
   trust: number; // 민심
-  gold: number;
-  rice: number;
   trade: number | null; // 시세
   region: number; // 지역 코드
   state: number; // 상태 (전쟁중 등)

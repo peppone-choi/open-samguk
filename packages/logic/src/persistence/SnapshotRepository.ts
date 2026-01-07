@@ -146,8 +146,6 @@ export class SnapshotRepository {
         wall: c.wall,
         wallMax: c.wallMax,
         trust: c.trust,
-        gold: c.pop, // Placeholder
-        rice: c.pop, // Placeholder
         trade: c.trade,
         region: c.region,
         state: c.state,
