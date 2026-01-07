@@ -96,6 +96,25 @@ export class TrpcRouter implements OnModuleInit {
           return this.generalService.getGeneralDetail(input.generalId);
         }),
 
+      createGeneral: this.trpc.procedure
+        .input(
+          z.object({
+            ownerId: z.number(),
+            name: z.string().min(2).max(20),
+            picture: z.string(),
+            nationId: z.number(),
+            leadership: z.number().min(10).max(100),
+            strength: z.number().min(10).max(100),
+            intel: z.number().min(10).max(100),
+            startAge: z.number().min(15).max(50).optional(),
+            personal: z.string().optional(),
+            special: z.string().optional(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.generalService.createGeneral(input);
+        }),
+
       getGeneralLogs: this.trpc.procedure
         .input(z.object({ generalId: z.number(), limit: z.number().optional() }))
         .query(async ({ input }) => {

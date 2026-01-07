@@ -5,6 +5,7 @@ import {
   Nation,
   City,
   Diplomacy,
+  Troop,
   WorldDelta,
   ReservedTurn,
 } from "../domain/entities.js";
@@ -435,7 +436,156 @@ export class SnapshotRepository {
           });
         }
       }
+
+      // 6. 환경 변수 업데이트 (game_env 스토리지)
+      if (delta.env) {
+        for (const [key, value] of Object.entries(delta.env)) {
+          await tx.storage.upsert({
+            where: { namespace_key: { namespace: "game_env", key } },
+            update: { value },
+            create: { namespace: "game_env", key, value },
+          });
+        }
+      }
+
+      // 7. 외교 관계 업데이트
+      if (delta.diplomacy) {
+        for (const [key, dDelta] of Object.entries(delta.diplomacy)) {
+          const [meId, youId] = key.split(":").map(Number);
+          await tx.diplomacy.upsert({
+            where: { meId_youId: { meId, youId } },
+            update: this.mapDiplomacyDelta(dDelta),
+            create: {
+              meId,
+              youId,
+              state: parseInt(dDelta.state || "0"),
+              term: dDelta.term || 0,
+            },
+          });
+        }
+      }
+
+      // 8. 부대 업데이트
+      if (delta.troops) {
+        for (const [id, tDelta] of Object.entries(delta.troops)) {
+          const troopLeader = parseInt(id);
+          const existing = await tx.troop.findUnique({ where: { troopLeader } });
+          if (existing) {
+            await tx.troop.update({
+              where: { troopLeader },
+              data: this.mapTroopDelta(tDelta),
+            });
+          } else if (tDelta.nationId !== undefined && tDelta.name !== undefined) {
+            await tx.troop.create({
+              data: {
+                troopLeader,
+                nationId: tDelta.nationId,
+                name: tDelta.name,
+              },
+            });
+          }
+        }
+      }
+
+      // 9. 메시지 저장
+      if (delta.messages && delta.messages.length > 0) {
+        for (const msg of delta.messages) {
+          await tx.message.create({
+            data: {
+              mailbox: typeof msg.mailbox === "number" ? msg.mailbox : 0,
+              type: msg.meta?.type || "general",
+              srcId: msg.srcId || 0,
+              destId: msg.destId || 0,
+              time: msg.sentAt,
+              message: { text: msg.text, ...msg.meta },
+            },
+          });
+        }
+      }
+
+      // 10. 장수 삭제 (사망/은퇴)
+      if (delta.deleteGenerals && delta.deleteGenerals.length > 0) {
+        for (const generalId of delta.deleteGenerals) {
+          await tx.generalTurn.deleteMany({ where: { generalId } });
+          await tx.generalAccessLog.deleteMany({ where: { generalId } });
+          await tx.generalRecord.deleteMany({ where: { generalId } });
+          await tx.general.delete({ where: { no: generalId } });
+        }
+      }
+
+      // 11. 국가 삭제 (멸망)
+      if (delta.deleteNations && delta.deleteNations.length > 0) {
+        for (const nationId of delta.deleteNations) {
+          await tx.diplomacy.deleteMany({
+            where: { OR: [{ meId: nationId }, { youId: nationId }] },
+          });
+          await tx.troop.deleteMany({ where: { nationId } });
+          await tx.nation.delete({ where: { nation: nationId } });
+        }
+      }
+
+      // 12. 로그 저장
+      if (delta.logs) {
+        const { year, month } = await this.getGameTime(tx);
+
+        if (delta.logs.general) {
+          for (const [generalId, texts] of Object.entries(delta.logs.general)) {
+            for (const text of texts) {
+              await tx.generalRecord.create({
+                data: {
+                  generalId: parseInt(generalId),
+                  logType: "general",
+                  year,
+                  month,
+                  text,
+                },
+              });
+            }
+          }
+        }
+
+        if (delta.logs.nation) {
+          for (const [nationId, texts] of Object.entries(delta.logs.nation)) {
+            for (const text of texts) {
+              await tx.worldHistory.create({
+                data: {
+                  nationId: parseInt(nationId),
+                  year,
+                  month,
+                  text,
+                },
+              });
+            }
+          }
+        }
+
+        if (delta.logs.global && delta.logs.global.length > 0) {
+          for (const text of delta.logs.global) {
+            await tx.worldHistory.create({
+              data: {
+                nationId: 0,
+                year,
+                month,
+                text,
+              },
+            });
+          }
+        }
+      }
     });
+  }
+
+  private async getGameTime(tx: any): Promise<{ year: number; month: number }> {
+    const yearRow = await tx.storage.findFirst({
+      where: { namespace: "game_env", key: "year" },
+    });
+    const monthRow = await tx.storage.findFirst({
+      where: { namespace: "game_env", key: "month" },
+    });
+    return {
+      year: (yearRow?.value as number) || 184,
+      month: (monthRow?.value as number) || 1,
+    };
   }
 
   private mapGeneralDelta(gDelta: Partial<General>): any {
@@ -485,6 +635,22 @@ export class SnapshotRepository {
     if (cDelta.def !== undefined) data.def = cDelta.def;
     if (cDelta.wall !== undefined) data.wall = cDelta.wall;
     if (cDelta.state !== undefined) data.state = cDelta.state;
+    if (cDelta.nationId !== undefined) data.nationId = cDelta.nationId;
+    if (cDelta.trust !== undefined) data.trust = cDelta.trust;
+    return data;
+  }
+
+  private mapDiplomacyDelta(dDelta: Partial<Diplomacy>): any {
+    const data: any = {};
+    if (dDelta.state !== undefined) data.state = parseInt(dDelta.state);
+    if (dDelta.term !== undefined) data.term = dDelta.term;
+    return data;
+  }
+
+  private mapTroopDelta(tDelta: Partial<Troop>): any {
+    const data: any = {};
+    if (tDelta.name !== undefined) data.name = tDelta.name;
+    if (tDelta.nationId !== undefined) data.nationId = tDelta.nationId;
     return data;
   }
 }
