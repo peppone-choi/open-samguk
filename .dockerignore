@@ -1,0 +1,14 @@
+node_modules
+.pnpm-store
+dist
+.next
+out
+.turbo
+.cache
+*.tsbuildinfo
+.git
+.vscode
+.idea
+.DS_Store
+*.log
+coverage
