@@ -13,6 +13,7 @@ import { HistoryService } from "../game/history.service.js";
 import { VoteService } from "../game/vote.service.js";
 import { InheritService } from "../game/inherit.service.js";
 import { CommandService } from "../game/command.service.js";
+import { AdminService } from "../game/admin.service.js";
 
 @Injectable()
 export class TrpcRouter implements OnModuleInit {
@@ -30,7 +31,8 @@ export class TrpcRouter implements OnModuleInit {
     private readonly historyService: HistoryService,
     private readonly voteService: VoteService,
     private readonly inheritService: InheritService,
-    private readonly commandService: CommandService
+    private readonly commandService: CommandService,
+    private readonly adminService: AdminService
   ) {
     this.appRouter = this.createRouter();
   }
@@ -550,6 +552,25 @@ export class TrpcRouter implements OnModuleInit {
         .mutation(async ({ input }) => {
           return this.commandService.reserveBulkCommand(input.generalId, input.commands);
         }),
+
+      // Admin APIs
+      listScenarios: this.trpc.procedure.query(async () => {
+        return this.adminService.listScenarios();
+      }),
+
+      initWorld: this.trpc.procedure
+        .input(z.object({ scenarioId: z.number() }))
+        .mutation(async ({ input }) => {
+          return this.adminService.initWorld(input.scenarioId);
+        }),
+
+      resetWorld: this.trpc.procedure.mutation(async () => {
+        return this.adminService.resetWorld();
+      }),
+
+      getGameEnv: this.trpc.procedure.query(async () => {
+        return this.adminService.getGameEnv();
+      }),
     });
   }
 

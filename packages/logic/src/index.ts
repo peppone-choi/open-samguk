@@ -2,6 +2,7 @@ export * from "./domain/entities.js";
 export * from "./domain/MonthlyPipeline.js";
 export * from "./domain/events/types.js";
 export * from "./domain/scenario/ScenarioLoader.js";
+export * from "./domain/scenario/InitialEventRunner.js";
 export * from "./domain/GameEngine.js";
 export * from "./utils/DeltaUtil.js";
 export * from "./persistence/SnapshotRepository.js";
