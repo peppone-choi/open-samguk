@@ -81,7 +81,9 @@ export class NationConfiscateCommand extends GeneralCommand {
 
     if (actualAmount <= 0) {
       return {
-        logs: { general: { [actorId]: [`${iDestGeneral.name}에게서 몰수할 ${resName}이 없습니다.`] } },
+        logs: {
+          general: { [actorId]: [`${iDestGeneral.name}에게서 몰수할 ${resName}이 없습니다.`] },
+        },
       };
     }
 

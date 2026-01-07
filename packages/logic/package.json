@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@sammo/common": "workspace:*",
+    "@sammo/infra": "workspace:*",
     "zod": "^4.3.5"
   },
   "devDependencies": {

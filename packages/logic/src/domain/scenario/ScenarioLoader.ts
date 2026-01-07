@@ -106,7 +106,7 @@ export class ScenarioLoader {
   constructor(options: ScenarioLoaderOptions = {}) {
     // 기본 경로 설정 (레거시 경로 사용)
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const projectRoot = join(__dirname, "../../../../../..");
+    const projectRoot = join(__dirname, "../../../../../");
 
     this.scenarioPath = options.scenarioPath ?? join(projectRoot, "legacy/hwe/scenario");
     this.defaultConfigPath = options.defaultConfigPath ?? join(this.scenarioPath, "default.json");
@@ -343,14 +343,16 @@ export class ScenarioLoader {
       defMax,
       wall,
       wallMax,
-      trust: 50,
-      gold: 0,
-      rice: 0,
+      trust: 100,
+      gold: 5000,
+      rice: 5000,
+      trade: null,
       region: this.getRegionNumber(region),
       state: 0,
       term: 0,
       conflict: {},
       meta: {},
+      dead: 0,
     };
   }
 
@@ -446,6 +448,7 @@ export class ScenarioLoader {
       death,
       ego,
       speciality,
+      speciality2, // Added speciality2 to destructuring
       ...rest
     ] = data;
     const text = rest[0] as string | undefined;
@@ -478,6 +481,7 @@ export class ScenarioLoader {
       ownerId: 0,
       nationId,
       cityId,
+      npc: 2,
       troopId: 0,
       gold: 0,
       rice: 500,
@@ -498,16 +502,21 @@ export class ScenarioLoader {
       officerCity: cityId,
       recentWar: 0,
       crew: 0,
-      crewType: 1100, // 기본 보병
+      crewType: 0, // Changed from 1100
       train: 0,
       atmos: 0,
       dex: {},
       age,
+      startAge: age,
+      belong: 0,
+      betray: 0,
+      dedLevel: 0,
+      expLevel: 0,
       bornYear: birth,
       deadYear: death,
-      special: ego ?? "",
+      special: speciality || "None", // Changed from ego ?? ""
       specAge: 0,
-      special2: speciality ?? "",
+      special2: speciality2 || "None", // Changed from speciality ?? ""
       specAge2: 0,
       weapon: "",
       book: "",
@@ -516,7 +525,7 @@ export class ScenarioLoader {
       turnTime: new Date(),
       recentWarTime: null,
       makeLimit: 0,
-      killTurn: -1,
+      killTurn: 0, // Changed from -1
       block: 0,
       defenceTrain: 0,
       tournamentState: 0,
@@ -526,6 +535,7 @@ export class ScenarioLoader {
         text: text ?? "",
       },
       penalty: {},
+      officerLock: 0,
     };
   }
 

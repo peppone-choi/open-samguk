@@ -21,13 +21,13 @@ export class NationDesperateCommand extends GeneralCommand {
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
-      ConstraintHelper.AllowDiplomacyStatus([], [0], "전쟁중이 아닙니다."), // actorId 대신 nationId 사용패턴 필요
+      ConstraintHelper.AllowDiplomacyStatus(["0"], "전쟁중이 아닙니다."), // actorId 대신 nationId 사용패턴 필요
       ConstraintHelper.AvailableStrategicCommand(2), // preReqTurn = 2
       ConstraintHelper.AvailableNationCommand("NationDesperateCommand"),
     ];
   }
 
-  // NOTE: AllowDiplomacyStatus 는 첫번째 인자로 nationId를 받도록 되어 있음. 
+  // NOTE: AllowDiplomacyStatus 는 첫번째 인자로 nationId를 받도록 되어 있음.
   // ConstraintContext.nationId 를 사용하도록 이미 구현되어 있는지 확인 필요.
 
   getPreReqTurn(): number {

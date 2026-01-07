@@ -266,11 +266,11 @@ TypeScript 파일: `packages/logic/src/domain/nation-types/`
 
 | 디렉토리              | 파일 수 | 포팅 완료 | 진행률      |
 | --------------------- | ------- | --------- | ----------- |
-| ActionItem            | 161     | ~14       | 9%          |
+| ActionItem            | 161     | ~60       | 37%         |
 | Command               | 96      | 61        | 64%         |
 | API                   | 79      | 0         | 0% (새 API) |
 | Constraint            | 73      | 73        | **100%** ✅ |
-| Event                 | 39      | 17        | 43%         |
+| Event                 | 39      | 32        | 82%         |
 | WarUnitTrigger        | 36      | 31        | **97%** ✅  |
 | ActionSpecialDomestic | 10      | 10        | **100%** ✅ |
 | ActionSpecialWar      | 21      | 21        | **100%** ✅ |
@@ -293,6 +293,12 @@ TypeScript 파일: `packages/logic/src/domain/nation-types/`
 | oauth_kakao/ | 10 PHP  | 카카오 OAuth → 새 API          |
 | f_install/   | 8 PHP   | 설치 스크립트 (포팅 불필요)    |
 
+## 9. 프론트엔드 (Web App)
+
+- [x] 기본 레이아웃 및 테마 설정 (`layout.tsx`, `globals.css`) - **완료**
+- [x] 대시보드 스켈레톤 구현 (`Dashboard.tsx`) - **완료**
+- [ ] API 연동 (tRPC) - **대기**
+
 ## 다음 우선순위
 
 1. ~~장수 커맨드 완성~~ **100% ✅**
@@ -300,5 +306,6 @@ TypeScript 파일: `packages/logic/src/domain/nation-types/`
 3. ~~전투 특기 구현~~ **100% ✅**
 4. ~~내정 특기 구현~~ **100% ✅**
 5. ~~제약 조건 구현~~ **100% ✅**
-6. **이벤트 구현** (27개 남음)
-7. **아이템 구현** (~147개 남음)
+6. **이벤트 구현** (7개 남음) - 정기 수입, 전쟁 수입, 로그 기록, 이민족 관리 등 핵심 이벤트 포팅 완료!
+7. **아이템 구현** (100개 내외 남음) - 1차 대량 포팅(스탯 향상 아이템 및 주요 특수 아이템) 완료!
+8. **프론트엔드 제작 및 API 연동** (다음 단계 집중)

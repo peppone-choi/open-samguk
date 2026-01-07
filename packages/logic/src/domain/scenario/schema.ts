@@ -445,9 +445,13 @@ export const UnitDataSchema = z.object({
   magicRate: z.number(),
   attackRange: z.number(),
   defenseRange: z.number(),
-  attackModifiers: z.record(z.number(), z.number()).optional(),
-  defenseModifiers: z.record(z.number(), z.number()).optional(),
+  constraints: z.array(z.any()).optional(),
+  attackModifiers: z.record(z.string(), z.number()).optional(),
+  defenseModifiers: z.record(z.string(), z.number()).optional(),
   descriptions: z.array(z.string()),
+  attackAbility: z.string().nullable().optional(),
+  defenseAbility: z.string().nullable().optional(),
+  specialAbility: z.string().nullable().optional(),
 });
 export type UnitData = z.infer<typeof UnitDataSchema>;
 

@@ -100,7 +100,9 @@ export class NationAppointCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [`【${iDestGeneral.name}】${josaUl} 【${iDestCity.name}】${josaRo} 발령했습니다.`],
+          [actorId]: [
+            `【${iDestGeneral.name}】${josaUl} 【${iDestCity.name}】${josaRo} 발령했습니다.`,
+          ],
           [destGeneralId]: [`${iActor.name}에 의해 【${iDestCity.name}】${josaRo} 발령됐습니다.`],
         },
       },

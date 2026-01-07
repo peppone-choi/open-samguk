@@ -16,11 +16,11 @@ import type {
  */
 export abstract class BaseStatItem extends BaseItem {
   /** 스탯 종류 한글명 (통솔/무력/지력) */
-  protected readonly statNick: string;
+  readonly statNick: string;
   /** 스탯 종류 영문명 */
-  protected readonly statType: "leadership" | "strength" | "intel";
+  readonly statType: "leadership" | "strength" | "intel";
   /** 스탯 증가량 */
-  protected readonly statValue: number;
+  readonly statValue: number;
 
   readonly rawName: string;
   readonly name: string;
@@ -41,7 +41,7 @@ export abstract class BaseStatItem extends BaseItem {
     this.buyable = config.buyable;
 
     // 스탯 한글명 설정
-    const nickMap = {
+    const nickMap: Record<"leadership" | "strength" | "intel", string> = {
       leadership: "통솔",
       strength: "무력",
       intel: "지력",

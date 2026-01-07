@@ -4,6 +4,8 @@ import type { IItem, ItemType, ItemMeta } from "./types.js";
 import * as weapons from "./weapons/index.js";
 import * as horses from "./horses/index.js";
 import * as books from "./books/index.js";
+import * as unique from "./unique/index.js";
+import * as event from "./event/index.js";
 
 /**
  * 아이템 레지스트리
@@ -48,6 +50,18 @@ export class ItemRegistry {
     for (const BookClass of books.ALL_BOOKS) {
       const sample = new BookClass();
       this.register(sample.code, () => new BookClass());
+    }
+
+    // 유니크 아이템 등록
+    for (const UniqueClass of unique.ALL_UNIQUE_ITEMS) {
+      const sample = new UniqueClass();
+      this.register(sample.code, () => new UniqueClass());
+    }
+
+    // 이벤트 아이템 등록
+    for (const EventClass of event.ALL_EVENT_ITEMS) {
+      const sample = new EventClass();
+      this.register(sample.code, () => new EventClass());
     }
   }
 

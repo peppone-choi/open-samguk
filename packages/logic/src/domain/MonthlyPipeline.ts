@@ -109,68 +109,8 @@ export class MonthlyPipeline {
       }
     }
 
-    // 2. 도시 수입 계산 및 국가/도시 분배
-    for (const iCity of Object.values(snapshot.cities)) {
-      if (iCity.nationId === 0) continue; // 중립 도시는 수입 없음
-
-      const city = new City(iCity);
-      const iNation = snapshot.nations[iCity.nationId];
-      if (!iNation) continue;
-
-      const taxRate = iNation.meta.rate || 10; // 국가 세율 (기본 10%)
-      const { gold, rice } = city.calcIncome(taxRate);
-
-      // 국가와 도시가 수입을 나눔 (국가 70%, 도시 30%)
-      const nationGold = Math.floor(gold * 0.7);
-      const cityGold = gold - nationGold;
-      const nationRice = Math.floor(rice * 0.7);
-      const cityRice = rice - nationRice;
-
-      // 델타 업데이트
-      let cDelta = dCities[iCity.id];
-      if (!cDelta) {
-        cDelta = {};
-        dCities[iCity.id] = cDelta;
-      }
-
-      cDelta.gold = iCity.gold + cityGold;
-      cDelta.rice = iCity.rice + cityRice;
-
-      let nDelta = dNations[iCity.nationId];
-      if (!nDelta) {
-        nDelta = {};
-        dNations[iCity.nationId] = nDelta;
-      }
-      nDelta.gold = (nDelta.gold || iNation.gold || 0) + nationGold;
-      nDelta.rice = (nDelta.rice || iNation.rice || 0) + nationRice;
-    }
-
-    // 2. 장수 봉록 지급 (국가 자금 소모)
-    for (const iGeneral of Object.values(snapshot.generals)) {
-      if (iGeneral.nationId === 0) continue;
-
-      const iNation = snapshot.nations[iGeneral.nationId];
-      if (!iNation) continue;
-
-      // 공헌도에 비례한 봉록 (최소 10, 최대 500)
-      const salary = Math.min(Math.max(Math.floor(iGeneral.dedication / 100), 10), 500);
-
-      // 국가 자금 차감
-      let nDelta = dNations[iGeneral.nationId];
-      if (!nDelta) {
-        nDelta = {};
-        dNations[iGeneral.nationId] = nDelta;
-      }
-      nDelta.gold = (nDelta.gold || iNation.gold || 0) - salary;
-
-      // 장수 자금 증가
-      let gDelta = dGenerals[iGeneral.id];
-      if (!gDelta) {
-        gDelta = {};
-        dGenerals[iGeneral.id] = gDelta;
-      }
-      gDelta.gold = iGeneral.gold + salary;
-    }
+    // 2. 도시 수입 및 장수 봉록은 이제 ProcessIncomeEvent, ProcessWarIncomeEvent 등 이벤트에서 처리됨
+    // (레거시와 동일하게 이벤트 기반으로 변경)
 
     return DeltaUtil.merge(eventDelta, delta);
   }

@@ -25,7 +25,13 @@ export class NationAidCommand extends GeneralCommand {
       ...this.minConditionConstraints,
       ConstraintHelper.ExistsDestNation(),
       ConstraintHelper.DifferentDestNation(),
-      ConstraintHelper.ReqDestNationValue("surrenderLimit", "외교제한", "==", 0, "상대국이 외교제한중입니다."),
+      ConstraintHelper.ReqDestNationValue(
+        "surrenderLimit",
+        "외교제한",
+        "==",
+        0,
+        "상대국이 외교제한중입니다."
+      ),
     ];
   }
 

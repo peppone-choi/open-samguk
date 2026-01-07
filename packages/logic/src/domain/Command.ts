@@ -31,7 +31,7 @@ export interface Command {
  * WorldSnapshot을 기반으로 한 StateView 구현체
  */
 export class SnapshotStateView implements StateView {
-  constructor(private snapshot: WorldSnapshot) { }
+  constructor(private snapshot: WorldSnapshot) {}
 
   has(req: RequirementKey): boolean {
     return this.get(req) !== null;

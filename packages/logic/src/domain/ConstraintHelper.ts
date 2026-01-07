@@ -47,6 +47,17 @@ import { AdhocCallbackConstraint } from "./constraints/AdhocCallbackConstraint.j
 import { AvailableRecruitCrewTypeConstraint } from "./constraints/AvailableRecruitCrewTypeConstraint.js";
 import { AvailableNationCommandConstraint } from "./constraints/AvailableNationCommandConstraint.js";
 import { ReqEnvValueConstraint } from "./constraints/ReqEnvValueConstraint.js";
+import { BeOpeningPartConstraint } from "./constraints/BeOpeningPartConstraint.js";
+import { NotOpeningPartConstraint } from "./constraints/NotOpeningPartConstraint.js";
+import { RemainCityTrustConstraint } from "./constraints/RemainCityTrustConstraint.js";
+import { ReqCityTrustConstraint } from "./constraints/ReqCityTrustConstraint.js";
+import { MustBeNPCConstraint } from "./constraints/MustBeNPCConstraint.js";
+import { AllowWarConstraint } from "./constraints/AllowWarConstraint.js";
+import { ReqNationAuxValueConstraint } from "./constraints/ReqNationAuxValueConstraint.js";
+import { ReqCityTraderConstraint } from "./constraints/ReqCityTraderConstraint.js";
+import { MustBeTroopLeaderConstraint } from "./constraints/MustBeTroopLeaderConstraint.js";
+import { AllowJoinActionConstraint } from "./constraints/AllowJoinActionConstraint.js";
+import { ReqCityCapacityConstraint } from "./constraints/ReqCityCapacityConstraint.js";
 
 /**
  * 공통 제약 조건들을 생성하는 헬퍼 클래스
@@ -218,8 +229,6 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
         const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
-        // supply가 undefined이면 (테스트 등) 통과? 아니면 실패?
-        // 안전하게 supply === 1 체크. (기본값 1)
         if (!city || city.supply !== 1) {
           return {
             kind: "deny",
@@ -331,7 +340,7 @@ export class ConstraintHelper {
           kind: "destGeneral",
           id: ctx.args.destGeneralId,
         });
-        if (!general || !destGeneral) return { kind: "allow" }; // 다른 제약에서 걸릴 것
+        if (!general || !destGeneral) return { kind: "allow" };
 
         if (general.nationId === destGeneral.nationId) {
           return {
@@ -344,9 +353,6 @@ export class ConstraintHelper {
     };
   }
 
-  /**
-   * 특정 관직 레벨 이상 요구
-   */
   /**
    * 특정 관직 레벨 이상 요구
    */
@@ -507,7 +513,6 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
         const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
-        // Level 5(소) 이상이어야 건국 가능 (1,2,3,4 불가)
         if (!city || city.level < 5) {
           return { kind: "deny", reason: "건국할 수 없는 도시입니다." };
         }
@@ -515,7 +520,6 @@ export class ConstraintHelper {
       },
     };
   }
-
 
   public static ReqCitySecu(reqSecu: number): Constraint {
     return {
@@ -542,10 +546,7 @@ export class ConstraintHelper {
       test: (ctx, view) => {
         const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
         if (!city) return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
-        // 상선/상인이 있는 도시는 trade 수치가 높거나 특정 메타 데이터가 있어야 함.
-        // 레거시에서는 CityConst::byID($general->getCityID())->trade >= 10 등으로 체크?
-        // 일단 trade >= 10 을 상인 존재 여부로 가정.
-        if (city.trade < 10 && npcType === 0) {
+        if (city.trade! < 10 && npcType === 0) {
           return { kind: "deny", reason: "상인이 없는 도시입니다." };
         }
         return { kind: "allow" };
@@ -623,73 +624,42 @@ export class ConstraintHelper {
     };
   }
 
-  /**
-   * 군주가 아니어야 함
-   */
   public static NotLord(): Constraint {
     return new NotLordConstraint();
   }
 
-  /**
-   * 수뇌여야 함 (officer_level > 4)
-   */
   public static BeChief(): Constraint {
     return new BeChiefConstraint();
   }
 
-  /**
-   * 수뇌가 아니어야 함 (officer_level <= 4)
-   */
   public static NotChief(): Constraint {
     return new NotChiefConstraint();
   }
 
-  /**
-   * 현재 도시가 아국이 아니어야 함
-   */
   public static NotOccupiedCity(): Constraint {
     return new NotOccupiedCityConstraint();
   }
 
-  /**
-   * 현재 도시가 공백지여야 함
-   */
   public static NeutralCity(): Constraint {
     return new NeutralCityConstraint();
   }
 
-  /**
-   * 대상 도시가 공백지가 아니어야 함
-   */
   public static NotNeutralDestCity(): Constraint {
     return new NotNeutralDestCityConstraint();
   }
 
-  /**
-   * 대상 도시가 아국이어야 함
-   */
   public static OccupiedDestCity(): Constraint {
     return new OccupiedDestCityConstraint();
   }
 
-  /**
-   * 대상 도시가 아국이 아니어야 함
-   */
   public static NotOccupiedDestCity(): Constraint {
     return new NotOccupiedDestCityConstraint();
   }
 
-  /**
-   * 대상 도시가 보급이 연결되어 있어야 함
-   */
   public static SuppliedDestCity(): Constraint {
     return new SuppliedDestCityConstraint();
   }
 
-  /**
-   * 범용 장수 값 검사
-   * @example ConstraintHelper.ReqGeneralValue('leadership', '통솔', '>=', 80)
-   */
   public static ReqGeneralValue(
     key: string,
     keyNick: string,
@@ -700,11 +670,6 @@ export class ConstraintHelper {
     return new ReqGeneralValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
 
-  /**
-   * 범용 국가 값 검사 (퍼센트 지원)
-   * @example ConstraintHelper.ReqNationValue('gold', '국고', '>=', 10000)
-   * @example ConstraintHelper.ReqNationValue('rice', '군량', '>=', '50%')
-   */
   public static ReqNationValue(
     key: string,
     keyNick: string,
@@ -715,11 +680,6 @@ export class ConstraintHelper {
     return new ReqNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
 
-  /**
-   * 범용 도시 값 검사 (퍼센트 지원)
-   * @example ConstraintHelper.ReqCityValue('agri', '농업', '>=', 10000)
-   * @example ConstraintHelper.ReqCityValue('comm', '상업', '>=', '50%')
-   */
   public static ReqCityValue(
     key: string,
     keyNick: string,
@@ -730,10 +690,6 @@ export class ConstraintHelper {
     return new ReqCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
 
-  /**
-   * 범용 대상 도시 값 검사 (퍼센트 지원)
-   * @example ConstraintHelper.ReqDestCityValue('def', '방어', '<', '80%')
-   */
   public static ReqDestCityValue(
     key: string,
     keyNick: string,
@@ -744,10 +700,6 @@ export class ConstraintHelper {
     return new ReqDestCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
 
-  /**
-   * 범용 대상 국가 값 검사 (퍼센트 지원)
-   * @example ConstraintHelper.ReqDestNationValue('gold', '상대국 국고', '<', 10000)
-   */
   public static ReqDestNationValue(
     key: string,
     keyNick: string,
@@ -758,66 +710,38 @@ export class ConstraintHelper {
     return new ReqDestNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
 
-  /**
-   * 국가 자금이 충분해야 함
-   */
   public static ReqNationGold(amount: number): Constraint {
     return new ReqNationGoldConstraint(amount);
   }
 
-  /**
-   * 국가 군량이 충분해야 함
-   */
   public static ReqNationRice(amount: number): Constraint {
     return new ReqNationRiceConstraint(amount);
   }
 
-  /**
-   * 수도가 아니어야 함
-   * @param allowChief - true인 경우, 수뇌는 수도에서도 허용
-   */
   public static NotCapital(allowChief: boolean = false): Constraint {
     return new NotCapitalConstraint(allowChief);
   }
 
-  /**
-   * 대상 도시가 현재 도시와 달라야 함
-   */
   public static NotSameDestCity(): Constraint {
     return new NotSameDestCityConstraint();
   }
 
-  /**
-   * 대상 국가가 존재해야 함
-   */
   public static ExistsDestNation(): Constraint {
     return new ExistsDestNationConstraint();
   }
 
-  /**
-   * 대상 국가가 현재 국가와 달라야 함
-   */
   public static DifferentDestNation(): Constraint {
     return new DifferentDestNationConstraint();
   }
 
-  /**
-   * 특정 외교 상태 중 하나라도 만족해야 함
-   */
   public static AllowDiplomacyStatus(allowStatus: string[], errorMessage: string): Constraint {
     return new AllowDiplomacyStatusConstraint(allowStatus, errorMessage);
   }
 
-  /**
-   * 특정 외교 상태 중 하나라도 포함되면 안 됨
-   */
   public static DisallowDiplomacyStatus(disallowStatus: Record<string, string>): Constraint {
     return new DisallowDiplomacyStatusConstraint(disallowStatus);
   }
 
-  /**
-   * 특정 외교 상태이고 기한이 일정치 이상이어야 함
-   */
   public static AllowDiplomacyWithTerm(
     allowDipCode: string,
     allowMinTerm: number,
@@ -826,137 +750,76 @@ export class ConstraintHelper {
     return new AllowDiplomacyWithTermConstraint(allowDipCode, allowMinTerm, errorMessage);
   }
 
-  /**
-   * 대상 국가로의 임관 가능 여부 검사
-   */
   public static AllowJoinDestNation(relYear: number): Constraint {
     return new AllowJoinDestNationConstraint(relYear);
   }
 
-  /**
-   * 대상 도시가 교전 중인 국가의 도시인지 확인
-   */
   public static BattleGroundCity(): Constraint {
     return new BattleGroundCityConstraint();
   }
 
-  /**
-   * 반란 가능 여부 확인
-   */
   public static AllowRebellion(): Constraint {
     return new AllowRebellionConstraint();
   }
 
-  /**
-   * 국가명 중복 확인
-   */
   public static CheckNationNameDuplicate(targetName: string): Constraint {
     return new CheckNationNameDuplicateConstraint(targetName);
   }
 
-  /**
-   * 임관 가능 국가 존재 여부 확인
-   */
   public static ExistsAllowJoinNation(relYear: number, excludeList: number[]): Constraint {
     return new ExistsAllowJoinNationConstraint(relYear, excludeList);
   }
 
-  /**
-   * 자국령을 거쳐 도달 가능한지 확인
-   */
   public static HasRoute(): Constraint {
     return new HasRouteConstraint();
   }
 
-  /**
-   * 자국령/공백지/교전중인국가령 을 거쳐 도달 가능한지 확인
-   */
   public static HasRouteWithEnemy(): Constraint {
     return new HasRouteWithEnemyConstraint();
   }
 
-  /**
-   * 장수의 병력 여유분 확인
-   */
   public static ReqGeneralCrewMargin(targetCrewType: number): Constraint {
     return new ReqGeneralCrewMarginConstraint(targetCrewType);
   }
 
-  /**
-   * 부대원 존재 여부 확인
-   */
   public static ReqTroopMembers(): Constraint {
     return new ReqTroopMembersConstraint();
   }
 
-  /**
-   * 전략 커맨드 사용 가능 여부 (전쟁 금지 상태 확인)
-   */
   public static AllowStrategicCommand(): Constraint {
     return new AllowStrategicCommandConstraint();
   }
 
-  /**
-   * 전략 커맨드 가용 여부 (기한 확인)
-   */
   public static AvailableStrategicCommand(turnLimit: number): Constraint {
     return new AvailableStrategicCommandConstraint(turnLimit);
   }
 
-  /**
-   * 임의의 콜백 함수를 사용한 제약 조건
-   */
   public static AdhocCallback(
     callback: (ctx: ConstraintContext, view: StateView) => string | null
   ): Constraint {
     return new AdhocCallbackConstraint(callback);
   }
 
-  /**
-   * 징병 가능 병종 여부 확인
-   */
   public static AvailableRecruitCrewType(crewType: number): Constraint {
     return new AvailableRecruitCrewTypeConstraint(crewType);
   }
 
-  /**
-   * 국가 커맨드 재사용 대기시간 확인
-   */
   public static AvailableNationCommand(commandClassName: string): Constraint {
     return new AvailableNationCommandConstraint(commandClassName);
   }
 
-  /**
-   * 대상 국가가 인접 국가여야 함
-   */
   public static NearNation(): Constraint {
     return new NearNationConstraint();
   }
 
-  /**
-   * 특정 외교 상태일 때 명령 불가
-   * @param disallowList 상태 → 에러 메시지 맵
-   */
-  public static DisallowDiplomacyBetweenStatus(disallowList: Record<string, string>): Constraint {
-    return new DisallowDiplomacyBetweenStatusConstraint(disallowList);
+  public static DisallowDiplomacyBetweenStatus(disallowStatus: Record<string, string>): Constraint {
+    return new DisallowDiplomacyBetweenStatusConstraint(disallowStatus);
   }
 
-  /**
-   * 특정 외교 상태일 때만 명령 가능
-   * @param allowList 허용되는 외교 상태 코드 배열
-   * @param errorMsg 허용되지 않을 때 에러 메시지
-   */
-  public static AllowDiplomacyBetweenStatus(allowList: string[], errorMsg: string): Constraint {
-    return new AllowDiplomacyBetweenStatusConstraint(allowList, errorMsg);
+  public static AllowDiplomacyBetweenStatus(allowStatus: string[], errorMsg: string): Constraint {
+    return new AllowDiplomacyBetweenStatusConstraint(allowStatus, errorMsg);
   }
 
-  /**
-   * 환경 변수 조건 검사
-   * @param key 환경 변수 키
-   * @param op 비교 연산자
-   * @param value 비교 대상 값
-   * @param errorMsg 실패 시 에러 메시지
-   */
   public static ReqEnvValue(
     key: string,
     op: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
@@ -964,5 +827,47 @@ export class ConstraintHelper {
     errorMsg: string
   ): Constraint {
     return new ReqEnvValueConstraint(key, op, value, errorMsg);
+  }
+
+  public static BeOpeningPart(): Constraint {
+    return new BeOpeningPartConstraint();
+  }
+
+  public static NotOpeningPart(): Constraint {
+    return new NotOpeningPartConstraint();
+  }
+
+  public static RemainCityTrust(actionName: string): Constraint {
+    return new RemainCityTrustConstraint(actionName);
+  }
+
+  public static MustBeNPC(): Constraint {
+    return new MustBeNPCConstraint();
+  }
+
+  public static AllowWar(): Constraint {
+    return new AllowWarConstraint();
+  }
+
+  public static ReqNationAuxValue(
+    key: string,
+    keyNick: string,
+    comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
+    reqVal: number | string,
+    errMsg?: string
+  ): Constraint {
+    return new ReqNationAuxValueConstraint(key, keyNick, comp, reqVal, errMsg);
+  }
+
+  public static MustBeTroopLeader(): Constraint {
+    return new MustBeTroopLeaderConstraint();
+  }
+
+  public static AllowJoinAction(): Constraint {
+    return new AllowJoinActionConstraint();
+  }
+
+  public static ReqCityCapacity(key: string, keyNick: string, reqVal: number | string): Constraint {
+    return new ReqCityCapacityConstraint(key, keyNick, reqVal);
   }
 }

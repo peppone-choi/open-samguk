@@ -15,7 +15,8 @@
     "dev:web": "pnpm --filter @sammo/web dev",
     "db:generate": "pnpm --filter @sammo/infra db:generate",
     "db:migrate": "pnpm --filter @sammo/infra db:migrate",
-    "db:push": "pnpm --filter @sammo/infra db:push"
+    "db:push": "pnpm --filter @sammo/infra db:push",
+    "setup": "tsx scripts/setup.ts"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

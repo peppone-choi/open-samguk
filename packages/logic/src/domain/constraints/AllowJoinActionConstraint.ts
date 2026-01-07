@@ -14,7 +14,7 @@ export class AllowJoinActionConstraint implements Constraint {
       return { kind: "deny", reason: "장수 정보를 찾을 수 없습니다." };
     }
 
-    if (general.makelimit === 0) {
+    if (general.makeLimit === 0) {
       return { kind: "allow" };
     }
 

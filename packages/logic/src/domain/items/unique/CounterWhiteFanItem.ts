@@ -1,0 +1,46 @@
+/**
+ * 백우선(반계) - che_반계_백우선.php 포팅
+ * [전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 30% 확률로 되돌림,
+ *        반목 성공시 대미지 추가(+60% → +100%), 소모 군량 +10%
+ */
+import { BaseItem } from "../BaseItem.js";
+import type { GeneralReadOnly, StatName, WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
+
+export class CounterWhiteFanItem extends BaseItem {
+  readonly code = "che_반계_백우선";
+  readonly rawName = "백우선";
+  readonly name = "백우선(반계)";
+  readonly info =
+    "[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 30% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +100%), 소모 군량 +10%";
+  readonly type = "item" as const;
+  readonly cost = 200;
+  readonly consumable = false;
+  readonly buyable = false;
+  readonly reqSecu = 0;
+
+  onCalcOpposeStat(
+    _general: GeneralReadOnly,
+    statName: StatName,
+    value: number,
+    _aux?: unknown
+  ): number {
+    if (statName === "warMagicSuccessProb") {
+      return value - 0.1;
+    }
+    return value;
+  }
+
+  onCalcStat(_general: GeneralReadOnly, statName: StatName, value: number, aux?: unknown): number {
+    if (statName === "killRice") {
+      return value * 1.1;
+    }
+    if (statName === "warMagicSuccessDamage" && aux === "반목") {
+      return value + 0.4;
+    }
+    return value;
+  }
+
+  // TODO: getBattlePhaseSkillTriggerList 구현
+  // new che_반계시도(unit, TYPE_ITEM + TYPE_DEDUP_TYPE_BASE * 301, 0.3),
+  // new che_반계발동(unit)
+}

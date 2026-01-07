@@ -94,4 +94,43 @@ export const DeltaUtil = {
 
     return target;
   },
+
+  apply<T extends object>(snapshot: T, delta: any): T {
+    const result = { ...snapshot } as any;
+
+    if (delta.generals) {
+      result.generals = { ...result.generals };
+      for (const [id, gDelta] of Object.entries(delta.generals)) {
+        const nId = Number(id);
+        result.generals[nId] = { ...result.generals[nId], ...(gDelta as any) };
+      }
+    }
+
+    if (delta.nations) {
+      result.nations = { ...result.nations };
+      for (const [id, nDelta] of Object.entries(delta.nations)) {
+        const nId = Number(id);
+        result.nations[nId] = { ...result.nations[nId], ...(nDelta as any) };
+      }
+    }
+
+    if (delta.cities) {
+      result.cities = { ...result.cities };
+      for (const [id, cDelta] of Object.entries(delta.cities)) {
+        const nId = Number(id);
+        result.cities[nId] = { ...result.cities[nId], ...(cDelta as any) };
+      }
+    }
+
+    if (delta.gameTime) {
+      result.gameTime = { ...result.gameTime, ...delta.gameTime };
+    }
+
+    if (delta.env) {
+      result.env = { ...result.env, ...delta.env };
+    }
+
+    // diplomacy, troops 등도 필요에 따라 추가
+    return result as T;
+  },
 };

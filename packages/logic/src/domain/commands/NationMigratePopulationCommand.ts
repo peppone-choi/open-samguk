@@ -19,20 +19,12 @@ export class NationMigratePopulationCommand extends GeneralCommand {
       ConstraintHelper.OccupiedCity(),
       ConstraintHelper.BeChief(),
       ConstraintHelper.SuppliedCity(),
-      ConstraintHelper.ReqCityCapacity(
-        "pop",
-        "주민",
-        GameConst.minAvailableRecruitPop + 100
-      ),
+      ConstraintHelper.ReqCityCapacity("pop", "주민", GameConst.minAvailableRecruitPop + 100),
     ];
     this.fullConditionConstraints = [
       ConstraintHelper.NotSameDestCity(),
       ConstraintHelper.OccupiedCity(),
-      ConstraintHelper.ReqCityCapacity(
-        "pop",
-        "주민",
-        GameConst.minAvailableRecruitPop + 100
-      ),
+      ConstraintHelper.ReqCityCapacity("pop", "주민", GameConst.minAvailableRecruitPop + 100),
       ConstraintHelper.OccupiedDestCity(),
       ConstraintHelper.NearCity(1),
       ConstraintHelper.BeChief(),
@@ -118,7 +110,10 @@ export class NationMigratePopulationCommand extends GeneralCommand {
     const develcost = snapshot.env?.develcost ?? 100;
     const reqAmount = this.getCost(maxAmount, develcost);
 
-    if (iNation.gold < GameConst.minNationalGold + reqAmount || iNation.rice < GameConst.minNationalRice + reqAmount) {
+    if (
+      iNation.gold < GameConst.minNationalGold + reqAmount ||
+      iNation.rice < GameConst.minNationalRice + reqAmount
+    ) {
       return {
         logs: {
           general: { [actorId]: ["인구이동 실패: 국고 자금 또는 군량이 부족합니다."] },

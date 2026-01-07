@@ -23,7 +23,7 @@ export class NationEconomicWarfareCommand extends GeneralCommand {
       ...this.minConditionConstraints,
       ConstraintHelper.ExistsDestNation(),
       ConstraintHelper.AllowDiplomacyBetweenStatus(
-        [0, 1],
+        ["0", "1"],
         "선포, 전쟁중인 상대국에게만 가능합니다."
       ),
     ];
@@ -132,7 +132,7 @@ export class NationEconomicWarfareCommand extends GeneralCommand {
         },
         nation: {
           [iNation.id]: [
-            `${iActor.name}${josaYi} 【${iDestCity.name}】에 ${this.actionName}${josaUl} 발동`,
+            `${iActor.name}${josaYi} 【${iDestNation.name}】에 ${this.actionName}${josaUl} 발동`,
           ],
           [destNationId]: [
             `【${iNation.name}】${josaYiNation} 아국에 ${this.actionName}${josaUl} 발동`,

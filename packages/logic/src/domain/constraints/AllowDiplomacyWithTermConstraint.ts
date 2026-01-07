@@ -6,56 +6,56 @@ import { Diplomacy } from "../entities.js";
  * 레거시: AllowDiplomacyWithTerm.php
  */
 export class AllowDiplomacyWithTermConstraint implements Constraint {
-    name = "AllowDiplomacyWithTerm";
+  name = "AllowDiplomacyWithTerm";
 
-    /**
-     * @param allowDipCode 허용되는 외교 상태 코드
-     * @param allowMinTerm 허용되는 최소 기한
-     * @param errorMessage 허용되지 않을 때 표시할 에러 메시지
-     */
-    constructor(
-        private allowDipCode: string,
-        private allowMinTerm: number,
-        private errorMessage: string
-    ) { }
+  /**
+   * @param allowDipCode 허용되는 외교 상태 코드
+   * @param allowMinTerm 허용되는 최소 기한
+   * @param errorMessage 허용되지 않을 때 표시할 에러 메시지
+   */
+  constructor(
+    private allowDipCode: string,
+    private allowMinTerm: number,
+    private errorMessage: string
+  ) {}
 
-    requires(ctx: ConstraintContext) {
-        return [
-            { kind: "nation" as const, id: ctx.nationId ?? 0 },
-            { kind: "destNation" as const, id: ctx.args.destNationId },
-        ];
+  requires(ctx: ConstraintContext) {
+    return [
+      { kind: "nation" as const, id: ctx.nationId ?? 0 },
+      { kind: "destNation" as const, id: ctx.args.destNationId },
+    ];
+  }
+
+  test(ctx: ConstraintContext, view: StateView): ConstraintResult {
+    // 외교 상태 검사는 WorldSnapshot.diplomacy 직접 접근 필요
+    // StateView는 diplomacy 접근 미지원 -> Command.run에서 직접 검사 필요
+    return { kind: "allow" };
+  }
+
+  /**
+   * 외부에서 직접 호출할 수 있는 검사 함수
+   */
+  checkDiplomacy(diplomacy: Diplomacy | undefined): ConstraintResult {
+    if (!diplomacy) {
+      return { kind: "deny", reason: this.errorMessage };
     }
 
-    test(ctx: ConstraintContext, view: StateView): ConstraintResult {
-        // 외교 상태 검사는 WorldSnapshot.diplomacy 직접 접근 필요
-        // StateView는 diplomacy 접근 미지원 -> Command.run에서 직접 검사 필요
-        return { kind: "allow" };
+    if (diplomacy.state === this.allowDipCode && diplomacy.term >= this.allowMinTerm) {
+      return { kind: "allow" };
     }
 
-    /**
-     * 외부에서 직접 호출할 수 있는 검사 함수
-     */
-    checkDiplomacy(diplomacy: Diplomacy | undefined): ConstraintResult {
-        if (!diplomacy) {
-            return { kind: "deny", reason: this.errorMessage };
-        }
+    return { kind: "deny", reason: this.errorMessage };
+  }
 
-        if (diplomacy.state === this.allowDipCode && diplomacy.term >= this.allowMinTerm) {
-            return { kind: "allow" };
-        }
+  getAllowDipCode(): string {
+    return this.allowDipCode;
+  }
 
-        return { kind: "deny", reason: this.errorMessage };
-    }
+  getAllowMinTerm(): number {
+    return this.allowMinTerm;
+  }
 
-    getAllowDipCode(): string {
-        return this.allowDipCode;
-    }
-
-    getAllowMinTerm(): number {
-        return this.allowMinTerm;
-    }
-
-    getErrorMessage(): string {
-        return this.errorMessage;
-    }
+  getErrorMessage(): string {
+    return this.errorMessage;
+  }
 }

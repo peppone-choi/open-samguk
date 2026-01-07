@@ -19,13 +19,25 @@ export class NationScorchedEarthCommand extends GeneralCommand {
       ConstraintHelper.BeChief(),
       ConstraintHelper.NotBeNeutral(),
       ConstraintHelper.SuppliedCity(),
-      ConstraintHelper.ReqNationValue("surrenderLimit", "외교제한 턴", "==", 0, "외교제한 턴이 남아있습니다."),
+      ConstraintHelper.ReqNationValue(
+        "surrenderLimit",
+        "외교제한 턴",
+        "==",
+        0,
+        "외교제한 턴이 남아있습니다."
+      ),
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
       ConstraintHelper.OccupiedDestCity(),
       ConstraintHelper.SuppliedDestCity(),
-      ConstraintHelper.ReqNationValue("capitalCityId", "수도", "!=", { kind: "arg", key: "destCityId" }, "수도입니다."),
+      ConstraintHelper.ReqNationValue(
+        "capitalCityId",
+        "수도",
+        "!=",
+        { kind: "arg", key: "destCityId" },
+        "수도입니다."
+      ),
       ConstraintHelper.DisallowDiplomacyStatus([], [0], "평시에만 가능합니다."),
     ];
   }
@@ -44,7 +56,7 @@ export class NationScorchedEarthCommand extends GeneralCommand {
     for (const res of resources) {
       const resVal = destCity[res];
       const resMax = destCity[`${res}Max`];
-      amount *= ((resVal - resMax * 0.5) / resMax) + 0.8;
+      amount *= (resVal - resMax * 0.5) / resMax + 0.8;
     }
     return Math.floor(amount);
   }

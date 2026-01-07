@@ -15,3 +15,9 @@ export * from "./triggers/index.js";
 export * as weapons from "./weapons/index.js";
 export * as horses from "./horses/index.js";
 export * as books from "./books/index.js";
+
+// 유니크 아이템 (특수 능력 보유)
+export * as unique from "./unique/index.js";
+
+// 이벤트 아이템 (전투특기 부여 등)
+export * as event from "./event/index.js";

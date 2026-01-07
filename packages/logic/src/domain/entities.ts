@@ -55,6 +55,7 @@ export interface General {
   lastTurn: Record<string, any>;
   meta: Record<string, any>;
   penalty: Record<string, any>;
+  officerLock: number;
 }
 
 export interface Nation {
@@ -109,6 +110,7 @@ export interface City {
   term: number; // 전쟁 기한
   conflict: Record<string, any>;
   meta: Record<string, any>;
+  dead: number;
 }
 
 export interface Diplomacy {
@@ -142,6 +144,13 @@ export interface GameTime {
   month: number;
 }
 
+export interface ReservedTurn {
+  generalId: number;
+  turnIdx: number;
+  action: string;
+  arg: Record<string, any>;
+}
+
 export interface WorldSnapshot {
   generals: Record<number, General>;
   nations: Record<number, Nation>;
@@ -151,6 +160,7 @@ export interface WorldSnapshot {
   messages: Record<number, Message>;
   gameTime: GameTime;
   env: Record<string, any>;
+  generalTurns: Record<number, ReservedTurn[]>; // key: generalId
 }
 
 export type Delta<T> = Partial<T>;
@@ -170,4 +180,8 @@ export interface WorldDelta {
     nation?: Record<number, string[]>;
     global?: string[];
   };
+  deleteEvents?: string[]; // 삭제할 이벤트 ID 목록
+  deleteNations?: number[];
+  deleteGenerals?: number[];
+  deleteGeneralTurns?: { generalId: number; turnIdx: number }[];
 }

@@ -11,6 +11,7 @@ export const GameConst = {
   minNationalRice: 1000,
   defaultMaxGeneral: 50,
   initialNationGenLimit: 10, // 초기 제한시 장수 제한
+  minAvailableRecruitPop: 10000, // 모병 가능한 최소 인구
   openingPartYear: 3, // 초반 기간 (년)
   joinActionLimit: 12, // 거병, 임관 제한 기간 (턴)
 
@@ -97,11 +98,18 @@ export const GameConst = {
     "#A9A9A9",
   ],
 
-  // 내정 성공 확률 관련 (Legacy: CriticalRatioDomestic)
   domesticCritical: {
     success: 0.15,
     fail: 0.05,
   },
+
+  maxDedLevel: 30,
+  maxLevel: 255,
+  basegold: 0,
+  baserice: 2000,
+  basePopIncreaseAmount: 5000,
+  expandCityPopIncreaseAmount: 100000,
+  minMonthToAllowInheritItem: 4,
 
   // 기본 아이템 목록 (Legacy: GameConst::$allItems)
   items: {

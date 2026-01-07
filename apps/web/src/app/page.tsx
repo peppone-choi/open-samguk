@@ -1,6 +1,9 @@
-// @sammo/web - Next.js 프론트엔드
-// TODO: 메인 페이지 구현 예정
+import { Dashboard } from "./_components/Dashboard";
 
 export default function Home() {
-  return <main>@sammo/web placeholder</main>;
+  return (
+    <main>
+      <Dashboard />
+    </main>
+  );
 }

@@ -12,7 +12,11 @@
   "dependencies": {
     "@sammo/common": "workspace:*",
     "@sammo/logic": "workspace:*",
-    "@sammo/infra": "workspace:*"
+    "@sammo/infra": "workspace:*",
+    "@nestjs/common": "^10.0.0",
+    "@nestjs/core": "^10.0.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",

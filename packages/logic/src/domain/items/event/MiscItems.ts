@@ -1,0 +1,65 @@
+/**
+ * 충차 - event_충차.php 포팅
+ * [전투] 성벽 공격 시 대미지 +50%, 2회용
+ */
+import { BaseItem } from "../BaseItem.js";
+import type { General } from "../../entities.js";
+import type { RandUtil } from "@sammo/common";
+import type { WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
+
+export class EventSiegeRamItem extends BaseItem {
+  readonly code = "event_충차";
+  readonly rawName = "충차";
+  readonly name = "충차";
+  readonly info = "[전투] 성벽 공격 시 대미지 +50%, 2회용";
+  readonly type = "item" as const;
+  readonly cost = 2000;
+  readonly consumable = true;
+  readonly buyable = true;
+  readonly reqSecu = 3000;
+
+  static readonly REMAIN_KEY = "remain충차";
+
+  onArbitraryAction(
+    general: General,
+    _rng: RandUtil,
+    actionType: string,
+    phase?: string,
+    aux?: any
+  ): any {
+    if (actionType !== "장비매매") return aux;
+    if (phase !== "구매") return aux;
+
+    if (general.meta) {
+      general.meta[EventSiegeRamItem.REMAIN_KEY] = 2;
+    }
+    return aux;
+  }
+
+  getWarPowerMultiplier(unit: WarUnitReadOnly): WarPowerMultiplier {
+    const oppose = unit.getOppose?.();
+    if (oppose && "wall" in oppose) {
+      return [1.5, 1];
+    }
+    return [1, 1];
+  }
+
+  // TODO: getBattlePhaseSkillTriggerList
+  // new event_충차아이템소모(unit, TYPE_CONSUMABLE_ITEM)
+}
+
+/**
+ * 빼빼로 - event_빼빼로.php 포팅
+ * 이벤트 아이템
+ */
+export class EventPepperoItem extends BaseItem {
+  readonly code = "event_빼빼로";
+  readonly rawName = "빼빼로";
+  readonly name = "빼빼로";
+  readonly info = "[이벤트] 특별 이벤트 아이템";
+  readonly type = "item" as const;
+  readonly cost = 100;
+  readonly consumable = true;
+  readonly buyable = false;
+  readonly reqSecu = 0;
+}

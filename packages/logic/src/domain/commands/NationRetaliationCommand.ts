@@ -24,7 +24,7 @@ export class NationRetaliationCommand extends GeneralCommand {
       ...this.minConditionConstraints,
       ConstraintHelper.ExistsDestNation(),
       ConstraintHelper.AllowDiplomacyBetweenStatus(
-        [0, 1],
+        ["0", "1"],
         "선포, 전쟁중인 상대국에게만 가능합니다."
       ),
       ConstraintHelper.AvailableStrategicCommand(1), // preReqTurn + 1 = 2 턴 이상 남아야 함 (레거시 패턴)

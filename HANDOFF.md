@@ -19,42 +19,42 @@
 
 ### 전체 요약
 
-| 분류         | 레거시 | 구현 완료 | 진행률     |
-| ------------ | ------ | --------- | ---------- |
-| 장수 커맨드  | 55개   | 42개      | 76%        |
-| 국가 커맨드  | 39개   | 23개      | 59%        |
+| 분류         | 레거시 | 구현 완료 | 진행률      |
+| ------------ | ------ | --------- | ----------- |
+| 장수 커맨드  | 55개   | 42개      | 76%         |
+| 국가 커맨드  | 39개   | 23개      | 59%         |
 | **제약조건** | 73개   | **73개**  | **100%** ✅ |
-| 전투 트리거  | 32개   | 31개      | 97% ✅     |
-| 장수 트리거  | 4개    | 4개       | 100% ✅    |
-| 국가 성향    | 15개   | 15개      | 100% ✅    |
-| 전투 특기    | 21개   | 1개       | 5%         |
-| 내정 특기    | 30개   | 0개       | 0%         |
+| 전투 트리거  | 32개   | 31개      | 97% ✅      |
+| 장수 트리거  | 4개    | 4개       | 100% ✅     |
+| 국가 성향    | 15개   | 15개      | 100% ✅     |
+| 전투 특기    | 21개   | 1개       | 5%          |
+| 내정 특기    | 30개   | 0개       | 0%          |
 
 ### 이번 세션 완료 (2026-01-07)
 
 **Constraint 포팅 16개 (완성):**
 
-| 제약조건    | PHP 원본                | TypeScript                          | 로직                                |
-| ----------- | ----------------------- | ----------------------------------- | ----------------------------------- |
-| 상인 요구   | `ReqCityTrader.php`     | `ReqCityTraderConstraint.ts` ✅     | `city.trade !== null || arg >= 2` |
-| 부대장 필수 | `MustBeTroopLeader.php` | `MustBeTroopLeaderConstraint.ts` ✅ | `general.no === general.troop`      |
-| 임관 허용   | `AllowJoinAction.php`   | `AllowJoinActionConstraint.ts` ✅   | `general.makelimit === 0`           |
-| 외교 상태 허용 | `AllowDiplomacyStatus.php` | `AllowDiplomacyStatusConstraint.ts` ✅ | `diplomacy.state in allowList` |
-| 외교 상태 불허 | `DisallowDiplomacyStatus.php` | `DisallowDiplomacyStatusConstraint.ts` ✅ | `diplomacy.state not in disallowList` |
-| 기간 외교 허용 | `AllowDiplomacyWithTerm.php` | `AllowDiplomacyWithTermConstraint.ts` ✅ | `diplomacy.state === code && term >= min` |
-| 임관 허용(대상) | `AllowJoinDestNation.php` | `AllowJoinDestNationConstraint.ts` ✅ | `scoutLevel === 0 && gennum limit && npc prefix check` |
-| 전장 도시     | `BattleGroundCity.php` | `BattleGroundCityConstraint.ts` ✅ | `diplomacy.state === '0'` |
-| 반란 허용     | `AllowRebellion.php` | `AllowRebellionConstraint.ts` ✅ | `lord.killTurn < env.killTurn && lord is not NPC` |
-| 국가명 중복 확인 | `CheckNationNameDuplicate.php` | `CheckNationNameDuplicateConstraint.ts` ✅ | `Snapshot` 전수 검사 |
-| 임관 가능 국가 존재 | `ExistsAllowJoinNation.php` | `ExistsAllowJoinNationConstraint.ts` ✅ | `Snapshot` 전수 검사 (인원 제한 포함) |
-| 경로 탐색 | `HasRoute.php` | `HasRouteConstraint.ts` ✅ | `MapUtil.getDistanceWithNation` (자국령) |
-| 적진 포함 경로 | `HasRouteWithEnemy.php` | `HasRouteWithEnemyConstraint.ts` ✅ | `MapUtil.getDistanceWithNation` (교전국 포함) |
-| 병사 마진 | `ReqGeneralCrewMargin.php` | `ReqGeneralCrewMarginConstraint.ts` ✅ | `crew < leadership * 100` |
-| 부대원 요구 | `ReqTroopMembers.php` | `ReqTroopMembersConstraint.ts` ✅ | `troopId !== 0 && member count > 1` |
-| 전략 커맨드 허용 | `AllowStrategicCommand.php` | `AllowStrategicCommandConstraint.ts` ✅ | `warState === 0` |
-| 전략 커맨드 가용 | `AvailableStrategicCommand.php` | `AvailableStrategicCommandConstraint.ts` ✅ | `strategicCmdLimit <= arg` |
-| 징병 타입 가용 | `AvailableRecruitCrewType.php` | `AvailableRecruitCrewTypeConstraint.ts` ✅ | (임시) `allow` |
-| 콜백 제약조건 | `AdhocCallback.php` | `AdhocCallbackConstraint.ts` ✅ | `callback(): string | null` |
+| 제약조건            | PHP 원본                        | TypeScript                                  | 로직                                                   |
+| ------------------- | ------------------------------- | ------------------------------------------- | ------------------------------------------------------ | ----- | --------- |
+| 상인 요구           | `ReqCityTrader.php`             | `ReqCityTraderConstraint.ts` ✅             | `city.trade !== null                                   |       | arg >= 2` |
+| 부대장 필수         | `MustBeTroopLeader.php`         | `MustBeTroopLeaderConstraint.ts` ✅         | `general.no === general.troop`                         |
+| 임관 허용           | `AllowJoinAction.php`           | `AllowJoinActionConstraint.ts` ✅           | `general.makelimit === 0`                              |
+| 외교 상태 허용      | `AllowDiplomacyStatus.php`      | `AllowDiplomacyStatusConstraint.ts` ✅      | `diplomacy.state in allowList`                         |
+| 외교 상태 불허      | `DisallowDiplomacyStatus.php`   | `DisallowDiplomacyStatusConstraint.ts` ✅   | `diplomacy.state not in disallowList`                  |
+| 기간 외교 허용      | `AllowDiplomacyWithTerm.php`    | `AllowDiplomacyWithTermConstraint.ts` ✅    | `diplomacy.state === code && term >= min`              |
+| 임관 허용(대상)     | `AllowJoinDestNation.php`       | `AllowJoinDestNationConstraint.ts` ✅       | `scoutLevel === 0 && gennum limit && npc prefix check` |
+| 전장 도시           | `BattleGroundCity.php`          | `BattleGroundCityConstraint.ts` ✅          | `diplomacy.state === '0'`                              |
+| 반란 허용           | `AllowRebellion.php`            | `AllowRebellionConstraint.ts` ✅            | `lord.killTurn < env.killTurn && lord is not NPC`      |
+| 국가명 중복 확인    | `CheckNationNameDuplicate.php`  | `CheckNationNameDuplicateConstraint.ts` ✅  | `Snapshot` 전수 검사                                   |
+| 임관 가능 국가 존재 | `ExistsAllowJoinNation.php`     | `ExistsAllowJoinNationConstraint.ts` ✅     | `Snapshot` 전수 검사 (인원 제한 포함)                  |
+| 경로 탐색           | `HasRoute.php`                  | `HasRouteConstraint.ts` ✅                  | `MapUtil.getDistanceWithNation` (자국령)               |
+| 적진 포함 경로      | `HasRouteWithEnemy.php`         | `HasRouteWithEnemyConstraint.ts` ✅         | `MapUtil.getDistanceWithNation` (교전국 포함)          |
+| 병사 마진           | `ReqGeneralCrewMargin.php`      | `ReqGeneralCrewMarginConstraint.ts` ✅      | `crew < leadership * 100`                              |
+| 부대원 요구         | `ReqTroopMembers.php`           | `ReqTroopMembersConstraint.ts` ✅           | `troopId !== 0 && member count > 1`                    |
+| 전략 커맨드 허용    | `AllowStrategicCommand.php`     | `AllowStrategicCommandConstraint.ts` ✅     | `warState === 0`                                       |
+| 전략 커맨드 가용    | `AvailableStrategicCommand.php` | `AvailableStrategicCommandConstraint.ts` ✅ | `strategicCmdLimit <= arg`                             |
+| 징병 타입 가용      | `AvailableRecruitCrewType.php`  | `AvailableRecruitCrewTypeConstraint.ts` ✅  | (임시) `allow`                                         |
+| 콜백 제약조건       | `AdhocCallback.php`             | `AdhocCallbackConstraint.ts` ✅             | `callback(): string                                    | null` |
 
 **GameConst 추가:**
 

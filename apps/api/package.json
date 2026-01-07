@@ -19,7 +19,8 @@
     "@sammo/logic": "workspace:*",
     "@sammo/infra": "workspace:*",
     "reflect-metadata": "^0.2.0",
-    "rxjs": "^7.8.0"
+    "rxjs": "^7.8.0",
+    "zod": "^3.23.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.4.0",
