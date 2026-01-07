@@ -16,6 +16,30 @@ export class SnapshotRepository {
   constructor(private readonly prisma: PrismaClientType) {}
 
   /**
+   * DB에서 generalTurns만 다시 로드 (턴 실행 전 최신 명령 반영용)
+   */
+  async loadGeneralTurns(): Promise<Record<number, ReservedTurn[]>> {
+    const dbTurns = await this.prisma.generalTurn.findMany();
+
+    const generalTurns: Record<number, ReservedTurn[]> = {};
+    for (const t of dbTurns) {
+      if (!generalTurns[t.generalId]) generalTurns[t.generalId] = [];
+      generalTurns[t.generalId].push({
+        generalId: t.generalId,
+        turnIdx: t.turnIdx,
+        action: t.action,
+        arg: t.arg as Record<string, any>,
+      });
+    }
+    // sort by turnIdx
+    for (const id in generalTurns) {
+      generalTurns[id].sort((a, b) => a.turnIdx - b.turnIdx);
+    }
+
+    return generalTurns;
+  }
+
+  /**
    * DB에서 현재 게임 상태를 로드하여 Snapshot 생성
    */
   async load(): Promise<WorldSnapshot> {

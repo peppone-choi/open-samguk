@@ -290,6 +290,7 @@ export class ScenarioLoader {
         constOverride: scenario.const ?? {},
         history: scenario.history ?? [],
       },
+      generalTurns: {},
     };
   }
 
@@ -344,8 +345,6 @@ export class ScenarioLoader {
       wall,
       wallMax,
       trust: 100,
-      gold: 5000,
-      rice: 5000,
       trade: null,
       region: this.getRegionNumber(region),
       state: 0,

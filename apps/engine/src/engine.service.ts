@@ -74,6 +74,8 @@ export class EngineService implements OnModuleInit, OnModuleDestroy {
     this.running = true;
 
     try {
+      this.snapshot.generalTurns = await this.repo.loadGeneralTurns();
+
       const now = new Date();
       let accumulatedDelta: WorldDelta = {};
 

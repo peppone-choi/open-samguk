@@ -59,7 +59,6 @@ export class GeneralTransportCommand extends GeneralCommand {
     }
 
     if (iDestCity.nationId !== iGeneral.nationId) {
-      // 타국 도시로의 수송은 외교 관계에 따라 다를 수 있으나 여기서는 자국 도시만 허용
       return {
         logs: {
           general: {
@@ -77,7 +76,15 @@ export class GeneralTransportCommand extends GeneralCommand {
       };
     }
 
-    // 수송 성공 (사고 확률 등은 나중에 추가)
+    const nation = snapshot.nations[iGeneral.nationId];
+    if (!nation) {
+      return {
+        logs: {
+          general: { [actorId]: ["수송 실패: 소속 국가가 없습니다."] },
+        },
+      };
+    }
+
     return {
       generals: {
         [actorId]: {
@@ -87,15 +94,15 @@ export class GeneralTransportCommand extends GeneralCommand {
           politicsExp: iGeneral.politicsExp + 1,
         },
       },
-      cities: {
-        [destCityId]: {
-          gold: iDestCity.gold + goldAmount,
-          rice: iDestCity.rice + riceAmount,
+      nations: {
+        [nation.id]: {
+          gold: nation.gold + goldAmount,
+          rice: nation.rice + riceAmount,
         },
       },
       logs: {
         general: {
-          [actorId]: [`${iDestCity.name}으로 금 ${goldAmount}, 쌀 ${riceAmount}을 수송했습니다.`],
+          [actorId]: [`국고에 금 ${goldAmount}, 쌀 ${riceAmount}을 수송했습니다.`],
         },
       },
     };
