@@ -83,14 +83,6 @@ export class AdminService {
         create: { namespace: "game_env", key, value: value as any },
       });
     }
-
-    for (const { key, value } of envKeys) {
-      await this.prisma.storage.upsert({
-        where: { namespace_key: { namespace: "game", key } },
-        update: { value: value as any },
-        create: { namespace: "game", key, value: value as any },
-      });
-    }
   }
 
   async getGameEnv(): Promise<GameEnvInfo> {

@@ -48,7 +48,7 @@ export class SnapshotRepository {
       this.prisma.nation.findMany(),
       this.prisma.city.findMany(),
       this.prisma.diplomacy.findMany(),
-      this.prisma.storage.findMany({ where: { namespace: "game" } }),
+      this.prisma.storage.findMany({ where: { namespace: "game_env" } }),
       this.prisma.generalTurn.findMany(),
     ]);
 
@@ -234,7 +234,7 @@ export class SnapshotRepository {
       await tx.city.deleteMany();
       await tx.nation.deleteMany();
       await tx.diplomacy.deleteMany();
-      await tx.storage.deleteMany({ where: { namespace: "game" } });
+      await tx.storage.deleteMany({ where: { namespace: "game_env" } });
 
       // 2. 도시 저장
       for (const city of Object.values(snapshot.cities)) {
@@ -363,14 +363,14 @@ export class SnapshotRepository {
 
       // 5. 게임 시간 저장
       await tx.storage.upsert({
-        where: { namespace_key: { namespace: "game", key: "year" } },
+        where: { namespace_key: { namespace: "game_env", key: "year" } },
         update: { value: snapshot.gameTime.year },
-        create: { namespace: "game", key: "year", value: snapshot.gameTime.year },
+        create: { namespace: "game_env", key: "year", value: snapshot.gameTime.year },
       });
       await tx.storage.upsert({
-        where: { namespace_key: { namespace: "game", key: "month" } },
+        where: { namespace_key: { namespace: "game_env", key: "month" } },
         update: { value: snapshot.gameTime.month },
-        create: { namespace: "game", key: "month", value: snapshot.gameTime.month },
+        create: { namespace: "game_env", key: "month", value: snapshot.gameTime.month },
       });
     });
   }
@@ -413,16 +413,16 @@ export class SnapshotRepository {
       if (delta.gameTime) {
         if (delta.gameTime.year) {
           await tx.storage.upsert({
-            where: { namespace_key: { namespace: "game", key: "year" } },
+            where: { namespace_key: { namespace: "game_env", key: "year" } },
             update: { value: delta.gameTime.year },
-            create: { namespace: "game", key: "year", value: delta.gameTime.year },
+            create: { namespace: "game_env", key: "year", value: delta.gameTime.year },
           });
         }
         if (delta.gameTime.month) {
           await tx.storage.upsert({
-            where: { namespace_key: { namespace: "game", key: "month" } },
+            where: { namespace_key: { namespace: "game_env", key: "month" } },
             update: { value: delta.gameTime.month },
-            create: { namespace: "game", key: "month", value: delta.gameTime.month },
+            create: { namespace: "game_env", key: "month", value: delta.gameTime.month },
           });
         }
       }
