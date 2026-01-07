@@ -19,12 +19,7 @@ export class LogiciansNationType extends BaseNationType {
   readonly pros = "기술↑ 인구↑";
   readonly cons = "쌀수입↓ 수성↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Technology bonuses
     if (turnType === "기술") {
       if (varType === "score") return value * 1.1;

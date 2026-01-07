@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { TurnProcessor } from "./TurnProcessor.js";
-import { WorldSnapshot } from "./entities.js";
+import type { WorldSnapshot } from "./entities.js";
+import { createMockGeneral } from "./test-utils.js";
 
 describe("TurnProcessor", () => {
   it("should produce deterministic results with same seed", () => {
@@ -8,7 +9,7 @@ describe("TurnProcessor", () => {
     const processor = new TurnProcessor(seed);
     const snapshot: WorldSnapshot = {
       generals: {
-        1: {
+        1: createMockGeneral({
           id: 1,
           name: "유비",
           nationId: 1,
@@ -18,15 +19,16 @@ describe("TurnProcessor", () => {
           leadership: 70,
           strength: 70,
           intel: 70,
-          injury: 0,
-          turnTime: new Date(),
           killTurn: 10,
-          meta: {},
-        },
+        }),
       },
       nations: {},
       cities: {},
+      diplomacy: {},
+      troops: {},
+      messages: {},
       gameTime: { year: 184, month: 1 },
+      env: {},
     };
 
     const delta1 = processor.processGeneralTurn(snapshot, 1);
@@ -40,7 +42,7 @@ describe("TurnProcessor", () => {
   it("should produce different results with different seeds", () => {
     const snapshot: WorldSnapshot = {
       generals: {
-        1: {
+        1: createMockGeneral({
           id: 1,
           name: "유비",
           nationId: 1,
@@ -50,15 +52,16 @@ describe("TurnProcessor", () => {
           leadership: 70,
           strength: 70,
           intel: 70,
-          injury: 0,
-          turnTime: new Date(),
           killTurn: 10,
-          meta: {},
-        },
+        }),
       },
       nations: {},
       cities: {},
+      diplomacy: {},
+      troops: {},
+      messages: {},
       gameTime: { year: 184, month: 1 },
+      env: {},
     };
 
     const delta1 = new TurnProcessor("seed-1").processGeneralTurn(snapshot, 1);

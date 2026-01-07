@@ -1,9 +1,4 @@
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
+import { Constraint, ConstraintContext, ConstraintResult, StateView } from "../Constraint.js";
 
 type CompareOp = ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==";
 
@@ -24,7 +19,7 @@ export class ReqEnvValueConstraint implements Constraint {
     private key: string,
     private op: CompareOp,
     private value: number,
-    private errorMsg: string,
+    private errorMsg: string
   ) {}
 
   requires(ctx: ConstraintContext) {

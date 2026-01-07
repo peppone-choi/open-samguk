@@ -1,11 +1,6 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
-import {
-  WorldSnapshot,
-  WorldDelta,
-  Delta,
-  General as IGeneral,
-} from "../entities.js";
+import { WorldSnapshot, WorldDelta, Delta, General as IGeneral } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
 import { GameConst } from "../GameConst.js";
 
@@ -21,17 +16,14 @@ export class GeneralDisbandCommand extends GeneralCommand {
 
   constructor() {
     super();
-    this.fullConditionConstraints = [
-      ConstraintHelper.BeLord(),
-      ConstraintHelper.WanderingNation(),
-    ];
+    this.fullConditionConstraints = [ConstraintHelper.BeLord(), ConstraintHelper.WanderingNation()];
   }
 
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, unknown>,
+    args: Record<string, unknown>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -56,12 +48,10 @@ export class GeneralDisbandCommand extends GeneralCommand {
     }
 
     // 초기 턴 체크
-    const initYear =
-      (snapshot.env["init_year"] as number) ?? snapshot.gameTime.year;
+    const initYear = (snapshot.env["init_year"] as number) ?? snapshot.gameTime.year;
     const initMonth = (snapshot.env["init_month"] as number) ?? 1;
     const initYearMonth = initYear * 12 + initMonth;
-    const currentYearMonth =
-      snapshot.gameTime.year * 12 + snapshot.gameTime.month;
+    const currentYearMonth = snapshot.gameTime.year * 12 + snapshot.gameTime.month;
 
     if (currentYearMonth <= initYearMonth) {
       return {
@@ -79,9 +69,7 @@ export class GeneralDisbandCommand extends GeneralCommand {
     const josaUl = JosaUtil.pick(nationName, "을");
 
     // 국가 소속 장수들을 모두 재야로 전환
-    const nationGenerals = Object.values(snapshot.generals).filter(
-      (g) => g.nationId === nationId,
-    );
+    const nationGenerals = Object.values(snapshot.generals).filter((g) => g.nationId === nationId);
 
     const generalUpdates: Record<number, Delta<IGeneral>> = {};
     for (const g of nationGenerals) {

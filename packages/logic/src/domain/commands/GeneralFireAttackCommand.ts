@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralSabotageCommand } from "./GeneralSabotageCommand.js";
 import { City as ICity, Delta } from "../entities.js";
 import { GameConst } from "../GameConst.js";
@@ -13,21 +13,15 @@ export class GeneralFireAttackCommand extends GeneralSabotageCommand {
 
   override affectDestCity(
     rng: RandUtil,
-    destCity: ICity,
+    destCity: ICity
   ): { cityDelta: Delta<ICity>; successMsg: string } {
     const agriDamage = Math.min(
-      rng.nextRangeInt(
-        GameConst.sabotageDamageMin,
-        GameConst.sabotageDamageMax,
-      ),
-      destCity.agri,
+      rng.nextRangeInt(GameConst.sabotageDamageMin, GameConst.sabotageDamageMax),
+      destCity.agri
     );
     const commDamage = Math.min(
-      rng.nextRangeInt(
-        GameConst.sabotageDamageMin,
-        GameConst.sabotageDamageMax,
-      ),
-      destCity.comm,
+      rng.nextRangeInt(GameConst.sabotageDamageMin, GameConst.sabotageDamageMax),
+      destCity.comm
     );
 
     const newAgri = destCity.agri - agriDamage;

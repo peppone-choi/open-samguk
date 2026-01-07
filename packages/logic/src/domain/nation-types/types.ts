@@ -30,12 +30,7 @@ export interface NationType {
    * @param aux - Optional auxiliary data
    * @returns Modified value
    */
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number;
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number;
 
   /**
    * Calculate national income modifiers
@@ -71,12 +66,7 @@ export abstract class BaseNationType implements NationType {
     return this.name;
   }
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     return value;
   }
 

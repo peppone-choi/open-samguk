@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -27,7 +27,7 @@ export class GeneralConvertDexCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const develcost = snapshot.env.develcost ?? 100;
     const reqGold = develcost;
@@ -53,11 +53,7 @@ export class GeneralConvertDexCommand extends GeneralCommand {
     }
 
     const { srcArmType, destArmType } = args;
-    if (
-      srcArmType === undefined ||
-      destArmType === undefined ||
-      srcArmType === destArmType
-    ) {
+    if (srcArmType === undefined || destArmType === undefined || srcArmType === destArmType) {
       return {
         logs: {
           general: { [actorId]: [`숙련전환 실패: 잘못된 병종 선택입니다.`] },
@@ -74,7 +70,7 @@ export class GeneralConvertDexCommand extends GeneralCommand {
       srcArmType,
       destArmType,
       GeneralConvertDexCommand.DECREASE_COEFF,
-      GeneralConvertDexCommand.CONVERT_COEFF,
+      GeneralConvertDexCommand.CONVERT_COEFF
     );
 
     general.addExperience(10);

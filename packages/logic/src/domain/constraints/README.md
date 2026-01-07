@@ -85,13 +85,7 @@ ConstraintHelper.ReqGeneralValue("leadership", "통솔", ">=", 80);
 ConstraintHelper.ReqGeneralValue("strength", "무력", ">", 50);
 
 // 사용자 정의 에러 메시지
-ConstraintHelper.ReqGeneralValue(
-  "gold",
-  "자금",
-  ">=",
-  1000,
-  "자금이 부족합니다.",
-);
+ConstraintHelper.ReqGeneralValue("gold", "자금", ">=", 1000, "자금이 부족합니다.");
 ```
 
 ### ReqNationValue (퍼센트 지원)

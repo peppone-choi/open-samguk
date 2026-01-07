@@ -19,12 +19,7 @@ export class YinYangNationType extends BaseNationType {
   readonly pros = "농상↑ 인구↑";
   readonly cons = "기술↓ 전략↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Agriculture or Commerce bonuses
     if (turnType === "농업" || turnType === "상업") {
       if (varType === "score") return value * 1.1;

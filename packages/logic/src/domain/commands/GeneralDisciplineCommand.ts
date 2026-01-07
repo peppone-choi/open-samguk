@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -24,7 +24,7 @@ export class GeneralDisciplineCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const cost = snapshot.env["develcost"] ?? 20;
 
@@ -36,9 +36,7 @@ export class GeneralDisciplineCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `단련 실패: 자원(금/곡)이 부족합니다. (각 ${cost} 필요)`,
-            ],
+            [actorId]: [`단련 실패: 자원(금/곡)이 부족합니다. (각 ${cost} 필요)`],
           },
         },
       };
@@ -64,9 +62,7 @@ export class GeneralDisciplineCommand extends GeneralCommand {
     ]);
 
     // 숙련도 획득량 계산
-    let dexGain = Math.round(
-      (iGeneral.crew * iGeneral.train * iGeneral.atmos) / 20 / 10000,
-    );
+    let dexGain = Math.round((iGeneral.crew * iGeneral.train * iGeneral.atmos) / 20 / 10000);
     dexGain *= multiplier;
 
     // 가중치에 따른 상승 스탯 결정

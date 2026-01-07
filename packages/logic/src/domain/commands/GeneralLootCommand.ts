@@ -1,12 +1,6 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
-import {
-  WorldSnapshot,
-  WorldDelta,
-  Delta,
-  City as ICity,
-  Nation as INation,
-} from "../entities.js";
+import { WorldSnapshot, WorldDelta, Delta, City as ICity, Nation as INation } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
 import { GameConst } from "../GameConst.js";
 import { MapUtil } from "../MapData.js";
@@ -49,13 +43,13 @@ export class GeneralLootCommand extends GeneralCommand {
   private calcDefenceProb(
     snapshot: WorldSnapshot,
     destCityId: number,
-    destNationId: number,
+    destNationId: number
   ): number {
     const destCity = snapshot.cities[destCityId];
     if (!destCity) return 0;
 
     const cityGenerals = Object.values(snapshot.generals).filter(
-      (g) => g.cityId === destCityId && g.nationId === destNationId,
+      (g) => g.cityId === destCityId && g.nationId === destNationId
     );
 
     let maxGenScore = 0;
@@ -65,9 +59,7 @@ export class GeneralLootCommand extends GeneralCommand {
     }
 
     let prob = maxGenScore / GameConst.sabotageProbCoefByStat;
-    prob +=
-      (Math.log2(cityGenerals.length + 1) - 1.25) *
-      GameConst.sabotageDefenceCoefByGeneralCnt;
+    prob += (Math.log2(cityGenerals.length + 1) - 1.25) * GameConst.sabotageDefenceCoefByGeneralCnt;
     prob += destCity.secu / destCity.secuMax / 5;
     prob += destCity.supply ? 0.1 : 0;
 
@@ -78,7 +70,7 @@ export class GeneralLootCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, unknown>,
+    args: Record<string, unknown>
   ): WorldDelta {
     const cost = this.getSabotageCost(snapshot);
 
@@ -163,11 +155,7 @@ export class GeneralLootCommand extends GeneralCommand {
 
     // 확률 계산
     const attackProb = this.calcAttackProb(snapshot, actorId);
-    const defenceProb = this.calcDefenceProb(
-      snapshot,
-      destCityId,
-      destCity.nationId,
-    );
+    const defenceProb = this.calcDefenceProb(snapshot, destCityId, destCity.nationId);
     let prob = GameConst.sabotageDefaultProb + attackProb - defenceProb;
     prob = prob / dist;
     prob = Math.max(0, Math.min(0.5, prob));
@@ -209,22 +197,16 @@ export class GeneralLootCommand extends GeneralCommand {
     const agriRatio = destCity.agri / destCity.agriMax;
 
     let goldStolen = Math.round(
-      rng.nextRangeInt(
-        GameConst.sabotageDamageMin,
-        GameConst.sabotageDamageMax,
-      ) *
+      rng.nextRangeInt(GameConst.sabotageDamageMin, GameConst.sabotageDamageMax) *
         destCity.level *
         yearCoef *
-        (0.25 + commRatio / 4),
+        (0.25 + commRatio / 4)
     );
     let riceStolen = Math.round(
-      rng.nextRangeInt(
-        GameConst.sabotageDamageMin,
-        GameConst.sabotageDamageMax,
-      ) *
+      rng.nextRangeInt(GameConst.sabotageDamageMin, GameConst.sabotageDamageMax) *
         destCity.level *
         yearCoef *
-        (0.25 + agriRatio / 4),
+        (0.25 + agriRatio / 4)
     );
 
     const nationDelta: Delta<INation> = {};
@@ -266,10 +248,8 @@ export class GeneralLootCommand extends GeneralCommand {
 
       const actorNation = snapshot.nations[actorNationId];
       if (actorNation) {
-        actorNationDelta.gold =
-          actorNation.gold + Math.round(goldStolen * nationShare);
-        actorNationDelta.rice =
-          actorNation.rice + Math.round(riceStolen * nationShare);
+        actorNationDelta.gold = actorNation.gold + Math.round(goldStolen * nationShare);
+        actorNationDelta.rice = actorNation.rice + Math.round(riceStolen * nationShare);
       }
     } else {
       generalGoldGain = goldStolen;

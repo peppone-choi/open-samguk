@@ -79,12 +79,8 @@ export class City {
    * 레거시: 상업(comm) -> 금 수입, 농지(agri) -> 쌀 수입
    */
   public calcIncome(taxRate: number): { gold: number; rice: number } {
-    const goldIncome = Math.floor(
-      this.props.comm * (this.props.pop / 10000) * (taxRate / 100),
-    );
-    const riceIncome = Math.floor(
-      this.props.agri * (this.props.pop / 10000) * (taxRate / 100),
-    );
+    const goldIncome = Math.floor(this.props.comm * (this.props.pop / 10000) * (taxRate / 100));
+    const riceIncome = Math.floor(this.props.agri * (this.props.pop / 10000) * (taxRate / 100));
 
     return {
       gold: goldIncome,

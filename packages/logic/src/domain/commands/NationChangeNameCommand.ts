@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -17,12 +17,7 @@ export class NationChangeNameCommand extends GeneralCommand {
       ConstraintHelper.OccupiedCity(),
       ConstraintHelper.SuppliedCity(),
       ConstraintHelper.BeLord(),
-      ConstraintHelper.ReqNationMeta(
-        "can_국호변경",
-        0,
-        "gt",
-        "더이상 변경이 불가능합니다.",
-      ),
+      ConstraintHelper.ReqNationMeta("can_국호변경", 0, "gt", "더이상 변경이 불가능합니다."),
     ];
     this.fullConditionConstraints = [...this.minConditionConstraints];
   }
@@ -31,7 +26,7 @@ export class NationChangeNameCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -45,11 +40,7 @@ export class NationChangeNameCommand extends GeneralCommand {
     }
 
     const { nationName } = args;
-    if (
-      !nationName ||
-      typeof nationName !== "string" ||
-      nationName.trim().length === 0
-    ) {
+    if (!nationName || typeof nationName !== "string" || nationName.trim().length === 0) {
       return {
         logs: {
           general: {
@@ -72,16 +63,12 @@ export class NationChangeNameCommand extends GeneralCommand {
     }
 
     // 중복 체크
-    const isDuplicate = Object.values(snapshot.nations).some(
-      (n) => n.name === trimmedName,
-    );
+    const isDuplicate = Object.values(snapshot.nations).some((n) => n.name === trimmedName);
     if (isDuplicate) {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `국호변경 실패: 이미 '${trimmedName}' 국호를 가진 국가가 존재합니다.`,
-            ],
+            [actorId]: [`국호변경 실패: 이미 '${trimmedName}' 국호를 가진 국가가 존재합니다.`],
           },
         },
       };
@@ -91,9 +78,7 @@ export class NationChangeNameCommand extends GeneralCommand {
     if (!iActor) {
       return {
         logs: {
-          global: [
-            `장수 ${actorId}를 찾을 수 없어 국호변경을 실행할 수 없습니다.`,
-          ],
+          global: [`장수 ${actorId}를 찾을 수 없어 국호변경을 실행할 수 없습니다.`],
         },
       };
     }

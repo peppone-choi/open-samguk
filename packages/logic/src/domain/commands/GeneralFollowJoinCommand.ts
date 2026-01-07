@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -20,7 +20,7 @@ export class GeneralFollowJoinCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -91,9 +91,7 @@ export class GeneralFollowJoinCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [
-            `${destGeneral.name}을(를) 따라 ${destNation.name}에 임관했습니다.`,
-          ],
+          [actorId]: [`${destGeneral.name}을(를) 따라 ${destNation.name}에 임관했습니다.`],
         },
         global: [
           `${iGeneral.name} 장수가 ${destGeneral.name}을(를) 따라 ${destNation.name}에 임관했습니다.`,

@@ -1,9 +1,4 @@
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
+import { Constraint, ConstraintContext, ConstraintResult, StateView } from "../Constraint.js";
 
 /**
  * 대상 국가가 현재 국가와 달라야 함

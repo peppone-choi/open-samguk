@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -36,11 +36,10 @@ export class NationAcceptAllianceCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iActor = snapshot.generals[actorId];
-    if (!iActor)
-      return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
+    if (!iActor) return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
 
     const iNation = snapshot.nations[iActor.nationId];
     if (!iNation)
@@ -102,8 +101,7 @@ export class NationAcceptAllianceCommand extends GeneralCommand {
     }
 
     // 기한 검증 (이미 지난 기한인지)
-    const currentMonth =
-      snapshot.gameTime.year * 12 + snapshot.gameTime.month - 1;
+    const currentMonth = snapshot.gameTime.year * 12 + snapshot.gameTime.month - 1;
     const reqMonth = year * 12 + month - 1;
 
     if (reqMonth <= currentMonth) {
@@ -117,9 +115,7 @@ export class NationAcceptAllianceCommand extends GeneralCommand {
     // 외교 관계 확인 - 교전/선포 상태면 불가
     const diplomacyKey = `${iNation.id}:${destNationId}`;
     const reverseDiplomacyKey = `${destNationId}:${iNation.id}`;
-    const iDiplomacy =
-      snapshot.diplomacy[diplomacyKey] ||
-      snapshot.diplomacy[reverseDiplomacyKey];
+    const iDiplomacy = snapshot.diplomacy[diplomacyKey] || snapshot.diplomacy[reverseDiplomacyKey];
 
     if (iDiplomacy) {
       if (iDiplomacy.state === "0") {
@@ -178,9 +174,7 @@ export class NationAcceptAllianceCommand extends GeneralCommand {
           [iNation.id]: [
             `${iActor.name}${josaYi} 【${iDestNation.name}】${josaWa} ${year}년 ${month}월까지 동맹 체결`,
           ],
-          [destNationId]: [
-            `【${iNation.name}】의 ${iActor.name}${josaYi} 동맹 수락`,
-          ],
+          [destNationId]: [`【${iNation.name}】의 ${iActor.name}${josaYi} 동맹 수락`],
         },
         global: [
           `【동맹】 ${iNation.name}${josaWa} 【${iDestNation.name}】${josaYi} ${year}년 ${month}월까지 동맹을 체결했습니다.`,

@@ -17,12 +17,7 @@ export class MohistNationType extends BaseNationType {
   readonly pros = "수성↑";
   readonly cons = "기술↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Defense & Walls bonuses
     if (turnType === "수비" || turnType === "성벽") {
       if (varType === "score") return value * 1.1;

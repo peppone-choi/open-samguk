@@ -9,3 +9,6 @@ export { CommerceSpecial } from "./CommerceSpecial";
 export { InventionSpecial } from "./InventionSpecial";
 export { BenevolenceSpecial } from "./BenevolenceSpecial";
 export { ConstructionSpecial } from "./ConstructionSpecial";
+export { DefenseSpecial } from "./DefenseSpecial";
+export { InsightSpecial } from "./InsightSpecial";
+export { StrategySpecial } from "./StrategySpecial";

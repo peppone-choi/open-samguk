@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import {
   WorldSnapshot,
@@ -26,11 +26,7 @@ export abstract class GeneralSabotageCommand extends GeneralCommand {
     return develcost * 5;
   }
 
-  protected calcAttackProb(
-    rng: RandUtil,
-    snapshot: WorldSnapshot,
-    actorId: number,
-  ): number {
+  protected calcAttackProb(rng: RandUtil, snapshot: WorldSnapshot, actorId: number): number {
     const general = snapshot.generals[actorId];
     if (!general) return 0;
 
@@ -46,13 +42,13 @@ export abstract class GeneralSabotageCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     destCityId: number,
-    destNationId: number,
+    destNationId: number
   ): number {
     const destCity = snapshot.cities[destCityId];
     if (!destCity) return 0;
 
     const cityGenerals = Object.values(snapshot.generals).filter(
-      (g) => g.cityId === destCityId && g.nationId === destNationId,
+      (g) => g.cityId === destCityId && g.nationId === destNationId
     );
 
     let maxGenScore = 0;
@@ -65,9 +61,7 @@ export abstract class GeneralSabotageCommand extends GeneralCommand {
     }
 
     let prob = maxGenScore / GameConst.sabotageProbCoefByStat;
-    prob +=
-      (Math.log2(cityGenerals.length + 1) - 1.25) *
-      GameConst.sabotageDefenceCoefByGeneralCnt;
+    prob += (Math.log2(cityGenerals.length + 1) - 1.25) * GameConst.sabotageDefenceCoefByGeneralCnt;
     prob += destCity.secu / destCity.secuMax / 5;
     prob += destCity.supply ? 0.1 : 0;
 
@@ -76,14 +70,14 @@ export abstract class GeneralSabotageCommand extends GeneralCommand {
 
   abstract affectDestCity(
     rng: RandUtil,
-    destCity: ICity,
+    destCity: ICity
   ): { cityDelta: Delta<ICity>; successMsg: string };
 
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const cost = this.getSabotageCost(snapshot);
     this.fullConditionConstraints = [
@@ -138,9 +132,7 @@ export abstract class GeneralSabotageCommand extends GeneralCommand {
         },
         logs: {
           general: {
-            [actorId]: [
-              `${destCity.name}에 대한 ${this.actionName}에 실패했습니다.`,
-            ],
+            [actorId]: [`${destCity.name}에 대한 ${this.actionName}에 실패했습니다.`],
           },
         },
       };
@@ -164,14 +156,9 @@ export abstract class GeneralSabotageCommand extends GeneralCommand {
         [destCityId]: cityDelta,
       },
       logs: {
-        global: [
-          `누군가가 ${destCity.name}에 ${this.actionName}(을)를 실행했습니다.`,
-        ],
+        global: [`누군가가 ${destCity.name}에 ${this.actionName}(을)를 실행했습니다.`],
         general: {
-          [actorId]: [
-            `${destCity.name}에 대한 ${this.actionName}에 성공했습니다.`,
-            successMsg,
-          ],
+          [actorId]: [`${destCity.name}에 대한 ${this.actionName}에 성공했습니다.`, successMsg],
         },
       },
     };

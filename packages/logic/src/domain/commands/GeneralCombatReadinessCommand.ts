@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GameConst } from "../GameConst.js";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
@@ -28,7 +28,7 @@ export class GeneralCombatReadinessCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -41,8 +41,7 @@ export class GeneralCombatReadinessCommand extends GeneralCommand {
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation)
-      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     // Check last turn to determine progress
     const lastTurn = iGeneral.lastTurn || {};

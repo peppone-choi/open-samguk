@@ -18,9 +18,7 @@ export class SiegeSpecial extends BaseSpecial {
   static readonly selectWeightType = SpecialWeightType.NORM;
   static readonly selectWeight = 1;
   static readonly type = [
-    SpecialType.STAT_LEADERSHIP |
-      SpecialType.REQ_DEXTERITY |
-      SpecialType.ARMY_SIEGE,
+    SpecialType.STAT_LEADERSHIP | SpecialType.REQ_DEXTERITY | SpecialType.ARMY_SIEGE,
   ];
 
   id = 53;
@@ -28,17 +26,9 @@ export class SiegeSpecial extends BaseSpecial {
   info =
     "[군사] 차병 계통 징·모병비 -10%<br>[전투] 성벽 공격 시 대미지 +100%,<br>공격시 상대 병종에/수비시 자신 병종 숙련에 차병 숙련을 가산";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: DomesticAux,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: DomesticAux): number {
     const recruitmentTypes = ["징병", "모병"];
-    if (
-      recruitmentTypes.indexOf(turnType) !== -1 ||
-      recruitmentTypes.some((t) => t === turnType)
-    ) {
+    if (recruitmentTypes.indexOf(turnType) !== -1 || recruitmentTypes.some((t) => t === turnType)) {
       const T_SIEGE = 5; // GameUnitConst::T_SIEGE
       if (varType === "cost" && aux?.armType === T_SIEGE) {
         return value * 0.9;
@@ -57,12 +47,7 @@ export class SiegeSpecial extends BaseSpecial {
     return [1, 1];
   }
 
-  onCalcStat(
-    general: General,
-    statName: string,
-    value: any,
-    aux?: StatAux,
-  ): any {
+  onCalcStat(general: General, statName: string, value: any, aux?: StatAux): any {
     if (statName.substring(0, 3) === "dex") {
       const T_SIEGE = 5; // GameUnitConst::T_SIEGE
       const myArmType = "dex" + T_SIEGE;

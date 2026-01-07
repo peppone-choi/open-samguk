@@ -1,5 +1,5 @@
 import type { General } from "../entities";
-import type { RandUtil } from "@sammo-ts/common";
+import type { RandUtil } from "@sammo/common";
 
 /**
  * Special ability weight types for selection probability
@@ -211,28 +211,13 @@ export interface BaseSpecial {
   getPreTurnExecuteTriggerList(general: General): GeneralTriggerCaller | null;
 
   /** Calculate domestic action modifiers */
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: DomesticAux,
-  ): number;
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: DomesticAux): number;
 
   /** Calculate stat modifiers for the general */
-  onCalcStat(
-    general: General,
-    statName: string,
-    value: any,
-    aux?: StatAux,
-  ): any;
+  onCalcStat(general: General, statName: string, value: any, aux?: StatAux): any;
 
   /** Calculate stat modifiers for the opponent */
-  onCalcOpposeStat(
-    general: General,
-    statName: string,
-    value: any,
-    aux?: StatAux,
-  ): any;
+  onCalcOpposeStat(general: General, statName: string, value: any, aux?: StatAux): any;
 
   /** Calculate strategic command modifiers */
   onCalcStrategic(turnType: string, varType: string, value: any): any;
@@ -250,12 +235,7 @@ export interface BaseSpecial {
   getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller | null;
 
   /** Handle arbitrary actions */
-  onArbitraryAction(
-    general: General,
-    actionType: string,
-    phase?: string | null,
-    aux?: any,
-  ): any;
+  onArbitraryAction(general: General, actionType: string, phase?: string | null, aux?: any): any;
 }
 
 /**

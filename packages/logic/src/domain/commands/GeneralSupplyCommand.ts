@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -25,7 +25,7 @@ export class GeneralSupplyCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -41,8 +41,7 @@ export class GeneralSupplyCommand extends GeneralCommand {
     if (!iCity) throw new Error(`도시 ${iGeneral.cityId}를 찾을 수 없습니다.`);
 
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation)
-      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     // Randomly choose resource type
     const resourceTypes = [
@@ -53,15 +52,11 @@ export class GeneralSupplyCommand extends GeneralCommand {
 
     // Calculate base score
     const general = new General(iGeneral);
-    let score =
-      (iGeneral.leadership ?? 0) +
-      (iGeneral.strength ?? 0) +
-      (iGeneral.intel ?? 0);
+    let score = (iGeneral.leadership ?? 0) + (iGeneral.strength ?? 0) + (iGeneral.intel ?? 0);
 
     // Apply experience level bonus (TODO: implement getDomesticExpLevelBonus)
     // For now, using a simplified calculation based on experience
-    const expBonus =
-      1 + Math.min(Math.floor((iGeneral.experience ?? 0) / 10000), 10) * 0.05;
+    const expBonus = 1 + Math.min(Math.floor((iGeneral.experience ?? 0) / 10000), 10) * 0.05;
     score *= expBonus;
 
     // Apply random variance

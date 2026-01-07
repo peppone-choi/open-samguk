@@ -18,12 +18,7 @@ export class TaoismNationType extends BaseNationType {
   readonly pros = "인구↑";
   readonly cons = "기술↓ 치안↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Technology penalties
     if (turnType === "기술") {
       if (varType === "score") return value * 0.9;

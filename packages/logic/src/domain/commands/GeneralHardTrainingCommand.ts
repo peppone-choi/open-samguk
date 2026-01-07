@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -37,7 +37,7 @@ export class GeneralHardTrainingCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, unknown>,
+    args: Record<string, unknown>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -56,20 +56,11 @@ export class GeneralHardTrainingCommand extends GeneralCommand {
     // 훈련/사기 상승량 계산
     // 레거시: leadership * 100 / crew * trainDelta * 2/3
     const score = Math.round(
-      (((iGeneral.leadership * 100) / iGeneral.crew) *
-        GameConst.trainDelta *
-        2) /
-        3,
+      (((iGeneral.leadership * 100) / iGeneral.crew) * GameConst.trainDelta * 2) / 3
     );
 
-    const newTrain = Math.min(
-      iGeneral.train + score,
-      GameConst.maxTrainByCommand,
-    );
-    const newAtmos = Math.min(
-      iGeneral.atmos + score,
-      GameConst.maxAtmosByCommand,
-    );
+    const newTrain = Math.min(iGeneral.train + score, GameConst.maxTrainByCommand);
+    const newAtmos = Math.min(iGeneral.atmos + score, GameConst.maxAtmosByCommand);
 
     // 경험치, 기여도
     const exp = 150;

@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -27,7 +27,7 @@ export class GeneralBorderReturnCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, unknown>,
+    args: Record<string, unknown>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {

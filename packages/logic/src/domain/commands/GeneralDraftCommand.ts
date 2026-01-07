@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GameConst } from "../GameConst.js";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
@@ -29,7 +29,7 @@ export class GeneralDraftCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -48,9 +48,7 @@ export class GeneralDraftCommand extends GeneralCommand {
     const general = new General(iGeneral);
     const city = new City(iCity);
 
-    const { delta: generalDelta, crewGain } = general.draft(
-      iGeneral.leadership,
-    );
+    const { delta: generalDelta, crewGain } = general.draft(iGeneral.leadership);
 
     // 도시 인구 및 치안 감소
     const popLoss = Math.round(crewGain * 1.2);

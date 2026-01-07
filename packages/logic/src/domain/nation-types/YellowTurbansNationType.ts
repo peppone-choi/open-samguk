@@ -19,12 +19,7 @@ export class YellowTurbansNationType extends BaseNationType {
   readonly pros = "인구↑ 민심↑";
   readonly cons = "기술↓ 수성↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Morale or Population bonuses
     if (turnType === "민심" || turnType === "인구") {
       if (varType === "score") return value * 1.1;

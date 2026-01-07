@@ -20,12 +20,7 @@ export class FivePecksNationType extends BaseNationType {
   readonly pros = "쌀수입↑ 인구↑";
   readonly cons = "기술↓ 수성↓ 농상↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Technology penalties
     if (turnType === "기술") {
       if (varType === "score") return value * 0.9;

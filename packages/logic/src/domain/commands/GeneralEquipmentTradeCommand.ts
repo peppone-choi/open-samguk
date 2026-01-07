@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -16,7 +16,7 @@ export class GeneralEquipmentTradeCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const { itemType, itemCode } = args;
     const iGeneral = snapshot.generals[actorId];
@@ -62,13 +62,11 @@ export class GeneralEquipmentTradeCommand extends GeneralCommand {
     ];
 
     if (!isSelling) {
-      this.fullConditionConstraints.push(
-        ConstraintHelper.ReqCitySecu(itemInfo.reqSecu),
-      );
+      this.fullConditionConstraints.push(ConstraintHelper.ReqCitySecu(itemInfo.reqSecu));
       // 이미 소지 중인지 체크
       if ((iGeneral as any)[itemType] === targetItemCode) {
         this.fullConditionConstraints.push(
-          ConstraintHelper.AlwaysFail("이미 소지하고 있는 장비입니다."),
+          ConstraintHelper.AlwaysFail("이미 소지하고 있는 장비입니다.")
         );
       }
     }
@@ -102,9 +100,7 @@ export class GeneralEquipmentTradeCommand extends GeneralCommand {
           generals: { [actorId]: generalDelta },
           logs: {
             general: { [actorId]: logs },
-            global: [
-              `${iGeneral.name}님이 진귀한 보물인 ${itemInfo.name}을(를) 판매했습니다!`,
-            ],
+            global: [`${iGeneral.name}님이 진귀한 보물인 ${itemInfo.name}을(를) 판매했습니다!`],
           },
         };
       }

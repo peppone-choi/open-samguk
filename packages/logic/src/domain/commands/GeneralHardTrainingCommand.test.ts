@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralHardTrainingCommand } from "./GeneralHardTrainingCommand.js";
 import { GameConst } from "../GameConst.js";
@@ -10,7 +10,7 @@ describe("GeneralHardTrainingCommand", () => {
   const rand = new RandUtil(rng);
 
   const createMockSnapshot = (
-    overrides: Partial<WorldSnapshot["generals"][number]> = {},
+    overrides: Partial<WorldSnapshot["generals"][number]> = {}
   ): WorldSnapshot => ({
     generals: {
       1: {
@@ -88,6 +88,7 @@ describe("GeneralHardTrainingCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 1,
       },
     },
@@ -189,8 +190,6 @@ describe("GeneralHardTrainingCommand", () => {
     const snapshot = createMockSnapshot({ train: 95 });
     const delta = cmd.run(rand, snapshot, 1, {});
 
-    expect(delta.generals?.[1]?.train).toBeLessThanOrEqual(
-      GameConst.maxTrainByCommand,
-    );
+    expect(delta.generals?.[1]?.train).toBeLessThanOrEqual(GameConst.maxTrainByCommand);
   });
 });

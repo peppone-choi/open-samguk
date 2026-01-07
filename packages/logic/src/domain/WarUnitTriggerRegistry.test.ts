@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import {
   WarUnitTriggerRegistry,
   PriorityWarUnitTrigger,
@@ -83,7 +83,7 @@ describe("WarUnitTriggerRegistry", () => {
     const createTrigger = (
       name: string,
       priority: number,
-      unit: WarUnitGeneral,
+      unit: WarUnitGeneral
     ): PriorityWarUnitTrigger => ({
       name,
       priority,
@@ -99,7 +99,7 @@ describe("WarUnitTriggerRegistry", () => {
     registry.registerMany(
       createTrigger("Late", TriggerPriority.POST, attacker),
       createTrigger("Early", TriggerPriority.PRE, attacker),
-      createTrigger("Mid", TriggerPriority.BODY, attacker),
+      createTrigger("Mid", TriggerPriority.BODY, attacker)
     );
 
     registry.fire(attacker, defender, rng);
@@ -112,16 +112,8 @@ describe("WarUnitTriggerRegistry", () => {
     const results: string[] = [];
 
     const rng = createRng();
-    const attacker = new WarUnitGeneral(
-      createMockGeneral(1, "공격자"),
-      rng,
-      true,
-    );
-    const defender = new WarUnitGeneral(
-      createMockGeneral(2, "수비자"),
-      rng,
-      false,
-    );
+    const attacker = new WarUnitGeneral(createMockGeneral(1, "공격자"), rng, true);
+    const defender = new WarUnitGeneral(createMockGeneral(2, "수비자"), rng, false);
 
     registry.registerMany(
       {
@@ -156,7 +148,7 @@ describe("WarUnitTriggerRegistry", () => {
           results.push("Never");
           return { delta: {}, continueExecution: true };
         },
-      },
+      }
     );
 
     const result = registry.fire(attacker, defender, rng);
@@ -169,16 +161,8 @@ describe("WarUnitTriggerRegistry", () => {
     const registry = new WarUnitTriggerRegistry();
 
     const rng = createRng();
-    const attacker = new WarUnitGeneral(
-      createMockGeneral(1, "공격자"),
-      rng,
-      true,
-    );
-    const defender = new WarUnitGeneral(
-      createMockGeneral(2, "수비자"),
-      rng,
-      false,
-    );
+    const attacker = new WarUnitGeneral(createMockGeneral(1, "공격자"), rng, true);
+    const defender = new WarUnitGeneral(createMockGeneral(2, "수비자"), rng, false);
 
     registry.registerMany(
       {
@@ -202,7 +186,7 @@ describe("WarUnitTriggerRegistry", () => {
           ctx.selfEnv["defenderValue"] = 100;
           return { delta: {}, continueExecution: true };
         },
-      },
+      }
     );
 
     const result = registry.fire(attacker, defender, rng);
@@ -215,11 +199,7 @@ describe("WarUnitTriggerRegistry", () => {
 
   it("스킬 활성화 시스템이 동작해야 함", () => {
     const rng = createRng();
-    const attacker = new WarUnitGeneral(
-      createMockGeneral(1, "공격자"),
-      rng,
-      true,
-    );
+    const attacker = new WarUnitGeneral(createMockGeneral(1, "공격자"), rng, true);
 
     expect(attacker.hasActivatedSkill("필살")).toBe(false);
 
@@ -235,16 +215,8 @@ describe("WarUnitTriggerRegistry", () => {
 
     // 확률 100%로 설정하여 항상 발동하도록 함
     const rng = createRng("fixed-seed");
-    const attacker = new WarUnitGeneral(
-      createMockGeneral(1, "공격자"),
-      rng,
-      true,
-    );
-    const defender = new WarUnitGeneral(
-      createMockGeneral(2, "수비자"),
-      rng,
-      false,
-    );
+    const attacker = new WarUnitGeneral(createMockGeneral(1, "공격자"), rng, true);
+    const defender = new WarUnitGeneral(createMockGeneral(2, "수비자"), rng, false);
 
     // 필살 시도 트리거 (확률 100%)
     const attemptTrigger = new KillingBlowAttemptTrigger(attacker, 1.0);
@@ -278,21 +250,10 @@ describe("WarUnitTriggerRegistry", () => {
     const results: string[] = [];
 
     const rng = createRng();
-    const attacker = new WarUnitGeneral(
-      createMockGeneral(1, "공격자"),
-      rng,
-      true,
-    );
-    const defender = new WarUnitGeneral(
-      createMockGeneral(2, "수비자"),
-      rng,
-      false,
-    );
+    const attacker = new WarUnitGeneral(createMockGeneral(1, "공격자"), rng, true);
+    const defender = new WarUnitGeneral(createMockGeneral(2, "수비자"), rng, false);
 
-    const createTrigger = (
-      name: string,
-      priority: number,
-    ): PriorityWarUnitTrigger => ({
+    const createTrigger = (name: string, priority: number): PriorityWarUnitTrigger => ({
       name,
       priority,
       raiseType: RaiseType.NONE,
@@ -317,11 +278,7 @@ describe("WarUnitTriggerRegistry", () => {
   it("clear로 모든 트리거를 제거할 수 있어야 함", () => {
     const registry = new WarUnitTriggerRegistry();
     const rng = createRng();
-    const attacker = new WarUnitGeneral(
-      createMockGeneral(1, "공격자"),
-      rng,
-      true,
-    );
+    const attacker = new WarUnitGeneral(createMockGeneral(1, "공격자"), rng, true);
 
     registry.register({
       name: "Test",

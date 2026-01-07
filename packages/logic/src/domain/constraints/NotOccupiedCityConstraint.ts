@@ -1,9 +1,4 @@
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
+import { Constraint, ConstraintContext, ConstraintResult, StateView } from "../Constraint.js";
 
 /**
  * 아국이 아니어야 함 (현재 도시가 본인의 국가와 다름)

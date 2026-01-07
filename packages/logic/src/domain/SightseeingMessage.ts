@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 
 export enum SightseeingType {
   IncExp = 0x1,
@@ -32,10 +32,7 @@ const MESSAGES: SightseeingMessageEntry[] = [
   },
   {
     type: SightseeingType.IncHeavyExp,
-    texts: [
-      "주점에서 사람들과 어울려 술을 마셨습니다.",
-      "위기에 빠진 사람을 구해주었습니다.",
-    ],
+    texts: ["주점에서 사람들과 어울려 술을 마셨습니다.", "위기에 빠진 사람을 구해주었습니다."],
     weight: 1,
   },
   {
@@ -97,33 +94,21 @@ const MESSAGES: SightseeingMessageEntry[] = [
   },
   {
     type: SightseeingType.IncExp | SightseeingType.HeavyWounded,
-    texts: [
-      "호랑이에게 물려 크게 다쳤습니다.",
-      "곰에게 할퀴어 크게 다쳤습니다.",
-    ],
+    texts: ["호랑이에게 물려 크게 다쳤습니다.", "곰에게 할퀴어 크게 다쳤습니다."],
     weight: 1,
   },
   {
-    type:
-      SightseeingType.IncHeavyExp |
-      SightseeingType.Wounded |
-      SightseeingType.HeavyWounded,
+    type: SightseeingType.IncHeavyExp | SightseeingType.Wounded | SightseeingType.HeavyWounded,
     texts: ["위기에 빠진 사람을 구하다가 죽을뻔 했습니다."],
     weight: 1,
   },
   {
-    type:
-      SightseeingType.IncHeavyExp |
-      SightseeingType.IncStrength |
-      SightseeingType.IncGold,
+    type: SightseeingType.IncHeavyExp | SightseeingType.IncStrength | SightseeingType.IncGold,
     texts: ["산적과 싸워 금 <C>:goldAmount:</>을 빼앗았습니다."],
     weight: 1,
   },
   {
-    type:
-      SightseeingType.IncHeavyExp |
-      SightseeingType.IncStrength |
-      SightseeingType.IncRice,
+    type: SightseeingType.IncHeavyExp | SightseeingType.IncStrength | SightseeingType.IncRice,
     texts: [
       "호랑이를 잡아 고기 <C>:riceAmount:</>을 얻었습니다.",
       "곰을 잡아 고기 <C>:riceAmount:</>을 얻었습니다.",
@@ -131,18 +116,12 @@ const MESSAGES: SightseeingMessageEntry[] = [
     weight: 1,
   },
   {
-    type:
-      SightseeingType.IncHeavyExp |
-      SightseeingType.IncIntel |
-      SightseeingType.IncGold,
+    type: SightseeingType.IncHeavyExp | SightseeingType.IncIntel | SightseeingType.IncGold,
     texts: ["돈을 빌려주었다가 이자 <C>:goldAmount:</>을 받았습니다."],
     weight: 1,
   },
   {
-    type:
-      SightseeingType.IncHeavyExp |
-      SightseeingType.IncIntel |
-      SightseeingType.IncRice,
+    type: SightseeingType.IncHeavyExp | SightseeingType.IncIntel | SightseeingType.IncRice,
     texts: ["쌀을 빌려주었다가 이자 <C>:riceAmount:</>을 받았습니다."],
     weight: 1,
   },

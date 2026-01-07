@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -28,7 +28,7 @@ export class GeneralRecruitCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -49,7 +49,7 @@ export class GeneralRecruitCommand extends GeneralCommand {
     const general = new General(iGeneral);
     const { delta: generalDelta, reqGold } = general.recruit(
       iDestGeneral.experience,
-      iDestGeneral.dedication,
+      iDestGeneral.dedication
     );
 
     // 자금 부족 체크 (recruit 내부에서 gold를 0으로 만들지만, 실제로는 실행 전에 체크해야 함)

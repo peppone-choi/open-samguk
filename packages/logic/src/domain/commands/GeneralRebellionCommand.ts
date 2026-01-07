@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -26,7 +26,7 @@ export class GeneralRebellionCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -100,13 +100,9 @@ export class GeneralRebellionCommand extends GeneralCommand {
           [lordId]: [`${generalName}에게 군주의 자리를 뺏겼습니다.`],
         },
         nation: {
-          [nationId]: [
-            `${generalName}이(가) ${lordName}에게서 군주자리를 찬탈`,
-          ],
+          [nationId]: [`${generalName}이(가) ${lordName}에게서 군주자리를 찬탈`],
         },
-        global: [
-          `【모반】${generalName}이(가) ${nationName}의 군주 자리를 찬탈했습니다.`,
-        ],
+        global: [`【모반】${generalName}이(가) ${nationName}의 군주 자리를 찬탈했습니다.`],
       },
     };
   }

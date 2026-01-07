@@ -1,11 +1,6 @@
 import { BaseSpecial } from "../BaseSpecial";
 import type { General } from "../../entities";
-import {
-  SpecialWeightType,
-  SpecialType,
-  type StatAux,
-  type WarUnit,
-} from "../types";
+import { SpecialWeightType, SpecialType, type StatAux, type WarUnit } from "../types";
 
 /**
  * Unrivaled (무쌍) - War Special Ability
@@ -23,12 +18,7 @@ export class UnrivaledSpecial extends BaseSpecial {
   info =
     "[전투] 대미지 +5%, 피해 -2%, 공격 시 필살 확률 +10%p, <br>승리 수의 로그 비례로 대미지 상승(10회 ⇒ +5%, 40회 ⇒ +15%)<br>승리 수의 로그 비례로 피해 감소(10회 ⇒ -2%, 40회 ⇒ -6%)";
 
-  onCalcStat(
-    _general: General,
-    statName: string,
-    value: any,
-    aux?: StatAux,
-  ): any {
+  onCalcStat(_general: General, statName: string, value: any, aux?: StatAux): any {
     if (statName === "warCriticalRatio" && aux?.isAttacker) {
       return value + 0.1;
     }

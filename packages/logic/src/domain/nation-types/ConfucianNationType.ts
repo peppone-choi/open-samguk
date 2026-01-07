@@ -18,12 +18,7 @@ export class ConfucianNationType extends BaseNationType {
   readonly pros = "농상↑ 민심↑";
   readonly cons = "쌀수입↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Agriculture or Commerce bonuses
     if (turnType === "농업" || turnType === "상업") {
       if (varType === "score") return value * 1.1;

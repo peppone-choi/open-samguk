@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
-import { WorldSnapshot } from "../entities.js";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
+import { createMockWorldSnapshot } from "../test-utils.js";
 import { GeneralDevelopCommerceCommand } from "./GeneralDevelopCommerceCommand.js";
 
 describe("GeneralDevelopCommerceCommand (TDD)", () => {
@@ -8,7 +8,7 @@ describe("GeneralDevelopCommerceCommand (TDD)", () => {
   const rng = new LiteHashDRBG(seed);
   const rand = new RandUtil(rng);
 
-  const mockSnapshot: WorldSnapshot = {
+  const mockSnapshot = createMockWorldSnapshot({
     generals: {
       1: {
         id: 1,
@@ -41,10 +41,8 @@ describe("GeneralDevelopCommerceCommand (TDD)", () => {
         specAge2: 0,
         turnTime: new Date(),
         killTurn: 10,
-        meta: {},
       },
     },
-    nations: {},
     cities: {
       1: {
         id: 1,
@@ -56,11 +54,10 @@ describe("GeneralDevelopCommerceCommand (TDD)", () => {
         secu: 100,
         def: 100,
         wall: 100,
-        meta: {},
       },
     },
     gameTime: { year: 184, month: 1 },
-  };
+  });
 
   it("상업 투자 시 도시의 상업 수치가 증가하고 장수의 지력 경험치가 올라야 함", () => {
     const cmd = new GeneralDevelopCommerceCommand();

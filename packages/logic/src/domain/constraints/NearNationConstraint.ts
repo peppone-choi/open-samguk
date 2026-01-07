@@ -1,9 +1,4 @@
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
+import { Constraint, ConstraintContext, ConstraintResult, StateView } from "../Constraint.js";
 import { MapUtil } from "../MapData.js";
 
 /**
@@ -50,7 +45,7 @@ export function areNationsNeighbors(
   srcNationId: number,
   destNationId: number,
   cities: Record<number, { nationId: number }>,
-  includeNoSupply: boolean = true,
+  includeNoSupply: boolean = true
 ): boolean {
   if (srcNationId === destNationId) {
     return false;

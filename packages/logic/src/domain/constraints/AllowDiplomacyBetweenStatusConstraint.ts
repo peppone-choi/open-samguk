@@ -1,9 +1,4 @@
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
+import { Constraint, ConstraintContext, ConstraintResult, StateView } from "../Constraint.js";
 
 /**
  * 특정 외교 상태일 때만 명령 가능
@@ -18,7 +13,7 @@ export class AllowDiplomacyBetweenStatusConstraint implements Constraint {
    */
   constructor(
     private allowList: string[],
-    private errorMsg: string,
+    private errorMsg: string
   ) {}
 
   requires(ctx: ConstraintContext) {

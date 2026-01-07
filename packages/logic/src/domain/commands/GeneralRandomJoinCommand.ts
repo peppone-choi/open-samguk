@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -20,7 +20,7 @@ export class GeneralRandomJoinCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -38,9 +38,7 @@ export class GeneralRandomJoinCommand extends GeneralCommand {
     // 임관 가능한 국가 목록 (정원 미달, 스카웃 가능)
     const availableNations = Object.values(snapshot.nations).filter((n) => {
       if (n.level <= 0) return false; // 멸망한 국가 제외
-      const nationGenerals = Object.values(snapshot.generals).filter(
-        (g) => g.nationId === n.id,
-      );
+      const nationGenerals = Object.values(snapshot.generals).filter((g) => g.nationId === n.id);
       return nationGenerals.length < GameConst.defaultMaxGeneral;
     });
 
@@ -57,9 +55,9 @@ export class GeneralRandomJoinCommand extends GeneralCommand {
 
     // 군주 도시로 이동
     const lordGeneral = Object.values(snapshot.generals).find(
-      (g) => g.nationId === destNation.id && g.officerLevel === 12,
+      (g) => g.nationId === destNation.id && g.officerLevel === 12
     );
-    const destCityId = lordGeneral?.cityId || destNation.capitalId;
+    const destCityId = lordGeneral?.cityId || destNation.capitalCityId;
 
     const randomTalkList = [
       "어쩌다 보니",
@@ -87,9 +85,7 @@ export class GeneralRandomJoinCommand extends GeneralCommand {
         general: {
           [actorId]: [`${destNation.name}에 랜덤 임관했습니다.`],
         },
-        global: [
-          `${iGeneral.name}이(가) ${randomTalk} ${destNation.name}에 임관했습니다.`,
-        ],
+        global: [`${iGeneral.name}이(가) ${randomTalk} ${destNation.name}에 임관했습니다.`],
       },
     };
   }

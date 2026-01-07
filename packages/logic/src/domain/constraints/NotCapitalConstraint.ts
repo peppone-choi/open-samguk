@@ -1,9 +1,4 @@
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
+import { Constraint, ConstraintContext, ConstraintResult, StateView } from "../Constraint.js";
 
 /**
  * 수도가 아니어야 함
@@ -34,11 +29,7 @@ export class NotCapitalConstraint implements Constraint {
     }
 
     // 수뇌는 예외 허용
-    if (
-      this.allowChief &&
-      general.officerLevel >= 2 &&
-      general.officerLevel <= 4
-    ) {
+    if (this.allowChief && general.officerLevel >= 2 && general.officerLevel <= 4) {
       return { kind: "allow" };
     }
 

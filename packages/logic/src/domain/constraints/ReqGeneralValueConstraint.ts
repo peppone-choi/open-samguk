@@ -1,9 +1,4 @@
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
+import { Constraint, ConstraintContext, ConstraintResult, StateView } from "../Constraint.js";
 
 type Comparator = ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==";
 
@@ -22,7 +17,7 @@ export class ReqGeneralValueConstraint implements Constraint {
     private keyNick: string,
     private comp: Comparator,
     private reqVal: number,
-    private errMsg?: string,
+    private errMsg?: string
   ) {}
 
   requires(ctx: ConstraintContext) {
@@ -64,21 +59,13 @@ export class ReqGeneralValueConstraint implements Constraint {
       case "<=":
         return target <= required ? true : "너무 많습니다.";
       case "==":
-        return target == required
-          ? true
-          : `올바르지 않은 ${this.keyNick} 입니다.`;
+        return target == required ? true : `올바르지 않은 ${this.keyNick} 입니다.`;
       case "!=":
-        return target != required
-          ? true
-          : `올바르지 않은 ${this.keyNick} 입니다.`;
+        return target != required ? true : `올바르지 않은 ${this.keyNick} 입니다.`;
       case "===":
-        return target === required
-          ? true
-          : `올바르지 않은 ${this.keyNick} 입니다.`;
+        return target === required ? true : `올바르지 않은 ${this.keyNick} 입니다.`;
       case "!==":
-        return target !== required
-          ? true
-          : `올바르지 않은 ${this.keyNick} 입니다.`;
+        return target !== required ? true : `올바르지 않은 ${this.keyNick} 입니다.`;
       case ">=":
         if (target >= required) return true;
         return required === 1 ? "없습니다" : "부족합니다.";

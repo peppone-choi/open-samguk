@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -14,12 +14,7 @@ export class GeneralRetireCommand extends GeneralCommand {
   constructor() {
     super();
     this.fullConditionConstraints = [
-      ConstraintHelper.ReqGeneralValue(
-        "age",
-        "나이",
-        ">=",
-        GeneralRetireCommand.reqAge,
-      ),
+      ConstraintHelper.ReqGeneralValue("age", "나이", ">=", GeneralRetireCommand.reqAge),
     ];
   }
 
@@ -31,7 +26,7 @@ export class GeneralRetireCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -50,9 +45,7 @@ export class GeneralRetireCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `은퇴 실패: 나이가 ${GeneralRetireCommand.reqAge}세 이상이어야 합니다.`,
-            ],
+            [actorId]: [`은퇴 실패: 나이가 ${GeneralRetireCommand.reqAge}세 이상이어야 합니다.`],
           },
         },
       };

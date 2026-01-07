@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -15,7 +15,7 @@ export class GeneralForcedMarchCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
@@ -84,9 +84,7 @@ export class GeneralForcedMarchCommand extends GeneralCommand {
           };
           if (!delta.logs) delta.logs = {};
           if (!delta.logs.general) delta.logs.general = {};
-          delta.logs.general[gid] = [
-            `방랑군 세력이 ${destCity.name}(으)로 강행했습니다.`,
-          ];
+          delta.logs.general[gid] = [`방랑군 세력이 ${destCity.name}(으)로 강행했습니다.`];
         }
       }
     }

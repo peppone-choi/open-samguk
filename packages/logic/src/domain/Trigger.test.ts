@@ -1,11 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import {
-  TriggerRegistry,
-  Trigger,
-  TriggerContext,
-  TriggerPriority,
-} from "./Trigger.js";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { TriggerRegistry, Trigger, TriggerContext, TriggerPriority } from "./Trigger.js";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 
 describe("Trigger System (TDD)", () => {
   const createContext = (): TriggerContext => ({
@@ -58,9 +53,7 @@ describe("Trigger System (TDD)", () => {
 
   it("attempt가 false를 반환하면 execute는 실행되지 않아야 함", () => {
     const registry = new TriggerRegistry();
-    const executeSpy = vi
-      .fn()
-      .mockReturnValue({ delta: {}, continueExecution: true });
+    const executeSpy = vi.fn().mockReturnValue({ delta: {}, continueExecution: true });
 
     const t: Trigger = {
       name: "FailedAttempt",
@@ -213,7 +206,7 @@ describe("Trigger System (TDD)", () => {
           results.push("Never");
           return { delta: {}, continueExecution: true };
         },
-      },
+      }
     );
 
     registry.runAll(createContext());
@@ -242,7 +235,7 @@ describe("Trigger System (TDD)", () => {
           delta: { env: { read: true } },
           continueExecution: true,
         }),
-      },
+      }
     );
 
     const deltas = registry.runAll(ctx);

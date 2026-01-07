@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -15,7 +15,7 @@ export class GeneralRepairWallCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
@@ -27,9 +27,7 @@ export class GeneralRepairWallCommand extends GeneralCommand {
     const general = new General(iGeneral);
     const city = new City(iCity);
 
-    const { delta: generalDelta, wallGain } = general.repairWall(
-      iGeneral.strength,
-    );
+    const { delta: generalDelta, wallGain } = general.repairWall(iGeneral.strength);
     const cityDelta = city.increaseWall(wallGain);
 
     return {

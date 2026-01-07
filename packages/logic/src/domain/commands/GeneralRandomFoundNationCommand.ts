@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -15,13 +15,7 @@ export class GeneralRandomFoundNationCommand extends GeneralCommand {
     super();
     this.minConditionConstraints = [
       // TODO: Add BeOpeningPart constraint when available
-      ConstraintHelper.ReqNationValue(
-        "level",
-        "국가규모",
-        "==",
-        0,
-        "정식 국가가 아니어야합니다.",
-      ),
+      ConstraintHelper.ReqNationValue("level", "국가규모", "==", 0, "정식 국가가 아니어야합니다."),
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
@@ -36,7 +30,7 @@ export class GeneralRandomFoundNationCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const { nationName, nationType, colorType } = args;
 
@@ -48,9 +42,7 @@ export class GeneralRandomFoundNationCommand extends GeneralCommand {
     }
 
     // 이름 중복 체크
-    const isDuplicate = Object.values(snapshot.nations).some(
-      (n) => n.name === nationName,
-    );
+    const isDuplicate = Object.values(snapshot.nations).some((n) => n.name === nationName);
     if (isDuplicate) {
       return {
         logs: {
@@ -65,8 +57,7 @@ export class GeneralRandomFoundNationCommand extends GeneralCommand {
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation)
-      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     // Find available cities (level 5-6, neutral)
     const availableCities = Object.keys(snapshot.cities)
@@ -144,9 +135,7 @@ export class GeneralRandomFoundNationCommand extends GeneralCommand {
       logs: {
         general: { [actorId]: [`【${nationName}】${josaUl} 건국하였습니다.`] },
         nation: {
-          [iGeneral.nationId]: [
-            `${iGeneral.name}${josaYi} 【${nationName}】${josaUl} 건국`,
-          ],
+          [iGeneral.nationId]: [`${iGeneral.name}${josaYi} 【${nationName}】${josaUl} 건국`],
         },
         global: [
           `${iGeneral.name}${josaYi} ${targetCity.name}에 국가를 건설하였습니다.`,

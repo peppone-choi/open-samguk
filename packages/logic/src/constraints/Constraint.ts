@@ -156,7 +156,7 @@ registerConstraint("ReqCityCapacity", (input, _env, args): ConstraintResult => {
     return { passed: false, failReason: "도시 정보가 없습니다." };
   }
 
-  const value = (input.city.population as Record<string, number>)[key] ?? 0;
+  const value = (input.city.population as unknown as Record<string, number>)[key] ?? 0;
   if (value < reqVal) {
     return {
       passed: false,

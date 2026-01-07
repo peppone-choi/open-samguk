@@ -1,6 +1,7 @@
 # Legacy 포팅 병렬 작업 분배
 
 ## 현재 상태 요약
+
 - Phase A-H: 완료
 - Phase I (패리티 테스트): 미완료
 - Phase J2 (트리거 시스템): 미완료
@@ -11,6 +12,7 @@
 ## 세션별 작업 분배 (5개 터미널)
 
 ### Session 1: 미포팅 장수 커맨드
+
 ```
 cd ~/Desktop/open-samguk
 claude
@@ -30,6 +32,7 @@ packages/logic/src/domain/commands/ 폴더의 기존 패턴을 따라서.
 ```
 
 ### Session 2: 미포팅 국가 커맨드
+
 ```
 cd ~/Desktop/open-samguk
 claude
@@ -49,6 +52,7 @@ packages/logic/src/domain/commands/ 폴더의 기존 패턴을 따라서.
 ```
 
 ### Session 3: 트리거 시스템
+
 ```
 cd ~/Desktop/open-samguk
 claude
@@ -69,6 +73,7 @@ docs/architecture/legacy-engine-triggers.md 참조.
 ```
 
 ### Session 4: 레거시 패리티 테스트 (Phase I)
+
 ```
 cd ~/Desktop/open-samguk
 claude
@@ -88,6 +93,7 @@ docs/testing-policy.md 참조.
 ```
 
 ### Session 5: 특기(Specials) 포팅
+
 ```
 cd ~/Desktop/open-samguk
 claude
@@ -115,30 +121,35 @@ claude
 ## 웹 세션 (5개) - 문서/분석 작업
 
 ### Web 1: 레거시 API 분석
+
 ```
 legacy/hwe/sammo/API/ 폴더의 모든 API를 분석하고
 apps/api에 필요한 엔드포인트 목록 정리
 ```
 
 ### Web 2: 이벤트 시스템 분석
+
 ```
 legacy/hwe/sammo/Event/ 분석
 pre-month, month, post-month 이벤트 목록화
 ```
 
 ### Web 3: 아이템 시스템 분석
+
 ```
 legacy/hwe/sammo/ActionItem/ 분석
 아이템 효과 및 장착 로직 정리
 ```
 
 ### Web 4: 시나리오 데이터 분석
+
 ```
 legacy/hwe/scenario/ JSON 파일 분석
 시나리오 로딩 로직 정리
 ```
 
 ### Web 5: 프론트엔드 컴포넌트 분석
+
 ```
 legacy/hwe/ts/components/ Vue 컴포넌트 분석
 apps/web에 필요한 페이지 목록 정리
@@ -147,7 +158,9 @@ apps/web에 필요한 페이지 목록 정리
 ---
 
 ## 검증 체크리스트
+
 각 세션 완료 후:
+
 - [ ] pnpm typecheck 통과
 - [ ] pnpm lint 통과
 - [ ] pnpm test 통과

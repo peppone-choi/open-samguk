@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
-import { WorldSnapshot } from "../entities.js";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
+import { createMockWorldSnapshot } from "../test-utils.js";
 import { GeneralMoveCommand } from "./GeneralMoveCommand.js";
 
 describe("GeneralMoveCommand (TDD)", () => {
@@ -8,7 +8,7 @@ describe("GeneralMoveCommand (TDD)", () => {
   const rng = new LiteHashDRBG(seed);
   const rand = new RandUtil(rng);
 
-  const mockSnapshot: WorldSnapshot = {
+  const mockSnapshot = createMockWorldSnapshot({
     generals: {
       1: {
         id: 1,
@@ -41,10 +41,8 @@ describe("GeneralMoveCommand (TDD)", () => {
         specAge2: 0,
         turnTime: new Date(),
         killTurn: 10,
-        meta: {},
       },
     },
-    nations: {},
     cities: {
       1: {
         id: 1,
@@ -56,7 +54,6 @@ describe("GeneralMoveCommand (TDD)", () => {
         secu: 100,
         def: 100,
         wall: 100,
-        meta: {},
       },
       9: {
         id: 9,
@@ -68,7 +65,6 @@ describe("GeneralMoveCommand (TDD)", () => {
         secu: 100,
         def: 100,
         wall: 100,
-        meta: {},
       },
       2: {
         id: 2,
@@ -80,11 +76,10 @@ describe("GeneralMoveCommand (TDD)", () => {
         secu: 100,
         def: 100,
         wall: 100,
-        meta: {},
       },
     },
     gameTime: { year: 184, month: 1 },
-  };
+  });
 
   it("인접한 도시로 이동 시 장수의 위치가 변경되어야 함", () => {
     const cmd = new GeneralMoveCommand();
@@ -102,8 +97,6 @@ describe("GeneralMoveCommand (TDD)", () => {
     const delta = cmd.run(rand, mockSnapshot, 1, { destCityId: 2 });
 
     expect(delta.generals?.[1]).toBeUndefined();
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "이동 실패: 인접한 도시가 아닙니다.",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("이동 실패: 인접한 도시가 아닙니다.");
   });
 });

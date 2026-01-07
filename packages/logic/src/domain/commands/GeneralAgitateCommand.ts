@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -27,7 +27,7 @@ export class GeneralAgitateCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -56,8 +56,7 @@ export class GeneralAgitateCommand extends GeneralCommand {
 
     // 성공 확률: (지력 * 0.4 + 매력 * 0.1) + 20
     // 상대 도시 치안이 높으면 확률 감소
-    let successRate =
-      iGeneral.intel * 0.4 + (iGeneral.charm || iGeneral.politics) * 0.1 + 20; // charm 필드 없으면 politics 대용
+    let successRate = iGeneral.intel * 0.4 + (iGeneral.charm || iGeneral.politics) * 0.1 + 20; // charm 필드 없으면 politics 대용
     successRate -= iDestCity.secu / 10;
 
     const roll = rng.nextRange(0, 100);
@@ -72,9 +71,7 @@ export class GeneralAgitateCommand extends GeneralCommand {
         },
         logs: {
           general: {
-            [actorId]: [
-              `${iDestCity.name} 주민들을 선동하려 했으나 실패했습니다.`,
-            ],
+            [actorId]: [`${iDestCity.name} 주민들을 선동하려 했으나 실패했습니다.`],
           },
         },
       };

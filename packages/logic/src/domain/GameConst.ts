@@ -5,10 +5,14 @@ export const GameConst = {
   atmosSideEffectByTraining: 1, // 훈련 시 사기 부가 효과 (레거시는 1로 고정되어 있음)
 
   // 기본 자원량
-  defaultGold: 1000, // 기본 금 보유량
-  defaultRice: 1000, // 기본 군량 보유량
-  minNationalGold: 1000, // 국가 최소 금
-  minNationalRice: 1000, // 국가 최소 군량
+  defaultGold: 1000,
+  defaultRice: 1000,
+  minNationalGold: 1000,
+  minNationalRice: 1000,
+  defaultMaxGeneral: 50,
+  initialNationGenLimit: 10, // 초기 제한시 장수 제한
+  openingPartYear: 3, // 초반 기간 (년)
+  joinActionLimit: 12, // 거병, 임관 제한 기간 (턴)
 
   draftGoldCost: 1000, // 모병 금 비용
   conscriptGoldCost: 200, // 징병 금 비용

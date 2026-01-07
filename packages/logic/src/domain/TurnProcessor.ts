@@ -1,4 +1,4 @@
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot, WorldDelta } from "./entities.js";
 
 export class TurnProcessor {
@@ -9,7 +9,7 @@ export class TurnProcessor {
     if (!general) throw new Error(`General ${generalId} not found`);
 
     const rng = new LiteHashDRBG(
-      `${this.seed}:${generalId}:${snapshot.gameTime.year}:${snapshot.gameTime.month}`,
+      `${this.seed}:${generalId}:${snapshot.gameTime.year}:${snapshot.gameTime.month}`
     );
     const rand = new RandUtil(rng);
 

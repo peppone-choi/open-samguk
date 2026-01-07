@@ -1,15 +1,18 @@
 # 국가 커맨드 구현 프롬프트
 
 ## 목표
+
 미구현된 국가 커맨드를 TypeScript로 포팅
 
 ## 사전 조건
+
 1. 기존 국가 커맨드 패턴 분석 (`NationDeclareWarCommand.ts` 등)
 2. 레거시 `legacy/hwe/sammo/Command/Nation/` 분석 완료
 
 ## 체크리스트
 
 ### Phase 1: 전략 커맨드 (6개)
+
 - [ ] `che_급습.php` → `NationRaidCommand.ts`
   - 적 도시 급습, 리소스 약탈
 - [ ] `che_수몰.php` → `NationFloodCommand.ts`
@@ -24,6 +27,7 @@
   - 결사 항전
 
 ### Phase 2: 내정 커맨드 (4개)
+
 - [ ] `che_백성동원.php` → `NationMobilizeCommand.ts`
   - 백성 동원
 - [ ] `che_의병모집.php` → `NationRecruitMilitiaCommand.ts`
@@ -34,6 +38,7 @@
   - 인구 이동
 
 ### Phase 3: 외교 커맨드 (3개)
+
 - [ ] `che_불가침파기제의.php` → `NationBreakNonAggressionCommand.ts`
   - 불가침 파기 제의
 - [ ] `che_불가침파기수락.php` → `NationAcceptBreakNonAggressionCommand.ts`
@@ -42,10 +47,12 @@
   - 무작위 수도 이전
 
 ### Phase 4: 부대 관리 커맨드 (1개)
+
 - [ ] `che_부대탈퇴지시.php` → `NationExpelFromTroopCommand.ts`
   - 부대 탈퇴 지시
 
 ### Phase 5: 연구 커맨드 (9개)
+
 - [ ] `event_극병연구.php` → `NationResearchPikemanCommand.ts`
 - [ ] `event_대검병연구.php` → `NationResearchSwordCommand.ts`
 - [ ] `event_무희연구.php` → `NationResearchDancerCommand.ts`
@@ -60,17 +67,14 @@
 
 ```typescript
 // packages/logic/src/domain/commands/NationRaidCommand.ts
-import { NationCommand, CommandContext, CommandDelta } from './types.js';
-import { AllowDiplomacy, ReqWarState } from '../constraints/index.js';
+import { NationCommand, CommandContext, CommandDelta } from "./types.js";
+import { AllowDiplomacy, ReqWarState } from "../constraints/index.js";
 
 export class NationRaidCommand extends NationCommand {
-  readonly id = 'nation_raid';
-  readonly name = '급습';
+  readonly id = "nation_raid";
+  readonly name = "급습";
 
-  constraints = [
-    new AllowDiplomacy({ allowedStates: ['war'] }),
-    new ReqWarState({ minTurns: 3 }),
-  ];
+  constraints = [new AllowDiplomacy({ allowedStates: ["war"] }), new ReqWarState({ minTurns: 3 })];
 
   run(ctx: CommandContext): CommandDelta {
     const { nation, targetCity, rand } = ctx;
@@ -90,18 +94,21 @@ export class NationRaidCommand extends NationCommand {
 ## 테스트 작성
 
 ```typescript
-describe('NationRaidCommand', () => {
-  it('should raid enemy city successfully', () => {
+describe("NationRaidCommand", () => {
+  it("should raid enemy city successfully", () => {
     const cmd = new NationRaidCommand();
-    const delta = cmd.run(createContext({
-      nation: createNation({ id: 1 }),
-      targetCity: createCity({ nationId: 2 }),
-    }));
-    expect(delta.logs?.nation?.[1]).toContain('급습');
+    const delta = cmd.run(
+      createContext({
+        nation: createNation({ id: 1 }),
+        targetCity: createCity({ nationId: 2 }),
+      })
+    );
+    expect(delta.logs?.nation?.[1]).toContain("급습");
   });
 });
 ```
 
 ## 레거시 참조 파일
+
 - `legacy/hwe/sammo/Command/Nation/` - 국가 커맨드
 - `legacy/hwe/sammo/BaseCommand.php` - 기본 커맨드 클래스

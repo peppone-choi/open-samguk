@@ -20,12 +20,7 @@ export class DiplomatNationType extends BaseNationType {
   readonly pros = "전략↑ 수성↑";
   readonly cons = "금수입↓ 농상↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Defense & Walls bonuses
     if (turnType === "수비" || turnType === "성벽") {
       if (varType === "score") return value * 1.1;

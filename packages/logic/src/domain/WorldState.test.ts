@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { WorldState } from "./WorldState.js";
-import { WorldSnapshot } from "./entities.js";
+import type { WorldSnapshot } from "./entities.js";
+import { createMockGeneral } from "./test-utils.js";
 
 describe("WorldState (Domain Model)", () => {
   let initialState: WorldSnapshot;
@@ -8,7 +9,7 @@ describe("WorldState (Domain Model)", () => {
   beforeEach(() => {
     initialState = {
       generals: {
-        1: {
+        1: createMockGeneral({
           id: 1,
           name: "유비",
           nationId: 1,
@@ -16,35 +17,20 @@ describe("WorldState (Domain Model)", () => {
           gold: 100,
           rice: 100,
           leadership: 7,
-          leadershipExp: 0,
           strength: 7,
-          strengthExp: 0,
           intel: 7,
-          intelExp: 0,
           politics: 7,
-          politicsExp: 0,
           charm: 8,
-          charmExp: 0,
-          injury: 0,
-          experience: 0,
-          dedication: 0,
-          crew: 0,
-          crewType: 0,
-          train: 0,
-          atmos: 0,
-          age: 20,
-          special: "None",
-          specAge: 0,
-          special2: "None",
-          specAge2: 0,
-          turnTime: new Date(),
           killTurn: 10,
-          meta: {},
-        },
+        }),
       },
       nations: {},
       cities: {},
+      diplomacy: {},
+      troops: {},
+      messages: {},
       gameTime: { year: 184, month: 1 },
+      env: {},
     };
   });
 
@@ -88,7 +74,7 @@ describe("WorldState (Domain Model)", () => {
       ...initialState,
       gameTime: { year: 200, month: 12 },
       generals: {
-        2: { ...initialState.generals[1], id: 2, name: "관우" },
+        2: createMockGeneral({ ...initialState.generals[1], id: 2, name: "관우" }),
       },
     };
 

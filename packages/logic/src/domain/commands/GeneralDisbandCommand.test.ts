@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralDisbandCommand } from "./GeneralDisbandCommand.js";
 import { GameConst } from "../GameConst.js";
@@ -137,6 +137,7 @@ describe("GeneralDisbandCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 1,
       },
     },

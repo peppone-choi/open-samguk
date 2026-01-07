@@ -1,27 +1,18 @@
-/**
- * Nation Types - Philosophical Schools System
- *
- * This module exports all nation type implementations representing various
- * schools of thought (e.g., Confucianism, Legalism, Taoism) that influence
- * a nation's domestic, strategic, and economic capabilities.
- */
+export type { NationType } from "./types.js";
+export { BaseNationType } from "./types.js";
 
-// Core types and base class
-export { NationType, BaseNationType } from "./types";
-
-// Nation type implementations
-export { NoNationType } from "./NoNationType";
-export { VirtueNationType } from "./VirtueNationType";
-export { TaoismNationType } from "./TaoismNationType";
-export { BanditNationType } from "./BanditNationType";
-export { LogiciansNationType } from "./LogiciansNationType";
-export { MohistNationType } from "./MohistNationType";
-export { LegalistNationType } from "./LegalistNationType";
-export { MilitaristNationType } from "./MilitaristNationType";
-export { BuddhistNationType } from "./BuddhistNationType";
-export { YinYangNationType } from "./YinYangNationType";
-export { ConfucianNationType } from "./ConfucianNationType";
-export { DiplomatNationType } from "./DiplomatNationType";
-export { FivePecksNationType } from "./FivePecksNationType";
-export { YellowTurbansNationType } from "./YellowTurbansNationType";
-export { NeutralNationType } from "./NeutralNationType";
+export { NoNationType } from "./NoNationType.js";
+export { VirtueNationType } from "./VirtueNationType.js";
+export { TaoismNationType } from "./TaoismNationType.js";
+export { BanditNationType } from "./BanditNationType.js";
+export { LogiciansNationType } from "./LogiciansNationType.js";
+export { MohistNationType } from "./MohistNationType.js";
+export { LegalistNationType } from "./LegalistNationType.js";
+export { MilitaristNationType } from "./MilitaristNationType.js";
+export { BuddhistNationType } from "./BuddhistNationType.js";
+export { YinYangNationType } from "./YinYangNationType.js";
+export { ConfucianNationType } from "./ConfucianNationType.js";
+export { DiplomatNationType } from "./DiplomatNationType.js";
+export { FivePecksNationType } from "./FivePecksNationType.js";
+export { YellowTurbansNationType } from "./YellowTurbansNationType.js";
+export { NeutralNationType } from "./NeutralNationType.js";

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
-import { WorldSnapshot } from "../entities.js";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
+import { createMockWorldSnapshot } from "../test-utils.js";
 import { GeneralTalentSearchCommand } from "./GeneralTalentSearchCommand.js";
 
 describe("GeneralTalentSearchCommand (TDD Loop)", () => {
@@ -8,7 +8,7 @@ describe("GeneralTalentSearchCommand (TDD Loop)", () => {
   const rng = new LiteHashDRBG(seed);
   const rand = new RandUtil(rng);
 
-  const mockSnapshot: WorldSnapshot = {
+  const mockSnapshot = createMockWorldSnapshot({
     generals: {
       1: {
         id: 1,
@@ -18,32 +18,11 @@ describe("GeneralTalentSearchCommand (TDD Loop)", () => {
         gold: 100,
         rice: 100,
         leadership: 7,
-        leadershipExp: 0,
         strength: 7,
-        strengthExp: 0,
         intel: 7,
-        intelExp: 0,
         politics: 8,
-        politicsExp: 0,
         charm: 9,
-        charmExp: 0,
-        injury: 0,
-        experience: 0,
-        dedication: 0,
-        officerLevel: 0,
-        recentWar: 0,
-        crew: 0,
-        crewType: 0,
-        train: 0,
-        atmos: 0,
-        age: 20,
-        special: "None",
-        specAge: 0,
-        special2: "None",
-        specAge2: 0,
-        turnTime: new Date(),
         killTurn: 10,
-        meta: {},
       },
     },
     nations: {
@@ -58,7 +37,6 @@ describe("GeneralTalentSearchCommand (TDD Loop)", () => {
         power: 1000,
         level: 1,
         typeCode: "normal",
-        meta: {},
       },
     },
     cities: {
@@ -72,11 +50,10 @@ describe("GeneralTalentSearchCommand (TDD Loop)", () => {
         secu: 100,
         def: 100,
         wall: 100,
-        meta: {},
       },
     },
     gameTime: { year: 184, month: 1 },
-  };
+  });
 
   it("인재 탐색 시 금을 발견하거나 장수를 찾아야 함 (결정론적 검증)", () => {
     const cmd = new GeneralTalentSearchCommand();

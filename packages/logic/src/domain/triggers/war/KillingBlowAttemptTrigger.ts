@@ -24,7 +24,7 @@ export class KillingBlowAttemptTrigger implements PriorityWarUnitTrigger {
 
   constructor(
     public readonly unit: WarUnit,
-    criticalRatio: number = 0.1,
+    criticalRatio: number = 0.1
   ) {
     this.criticalRatio = criticalRatio;
   }

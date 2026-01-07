@@ -29,30 +29,15 @@ export abstract class BaseSpecial implements IBaseSpecial {
     return null;
   }
 
-  onCalcDomestic(
-    _turnType: string,
-    _varType: string,
-    value: number,
-    _aux?: DomesticAux,
-  ): number {
+  onCalcDomestic(_turnType: string, _varType: string, value: number, _aux?: DomesticAux): number {
     return value;
   }
 
-  onCalcStat(
-    _general: General,
-    _statName: string,
-    value: any,
-    _aux?: StatAux,
-  ): any {
+  onCalcStat(_general: General, _statName: string, value: any, _aux?: StatAux): any {
     return value;
   }
 
-  onCalcOpposeStat(
-    _general: General,
-    _statName: string,
-    value: any,
-    _aux?: StatAux,
-  ): any {
+  onCalcOpposeStat(_general: General, _statName: string, value: any, _aux?: StatAux): any {
     return value;
   }
 
@@ -80,7 +65,7 @@ export abstract class BaseSpecial implements IBaseSpecial {
     _general: General,
     _actionType: string,
     _phase?: string | null,
-    aux?: any,
+    aux?: any
   ): any {
     return aux;
   }

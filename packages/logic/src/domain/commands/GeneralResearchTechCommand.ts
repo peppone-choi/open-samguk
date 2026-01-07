@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -30,7 +30,7 @@ export class GeneralResearchTechCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
@@ -39,8 +39,7 @@ export class GeneralResearchTechCommand extends GeneralCommand {
     if (!iCity) throw new Error(`도시 ${iGeneral.cityId}를 찾을 수 없습니다.`);
 
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation)
-      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     // 비용 계산 (develcost 환경 변수 사용, 없으면 기본값 100)
     const develCost = snapshot.env.develcost ?? 100;
@@ -60,9 +59,7 @@ export class GeneralResearchTechCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `기술 연구 실패: 자금이 부족합니다. (필요: ${reqGold})`,
-            ],
+            [actorId]: [`기술 연구 실패: 자금이 부족합니다. (필요: ${reqGold})`],
           },
         },
       };
@@ -77,19 +74,13 @@ export class GeneralResearchTechCommand extends GeneralCommand {
       delta: generalDelta,
       techGain,
       pick,
-    } = general.researchTech(
-      rng,
-      iGeneral.intel,
-      iCity.trust,
-      iGeneral.meta.explevel ?? 0,
-    );
+    } = general.researchTech(rng, iGeneral.intel, iCity.trust, iGeneral.meta.explevel ?? 0);
 
     // 기술 한계 체크
     const relYear = (snapshot.env.year ?? 0) - (snapshot.env.startyear ?? 0);
     const relMaxTechLevel = Math.min(
-      Math.floor(relYear / GameConst.techLevelIncYear) +
-        GameConst.initialAllowedTechLevel,
-      GameConst.maxTechLevel,
+      Math.floor(relYear / GameConst.techLevelIncYear) + GameConst.initialAllowedTechLevel,
+      GameConst.maxTechLevel
     );
 
     // 현재 국가 기술 레벨 계산 (임시: tech / 1000)
@@ -103,9 +94,7 @@ export class GeneralResearchTechCommand extends GeneralCommand {
     // 국가 내 장수 수 보정 (장수 수로 나눔)
     // snapshot에서 해당 국가 장수 수를 계산
     const gennum =
-      Object.values(snapshot.generals).filter(
-        (g) => g.nationId === iGeneral.nationId,
-      ).length || 1;
+      Object.values(snapshot.generals).filter((g) => g.nationId === iGeneral.nationId).length || 1;
     const nationTechGain = finalTechGain / gennum;
 
     const nationDelta = nation.increaseTech(nationTechGain);

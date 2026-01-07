@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -29,20 +29,17 @@ export class NationExpandCapitalCommand extends GeneralCommand {
 
   private getCost(snapshot: WorldSnapshot): number {
     const develcost = snapshot.env.develcost ?? 100;
-    return (
-      develcost * this.EXPAND_CITY_COST_COEF + this.EXPAND_CITY_DEFAULT_COST
-    );
+    return develcost * this.EXPAND_CITY_COST_COEF + this.EXPAND_CITY_DEFAULT_COST;
   }
 
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iActor = snapshot.generals[actorId];
-    if (!iActor)
-      return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
+    if (!iActor) return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
 
     const iNation = snapshot.nations[iActor.nationId];
     if (!iNation)
@@ -98,9 +95,7 @@ export class NationExpandCapitalCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `증축 실패: 자원이 부족합니다. (필요: 금 ${cost}, 쌀 ${cost})`,
-            ],
+            [actorId]: [`증축 실패: 자원이 부족합니다. (필요: 금 ${cost}, 쌀 ${cost})`],
           },
         },
       };
@@ -109,8 +104,7 @@ export class NationExpandCapitalCommand extends GeneralCommand {
     // 준비 턴 확인 (5턴 필요)
     const preReqTurn = 5;
     const lastTurn = iActor.lastTurn || {};
-    const currentTerm =
-      lastTurn.action === this.actionName ? lastTurn.term || 0 : 0;
+    const currentTerm = lastTurn.action === this.actionName ? lastTurn.term || 0 : 0;
     const capset = iNation.meta?.capset || 0;
     const lastSeq = lastTurn.seq || 0;
 
@@ -148,9 +142,7 @@ export class NationExpandCapitalCommand extends GeneralCommand {
         },
         logs: {
           general: {
-            [actorId]: [
-              `수도를 증축 준비 중입니다... (${currentTerm + 1}/${preReqTurn + 1})`,
-            ],
+            [actorId]: [`수도를 증축 준비 중입니다... (${currentTerm + 1}/${preReqTurn + 1})`],
           },
         },
       };
@@ -199,9 +191,7 @@ export class NationExpandCapitalCommand extends GeneralCommand {
           [actorId]: [`【${iCapital.name}】${josaUl} 증축했습니다.`],
         },
         nation: {
-          [iNation.id]: [
-            `${iActor.name}${josaYi} 【${iCapital.name}】${josaUl} 증축`,
-          ],
+          [iNation.id]: [`${iActor.name}${josaYi} 【${iCapital.name}】${josaUl} 증축`],
         },
         global: [
           `${iActor.name}${josaYi} 【${iCapital.name}】${josaUl} 증축하였습니다.`,

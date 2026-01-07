@@ -1,13 +1,16 @@
 # 웹 세션 5: 아이템 + 이벤트 시스템 구현
 
 ## 프로젝트 개요
+
 삼국지 모의전투 게임의 레거시 PHP 코드를 TypeScript로 포팅하는 프로젝트입니다.
 
 ## 이 세션의 목표
+
 1. 핵심 아이템 50개 구현 (161개 중)
 2. 이벤트 시스템 15개 구현 (37개 중)
 
 ## 작업 환경
+
 - 레거시 아이템: `legacy/hwe/sammo/ActionItem/` (PHP)
 - 레거시 이벤트: `legacy/hwe/sammo/Event/` (PHP)
 - 구현 위치: `packages/logic/src/domain/items/` (새로 생성)
@@ -20,6 +23,7 @@
 ## 구현할 아이템
 
 ### 무기 - 고급 (10개)
+
 ```
 1. che_무기_11_고정도.php → GojungdoWeapon.ts (공격력 +12)
 2. che_무기_11_이광궁.php → LeegwangBow.ts (공격력 +12, 궁병 보너스)
@@ -34,6 +38,7 @@
 ```
 
 ### 명마 - 고급 (10개)
+
 ```
 11. che_명마_11_서량마.php → SeoryangHorse.ts (속도 +12)
 12. che_명마_11_화종마.php → HwajongHorse.ts (속도 +12)
@@ -48,6 +53,7 @@
 ```
 
 ### 서적 - 고급 (10개)
+
 ```
 21. che_서적_11_상군서.php → LegalistBook.ts (지력 +12)
 22. che_서적_11_춘추전.php → SpringAutumnBook.ts (지력 +12)
@@ -62,6 +68,7 @@
 ```
 
 ### 특수 효과 아이템 (20개)
+
 ```
 31. che_계략_삼략.php → SanryakItem.ts (계략 +20%)
 32. che_계략_육도.php → YukdoItem.ts (계략 +15%)
@@ -89,8 +96,8 @@
 
 ```typescript
 // packages/logic/src/domain/items/BaseItem.ts
-export type ItemCategory = 'weapon' | 'horse' | 'book' | 'special';
-export type ItemSlot = 'weapon' | 'book' | 'horse' | 'item';
+export type ItemCategory = "weapon" | "horse" | "book" | "special";
+export type ItemSlot = "weapon" | "book" | "horse" | "item";
 
 export interface ItemEffect {
   // 스탯 보너스
@@ -117,7 +124,7 @@ export interface ItemEffect {
 export abstract class BaseItem {
   abstract readonly id: string;
   abstract readonly name: string;
-  abstract readonly grade: number;  // 1-15
+  abstract readonly grade: number; // 1-15
   abstract readonly category: ItemCategory;
   abstract readonly slot: ItemSlot;
   abstract readonly description: string;
@@ -128,15 +135,15 @@ export abstract class BaseItem {
 
 ```typescript
 // packages/logic/src/domain/items/weapons/RedHare.ts
-import { BaseItem, ItemEffect } from '../BaseItem.js';
+import { BaseItem, ItemEffect } from "../BaseItem.js";
 
 export class RedHare extends BaseItem {
-  readonly id = 'horse_15_redhare';
-  readonly name = '적토마';
+  readonly id = "horse_15_redhare";
+  readonly name = "적토마";
   readonly grade = 15;
-  readonly category = 'horse' as const;
-  readonly slot = 'horse' as const;
-  readonly description = '천하제일의 명마. 하루에 천리를 달린다.';
+  readonly category = "horse" as const;
+  readonly slot = "horse" as const;
+  readonly description = "천하제일의 명마. 하루에 천리를 달린다.";
 
   getEffect(): ItemEffect {
     return {
@@ -149,15 +156,15 @@ export class RedHare extends BaseItem {
 
 ```typescript
 // packages/logic/src/domain/items/special/SanryakItem.ts
-import { BaseItem, ItemEffect } from '../BaseItem.js';
+import { BaseItem, ItemEffect } from "../BaseItem.js";
 
 export class SanryakItem extends BaseItem {
-  readonly id = 'special_sanryak';
-  readonly name = '삼략';
+  readonly id = "special_sanryak";
+  readonly name = "삼략";
   readonly grade = 14;
-  readonly category = 'special' as const;
-  readonly slot = 'item' as const;
-  readonly description = '태공망의 병법서. 계략 성공률이 크게 증가한다.';
+  readonly category = "special" as const;
+  readonly slot = "item" as const;
+  readonly description = "태공망의 병법서. 계략 성공률이 크게 증가한다.";
 
   getEffect(): ItemEffect {
     return {
@@ -175,6 +182,7 @@ export class SanryakItem extends BaseItem {
 ## 구현할 이벤트
 
 ### 주기적 이벤트 (6개)
+
 ```
 1. ProcessIncome.php → ProcessIncomeEvent.ts
    - 매월 세금/수입 처리
@@ -196,6 +204,7 @@ export class SanryakItem extends BaseItem {
 ```
 
 ### NPC 이벤트 (4개)
+
 ```
 7. CreateManyNPC.php → CreateManyNPCEvent.ts
    - 다수 NPC 생성
@@ -211,6 +220,7 @@ export class SanryakItem extends BaseItem {
 ```
 
 ### 특수 이벤트 (5개)
+
 ```
 11. RaiseDisaster.php → RaiseDisasterEvent.ts
     - 재해 발생 (가뭄, 홍수, 메뚜기)
@@ -232,8 +242,8 @@ export class SanryakItem extends BaseItem {
 
 ```typescript
 // packages/logic/src/domain/events/BaseEvent.ts
-import { RandUtil } from '@sammo-ts/common';
-import { WorldSnapshot } from '../entities.js';
+import { RandUtil } from "@sammo-ts/common";
+import { WorldSnapshot } from "../entities.js";
 
 export interface EventCondition {
   check(snapshot: WorldSnapshot): boolean;
@@ -260,13 +270,13 @@ export abstract class BaseEvent {
 
 ```typescript
 // packages/logic/src/domain/events/ProcessIncomeEvent.ts
-import { BaseEvent, EventCondition, EventDelta } from './BaseEvent.js';
-import { RandUtil } from '@sammo-ts/common';
-import { WorldSnapshot, Nation, City } from '../entities.js';
+import { BaseEvent, EventCondition, EventDelta } from "./BaseEvent.js";
+import { RandUtil } from "@sammo-ts/common";
+import { WorldSnapshot, Nation, City } from "../entities.js";
 
 export class ProcessIncomeEvent extends BaseEvent {
-  readonly id = 'process_income';
-  readonly name = '세금 징수';
+  readonly id = "process_income";
+  readonly name = "세금 징수";
 
   getCondition(): EventCondition {
     return {
@@ -291,25 +301,22 @@ export class ProcessIncomeEvent extends BaseEvent {
         rice: nation.rice + income.rice,
       };
 
-      delta.logs!.nation![nation.id] = [
-        `세금 징수: 금 ${income.gold}, 쌀 ${income.rice}`,
-      ];
+      delta.logs!.nation![nation.id] = [`세금 징수: 금 ${income.gold}, 쌀 ${income.rice}`];
     }
 
     return delta;
   }
 
   private calculateIncome(nation: Nation, snapshot: WorldSnapshot) {
-    const cities = Object.values(snapshot.cities)
-      .filter(c => c.nationId === nation.id);
+    const cities = Object.values(snapshot.cities).filter((c) => c.nationId === nation.id);
 
     let gold = 0;
     let rice = 0;
 
     for (const city of cities) {
       // 상업 → 금, 농업 → 쌀
-      gold += Math.floor(city.comm * nation.rate / 100);
-      rice += Math.floor(city.agri * nation.rate / 100);
+      gold += Math.floor((city.comm * nation.rate) / 100);
+      rice += Math.floor((city.agri * nation.rate) / 100);
     }
 
     return { gold, rice };
@@ -319,15 +326,15 @@ export class ProcessIncomeEvent extends BaseEvent {
 
 ```typescript
 // packages/logic/src/domain/events/RaiseDisasterEvent.ts
-import { BaseEvent, EventCondition, EventDelta } from './BaseEvent.js';
-import { RandUtil } from '@sammo-ts/common';
-import { WorldSnapshot, City } from '../entities.js';
+import { BaseEvent, EventCondition, EventDelta } from "./BaseEvent.js";
+import { RandUtil } from "@sammo-ts/common";
+import { WorldSnapshot, City } from "../entities.js";
 
-type DisasterType = 'drought' | 'flood' | 'locust';
+type DisasterType = "drought" | "flood" | "locust";
 
 export class RaiseDisasterEvent extends BaseEvent {
-  readonly id = 'raise_disaster';
-  readonly name = '재해 발생';
+  readonly id = "raise_disaster";
+  readonly name = "재해 발생";
 
   getCondition(): EventCondition {
     return {
@@ -356,7 +363,7 @@ export class RaiseDisasterEvent extends BaseEvent {
     if (!targetCity) return delta;
 
     // 재해 유형 선택
-    const disasterType = rand.choice(['drought', 'flood', 'locust'] as DisasterType[]);
+    const disasterType = rand.choice(["drought", "flood", "locust"] as DisasterType[]);
     const damage = this.calculateDamage(disasterType, targetCity, rand);
 
     delta.cities![targetCity.id] = damage;
@@ -377,17 +384,17 @@ export class RaiseDisasterEvent extends BaseEvent {
     const baseDamage = 0.1 + rand.nextFloat() * 0.2; // 10-30%
 
     switch (type) {
-      case 'drought':
+      case "drought":
         return {
           agri: Math.floor(city.agri * (1 - baseDamage)),
           pop: Math.floor(city.pop * (1 - baseDamage * 0.5)),
         };
-      case 'flood':
+      case "flood":
         return {
           agri: Math.floor(city.agri * (1 - baseDamage)),
           comm: Math.floor(city.comm * (1 - baseDamage * 0.5)),
         };
-      case 'locust':
+      case "locust":
         return {
           agri: Math.floor(city.agri * (1 - baseDamage * 1.5)),
         };
@@ -396,9 +403,12 @@ export class RaiseDisasterEvent extends BaseEvent {
 
   private getDisasterName(type: DisasterType): string {
     switch (type) {
-      case 'drought': return '가뭄';
-      case 'flood': return '홍수';
-      case 'locust': return '메뚜기떼';
+      case "drought":
+        return "가뭄";
+      case "flood":
+        return "홍수";
+      case "locust":
+        return "메뚜기떼";
     }
   }
 }
@@ -408,18 +418,18 @@ export class RaiseDisasterEvent extends BaseEvent {
 
 ```typescript
 // packages/logic/src/domain/items/weapons/RedHare.test.ts
-import { describe, it, expect } from 'vitest';
-import { RedHare } from './RedHare.js';
+import { describe, it, expect } from "vitest";
+import { RedHare } from "./RedHare.js";
 
-describe('RedHare', () => {
-  it('should have speed bonus', () => {
+describe("RedHare", () => {
+  it("should have speed bonus", () => {
     const item = new RedHare();
     const effect = item.getEffect();
 
     expect(effect.speed).toBe(25);
   });
 
-  it('should have grade 15', () => {
+  it("should have grade 15", () => {
     const item = new RedHare();
     expect(item.grade).toBe(15);
   });
@@ -428,14 +438,14 @@ describe('RedHare', () => {
 
 ```typescript
 // packages/logic/src/domain/events/ProcessIncomeEvent.test.ts
-import { describe, it, expect } from 'vitest';
-import { LiteHashDRBG, RandUtil } from '@sammo-ts/common';
-import { ProcessIncomeEvent } from './ProcessIncomeEvent.js';
+import { describe, it, expect } from "vitest";
+import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { ProcessIncomeEvent } from "./ProcessIncomeEvent.js";
 
-describe('ProcessIncomeEvent', () => {
-  it('should calculate income based on tax rate', () => {
+describe("ProcessIncomeEvent", () => {
+  it("should calculate income based on tax rate", () => {
     const event = new ProcessIncomeEvent();
-    const rng = new LiteHashDRBG('test');
+    const rng = new LiteHashDRBG("test");
     const rand = new RandUtil(rng);
 
     const snapshot = {
@@ -459,6 +469,7 @@ describe('ProcessIncomeEvent', () => {
 ## 진행 체크리스트
 
 아이템:
+
 - [ ] BaseItem.ts
 - [ ] 무기 10개 + tests
 - [ ] 명마 10개 + tests
@@ -466,6 +477,7 @@ describe('ProcessIncomeEvent', () => {
 - [ ] 특수 20개 + tests
 
 이벤트:
+
 - [ ] BaseEvent.ts
 - [ ] ProcessIncomeEvent + test
 - [ ] ProcessSemiAnnualEvent + test
@@ -474,6 +486,7 @@ describe('ProcessIncomeEvent', () => {
 - [ ] ... (나머지 11개)
 
 ## 완료 기준
+
 - 아이템 50개 구현
 - 이벤트 15개 구현
 - 각 항목에 최소 2개 테스트

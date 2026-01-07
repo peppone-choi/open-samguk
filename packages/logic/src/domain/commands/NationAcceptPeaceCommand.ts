@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -14,24 +14,18 @@ export class NationAcceptPeaceCommand extends GeneralCommand {
 
   constructor() {
     super();
-    this.minConditionConstraints = [
-      ConstraintHelper.AlwaysFail("예약 불가능 커맨드"),
-    ];
-    this.fullConditionConstraints = [
-      ConstraintHelper.BeLord(),
-      ConstraintHelper.NotBeNeutral(),
-    ];
+    this.minConditionConstraints = [ConstraintHelper.AlwaysFail("예약 불가능 커맨드")];
+    this.fullConditionConstraints = [ConstraintHelper.BeLord(), ConstraintHelper.NotBeNeutral()];
   }
 
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iActor = snapshot.generals[actorId];
-    if (!iActor)
-      return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
+    if (!iActor) return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
 
     const iNation = snapshot.nations[iActor.nationId];
     if (!iNation)
@@ -79,9 +73,7 @@ export class NationAcceptPeaceCommand extends GeneralCommand {
     // 외교 관계 확인
     const diplomacyKey = `${iNation.id}:${destNationId}`;
     const reverseDiplomacyKey = `${destNationId}:${iNation.id}`;
-    const iDiplomacy =
-      snapshot.diplomacy[diplomacyKey] ||
-      snapshot.diplomacy[reverseDiplomacyKey];
+    const iDiplomacy = snapshot.diplomacy[diplomacyKey] || snapshot.diplomacy[reverseDiplomacyKey];
 
     if (!iDiplomacy || (iDiplomacy.state !== "0" && iDiplomacy.state !== "1")) {
       return {
@@ -130,9 +122,7 @@ export class NationAcceptPeaceCommand extends GeneralCommand {
         },
         nation: {
           [iNation.id]: [`【${iDestNation.name}】${josaWa} 종전`],
-          [destNationId]: [
-            `【${iNation.name}】${JosaUtil.pick(iNation.name, "와")} 종전`,
-          ],
+          [destNationId]: [`【${iNation.name}】${JosaUtil.pick(iNation.name, "와")} 종전`],
         },
         global: [
           `${iActor.name}${josaYiGeneral} 【${iDestNation.name}】${josaWa} 종전 합의 하였습니다.`,

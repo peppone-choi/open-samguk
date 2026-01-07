@@ -19,12 +19,7 @@ export class BanditNationType extends BaseNationType {
   readonly pros = "계략↑";
   readonly cons = "금수입↓ 치안↓ 민심↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Security penalties
     if (turnType === "치안") {
       if (varType === "score") return value * 0.9;

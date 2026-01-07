@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import {
   Constraint,
   ConstraintContext,
@@ -17,13 +17,13 @@ export interface Command {
     snapshot: WorldSnapshot,
     actorId: number,
     args: Record<string, any>,
-    mode?: "full" | "precheck",
+    mode?: "full" | "precheck"
   ): ConstraintResult;
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta;
 }
 
@@ -31,7 +31,7 @@ export interface Command {
  * WorldSnapshot을 기반으로 한 StateView 구현체
  */
 export class SnapshotStateView implements StateView {
-  constructor(private snapshot: WorldSnapshot) {}
+  constructor(private snapshot: WorldSnapshot) { }
 
   has(req: RequirementKey): boolean {
     return this.get(req) !== null;
@@ -48,6 +48,11 @@ export class SnapshotStateView implements StateView {
       case "nation":
       case "destNation":
         return this.snapshot.nations[req.id] || null;
+      case "env":
+        if (req.key === "yearMonth") {
+          return this.snapshot.gameTime.year * 12 + this.snapshot.gameTime.month;
+        }
+        return this.snapshot.env[req.key] || null;
       default:
         return null;
     }
@@ -62,9 +67,7 @@ export abstract class GeneralCommand implements Command {
   protected fullConditionConstraints: Constraint[] = [];
 
   getConstraints(ctx: ConstraintContext): Constraint[] {
-    return ctx.mode === "full"
-      ? this.fullConditionConstraints
-      : this.minConditionConstraints;
+    return ctx.mode === "full" ? this.fullConditionConstraints : this.minConditionConstraints;
   }
 
   /**
@@ -75,7 +78,7 @@ export abstract class GeneralCommand implements Command {
     snapshot: WorldSnapshot,
     actorId: number,
     args: Record<string, any>,
-    mode: "full" | "precheck" = "full",
+    mode: "full" | "precheck" = "full"
   ): ConstraintResult {
     const general = snapshot.generals[actorId];
     const ctx: ConstraintContext = {
@@ -104,6 +107,6 @@ export abstract class GeneralCommand implements Command {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta;
 }

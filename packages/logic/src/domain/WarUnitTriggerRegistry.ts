@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import type { WorldDelta } from "./entities.js";
 import type { WarUnit } from "./specials/types.js";
 import { TriggerPriority } from "./Trigger.js";
@@ -137,7 +137,7 @@ export class WarUnitTriggerRegistry {
     attacker: WarUnit,
     defender: WarUnit,
     rand: RandUtil,
-    phase: number = 0,
+    phase: number = 0
   ): {
     deltas: WorldDelta[];
     attackerEnv: Record<string, unknown>;

@@ -18,20 +18,14 @@ export class General {
   public train(leadership: number): Delta<IGeneral> {
     const crew = Math.max(this.props.crew, 1);
     let score = Math.round(((leadership * 100) / crew) * GameConst.trainDelta);
-    score = Math.min(
-      score,
-      Math.max(GameConst.maxTrainByCommand - this.props.train, 0),
-    );
+    score = Math.min(score, Math.max(GameConst.maxTrainByCommand - this.props.train, 0));
 
     const expGain = 100;
     const dedGain = 70;
 
     // 내부 상태 변경
     this.props.train += score;
-    this.props.atmos = Math.min(
-      this.props.atmos + GameConst.atmosSideEffectByTraining,
-      100,
-    );
+    this.props.atmos = Math.min(this.props.atmos + GameConst.atmosSideEffectByTraining, 100);
     this.props.experience += expGain;
     this.props.dedication += dedGain;
     this.props.leadershipExp += 1;
@@ -174,12 +168,10 @@ export class General {
    */
   public recruit(
     destGeneralExperience: number,
-    destGeneralDedication: number,
+    destGeneralDedication: number
   ): { delta: Delta<IGeneral>; reqGold: number } {
     // 임시 비용 계산 (레거시 참고)
-    const reqGold =
-      Math.round(100 + (destGeneralExperience + destGeneralDedication) / 1000) *
-      10;
+    const reqGold = Math.round(100 + (destGeneralExperience + destGeneralDedication) / 1000) * 10;
 
     this.props.gold = Math.max(this.props.gold - reqGold, 0);
     this.props.experience += 100;
@@ -258,10 +250,7 @@ export class General {
 
     this.props.experience += 30;
     this.props.leadershipExp += 1;
-    this.props.gold = Math.max(
-      this.props.gold - GameConst.conscriptGoldCost,
-      0,
-    );
+    this.props.gold = Math.max(this.props.gold - GameConst.conscriptGoldCost, 0);
 
     return {
       crewGain,
@@ -281,9 +270,9 @@ export class General {
      */
 
   public developPopulation(
-    rng: import("@sammo-ts/common").RandUtil,
+    rng: import("@sammo/common").RandUtil,
     leadership: number,
-    explevel: number,
+    explevel: number
   ): {
     delta: Delta<IGeneral>;
     popGain: number;
@@ -351,10 +340,10 @@ export class General {
    (지력 능력치 활용)
    */
   public researchTech(
-    rng: import("@sammo-ts/common").RandUtil,
+    rng: import("@sammo/common").RandUtil,
     intel: number,
     trust: number,
-    explevel: number,
+    explevel: number
   ): {
     delta: Delta<IGeneral>;
     techGain: number;
@@ -412,10 +401,7 @@ export class General {
     const crew = Math.max(this.props.crew, 1);
     // 레거시 공식: leadership * 100 / crew * atmosDelta
     let score = Math.round(((leadership * 100) / crew) * GameConst.atmosDelta);
-    score = Math.min(
-      score,
-      Math.max(GameConst.maxAtmosByCommand - this.props.atmos, 0),
-    );
+    score = Math.min(score, Math.max(GameConst.maxAtmosByCommand - this.props.atmos, 0));
 
     const expGain = 100;
     const dedGain = 70;
@@ -440,9 +426,9 @@ export class General {
    * 주민 선정 수행 로직 (통솔 능력치 활용)
    */
   public developTrust(
-    rng: import("@sammo-ts/common").RandUtil,
+    rng: import("@sammo/common").RandUtil,
     leadership: number,
-    riceCost: number,
+    riceCost: number
   ): {
     delta: Delta<IGeneral>;
     trustGain: number;
@@ -510,10 +496,7 @@ export class General {
   /**
    * 아이템 장착
    */
-  public equip(
-    itemType: "weapon" | "book" | "horse" | "item",
-    itemCode: string,
-  ): Delta<IGeneral> {
+  public equip(itemType: "weapon" | "book" | "horse" | "item", itemCode: string): Delta<IGeneral> {
     this.props[itemType] = itemCode;
     return { [itemType]: itemCode };
   }
@@ -540,7 +523,7 @@ export class General {
     incStatKey: "leadershipExp" | "strengthExp" | "intelExp",
     dexGain: number,
     goldCost: number,
-    riceCost: number,
+    riceCost: number
   ): Delta<IGeneral> {
     const expGain = this.props.crew / 400;
 
@@ -548,8 +531,7 @@ export class General {
     // 여기서는 단순하게 incStatKey에 대응하는 병종 숙련도가 있다면 올리거나,
     // 레거시처럼 현재 부대 타입의 숙련도를 올림.
     const currentArmType = 0; // 임시: 현재 부대 타입 정보가 props에 명확히 없으므로 0 사용
-    this.props.dex[currentArmType] =
-      (this.props.dex[currentArmType] || 0) + dexGain;
+    this.props.dex[currentArmType] = (this.props.dex[currentArmType] || 0) + dexGain;
 
     this.props[incStatKey] += 1;
     this.props.experience += expGain;
@@ -572,7 +554,7 @@ export class General {
     srcType: number,
     destType: number,
     decreaseCoeff: number,
-    convertCoeff: number,
+    convertCoeff: number
   ): { delta: Delta<IGeneral>; cutDex: number; addDex: number } {
     const srcDex = this.props.dex[srcType] || 0;
     const cutDex = Math.floor(srcDex * decreaseCoeff);
@@ -610,13 +592,8 @@ export class General {
    * 능력치 경험치 추가
    */
   public addStatExp(
-    stat:
-      | "leadershipExp"
-      | "strengthExp"
-      | "intelExp"
-      | "politicsExp"
-      | "charmExp",
-    amount: number,
+    stat: "leadershipExp" | "strengthExp" | "intelExp" | "politicsExp" | "charmExp",
+    amount: number
   ): Delta<IGeneral> {
     this.props[stat] += amount;
     return { [stat]: this.props[stat] };
@@ -642,17 +619,11 @@ export class General {
    * 부상 추가 (또는 차감)
    */
   public addInjury(amount: number, limit: number = 80): Delta<IGeneral> {
-    this.props.injury = Math.max(
-      Math.min(this.props.injury + amount, limit),
-      0,
-    );
+    this.props.injury = Math.max(Math.min(this.props.injury + amount, limit), 0);
     return { injury: this.props.injury };
   }
 
-  public updateLastTurn(
-    action: string,
-    args: Record<string, any>,
-  ): Delta<IGeneral> {
+  public updateLastTurn(action: string, args: Record<string, any>): Delta<IGeneral> {
     this.props.lastTurn = { action, args, time: new Date() };
     return { lastTurn: this.props.lastTurn };
   }

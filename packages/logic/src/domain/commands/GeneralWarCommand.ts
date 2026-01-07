@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -27,7 +27,7 @@ export class GeneralWarCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -55,8 +55,7 @@ export class GeneralWarCommand extends GeneralCommand {
     }
 
     // 매우 단순화된 전투 로직
-    const attackerPower =
-      iGeneral.leadership + iGeneral.strength + iGeneral.crew / 100;
+    const attackerPower = iGeneral.leadership + iGeneral.strength + iGeneral.crew / 100;
     const defenderPower = iDestCity.def + iDestCity.wall + iDestCity.pop / 1000;
 
     const attackerLoss = Math.floor(defenderPower / 10);

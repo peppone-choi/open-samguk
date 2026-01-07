@@ -45,7 +45,7 @@ import { GeneralGiftCommand } from "./commands/GeneralGiftCommand.js";
 import { GeneralNPCActiveCommand } from "./commands/GeneralNPCActiveCommand.js";
 import { GeneralRecruitAcceptCommand } from "./commands/GeneralRecruitAcceptCommand.js";
 import { GeneralRecuperateCommand } from "./commands/GeneralRecuperateCommand.js";
-import { GeneralSabotageCommand } from "./commands/GeneralSabotageCommand.js";
+import { GeneralDestructCommand } from "./commands/GeneralDestructCommand.js";
 import { GeneralSightseeingCommand } from "./commands/GeneralSightseeingCommand.js";
 import { GeneralSpyCommand } from "./commands/GeneralSpyCommand.js";
 import { GeneralWanderCommand } from "./commands/GeneralWanderCommand.js";
@@ -156,7 +156,7 @@ export class CommandFactory {
         return new GeneralRecuperateCommand();
       case "파괴":
       case "che_파괴":
-        return new GeneralSabotageCommand();
+        return new GeneralDestructCommand();
       case "견문":
       case "che_견문":
         return new GeneralSightseeingCommand();

@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -27,16 +27,11 @@ export class NationChangeCapitalCommand extends GeneralCommand {
   private getDistance(
     snapshot: WorldSnapshot,
     nationId: number,
-    destCityId: number,
+    destCityId: number
   ): number | undefined {
     const nation = snapshot.nations[nationId];
     if (!nation) return undefined;
-    return MapUtil.getDistanceWithNation(
-      nation.capitalCityId,
-      destCityId,
-      [nationId],
-      snapshot,
-    );
+    return MapUtil.getDistanceWithNation(nation.capitalCityId, destCityId, [nationId], snapshot);
   }
 
   private getCost(develcost: number, distance: number): number {
@@ -47,11 +42,10 @@ export class NationChangeCapitalCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iActor = snapshot.generals[actorId];
-    if (!iActor)
-      return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
+    if (!iActor) return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
 
     const iNation = snapshot.nations[iActor.nationId];
     if (!iNation)
@@ -78,9 +72,7 @@ export class NationChangeCapitalCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              "천도 실패: 자국 영토가 아닌 곳으로는 천도할 수 없습니다.",
-            ],
+            [actorId]: ["천도 실패: 자국 영토가 아닌 곳으로는 천도할 수 없습니다."],
           },
         },
       };
@@ -137,9 +129,7 @@ export class NationChangeCapitalCommand extends GeneralCommand {
         },
         logs: {
           general: {
-            [actorId]: [
-              `천도를 준비 중입니다... (${currentTerm + 1}/${preReqTurn + 1})`,
-            ],
+            [actorId]: [`천도를 준비 중입니다... (${currentTerm + 1}/${preReqTurn + 1})`],
           },
         },
       };

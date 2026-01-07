@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 
@@ -18,7 +18,7 @@ export class GeneralNPCActiveCommand extends GeneralCommand {
     _rng: RandUtil,
     _snapshot: WorldSnapshot,
     actorId: number,
-    _args: Record<string, unknown>,
+    _args: Record<string, unknown>
   ): WorldDelta {
     // TODO: NPC 능동 로직 구현
     return {

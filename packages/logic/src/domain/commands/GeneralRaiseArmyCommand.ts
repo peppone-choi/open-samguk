@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -22,7 +22,7 @@ export class GeneralRaiseArmyCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -36,11 +36,7 @@ export class GeneralRaiseArmyCommand extends GeneralCommand {
     }
 
     const { nationName, color } = args;
-    if (
-      !nationName ||
-      typeof nationName !== "string" ||
-      nationName.length < 1
-    ) {
+    if (!nationName || typeof nationName !== "string" || nationName.length < 1) {
       return {
         logs: {
           general: { [actorId]: ["거병 실패: 군호가 올바르지 않습니다."] },
@@ -74,9 +70,7 @@ export class GeneralRaiseArmyCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `거병 실패: 금이 부족합니다. (필요: ${GameConst.foundNationCost})`,
-            ],
+            [actorId]: [`거병 실패: 금이 부족합니다. (필요: ${GameConst.foundNationCost})`],
           },
         },
       };
@@ -128,9 +122,7 @@ export class GeneralRaiseArmyCommand extends GeneralCommand {
         general: {
           [actorId]: [`${nationName}군을 거병하였습니다!`],
         },
-        global: [
-          `${iGeneral.name} 장수가 ${iCity.name}에서 ${nationName}군을 거병하였습니다.`,
-        ],
+        global: [`${iGeneral.name} 장수가 ${iCity.name}에서 ${nationName}군을 거병하였습니다.`],
       },
     };
   }

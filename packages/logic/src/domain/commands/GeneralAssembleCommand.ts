@@ -1,11 +1,6 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
-import {
-  WorldSnapshot,
-  WorldDelta,
-  General as IGeneral,
-  Delta,
-} from "../entities.js";
+import { WorldSnapshot, WorldDelta, General as IGeneral, Delta } from "../entities.js";
 import { General } from "../models/General.js";
 
 /**
@@ -19,7 +14,7 @@ export class GeneralAssembleCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
@@ -37,10 +32,7 @@ export class GeneralAssembleCommand extends GeneralCommand {
 
     const troopMembers = Object.values(snapshot.generals).filter(
       (g) =>
-        g.nationId === nationId &&
-        g.cityId !== cityId &&
-        g.troopId === troopId &&
-        g.id !== actorId,
+        g.nationId === nationId && g.cityId !== cityId && g.troopId === troopId && g.id !== actorId
     );
 
     const gDelta: Delta<IGeneral> = {
@@ -68,9 +60,7 @@ export class GeneralAssembleCommand extends GeneralCommand {
 
       if (!delta.logs) delta.logs = {};
       if (!delta.logs.general) delta.logs.general = {};
-      delta.logs.general[member.id] = [
-        `부대장의 소집에 의해 현재 도시로 집합되었습니다.`,
-      ];
+      delta.logs.general[member.id] = [`부대장의 소집에 의해 현재 도시로 집합되었습니다.`];
     }
 
     return delta;

@@ -14,12 +14,7 @@ export class CommerceSpecial extends BaseSpecial {
   name = "상재";
   info = "[내정] 상업 투자 : 기본 보정 +10%, 성공률 +10%p, 비용 -20%";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    _aux?: DomesticAux,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, _aux?: DomesticAux): number {
     if (turnType === "상업") {
       if (varType === "score") return value * 1.1;
       if (varType === "cost") return value * 0.8;

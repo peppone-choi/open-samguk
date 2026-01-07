@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralBorderReturnCommand } from "./GeneralBorderReturnCommand.js";
 
@@ -84,6 +84,7 @@ describe("GeneralBorderReturnCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 1,
       },
       2: {
@@ -106,6 +107,7 @@ describe("GeneralBorderReturnCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 2,
       },
     },
@@ -214,9 +216,7 @@ describe("GeneralBorderReturnCommand", () => {
     const delta = cmd.run(rand, snapshot, 1, {});
 
     expect(delta.generals).toBeUndefined();
-    expect(delta.logs?.general?.[1]?.[0]).toContain(
-      "3칸 이내에 아국 도시가 없습니다",
-    );
+    expect(delta.logs?.general?.[1]?.[0]).toContain("3칸 이내에 아국 도시가 없습니다");
   });
 
   it("보급 안되는 도시는 제외해야 함", () => {
@@ -225,8 +225,6 @@ describe("GeneralBorderReturnCommand", () => {
     snapshot.cities[1].supply = 0; // 보급 단절
     const delta = cmd.run(rand, snapshot, 1, {});
 
-    expect(delta.logs?.general?.[1]?.[0]).toContain(
-      "3칸 이내에 아국 도시가 없습니다",
-    );
+    expect(delta.logs?.general?.[1]?.[0]).toContain("3칸 이내에 아국 도시가 없습니다");
   });
 });

@@ -65,11 +65,7 @@ export class EventRegistry {
    * @param snapshot 현재 월드 상태
    * @param context 추가 컨텍스트 (예: 점령된 도시 ID 등)
    */
-  public runEvents(
-    target: EventTarget,
-    snapshot: WorldSnapshot,
-    context?: any,
-  ): WorldDelta {
+  public runEvents(target: EventTarget, snapshot: WorldSnapshot, context?: any): WorldDelta {
     const events = this.getEvents(target);
     const combinedDelta: WorldDelta = {};
 

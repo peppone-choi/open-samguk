@@ -4,13 +4,13 @@
 
 ## 세션 배정
 
-| 세션 | 파일 | 구현 항목 | 예상 시간 |
-|------|------|----------|----------|
-| 1 | `web-session-1-war-triggers.md` | 전투 트리거 36개 | 2-3시간 |
-| 2 | `web-session-2-specials.md` | 특기 30개 | 2-3시간 |
-| 3 | `web-session-3-nation-commands.md` | 국가 커맨드 20개 | 2-3시간 |
-| 4 | `web-session-4-nation-types.md` | 국가 성향 15개 + 제약 30개 | 2-3시간 |
-| 5 | `web-session-5-items-events.md` | 아이템 50개 + 이벤트 15개 | 2-3시간 |
+| 세션 | 파일                               | 구현 항목                  | 예상 시간 |
+| ---- | ---------------------------------- | -------------------------- | --------- |
+| 1    | `web-session-1-war-triggers.md`    | 전투 트리거 36개           | 2-3시간   |
+| 2    | `web-session-2-specials.md`        | 특기 30개                  | 2-3시간   |
+| 3    | `web-session-3-nation-commands.md` | 국가 커맨드 20개           | 2-3시간   |
+| 4    | `web-session-4-nation-types.md`    | 국가 성향 15개 + 제약 30개 | 2-3시간   |
+| 5    | `web-session-5-items-events.md`    | 아이템 50개 + 이벤트 15개  | 2-3시간   |
 
 ## 시작 방법
 
@@ -46,28 +46,33 @@ cat scripts/prompts/web-session-5-items-events.md
 해당 세션에서 구현할 레거시 PHP 파일들을 첨부:
 
 **세션 1 (전투 트리거):**
+
 ```
 legacy/hwe/sammo/WarUnitTrigger/*.php
 ```
 
 **세션 2 (특기):**
+
 ```
 legacy/hwe/sammo/ActionSpecialWar/*.php
 legacy/hwe/sammo/ActionSpecialDomestic/*.php
 ```
 
 **세션 3 (국가 커맨드):**
+
 ```
 legacy/hwe/sammo/Command/Nation/*.php
 ```
 
 **세션 4 (국가 성향 + 제약):**
+
 ```
 legacy/hwe/sammo/ActionNationType/*.php
 legacy/hwe/sammo/Constraint/*.php
 ```
 
 **세션 5 (아이템 + 이벤트):**
+
 ```
 legacy/hwe/sammo/ActionItem/*.php (선택적으로)
 legacy/hwe/sammo/Event/Action/*.php
@@ -76,6 +81,7 @@ legacy/hwe/sammo/Event/Action/*.php
 ## 세션별 시작 프롬프트
 
 ### 세션 1
+
 ```
 삼국지 모의전투 게임의 전투 트리거 시스템을 TypeScript로 포팅합니다.
 
@@ -90,6 +96,7 @@ Phase 1(필살/회피)부터 시작합니다.
 ```
 
 ### 세션 2
+
 ```
 삼국지 모의전투 게임의 특기 시스템을 TypeScript로 포팅합니다.
 
@@ -105,6 +112,7 @@ Phase 1(필살/회피)부터 시작합니다.
 ```
 
 ### 세션 3
+
 ```
 삼국지 모의전투 게임의 국가 커맨드를 TypeScript로 포팅합니다.
 
@@ -121,6 +129,7 @@ Phase 1(필살/회피)부터 시작합니다.
 ```
 
 ### 세션 4
+
 ```
 삼국지 모의전투 게임의 국가 성향과 제약 조건을 TypeScript로 포팅합니다.
 
@@ -137,6 +146,7 @@ Phase 1(필살/회피)부터 시작합니다.
 ```
 
 ### 세션 5
+
 ```
 삼국지 모의전투 게임의 아이템과 이벤트 시스템을 TypeScript로 포팅합니다.
 
@@ -175,13 +185,13 @@ git commit -m "feat(logic): implement specials system (30 files)"
 
 ## 예상 완료 항목
 
-| 세션 | 완료 시 구현된 항목 |
-|------|-------------------|
-| 1 | 전투 트리거 36개 |
-| 2 | 전투 특기 20개 + 내정 특기 9개 |
-| 3 | 국가 커맨드 20개 추가 (총 38개) |
-| 4 | 국가 성향 15개 + 제약 조건 30개 |
-| 5 | 아이템 50개 + 이벤트 15개 |
+| 세션 | 완료 시 구현된 항목             |
+| ---- | ------------------------------- |
+| 1    | 전투 트리거 36개                |
+| 2    | 전투 특기 20개 + 내정 특기 9개  |
+| 3    | 국가 커맨드 20개 추가 (총 38개) |
+| 4    | 국가 성향 15개 + 제약 조건 30개 |
+| 5    | 아이템 50개 + 이벤트 15개       |
 
 **총: ~195개 항목 구현**
 

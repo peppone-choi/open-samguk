@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -30,20 +30,17 @@ export class NationReduceCapitalCommand extends GeneralCommand {
 
   private getCost(snapshot: WorldSnapshot): number {
     const develcost = snapshot.env.develcost ?? 100;
-    return (
-      develcost * this.EXPAND_CITY_COST_COEF + this.EXPAND_CITY_DEFAULT_COST / 2
-    );
+    return develcost * this.EXPAND_CITY_COST_COEF + this.EXPAND_CITY_DEFAULT_COST / 2;
   }
 
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iActor = snapshot.generals[actorId];
-    if (!iActor)
-      return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
+    if (!iActor) return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
 
     const iNation = snapshot.nations[iActor.nationId];
     if (!iNation)
@@ -86,8 +83,7 @@ export class NationReduceCapitalCommand extends GeneralCommand {
     // 준비 턴 확인 (5턴 필요)
     const preReqTurn = 5;
     const lastTurn = iActor.lastTurn || {};
-    const currentTerm =
-      lastTurn.action === this.actionName ? lastTurn.term || 0 : 0;
+    const currentTerm = lastTurn.action === this.actionName ? lastTurn.term || 0 : 0;
     const capset = iNation.meta?.capset || 0;
     const lastSeq = lastTurn.seq || 0;
 
@@ -125,9 +121,7 @@ export class NationReduceCapitalCommand extends GeneralCommand {
         },
         logs: {
           general: {
-            [actorId]: [
-              `수도를 감축 준비 중입니다... (${currentTerm + 1}/${preReqTurn + 1})`,
-            ],
+            [actorId]: [`수도를 감축 준비 중입니다... (${currentTerm + 1}/${preReqTurn + 1})`],
           },
         },
       };
@@ -144,7 +138,7 @@ export class NationReduceCapitalCommand extends GeneralCommand {
           level: iCapital.level - 1,
           pop: Math.max(
             iCapital.pop - this.EXPAND_CITY_POP_INCREASE,
-            this.MIN_AVAILABLE_RECRUIT_POP,
+            this.MIN_AVAILABLE_RECRUIT_POP
           ),
           agri: Math.max(iCapital.agri - this.EXPAND_CITY_DEVEL_INCREASE, 0),
           comm: Math.max(iCapital.comm - this.EXPAND_CITY_DEVEL_INCREASE, 0),
@@ -185,9 +179,7 @@ export class NationReduceCapitalCommand extends GeneralCommand {
           [actorId]: [`【${iCapital.name}】${josaUl} 감축했습니다.`],
         },
         nation: {
-          [iNation.id]: [
-            `${iActor.name}${josaYi} 【${iCapital.name}】${josaUl} 감축`,
-          ],
+          [iNation.id]: [`${iActor.name}${josaYi} 【${iCapital.name}】${josaUl} 감축`],
         },
         global: [
           `${iActor.name}${josaYi} 【${iCapital.name}】${josaUl} 감축하였습니다.`,

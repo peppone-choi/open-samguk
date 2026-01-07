@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot, General, Nation, City } from "../entities.js";
 import { NationAdjustTaxCommand } from "./NationAdjustTaxCommand.js";
 
@@ -81,6 +81,7 @@ function createNation(overrides: Partial<Nation> = {}): Nation {
     surrenderLimit: 0,
     spy: {},
     meta: {},
+    aux: {},
     ...overrides,
   };
 }

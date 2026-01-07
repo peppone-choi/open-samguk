@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -25,7 +25,7 @@ export class GeneralWanderCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -38,8 +38,7 @@ export class GeneralWanderCommand extends GeneralCommand {
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
     const iNation = snapshot.nations[iGeneral.nationId];
-    if (!iNation)
-      throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
+    if (!iNation) throw new Error(`국가 ${iGeneral.nationId}를 찾을 수 없습니다.`);
 
     const generalName = iGeneral.name;
     const nationName = iNation.name;

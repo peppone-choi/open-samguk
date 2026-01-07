@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -21,10 +21,7 @@ export class NationAdjustTaxCommand extends GeneralCommand {
 
   constructor() {
     super();
-    this.minConditionConstraints = [
-      ConstraintHelper.BeLord(),
-      ConstraintHelper.NotBeNeutral(),
-    ];
+    this.minConditionConstraints = [ConstraintHelper.BeLord(), ConstraintHelper.NotBeNeutral()];
     this.fullConditionConstraints = [...this.minConditionConstraints];
   }
 
@@ -32,11 +29,10 @@ export class NationAdjustTaxCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iActor = snapshot.generals[actorId];
-    if (!iActor)
-      return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
+    if (!iActor) return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
 
     const iNation = snapshot.nations[iActor.nationId];
     if (!iNation)
@@ -68,10 +64,7 @@ export class NationAdjustTaxCommand extends GeneralCommand {
       };
     }
 
-    if (
-      rate < NationAdjustTaxCommand.MIN_RATE ||
-      rate > NationAdjustTaxCommand.MAX_RATE
-    ) {
+    if (rate < NationAdjustTaxCommand.MIN_RATE || rate > NationAdjustTaxCommand.MAX_RATE) {
       return {
         logs: {
           general: {
@@ -114,9 +107,7 @@ export class NationAdjustTaxCommand extends GeneralCommand {
           [actorId]: [`세율을 ${oldRate}%에서 ${rate}%${josaRo} 조정했습니다.`],
         },
         nation: {
-          [iNation.id]: [
-            `${iActor.name}${josaYi} 세율을 ${rate}%${josaRo} 조정`,
-          ],
+          [iNation.id]: [`${iActor.name}${josaYi} 세율을 ${rate}%${josaRo} 조정`],
         },
       },
     };

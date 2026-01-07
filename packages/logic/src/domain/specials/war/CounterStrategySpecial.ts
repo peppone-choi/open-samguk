@@ -22,12 +22,7 @@ export class CounterStrategySpecial extends BaseSpecial {
   info =
     "[전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 40% 확률로 되돌림, 반목 성공시 대미지 추가(+60% → +150%)";
 
-  onCalcStat(
-    _general: General,
-    statName: string,
-    value: any,
-    aux?: StatAux,
-  ): any {
+  onCalcStat(_general: General, statName: string, value: any, aux?: StatAux): any {
     if (
       statName === "warMagicSuccessDamage" &&
       typeof aux === "object" &&
@@ -40,12 +35,7 @@ export class CounterStrategySpecial extends BaseSpecial {
     return value;
   }
 
-  onCalcOpposeStat(
-    _general: General,
-    statName: string,
-    value: any,
-    _aux?: StatAux,
-  ): any {
+  onCalcOpposeStat(_general: General, statName: string, value: any, _aux?: StatAux): any {
     const debuff: Record<string, number> = {
       warMagicSuccessProb: 0.1,
     };

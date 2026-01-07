@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot, General, Nation, City } from "../entities.js";
 import { NationAcceptAllianceCommand } from "./NationAcceptAllianceCommand.js";
 
@@ -81,6 +81,7 @@ function createNation(overrides: Partial<Nation> = {}): Nation {
     surrenderLimit: 0,
     spy: {},
     meta: {},
+    aux: {},
     ...overrides,
   };
 }
@@ -219,9 +220,7 @@ describe("NationAcceptAllianceCommand", () => {
       month: 7,
     });
 
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "제의 장수가 국가 소속이 아닙니다",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("제의 장수가 국가 소속이 아닙니다");
   });
 
   it("제의 장수가 없으면 실패해야 함", () => {
@@ -233,9 +232,7 @@ describe("NationAcceptAllianceCommand", () => {
       month: 7,
     });
 
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "제의 장수를 찾을 수 없습니다",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("제의 장수를 찾을 수 없습니다");
   });
 
   it("대상 국가가 없으면 실패해야 함", () => {
@@ -247,8 +244,6 @@ describe("NationAcceptAllianceCommand", () => {
       month: 7,
     });
 
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "대상 국가를 찾을 수 없습니다",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("대상 국가를 찾을 수 없습니다");
   });
 });

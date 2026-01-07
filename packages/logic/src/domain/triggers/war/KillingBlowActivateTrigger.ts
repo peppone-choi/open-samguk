@@ -24,7 +24,7 @@ export class KillingBlowActivateTrigger implements PriorityWarUnitTrigger {
 
   constructor(
     public readonly unit: WarUnit,
-    criticalDamageMultiplier: number = 1.5,
+    criticalDamageMultiplier: number = 1.5
   ) {
     this.criticalDamageMultiplier = criticalDamageMultiplier;
   }
@@ -78,9 +78,7 @@ export class KillingBlowActivateTrigger implements PriorityWarUnitTrigger {
     return {
       delta: {
         logs: {
-          global: [
-            `${self.general.name}의 필살 발동! (공격력 ${this.criticalDamageMultiplier}배)`,
-          ],
+          global: [`${self.general.name}의 필살 발동! (공격력 ${this.criticalDamageMultiplier}배)`],
         },
       },
       continueExecution: true,

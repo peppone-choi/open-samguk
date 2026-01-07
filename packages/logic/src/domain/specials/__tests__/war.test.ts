@@ -1,10 +1,12 @@
 import { describe, it, expect } from "vitest";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { ChargeSpecial } from "../war/ChargeSpecial";
 import { MasterMindSpecial } from "../war/MasterMindSpecial";
 import { IllusionSpecial } from "../war/IllusionSpecial";
 import { ConcentrationSpecial } from "../war/ConcentrationSpecial";
 import { NoSpecialWar } from "../war/NoSpecialWar";
 import type { General } from "../../entities";
+import type { WarUnit } from "../types";
 
 const mockGeneral: General = {
   id: 1,
@@ -59,6 +61,31 @@ const mockGeneral: General = {
   penalty: {},
 };
 
+function createMockWarUnit(general: General): WarUnit {
+  const activatedSkills = new Set<string>();
+  return {
+    general,
+    crew: 1000,
+    crewType: 1,
+    train: 50,
+    atmos: 50,
+    dex: {},
+    battleLog: [],
+    rng: new RandUtil(new LiteHashDRBG("test-war-seed")),
+    isAttacker: true,
+    phase: 0,
+    warPowerMultiplier: 1,
+    activatedSkills,
+    getGeneral: () => general,
+    getOppose: () => undefined,
+    hasActivatedSkillOnLog: () => 0,
+    activateSkill: (skill: string) => activatedSkills.add(skill),
+    deactivateSkill: (skill: string) => activatedSkills.delete(skill),
+    hasActivatedSkill: (skill: string) => activatedSkills.has(skill),
+    multiplyWarPower: () => {},
+  };
+}
+
 describe("War Specials", () => {
   describe("ChargeSpecial (돌격)", () => {
     const special = new ChargeSpecial();
@@ -74,27 +101,12 @@ describe("War Specials", () => {
     });
 
     it("should not modify other stats", () => {
-      const result = special.onCalcStat(
-        mockGeneral,
-        "warMagicSuccessProb",
-        0.5,
-      );
+      const result = special.onCalcStat(mockGeneral, "warMagicSuccessProb", 0.5);
       expect(result).toBe(0.5);
     });
 
     it("should return [1.05, 1] for war power multiplier", () => {
-      const mockUnit = {
-        general: mockGeneral,
-        crew: 1000,
-        crewType: 1,
-        train: 50,
-        atmos: 50,
-        dex: {},
-        battleLog: [],
-        getGeneral: () => mockGeneral,
-        getOppose: () => undefined,
-        hasActivatedSkillOnLog: () => 0,
-      };
+      const mockUnit = createMockWarUnit(mockGeneral);
       const result = special.getWarPowerMultiplier(mockUnit);
       expect(result).toEqual([1.05, 1]);
     });
@@ -124,11 +136,7 @@ describe("War Specials", () => {
     });
 
     it("should add +0.2 to warMagicSuccessProb", () => {
-      const result = special.onCalcStat(
-        mockGeneral,
-        "warMagicSuccessProb",
-        0.4,
-      );
+      const result = special.onCalcStat(mockGeneral, "warMagicSuccessProb", 0.4);
       expect(result).toBeCloseTo(0.6);
     });
 
@@ -147,20 +155,12 @@ describe("War Specials", () => {
     });
 
     it("should add +0.1 to warMagicSuccessProb", () => {
-      const result = special.onCalcStat(
-        mockGeneral,
-        "warMagicSuccessProb",
-        0.5,
-      );
+      const result = special.onCalcStat(mockGeneral, "warMagicSuccessProb", 0.5);
       expect(result).toBeCloseTo(0.6);
     });
 
     it("should multiply warMagicSuccessDamage by 1.3", () => {
-      const result = special.onCalcStat(
-        mockGeneral,
-        "warMagicSuccessDamage",
-        100,
-      );
+      const result = special.onCalcStat(mockGeneral, "warMagicSuccessDamage", 100);
       expect(result).toBe(130);
     });
 
@@ -179,20 +179,12 @@ describe("War Specials", () => {
     });
 
     it("should multiply warMagicSuccessDamage by 1.5", () => {
-      const result = special.onCalcStat(
-        mockGeneral,
-        "warMagicSuccessDamage",
-        100,
-      );
+      const result = special.onCalcStat(mockGeneral, "warMagicSuccessDamage", 100);
       expect(result).toBe(150);
     });
 
     it("should not modify other stats", () => {
-      const result = special.onCalcStat(
-        mockGeneral,
-        "warMagicSuccessProb",
-        0.5,
-      );
+      const result = special.onCalcStat(mockGeneral, "warMagicSuccessProb", 0.5);
       expect(result).toBe(0.5);
     });
   });
@@ -207,24 +199,11 @@ describe("War Specials", () => {
 
     it("should not modify any values", () => {
       expect(special.onCalcStat(mockGeneral, "initWarPhase", 3)).toBe(3);
-      expect(special.onCalcStat(mockGeneral, "warMagicSuccessProb", 0.5)).toBe(
-        0.5,
-      );
+      expect(special.onCalcStat(mockGeneral, "warMagicSuccessProb", 0.5)).toBe(0.5);
     });
 
     it("should return [1, 1] for war power multiplier", () => {
-      const mockUnit = {
-        general: mockGeneral,
-        crew: 1000,
-        crewType: 1,
-        train: 50,
-        atmos: 50,
-        dex: {},
-        battleLog: [],
-        getGeneral: () => mockGeneral,
-        getOppose: () => undefined,
-        hasActivatedSkillOnLog: () => 0,
-      };
+      const mockUnit = createMockWarUnit(mockGeneral);
       const result = special.getWarPowerMultiplier(mockUnit);
       expect(result).toEqual([1, 1]);
     });

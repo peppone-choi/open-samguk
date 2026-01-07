@@ -1,10 +1,5 @@
 import { BaseSpecial } from "../BaseSpecial";
-import {
-  SpecialWeightType,
-  SpecialType,
-  type WarUnit,
-  type WarUnitTriggerCaller,
-} from "../types";
+import { SpecialWeightType, SpecialType, type WarUnit, type WarUnitTriggerCaller } from "../types";
 
 /**
  * Intimidation (위압) - War Special Ability

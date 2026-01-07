@@ -1,9 +1,4 @@
-import {
-  Trigger,
-  TriggerContext,
-  TriggerResult,
-  TriggerPriority,
-} from "../Trigger.js";
+import { Trigger, TriggerContext, TriggerResult, TriggerPriority } from "../Trigger.js";
 
 /**
  * 부상 경감 트리거

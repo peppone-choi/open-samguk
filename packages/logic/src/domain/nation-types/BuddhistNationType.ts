@@ -18,12 +18,7 @@ export class BuddhistNationType extends BaseNationType {
   readonly pros = "민심↑ 수성↑";
   readonly cons = "금수입↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Morale or Population bonuses
     if (turnType === "민심" || turnType === "인구") {
       if (varType === "score") return value * 1.1;

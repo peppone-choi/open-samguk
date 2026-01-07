@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -14,11 +14,7 @@ export class GeneralAbdicateCommand extends GeneralCommand {
   readonly actionName = "선양";
 
   // 군주 불가 페널티 키들
-  private static readonly PENALTY_KEYS = [
-    "NoChief",
-    "NoFoundNation",
-    "NoAmbassador",
-  ];
+  private static readonly PENALTY_KEYS = ["NoChief", "NoFoundNation", "NoAmbassador"];
 
   constructor() {
     super();
@@ -34,7 +30,7 @@ export class GeneralAbdicateCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, unknown>,
+    args: Record<string, unknown>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -119,9 +115,7 @@ export class GeneralAbdicateCommand extends GeneralCommand {
           [destGeneralId]: [`${generalName}에게서 군주의 자리를 물려받습니다.`],
         },
         nation: {
-          [iGeneral.nationId]: [
-            `${generalName}${josaYi} ${destGeneralName}에게 선양`,
-          ],
+          [iGeneral.nationId]: [`${generalName}${josaYi} ${destGeneralName}에게 선양`],
         },
         global: [
           `【선양】${generalName}${josaYi} ${nationName}의 군주 자리를 ${destGeneralName}에게 선양했습니다.`,

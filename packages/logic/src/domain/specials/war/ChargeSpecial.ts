@@ -24,12 +24,7 @@ export class ChargeSpecial extends BaseSpecial {
   info =
     "[전투] 공격 시 대등/유리한 병종에게는 퇴각 전까지 전투, 공격 시 페이즈 + 2, 공격 시 대미지 +5%";
 
-  onCalcStat(
-    _general: General,
-    statName: string,
-    value: unknown,
-    _aux?: StatAux,
-  ): unknown {
+  onCalcStat(_general: General, statName: string, value: unknown, _aux?: StatAux): unknown {
     if (statName === "initWarPhase") {
       return (value as number) + 2;
     }

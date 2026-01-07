@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralAbdicateCommand } from "./GeneralAbdicateCommand.js";
 
@@ -188,6 +188,7 @@ describe("GeneralAbdicateCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 1,
       },
       2: {
@@ -210,6 +211,7 @@ describe("GeneralAbdicateCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 3,
       },
     },
@@ -305,9 +307,7 @@ describe("GeneralAbdicateCommand", () => {
     const delta = cmd.run(rand, snapshot, 1, { destGeneralId: 2 });
 
     expect(delta.generals).toBeUndefined();
-    expect(delta.logs?.general?.[1]?.[0]).toContain(
-      "선양할 수 없는 장수입니다",
-    );
+    expect(delta.logs?.general?.[1]?.[0]).toContain("선양할 수 없는 장수입니다");
   });
 
   it("다른 국가 장수에게 선양할 수 없어야 함", () => {

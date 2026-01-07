@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 
@@ -13,7 +13,7 @@ export class GeneralRestCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     // 레거시와 동일하게 상태 변화는 없으나 로그는 엔진 레이어에서 처리할 예정이므로
     // 여기서는 빈 Delta를 반환합니다.

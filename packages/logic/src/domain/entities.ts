@@ -4,6 +4,7 @@ export interface General {
   ownerId: number; // member.id 매핑
   nationId: number;
   cityId: number;
+  npc: number; // 0: 유저, 1: 이벤트NPC, 2: 일반NPC, 3: 수뇌NPC, 4: 군주NPC...
   troopId: number;
   gold: number;
   rice: number;
@@ -29,6 +30,11 @@ export interface General {
   atmos: number;
   dex: Record<number, number>; // 병종 숙련도 (key: armType, value: score)
   age: number;
+  startAge: number;
+  belong: number; // 임관 기간 (호봉)
+  betray: number; // 배반 수치
+  dedLevel: number;
+  expLevel: number;
   bornYear: number;
   deadYear: number;
   special: string; // 내정 특기
@@ -71,6 +77,7 @@ export interface Nation {
   strategicCmdLimit: number;
   surrenderLimit: number;
   spy: Record<string, any>;
+  aux: Record<string, any>; // 국가 보조 데이터 (특수병종 연구 등)
   meta: Record<string, any>;
 }
 
@@ -96,6 +103,7 @@ export interface City {
   trust: number; // 민심
   gold: number;
   rice: number;
+  trade: number | null; // 시세
   region: number; // 지역 코드
   state: number; // 상태 (전쟁중 등)
   term: number; // 전쟁 기한

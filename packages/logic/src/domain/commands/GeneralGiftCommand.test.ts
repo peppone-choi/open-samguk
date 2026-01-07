@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralGiftCommand } from "./GeneralGiftCommand.js";
 
@@ -15,6 +15,7 @@ describe("GeneralGiftCommand", () => {
         name: "보내는장수",
         nationId: 1,
         cityId: 1,
+        troopId: 0,
         gold: 5000,
         rice: 5000,
         leadership: 50,
@@ -66,6 +67,7 @@ describe("GeneralGiftCommand", () => {
         name: "받는장수",
         nationId: 1,
         cityId: 1,
+        troopId: 0,
         gold: 100,
         rice: 100,
         leadership: 50,
@@ -134,6 +136,7 @@ describe("GeneralGiftCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 1,
       },
     },
@@ -169,6 +172,7 @@ describe("GeneralGiftCommand", () => {
     },
     diplomacy: {},
     troops: {},
+    messages: {},
     gameTime: { year: 184, month: 1 },
     env: {},
   };
@@ -183,12 +187,8 @@ describe("GeneralGiftCommand", () => {
 
     expect(delta.generals?.[1]?.gold).toBe(4000);
     expect(delta.generals?.[2]?.gold).toBe(1100);
-    expect(delta.logs?.general?.[1]?.[0]).toContain(
-      "받는장수에게 금 1,000을 증여했습니다.",
-    );
-    expect(delta.logs?.general?.[2]?.[0]).toContain(
-      "보내는장수에게서 금 1,000을 증여받았습니다.",
-    );
+    expect(delta.logs?.general?.[1]?.[0]).toContain("받는장수에게 금 1,000을 증여했습니다.");
+    expect(delta.logs?.general?.[2]?.[0]).toContain("보내는장수에게서 금 1,000을 증여받았습니다.");
   });
 
   it("최소 유지 비용(금 0, 쌀 500)을 제외하고 증여해야 함", () => {
@@ -203,8 +203,6 @@ describe("GeneralGiftCommand", () => {
 
     expect(delta.generals?.[1]?.rice).toBe(500); // 5000 - 4500
     expect(delta.generals?.[2]?.rice).toBe(4600); // 100 + 4500
-    expect(delta.logs?.general?.[1]?.[0]).toContain(
-      "받는장수에게 쌀 4,500을 증여했습니다.",
-    );
+    expect(delta.logs?.general?.[1]?.[0]).toContain("받는장수에게 쌀 4,500을 증여했습니다.");
   });
 });

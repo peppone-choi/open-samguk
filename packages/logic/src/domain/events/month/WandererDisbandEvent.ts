@@ -36,7 +36,7 @@ export class WandererDisbandEvent implements GameEvent {
     const dLogs = delta.logs as Required<NonNullable<WorldDelta["logs"]>>;
 
     const wandererNations = Object.values(snapshot.nations).filter(
-      (n) => n.level === 0 && n.id !== 0,
+      (n) => n.level === 0 && n.id !== 0
     );
     const wandererNationIds = new Set(wandererNations.map((n) => n.id));
 
@@ -59,9 +59,7 @@ export class WandererDisbandEvent implements GameEvent {
         const logsMap = dLogs.general;
 
         if (!logsMap[general.id]) logsMap[general.id] = [];
-        logsMap[general.id]!.push(
-          "초반 제한 기간 경과로 방랑군이 자동 해산되었습니다.",
-        );
+        logsMap[general.id]!.push("초반 제한 기간 경과로 방랑군이 자동 해산되었습니다.");
       }
     }
 
@@ -71,7 +69,7 @@ export class WandererDisbandEvent implements GameEvent {
     if (Object.keys(dGenerals).length > 0) {
       if (!dLogs.global) dLogs.global = [];
       dLogs.global.push(
-        `${wandererNations.map((n) => n.name).join(", ")} 방랑군이 해산되었습니다.`,
+        `${wandererNations.map((n) => n.name).join(", ")} 방랑군이 해산되었습니다.`
       );
     }
 

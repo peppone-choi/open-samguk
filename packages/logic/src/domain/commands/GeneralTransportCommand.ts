@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -23,7 +23,7 @@ export class GeneralTransportCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -41,9 +41,7 @@ export class GeneralTransportCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              "수송 실패: 대상 도시 또는 수송량이 올바르지 않습니다.",
-            ],
+            [actorId]: ["수송 실패: 대상 도시 또는 수송량이 올바르지 않습니다."],
           },
         },
       };
@@ -97,9 +95,7 @@ export class GeneralTransportCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [
-            `${iDestCity.name}으로 금 ${goldAmount}, 쌀 ${riceAmount}을 수송했습니다.`,
-          ],
+          [actorId]: [`${iDestCity.name}으로 금 ${goldAmount}, 쌀 ${riceAmount}을 수송했습니다.`],
         },
       },
     };

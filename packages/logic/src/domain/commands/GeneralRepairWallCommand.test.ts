@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
-import { WorldSnapshot } from "../entities.js";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
+import { createMockWorldSnapshot } from "../test-utils.js";
 import { GeneralRepairWallCommand } from "./GeneralRepairWallCommand.js";
 
 describe("GeneralRepairWallCommand (TDD)", () => {
@@ -8,7 +8,7 @@ describe("GeneralRepairWallCommand (TDD)", () => {
   const rng = new LiteHashDRBG(seed);
   const rand = new RandUtil(rng);
 
-  const mockSnapshot: WorldSnapshot = {
+  const mockSnapshot = createMockWorldSnapshot({
     generals: {
       1: {
         id: 1,
@@ -41,10 +41,8 @@ describe("GeneralRepairWallCommand (TDD)", () => {
         specAge2: 0,
         turnTime: new Date(),
         killTurn: 10,
-        meta: {},
       },
     },
-    nations: {},
     cities: {
       1: {
         id: 1,
@@ -57,11 +55,10 @@ describe("GeneralRepairWallCommand (TDD)", () => {
         def: 100,
         wall: 100,
         wallMax: 1000,
-        meta: {},
       },
     },
     gameTime: { year: 184, month: 1 },
-  };
+  });
 
   it("성벽 보수 시 도시의 성벽 수치가 증가하고 장수의 무력 경험치가 올라야 함", () => {
     const cmd = new GeneralRepairWallCommand();

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralDonateCommand } from "./GeneralDonateCommand.js";
 
@@ -15,6 +15,7 @@ describe("GeneralDonateCommand", () => {
         name: "장수1",
         nationId: 1,
         cityId: 1,
+        troopId: 0,
         gold: 5000,
         rice: 5000,
         leadership: 50,
@@ -83,6 +84,7 @@ describe("GeneralDonateCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 1,
       },
     },
@@ -118,6 +120,7 @@ describe("GeneralDonateCommand", () => {
     },
     diplomacy: {},
     troops: {},
+    messages: {},
     gameTime: { year: 184, month: 1 },
     env: {},
   };
@@ -131,15 +134,9 @@ describe("GeneralDonateCommand", () => {
 
     expect(delta.generals?.[1]?.gold).toBe(4000);
     expect(delta.nations?.[1]?.gold).toBe(11000);
-    expect(delta.generals?.[1]?.experience).toBe(
-      mockSnapshot.generals[1].experience + 70,
-    );
-    expect(delta.generals?.[1]?.dedication).toBe(
-      mockSnapshot.generals[1].dedication + 100,
-    );
-    expect(delta.generals?.[1]?.leadershipExp).toBe(
-      mockSnapshot.generals[1].leadershipExp + 1,
-    );
+    expect(delta.generals?.[1]?.experience).toBe(mockSnapshot.generals[1].experience + 70);
+    expect(delta.generals?.[1]?.dedication).toBe(mockSnapshot.generals[1].dedication + 100);
+    expect(delta.generals?.[1]?.leadershipExp).toBe(mockSnapshot.generals[1].leadershipExp + 1);
     expect(delta.logs?.general?.[1]?.[0]).toContain("금 1,000을 헌납했습니다.");
   });
 

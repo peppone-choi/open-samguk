@@ -27,7 +27,7 @@ export class SeedGenerator {
     snapshot: WorldSnapshot,
     actorId: number,
     actionName: string,
-    hiddenSeed: string = "default-hidden-seed",
+    hiddenSeed: string = "default-hidden-seed"
   ): string {
     return this.generate({
       hiddenSeed,

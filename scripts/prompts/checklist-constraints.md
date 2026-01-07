@@ -1,17 +1,21 @@
 # 제약 조건 시스템 구현 프롬프트
 
 ## 목표
+
 레거시 PHP 제약 조건 시스템(73개)을 TypeScript로 포팅
 
 ## 레거시 파일 위치
+
 `legacy/hwe/sammo/Constraint/`
 
 ## 현재 구현 상태
+
 일부 제약 조건이 `packages/logic/src/domain/constraints/`에 구현됨
 
 ## 체크리스트
 
 ### Phase 1: 외교/전쟁 제약 (6개)
+
 - [ ] AllowDiplomacyBetweenStatus.php → AllowDiplomacyBetweenStatus.ts
 - [ ] AllowDiplomacyStatus.php → AllowDiplomacyStatus.ts
 - [ ] AllowDiplomacyWithTerm.php → AllowDiplomacyWithTerm.ts
@@ -20,6 +24,7 @@
 - [ ] DisallowDiplomacyStatus.php → DisallowDiplomacyStatus.ts
 
 ### Phase 2: 장수 상태 제약 (12개)
+
 - [ ] BeChief.php → BeChief.ts (군주 여부)
 - [ ] BeLord.php → BeLord.ts (태수 여부)
 - [ ] BeNeutral.php → BeNeutral.ts (재야 여부)
@@ -34,6 +39,7 @@
 - [ ] WanderingNation.php → WanderingNation.ts
 
 ### Phase 3: 장수 자원 제약 (8개)
+
 - [ ] ReqGeneralGold.php → ReqGeneralGold.ts
 - [ ] ReqGeneralRice.php → ReqGeneralRice.ts
 - [ ] ReqGeneralCrew.php → ReqGeneralCrew.ts
@@ -44,6 +50,7 @@
 - [ ] NoPenalty.php → NoPenalty.ts
 
 ### Phase 4: 국가 자원 제약 (6개)
+
 - [ ] ReqNationGold.php → ReqNationGold.ts
 - [ ] ReqNationRice.php → ReqNationRice.ts
 - [ ] ReqNationValue.php → ReqNationValue.ts
@@ -52,6 +59,7 @@
 - [ ] AllowStrategicCommand.php → AllowStrategicCommand.ts
 
 ### Phase 5: 도시 제약 (18개)
+
 - [ ] NearCity.php → NearCity.ts
 - [ ] NearNation.php → NearNation.ts
 - [ ] NeutralCity.php → NeutralCity.ts
@@ -72,12 +80,14 @@
 - [ ] ReqCityValue.php → ReqCityValue.ts
 
 ### Phase 6: 경로/거리 제약 (4개)
+
 - [ ] HasRoute.php → HasRoute.ts
 - [ ] HasRouteWithEnemy.php → HasRouteWithEnemy.ts
 - [ ] RemainCityCapacity.php → RemainCityCapacity.ts
 - [ ] RemainCityTrust.php → RemainCityTrust.ts
 
 ### Phase 7: 대상 장수/국가 제약 (8개)
+
 - [ ] ExistsDestGeneral.php → ExistsDestGeneral.ts
 - [ ] ExistsDestNation.php → ExistsDestNation.ts
 - [ ] ExistsAllowJoinNation.php → ExistsAllowJoinNation.ts
@@ -88,6 +98,7 @@
 - [ ] ReqDestNationValue.php → ReqDestNationValue.ts
 
 ### Phase 8: 특수 제약 (11개)
+
 - [ ] AllowJoinAction.php → AllowJoinAction.ts
 - [ ] AllowJoinDestNation.php → AllowJoinDestNation.ts
 - [ ] AllowRebellion.php → AllowRebellion.ts
@@ -117,10 +128,10 @@ export abstract class BaseConstraint {
 
 ```typescript
 // packages/logic/src/domain/constraints/ReqGeneralGold.ts
-import { BaseConstraint, ConstraintResult } from './BaseConstraint.js';
+import { BaseConstraint, ConstraintResult } from "./BaseConstraint.js";
 
 export class ReqGeneralGold extends BaseConstraint {
-  readonly id = 'req_general_gold';
+  readonly id = "req_general_gold";
 
   constructor(private minGold: number) {
     super();
@@ -143,16 +154,12 @@ export class ReqGeneralGold extends BaseConstraint {
 ```typescript
 // 커맨드에서 제약 조건 사용
 class SomeCommand extends BaseCommand {
-  constraints = [
-    new ReqGeneralGold(100),
-    new ReqGeneralCrew(1000),
-    new NearCity(),
-    new AllowWar(),
-  ];
+  constraints = [new ReqGeneralGold(100), new ReqGeneralCrew(1000), new NearCity(), new AllowWar()];
 }
 ```
 
 ## 레거시 참조
+
 - `legacy/hwe/sammo/Constraint/`
 - `legacy/hwe/sammo/Constraint/Constraint.php` (기본 클래스)
 - `legacy/hwe/sammo/Constraint/ConstraintHelper.php` (헬퍼)

@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GameConst } from "../GameConst.js";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
@@ -29,7 +29,7 @@ export class GeneralGiftCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -57,18 +57,14 @@ export class GeneralGiftCommand extends GeneralCommand {
     const iDestGeneral = snapshot.generals[destGeneralId];
     const resKey = isGold ? "gold" : "rice";
     const resName = isGold ? "금" : "쌀";
-    const minRes = isGold
-      ? GameConst.generalMinimumGold
-      : GameConst.generalMinimumRice;
+    const minRes = isGold ? GameConst.generalMinimumGold : GameConst.generalMinimumRice;
 
     const actualAmount = Math.min(amount, iGeneral[resKey] - minRes);
     if (actualAmount < 100) {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `증여 실패: 여유 ${resName}이 부족합니다. (최소 100 이상 필요)`,
-            ],
+            [actorId]: [`증여 실패: 여유 ${resName}이 부족합니다. (최소 100 이상 필요)`],
           },
         },
       };

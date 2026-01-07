@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { WorldSnapshot, WorldDelta, General, City } from "./entities.js";
 
 /**
@@ -31,7 +31,7 @@ export class WarEngine {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     attackerId: number,
-    destCityId: number,
+    destCityId: number
   ): WarResult {
     const battleLog: string[] = [];
     const delta: WorldDelta = {

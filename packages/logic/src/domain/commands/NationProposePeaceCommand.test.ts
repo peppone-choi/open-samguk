@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot, General, Nation, City } from "../entities.js";
 import { NationProposePeaceCommand } from "./NationProposePeaceCommand.js";
 
@@ -81,6 +81,7 @@ function createNation(overrides: Partial<Nation> = {}): Nation {
     surrenderLimit: 0,
     spy: {},
     meta: {},
+    aux: {},
     ...overrides,
   };
 }
@@ -202,9 +203,7 @@ describe("NationProposePeaceCommand", () => {
     const cmd = new NationProposePeaceCommand();
     const delta = cmd.run(rand, snapshot, 1, { destNationId: 2 });
 
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "선포, 전쟁중인 상대국에게만",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("선포, 전쟁중인 상대국에게만");
     expect(delta.messages).toBeUndefined();
   });
 
@@ -226,17 +225,13 @@ describe("NationProposePeaceCommand", () => {
     const cmd = new NationProposePeaceCommand();
     const delta = cmd.run(rand, snapshot, 1, { destNationId: 2 });
 
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "선포, 전쟁중인 상대국에게만",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("선포, 전쟁중인 상대국에게만");
   });
 
   it("대상 국가가 없으면 실패해야 함", () => {
     const cmd = new NationProposePeaceCommand();
     const delta = cmd.run(rand, baseSnapshot, 1, { destNationId: 99 });
 
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "대상 국가를 찾을 수 없습니다",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("대상 국가를 찾을 수 없습니다");
   });
 });

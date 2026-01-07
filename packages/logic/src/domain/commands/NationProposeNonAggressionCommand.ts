@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta, Message } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -22,10 +22,7 @@ export class NationProposeNonAggressionCommand extends GeneralCommand {
 
   constructor() {
     super();
-    this.minConditionConstraints = [
-      ConstraintHelper.BeChief(),
-      ConstraintHelper.NotBeNeutral(),
-    ];
+    this.minConditionConstraints = [ConstraintHelper.BeChief(), ConstraintHelper.NotBeNeutral()];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
       ConstraintHelper.ExistsDestNation(),
@@ -37,11 +34,10 @@ export class NationProposeNonAggressionCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iActor = snapshot.generals[actorId];
-    if (!iActor)
-      return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
+    if (!iActor) return { logs: { global: [`장수 ${actorId}를 찾을 수 없습니다.`] } };
 
     const iNation = snapshot.nations[iActor.nationId];
     if (!iNation)
@@ -54,17 +50,11 @@ export class NationProposeNonAggressionCommand extends GeneralCommand {
       };
 
     const { destNationId, year, month } = args;
-    if (
-      destNationId === undefined ||
-      year === undefined ||
-      month === undefined
-    ) {
+    if (destNationId === undefined || year === undefined || month === undefined) {
       return {
         logs: {
           general: {
-            [actorId]: [
-              "불가침 제의 실패: 대상 국가 또는 기한이 지정되지 않았습니다.",
-            ],
+            [actorId]: ["불가침 제의 실패: 대상 국가 또는 기한이 지정되지 않았습니다."],
           },
         },
       };
@@ -85,17 +75,14 @@ export class NationProposeNonAggressionCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              "불가침 제의 실패: 자국에게는 불가침을 제의할 수 없습니다.",
-            ],
+            [actorId]: ["불가침 제의 실패: 자국에게는 불가침을 제의할 수 없습니다."],
           },
         },
       };
     }
 
     // 기한 검증 (최소 6개월)
-    const currentMonth =
-      snapshot.gameTime.year * 12 + snapshot.gameTime.month - 1;
+    const currentMonth = snapshot.gameTime.year * 12 + snapshot.gameTime.month - 1;
     const reqMonth = year * 12 + month - 1;
 
     if (reqMonth < currentMonth + 6) {
@@ -111,9 +98,7 @@ export class NationProposeNonAggressionCommand extends GeneralCommand {
     // 외교 관계 확인 - 교전/선포 상태면 불가
     const diplomacyKey = `${iNation.id}:${destNationId}`;
     const reverseDiplomacyKey = `${destNationId}:${iNation.id}`;
-    const iDiplomacy =
-      snapshot.diplomacy[diplomacyKey] ||
-      snapshot.diplomacy[reverseDiplomacyKey];
+    const iDiplomacy = snapshot.diplomacy[diplomacyKey] || snapshot.diplomacy[reverseDiplomacyKey];
 
     if (iDiplomacy) {
       if (iDiplomacy.state === "0") {
@@ -172,9 +157,7 @@ export class NationProposeNonAggressionCommand extends GeneralCommand {
       messages: [message],
       logs: {
         general: {
-          [actorId]: [
-            `【${iDestNation.name}】${josaRo} 불가침 제의 서신을 보냈습니다.`,
-          ],
+          [actorId]: [`【${iDestNation.name}】${josaRo} 불가침 제의 서신을 보냈습니다.`],
         },
       },
     };

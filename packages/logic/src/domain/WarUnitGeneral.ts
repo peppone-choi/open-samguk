@@ -1,10 +1,6 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import type { General } from "./entities.js";
-import type {
-  WarUnit,
-  WarUnitCity,
-  WarBattleLogEntry,
-} from "./specials/types.js";
+import type { WarUnit, WarUnitCity, WarBattleLogEntry } from "./specials/types.js";
 
 /**
  * WarUnit 인터페이스의 장수 구현체
@@ -25,7 +21,7 @@ export class WarUnitGeneral implements WarUnit {
   constructor(
     public readonly general: General,
     public readonly rng: RandUtil,
-    public readonly isAttacker: boolean,
+    public readonly isAttacker: boolean
   ) {
     this.crew = general.crew;
     this.crewType = general.crewType;
@@ -43,9 +39,8 @@ export class WarUnitGeneral implements WarUnit {
   }
 
   hasActivatedSkillOnLog(skillName: string): number {
-    return this.battleLog.filter(
-      (entry) => entry.skillName === skillName && entry.activated,
-    ).length;
+    return this.battleLog.filter((entry) => entry.skillName === skillName && entry.activated)
+      .length;
   }
 
   /**

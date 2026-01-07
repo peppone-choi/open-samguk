@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralLootCommand } from "./GeneralLootCommand.js";
 
@@ -80,6 +80,7 @@ describe("GeneralLootCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 1,
       },
       2: {
@@ -102,6 +103,7 @@ describe("GeneralLootCommand", () => {
         surrenderLimit: 72,
         spy: {},
         meta: {},
+        aux: {},
         chiefGeneralId: 2,
       },
     },
@@ -283,8 +285,6 @@ describe("GeneralLootCommand", () => {
     const snapshot = createMockSnapshot();
     const delta = cmd.run(rand, snapshot, 1, {});
 
-    expect(delta.logs?.general?.[1]?.[0]).toContain(
-      "대상 도시가 지정되지 않았습니다",
-    );
+    expect(delta.logs?.general?.[1]?.[0]).toContain("대상 도시가 지정되지 않았습니다");
   });
 });

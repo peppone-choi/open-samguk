@@ -20,12 +20,7 @@ export class VirtueNationType extends BaseNationType {
   readonly pros = "치안↑ 인구↑ 민심↑";
   readonly cons = "쌀수입↓ 수성↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Security bonuses
     if (turnType === "치안") {
       if (varType === "score") return value * 1.1;

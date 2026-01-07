@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -30,7 +30,7 @@ export class GeneralStrengthenDefenseCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     // 비용 계산 (develcost 활용)
     const develCost = snapshot.env["develcost"] || 20;
@@ -55,9 +55,7 @@ export class GeneralStrengthenDefenseCommand extends GeneralCommand {
       return {
         logs: {
           general: {
-            [actorId]: [
-              `수비 강화 실패: 자금이 부족합니다. (필요: ${reqGold})`,
-            ],
+            [actorId]: [`수비 강화 실패: 자금이 부족합니다. (필요: ${reqGold})`],
           },
         },
       };
@@ -70,9 +68,7 @@ export class GeneralStrengthenDefenseCommand extends GeneralCommand {
     const general = new General(iGeneral);
     const city = new City(iCity);
 
-    const { delta: generalDelta, defGain } = general.strengthenDefense(
-      iGeneral.strength,
-    );
+    const { delta: generalDelta, defGain } = general.strengthenDefense(iGeneral.strength);
     const cityDelta = city.increaseDef(defGain);
 
     // 금 소모 반영

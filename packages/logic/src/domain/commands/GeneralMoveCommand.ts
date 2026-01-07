@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -17,17 +17,14 @@ export class GeneralMoveCommand extends GeneralCommand {
     this.minConditionConstraints = [
       ConstraintHelper.ReqGeneralGold(100), // 임시 비용
     ];
-    this.fullConditionConstraints = [
-      ...this.minConditionConstraints,
-      ConstraintHelper.NearCity(1),
-    ];
+    this.fullConditionConstraints = [...this.minConditionConstraints, ConstraintHelper.NearCity(1)];
   }
 
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -44,8 +41,7 @@ export class GeneralMoveCommand extends GeneralCommand {
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
 
     const destCityId = args.destCityId;
-    const destCityName =
-      MapUtil.getCity(destCityId)?.name ?? `도시 ${destCityId}`;
+    const destCityName = MapUtil.getCity(destCityId)?.name ?? `도시 ${destCityId}`;
 
     // DDD: 도메인 모델 활용
     const general = new General(iGeneral);

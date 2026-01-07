@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -15,7 +15,7 @@ export class GeneralDevelopTrustCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const iGeneral = snapshot.generals[actorId];
     if (!iGeneral) throw new Error(`장수 ${actorId}를 찾을 수 없습니다.`);
@@ -59,13 +59,9 @@ export class GeneralDevelopTrustCommand extends GeneralCommand {
 
     const logs: string[] = [];
     if (pick === "success") {
-      logs.push(
-        `주민 선정에 성공하여 민심이 ${trustGain}만큼 크게 상승했습니다.`,
-      );
+      logs.push(`주민 선정에 성공하여 민심이 ${trustGain}만큼 크게 상승했습니다.`);
     } else if (pick === "fail") {
-      logs.push(
-        `주민 선정에 실패하여 민심이 ${trustGain}만큼 소폭 상승하는 데 그쳤습니다.`,
-      );
+      logs.push(`주민 선정에 실패하여 민심이 ${trustGain}만큼 소폭 상승하는 데 그쳤습니다.`);
     } else {
       logs.push(`주민 선정을 통해 민심이 ${trustGain}만큼 상승했습니다.`);
     }

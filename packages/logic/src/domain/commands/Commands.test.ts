@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
-import { WorldSnapshot } from "../entities.js";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
+import { createMockWorldSnapshot } from "../test-utils.js";
 import { GeneralRestCommand } from "./GeneralRestCommand.js";
 import { GeneralTrainingCommand } from "./GeneralTrainingCommand.js";
 import { GeneralDomesticSkillResetCommand } from "./GeneralSpecialResetCommand.js";
@@ -10,7 +10,7 @@ describe("General Commands Parity", () => {
   const rng = new LiteHashDRBG(seed);
   const rand = new RandUtil(rng);
 
-  const mockSnapshot: WorldSnapshot = {
+  const mockSnapshot = createMockWorldSnapshot({
     generals: {
       1: {
         id: 1,
@@ -43,7 +43,6 @@ describe("General Commands Parity", () => {
         specAge2: 0,
         turnTime: new Date(),
         killTurn: 10,
-        meta: {},
       },
     },
     nations: {
@@ -55,7 +54,6 @@ describe("General Commands Parity", () => {
         tech: 100,
         power: 1000,
         level: 1,
-        meta: {},
       },
     },
     cities: {
@@ -69,11 +67,10 @@ describe("General Commands Parity", () => {
         secu: 100,
         def: 100,
         wall: 100,
-        meta: {},
       },
     },
     gameTime: { year: 184, month: 1 },
-  };
+  });
 
   it("GeneralRestCommand는 상태를 변경하지 않아야 함", () => {
     const cmd = new GeneralRestCommand();

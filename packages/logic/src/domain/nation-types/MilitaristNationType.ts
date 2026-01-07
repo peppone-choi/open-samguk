@@ -19,12 +19,7 @@ export class MilitaristNationType extends BaseNationType {
   readonly pros = "기술↑ 수성↑";
   readonly cons = "인구↓ 민심↓";
 
-  onCalcDomestic(
-    turnType: string,
-    varType: string,
-    value: number,
-    aux?: unknown,
-  ): number {
+  onCalcDomestic(turnType: string, varType: string, value: number, aux?: unknown): number {
     // Technology bonuses
     if (turnType === "기술") {
       if (varType === "score") return value * 1.1;

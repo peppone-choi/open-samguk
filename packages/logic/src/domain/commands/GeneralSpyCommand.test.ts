@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot } from "../entities.js";
 import { GeneralSpyCommand } from "./GeneralSpyCommand.js";
 
@@ -56,12 +56,18 @@ describe("GeneralSpyCommand", () => {
         item: "",
         recentWarTime: null,
         makeLimit: 0,
+        troopId: 0,
+        dex: {},
+        defenceTrain: 80,
+        tournamentState: 0,
+        lastTurn: {},
       },
     },
     nations: {
       1: {
         id: 1,
         name: "유비군",
+        chiefGeneralId: 1,
         level: 1,
         color: "#FFF",
         capitalCityId: 1,
@@ -75,6 +81,7 @@ describe("GeneralSpyCommand", () => {
         gennum: 1,
         spy: {},
         meta: {},
+        aux: {},
         warState: 0,
         strategicCmdLimit: 0,
         surrenderLimit: 0,
@@ -83,6 +90,7 @@ describe("GeneralSpyCommand", () => {
       2: {
         id: 2,
         name: "조조군",
+        chiefGeneralId: 2,
         level: 1,
         color: "#F00",
         capitalCityId: 2,
@@ -96,6 +104,7 @@ describe("GeneralSpyCommand", () => {
         gennum: 1,
         spy: {},
         meta: {},
+        aux: {},
         warState: 0,
         strategicCmdLimit: 0,
         surrenderLimit: 0,
@@ -162,6 +171,7 @@ describe("GeneralSpyCommand", () => {
     },
     diplomacy: {},
     troops: {},
+    messages: {},
     gameTime: { year: 184, month: 1 },
     env: { develcost: 100 },
   };
@@ -170,7 +180,7 @@ describe("GeneralSpyCommand", () => {
     const cmd = new GeneralSpyCommand();
     const delta = cmd.run(rand, mockSnapshot, 1, { destCityId: 2 });
 
-    expect(delta.logs?.general?.[1][0]).toContain("첩보를 수행하였습니다");
+    expect(delta.logs?.general?.[1][0]).toContain("정보를");
     expect(delta.generals?.[1]?.gold).toBeLessThan(1000);
   });
 
@@ -178,6 +188,6 @@ describe("GeneralSpyCommand", () => {
     const cmd = new GeneralSpyCommand();
     const delta = cmd.run(rand, mockSnapshot, 1, { destCityId: 1 });
 
-    expect(delta.logs?.general?.[1][0]).toContain("실행 불가: 아국입니다");
+    expect(delta.logs?.general?.[1][0]).toContain("첩보 실패: 아국입니다");
   });
 });

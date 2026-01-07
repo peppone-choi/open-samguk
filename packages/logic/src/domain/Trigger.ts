@@ -1,5 +1,5 @@
 import { WorldSnapshot, WorldDelta } from "../domain/entities.js";
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 
 /**
  * 트리거 우선순위 상수
@@ -15,8 +15,7 @@ export const TriggerPriority = {
   FINAL: 50000,
 } as const;
 
-export type TriggerPriorityType =
-  (typeof TriggerPriority)[keyof typeof TriggerPriority];
+export type TriggerPriorityType = (typeof TriggerPriority)[keyof typeof TriggerPriority];
 
 /**
  * 트리거 실행 결과

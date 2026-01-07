@@ -25,12 +25,7 @@ export class CriticalSpecial extends BaseSpecial {
   name = "필살";
   info = "[전투] 필살 확률 +30%p, 필살 발동시 대상 회피 불가, 필살 계수 향상";
 
-  onCalcStat(
-    _general: General,
-    statName: string,
-    value: any,
-    aux?: StatAux,
-  ): any {
+  onCalcStat(_general: General, statName: string, value: any, aux?: StatAux): any {
     if (statName === "warCriticalRatio") {
       return value + 0.3;
     }

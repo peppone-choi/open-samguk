@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
@@ -34,8 +34,7 @@ export class GeneralSpyCommand extends GeneralCommand {
             kind: "destCity",
             id: ctx.args.destCityId,
           });
-          if (!general || !destCity)
-            return { kind: "deny", reason: "정보를 불러올 수 없습니다." };
+          if (!general || !destCity) return { kind: "deny", reason: "정보를 불러올 수 없습니다." };
           if (general.nationId === destCity.nationId) {
             return { kind: "deny", reason: "아국입니다." };
           }
@@ -49,7 +48,7 @@ export class GeneralSpyCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     // 비용 계산 (develcost * 3)
     const develcost = snapshot.env.develcost ?? 100;
@@ -87,7 +86,7 @@ export class GeneralSpyCommand extends GeneralCommand {
 
     // 대상 도시 장수 및 병력 정보 수집
     const cityGenerals = Object.values(snapshot.generals).filter(
-      (g) => g.cityId === destCityId && g.nationId === destCity.nationId,
+      (g) => g.cityId === destCityId && g.nationId === destCity.nationId
     );
     const totalCrew = cityGenerals.reduce((sum, g) => sum + g.crew, 0);
     const totalGenCnt = cityGenerals.length;
@@ -100,9 +99,7 @@ export class GeneralSpyCommand extends GeneralCommand {
     const globalLogs: string[] = [];
 
     const josaUl = JosaUtil.pick(destCity.name, "을");
-    globalLogs.push(
-      `누군가가 【${destCity.name}】${josaUl} 살피는 것 같습니다.`,
-    );
+    globalLogs.push(`누군가가 【${destCity.name}】${josaUl} 살피는 것 같습니다.`);
 
     if (dist <= 1) {
       generalLogs.push(`【${destCity.name}】의 정보를 많이 얻었습니다.`);
@@ -113,7 +110,7 @@ export class GeneralSpyCommand extends GeneralCommand {
       const defText = destCity.def.toLocaleString();
       const wallText = destCity.wall.toLocaleString();
       generalLogs.push(
-        `【첩보】농업:${agriText}, 상업:${commText}, 치안:${secuText}, 수비:${defText}, 성벽:${wallText}`,
+        `【첩보】농업:${agriText}, 상업:${commText}, 치안:${secuText}, 수비:${defText}, 성벽:${wallText}`
       );
 
       // 병종 정보 (단순화)
@@ -147,7 +144,7 @@ export class GeneralSpyCommand extends GeneralCommand {
       const defText = destCity.def.toLocaleString();
       const wallText = destCity.wall.toLocaleString();
       generalLogs.push(
-        `【첩보】농업:${agriText}, 상업:${commText}, 치안:${secuText}, 수비:${defText}, 성벽:${wallText}`,
+        `【첩보】농업:${agriText}, 상업:${commText}, 치안:${secuText}, 수비:${defText}, 성벽:${wallText}`
       );
     } else {
       generalLogs.push(`【${destCity.name}】의 소문만 들을 수 있었습니다.`);

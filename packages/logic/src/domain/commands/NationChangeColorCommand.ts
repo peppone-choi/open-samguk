@@ -1,4 +1,4 @@
-import { RandUtil, JosaUtil } from "@sammo-ts/common";
+import { RandUtil, JosaUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
@@ -18,12 +18,7 @@ export class NationChangeColorCommand extends GeneralCommand {
       ConstraintHelper.OccupiedCity(),
       ConstraintHelper.SuppliedCity(),
       ConstraintHelper.BeLord(),
-      ConstraintHelper.ReqNationMeta(
-        "can_국기변경",
-        0,
-        "gt",
-        "더이상 변경이 불가능합니다.",
-      ),
+      ConstraintHelper.ReqNationMeta("can_국기변경", 0, "gt", "더이상 변경이 불가능합니다."),
     ];
     this.fullConditionConstraints = [...this.minConditionConstraints];
   }
@@ -32,7 +27,7 @@ export class NationChangeColorCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -71,9 +66,7 @@ export class NationChangeColorCommand extends GeneralCommand {
     if (!iActor) {
       return {
         logs: {
-          global: [
-            `장수 ${actorId}를 찾을 수 없어 국기변경을 실행할 수 없습니다.`,
-          ],
+          global: [`장수 ${actorId}를 찾을 수 없어 국기변경을 실행할 수 없습니다.`],
         },
       };
     }
@@ -92,8 +85,7 @@ export class NationChangeColorCommand extends GeneralCommand {
     const josaYi = JosaUtil.pick(iActor.name, "이");
     const josaYiNation = JosaUtil.pick(iNation.name, "이");
 
-    const colorSpan = (text: string) =>
-      `<span style='color:${newColor};'><b>${text}</b></span>`;
+    const colorSpan = (text: string) => `<span style='color:${newColor};'><b>${text}</b></span>`;
 
     return {
       nations: {
@@ -116,9 +108,7 @@ export class NationChangeColorCommand extends GeneralCommand {
           [actorId]: [`${colorSpan("국기")}를 변경하였습니다.`],
         },
         nation: {
-          [iNation.id]: [
-            `${iActor.name}${josaYi} ${colorSpan("국기")}를 변경하였습니다.`,
-          ],
+          [iNation.id]: [`${iActor.name}${josaYi} ${colorSpan("국기")}를 변경하였습니다.`],
         },
         global: [
           `${iActor.name}${josaYi} ${colorSpan("국기")}를 변경하였습니다.`,

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { LiteHashDRBG, RandUtil } from "@sammo-ts/common";
+import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import { WorldSnapshot, General, Nation, City } from "../entities.js";
 import { NationProposeAllianceCommand } from "./NationProposeAllianceCommand.js";
 
@@ -81,6 +81,7 @@ function createNation(overrides: Partial<Nation> = {}): Nation {
     surrenderLimit: 0,
     spy: {},
     meta: {},
+    aux: {},
     ...overrides,
   };
 }
@@ -248,8 +249,6 @@ describe("NationProposeAllianceCommand", () => {
       month: 7,
     });
 
-    expect(delta.logs?.general?.[1][0]).toContain(
-      "대상 국가를 찾을 수 없습니다",
-    );
+    expect(delta.logs?.general?.[1][0]).toContain("대상 국가를 찾을 수 없습니다");
   });
 });

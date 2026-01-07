@@ -8,10 +8,7 @@ export class TurnExecutionPipeline {
   /**
    * 지정된 시점(targetTime)까지 턴을 실행해야 하는 장수 목록을 추출하고 정렬함
    */
-  public findExecutableGenerals(
-    snapshot: WorldSnapshot,
-    targetTime: Date,
-  ): number[] {
+  public findExecutableGenerals(snapshot: WorldSnapshot, targetTime: Date): number[] {
     return Object.values(snapshot.generals)
       .filter((g) => g.turnTime <= targetTime)
       .sort((a, b) => a.turnTime.getTime() - b.turnTime.getTime())
@@ -22,10 +19,7 @@ export class TurnExecutionPipeline {
    * 월간 전환이 필요한지 확인
    * 모든 실행 가능한 장수의 처리가 완료되고, 다음 월로 넘어갈 시간이 되었을 때 true를 반환함
    */
-  public shouldAdvanceMonth(
-    snapshot: WorldSnapshot,
-    targetTime: Date,
-  ): boolean {
+  public shouldAdvanceMonth(snapshot: WorldSnapshot, targetTime: Date): boolean {
     // 실행 가능한 장수가 남아있다면 아직 월을 넘기면 안 됨
     const executableIds = this.findExecutableGenerals(snapshot, targetTime);
     if (executableIds.length > 0) {

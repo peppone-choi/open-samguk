@@ -1,4 +1,4 @@
-import { RandUtil } from "@sammo-ts/common";
+import { RandUtil } from "@sammo/common";
 import { GameConst } from "../GameConst.js";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
@@ -25,7 +25,7 @@ export class GeneralDonateCommand extends GeneralCommand {
     rng: RandUtil,
     snapshot: WorldSnapshot,
     actorId: number,
-    args: Record<string, any>,
+    args: Record<string, any>
   ): WorldDelta {
     const check = this.checkConstraints(rng, snapshot, actorId, args, "full");
     if (check.kind === "deny") {
@@ -101,9 +101,7 @@ export class GeneralDonateCommand extends GeneralCommand {
       },
       logs: {
         general: {
-          [actorId]: [
-            `${resName} ${actualAmount.toLocaleString()}을 헌납했습니다.`,
-          ],
+          [actorId]: [`${resName} ${actualAmount.toLocaleString()}을 헌납했습니다.`],
         },
       },
     };

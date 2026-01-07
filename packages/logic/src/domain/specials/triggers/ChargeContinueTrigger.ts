@@ -1,9 +1,4 @@
-import type {
-  WarUnit,
-  WarUnitCity,
-  WarUnitTrigger,
-  WarContext,
-} from "../types";
+import type { WarUnit, WarUnitCity, WarUnitTrigger, WarContext } from "../types";
 
 /**
  * Charge Continue Trigger (돌격지속)

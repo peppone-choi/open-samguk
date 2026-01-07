@@ -29,6 +29,23 @@ import { DifferentDestNationConstraint } from "./constraints/DifferentDestNation
 import { NearNationConstraint } from "./constraints/NearNationConstraint.js";
 import { DisallowDiplomacyBetweenStatusConstraint } from "./constraints/DisallowDiplomacyBetweenStatusConstraint.js";
 import { AllowDiplomacyBetweenStatusConstraint } from "./constraints/AllowDiplomacyBetweenStatusConstraint.js";
+import { AllowDiplomacyStatusConstraint } from "./constraints/AllowDiplomacyStatusConstraint.js";
+import { DisallowDiplomacyStatusConstraint } from "./constraints/DisallowDiplomacyStatusConstraint.js";
+import { AllowDiplomacyWithTermConstraint } from "./constraints/AllowDiplomacyWithTermConstraint.js";
+import { AllowJoinDestNationConstraint } from "./constraints/AllowJoinDestNationConstraint.js";
+import { BattleGroundCityConstraint } from "./constraints/BattleGroundCityConstraint.js";
+import { AllowRebellionConstraint } from "./constraints/AllowRebellionConstraint.js";
+import { CheckNationNameDuplicateConstraint } from "./constraints/CheckNationNameDuplicateConstraint.js";
+import { ExistsAllowJoinNationConstraint } from "./constraints/ExistsAllowJoinNationConstraint.js";
+import { HasRouteConstraint } from "./constraints/HasRouteConstraint.js";
+import { HasRouteWithEnemyConstraint } from "./constraints/HasRouteWithEnemyConstraint.js";
+import { ReqGeneralCrewMarginConstraint } from "./constraints/ReqGeneralCrewMarginConstraint.js";
+import { ReqTroopMembersConstraint } from "./constraints/ReqTroopMembersConstraint.js";
+import { AllowStrategicCommandConstraint } from "./constraints/AllowStrategicCommandConstraint.js";
+import { AvailableStrategicCommandConstraint } from "./constraints/AvailableStrategicCommandConstraint.js";
+import { AdhocCallbackConstraint } from "./constraints/AdhocCallbackConstraint.js";
+import { AvailableRecruitCrewTypeConstraint } from "./constraints/AvailableRecruitCrewTypeConstraint.js";
+import { AvailableNationCommandConstraint } from "./constraints/AvailableNationCommandConstraint.js";
 import { ReqEnvValueConstraint } from "./constraints/ReqEnvValueConstraint.js";
 
 /**
@@ -226,8 +243,7 @@ export class ConstraintHelper {
       ],
       test: (ctx, view) => {
         const destCityId = ctx.args.destCityId;
-        if (!destCityId)
-          return { kind: "deny", reason: "목적지 도시가 지정되지 않았습니다." };
+        if (!destCityId) return { kind: "deny", reason: "목적지 도시가 지정되지 않았습니다." };
         if (ctx.cityId === destCityId)
           return {
             kind: "deny",
@@ -340,8 +356,7 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
         const general = view.get({ kind: "general", id: ctx.actorId });
-        if (!general)
-          return { kind: "deny", reason: "장수를 찾을 수 없습니다." };
+        if (!general) return { kind: "deny", reason: "장수를 찾을 수 없습니다." };
         if (general.officerLevel < minLevel) {
           return {
             kind: "deny",
@@ -362,8 +377,7 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "general", id: ctx.actorId }],
       test: (ctx, view) => {
         const general = view.get({ kind: "general", id: ctx.actorId });
-        if (!general)
-          return { kind: "deny", reason: "장수를 찾을 수 없습니다." };
+        if (!general) return { kind: "deny", reason: "장수를 찾을 수 없습니다." };
         if (general.nationId !== 0) {
           return { kind: "deny", reason: "이미 소속된 국가가 있습니다." };
         }
@@ -383,8 +397,7 @@ export class ConstraintHelper {
         const general = view.get({ kind: "general", id: ctx.actorId });
         const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
 
-        if (!general || !nation)
-          return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
+        if (!general || !nation) return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
         if (nation.chiefGeneralId !== general.id) {
           return { kind: "deny", reason: "군주만 실행할 수 있습니다." };
         }
@@ -426,15 +439,14 @@ export class ConstraintHelper {
 
   public static RemainCityCapacity(
     key: "agri" | "comm" | "secu" | "def" | "wall",
-    actionName: string,
+    actionName: string
   ): Constraint {
     return {
       name: "RemainCityCapacity",
       requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
         const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
-        if (!city)
-          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
+        if (!city) return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
 
         const current = city[key] ?? 0;
         const max = city[`${key}Max`] ?? 0;
@@ -456,8 +468,7 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "nation", id: ctx.nationId ?? 0 }],
       test: (ctx, view) => {
         const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
-        if (!nation)
-          return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
+        if (!nation) return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
         if (nation.gennum < minCount) {
           return {
             kind: "deny",
@@ -478,11 +489,9 @@ export class ConstraintHelper {
       ],
       test: (ctx, view) => {
         const messageId = ctx.args.messageId;
-        if (!messageId)
-          return { kind: "deny", reason: "서신 ID가 지정되지 않았습니다." };
+        if (!messageId) return { kind: "deny", reason: "서신 ID가 지정되지 않았습니다." };
         const message = view.get({ kind: "message", id: messageId });
-        if (!message)
-          return { kind: "deny", reason: "해당 서신이 존재하지 않습니다." };
+        if (!message) return { kind: "deny", reason: "해당 서신이 존재하지 않습니다." };
         if (message.meta?.type !== "recruit")
           return { kind: "deny", reason: "등용 권유 서신이 아닙니다." };
         if (message.destId !== ctx.actorId)
@@ -507,17 +516,6 @@ export class ConstraintHelper {
     };
   }
 
-  public static CheckNationNameDuplicate(name: string): Constraint {
-    return {
-      name: "CheckNationNameDuplicate",
-      requires: (ctx) => [], // Needs global nation list access?
-      test: (ctx, view) => {
-        // Need access to all nations. View might need to support `getAllNations`?
-        // Or I skip this in constraint and check in Command.run.
-        return { kind: "allow" };
-      },
-    };
-  }
 
   public static ReqCitySecu(reqSecu: number): Constraint {
     return {
@@ -525,8 +523,7 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
         const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
-        if (!city)
-          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
+        if (!city) return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
         if (city.secu < reqSecu) {
           return {
             kind: "deny",
@@ -544,8 +541,7 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
         const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
-        if (!city)
-          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
+        if (!city) return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
         // 상선/상인이 있는 도시는 trade 수치가 높거나 특정 메타 데이터가 있어야 함.
         // 레거시에서는 CityConst::byID($general->getCityID())->trade >= 10 등으로 체크?
         // 일단 trade >= 10 을 상인 존재 여부로 가정.
@@ -571,8 +567,7 @@ export class ConstraintHelper {
       requires: (ctx) => [{ kind: "city", id: ctx.cityId ?? 0 }],
       test: (ctx, view) => {
         const city = view.get({ kind: "city", id: ctx.cityId ?? 0 });
-        if (!city)
-          return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
+        if (!city) return { kind: "deny", reason: "도시 정보를 찾을 수 없습니다." };
         if (city.trust >= 100) {
           return {
             kind: "deny",
@@ -588,15 +583,14 @@ export class ConstraintHelper {
     key: string,
     expectedValue: any,
     compare: "eq" | "gt" | "lt" | "ge" | "le" = "eq",
-    reason?: string,
+    reason?: string
   ): Constraint {
     return {
       name: "ReqNationMeta",
       requires: (ctx) => [{ kind: "nation", id: ctx.nationId ?? 0 }],
       test: (ctx, view) => {
         const nation = view.get({ kind: "nation", id: ctx.nationId ?? 0 });
-        if (!nation)
-          return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
+        if (!nation) return { kind: "deny", reason: "국가 정보를 찾을 수 없습니다." };
 
         const value = nation.meta[key] ?? 0;
         let pass = false;
@@ -701,7 +695,7 @@ export class ConstraintHelper {
     keyNick: string,
     comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number,
-    errMsg?: string,
+    errMsg?: string
   ): Constraint {
     return new ReqGeneralValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -716,7 +710,7 @@ export class ConstraintHelper {
     keyNick: string,
     comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string,
+    errMsg?: string
   ): Constraint {
     return new ReqNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -731,7 +725,7 @@ export class ConstraintHelper {
     keyNick: string,
     comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string,
+    errMsg?: string
   ): Constraint {
     return new ReqCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -745,7 +739,7 @@ export class ConstraintHelper {
     keyNick: string,
     comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string,
+    errMsg?: string
   ): Constraint {
     return new ReqDestCityValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -759,7 +753,7 @@ export class ConstraintHelper {
     keyNick: string,
     comp: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     reqVal: number | string,
-    errMsg?: string,
+    errMsg?: string
   ): Constraint {
     return new ReqDestNationValueConstraint(key, keyNick, comp, reqVal, errMsg);
   }
@@ -808,6 +802,131 @@ export class ConstraintHelper {
   }
 
   /**
+   * 특정 외교 상태 중 하나라도 만족해야 함
+   */
+  public static AllowDiplomacyStatus(allowStatus: string[], errorMessage: string): Constraint {
+    return new AllowDiplomacyStatusConstraint(allowStatus, errorMessage);
+  }
+
+  /**
+   * 특정 외교 상태 중 하나라도 포함되면 안 됨
+   */
+  public static DisallowDiplomacyStatus(disallowStatus: Record<string, string>): Constraint {
+    return new DisallowDiplomacyStatusConstraint(disallowStatus);
+  }
+
+  /**
+   * 특정 외교 상태이고 기한이 일정치 이상이어야 함
+   */
+  public static AllowDiplomacyWithTerm(
+    allowDipCode: string,
+    allowMinTerm: number,
+    errorMessage: string
+  ): Constraint {
+    return new AllowDiplomacyWithTermConstraint(allowDipCode, allowMinTerm, errorMessage);
+  }
+
+  /**
+   * 대상 국가로의 임관 가능 여부 검사
+   */
+  public static AllowJoinDestNation(relYear: number): Constraint {
+    return new AllowJoinDestNationConstraint(relYear);
+  }
+
+  /**
+   * 대상 도시가 교전 중인 국가의 도시인지 확인
+   */
+  public static BattleGroundCity(): Constraint {
+    return new BattleGroundCityConstraint();
+  }
+
+  /**
+   * 반란 가능 여부 확인
+   */
+  public static AllowRebellion(): Constraint {
+    return new AllowRebellionConstraint();
+  }
+
+  /**
+   * 국가명 중복 확인
+   */
+  public static CheckNationNameDuplicate(targetName: string): Constraint {
+    return new CheckNationNameDuplicateConstraint(targetName);
+  }
+
+  /**
+   * 임관 가능 국가 존재 여부 확인
+   */
+  public static ExistsAllowJoinNation(relYear: number, excludeList: number[]): Constraint {
+    return new ExistsAllowJoinNationConstraint(relYear, excludeList);
+  }
+
+  /**
+   * 자국령을 거쳐 도달 가능한지 확인
+   */
+  public static HasRoute(): Constraint {
+    return new HasRouteConstraint();
+  }
+
+  /**
+   * 자국령/공백지/교전중인국가령 을 거쳐 도달 가능한지 확인
+   */
+  public static HasRouteWithEnemy(): Constraint {
+    return new HasRouteWithEnemyConstraint();
+  }
+
+  /**
+   * 장수의 병력 여유분 확인
+   */
+  public static ReqGeneralCrewMargin(targetCrewType: number): Constraint {
+    return new ReqGeneralCrewMarginConstraint(targetCrewType);
+  }
+
+  /**
+   * 부대원 존재 여부 확인
+   */
+  public static ReqTroopMembers(): Constraint {
+    return new ReqTroopMembersConstraint();
+  }
+
+  /**
+   * 전략 커맨드 사용 가능 여부 (전쟁 금지 상태 확인)
+   */
+  public static AllowStrategicCommand(): Constraint {
+    return new AllowStrategicCommandConstraint();
+  }
+
+  /**
+   * 전략 커맨드 가용 여부 (기한 확인)
+   */
+  public static AvailableStrategicCommand(turnLimit: number): Constraint {
+    return new AvailableStrategicCommandConstraint(turnLimit);
+  }
+
+  /**
+   * 임의의 콜백 함수를 사용한 제약 조건
+   */
+  public static AdhocCallback(
+    callback: (ctx: ConstraintContext, view: StateView) => string | null
+  ): Constraint {
+    return new AdhocCallbackConstraint(callback);
+  }
+
+  /**
+   * 징병 가능 병종 여부 확인
+   */
+  public static AvailableRecruitCrewType(crewType: number): Constraint {
+    return new AvailableRecruitCrewTypeConstraint(crewType);
+  }
+
+  /**
+   * 국가 커맨드 재사용 대기시간 확인
+   */
+  public static AvailableNationCommand(commandClassName: string): Constraint {
+    return new AvailableNationCommandConstraint(commandClassName);
+  }
+
+  /**
    * 대상 국가가 인접 국가여야 함
    */
   public static NearNation(): Constraint {
@@ -818,9 +937,7 @@ export class ConstraintHelper {
    * 특정 외교 상태일 때 명령 불가
    * @param disallowList 상태 → 에러 메시지 맵
    */
-  public static DisallowDiplomacyBetweenStatus(
-    disallowList: Record<string, string>,
-  ): Constraint {
+  public static DisallowDiplomacyBetweenStatus(disallowList: Record<string, string>): Constraint {
     return new DisallowDiplomacyBetweenStatusConstraint(disallowList);
   }
 
@@ -829,10 +946,7 @@ export class ConstraintHelper {
    * @param allowList 허용되는 외교 상태 코드 배열
    * @param errorMsg 허용되지 않을 때 에러 메시지
    */
-  public static AllowDiplomacyBetweenStatus(
-    allowList: string[],
-    errorMsg: string,
-  ): Constraint {
+  public static AllowDiplomacyBetweenStatus(allowList: string[], errorMsg: string): Constraint {
     return new AllowDiplomacyBetweenStatusConstraint(allowList, errorMsg);
   }
 
@@ -847,7 +961,7 @@ export class ConstraintHelper {
     key: string,
     op: ">" | ">=" | "==" | "<=" | "<" | "!=" | "===" | "!==",
     value: number,
-    errorMsg: string,
+    errorMsg: string
   ): Constraint {
     return new ReqEnvValueConstraint(key, op, value, errorMsg);
   }

@@ -1,9 +1,4 @@
-import {
-  Trigger,
-  TriggerContext,
-  TriggerResult,
-  TriggerPriority,
-} from "../Trigger.js";
+import { Trigger, TriggerContext, TriggerResult, TriggerPriority } from "../Trigger.js";
 
 /**
  * 병력 유지비 소모 트리거
