@@ -7,6 +7,9 @@ import { MessageService } from "./message.service.js";
 import { TroopService } from "./troop.service.js";
 import { DiplomacyService } from "./diplomacy.service.js";
 import { HistoryService } from "./history.service.js";
+import { VoteService } from "./vote.service.js";
+import { InheritService } from "./inherit.service.js";
+import { CommandService } from "./command.service.js";
 
 @Module({
   providers: [
@@ -18,6 +21,9 @@ import { HistoryService } from "./history.service.js";
     TroopService,
     DiplomacyService,
     HistoryService,
+    VoteService,
+    InheritService,
+    CommandService,
   ],
   exports: [
     GameService,
@@ -28,6 +34,9 @@ import { HistoryService } from "./history.service.js";
     TroopService,
     DiplomacyService,
     HistoryService,
+    VoteService,
+    InheritService,
+    CommandService,
   ],
 })
 export class GameModule {}

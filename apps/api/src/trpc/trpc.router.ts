@@ -10,6 +10,9 @@ import { MessageService } from "../game/message.service.js";
 import { TroopService } from "../game/troop.service.js";
 import { DiplomacyService } from "../game/diplomacy.service.js";
 import { HistoryService } from "../game/history.service.js";
+import { VoteService } from "../game/vote.service.js";
+import { InheritService } from "../game/inherit.service.js";
+import { CommandService } from "../game/command.service.js";
 
 @Injectable()
 export class TrpcRouter implements OnModuleInit {
@@ -24,7 +27,10 @@ export class TrpcRouter implements OnModuleInit {
     private readonly messageService: MessageService,
     private readonly troopService: TroopService,
     private readonly diplomacyService: DiplomacyService,
-    private readonly historyService: HistoryService
+    private readonly historyService: HistoryService,
+    private readonly voteService: VoteService,
+    private readonly inheritService: InheritService,
+    private readonly commandService: CommandService
   ) {
     this.appRouter = this.createRouter();
   }
@@ -336,6 +342,214 @@ export class TrpcRouter implements OnModuleInit {
       getStatistics: this.trpc.procedure.query(async () => {
         return this.historyService.getStatistics();
       }),
+
+      getVoteList: this.trpc.procedure.query(async () => {
+        return this.voteService.getVoteList();
+      }),
+
+      getVoteDetail: this.trpc.procedure
+        .input(z.object({ voteId: z.number(), generalId: z.number().optional() }))
+        .query(async ({ input }) => {
+          return this.voteService.getVoteDetail(input.voteId, input.generalId);
+        }),
+
+      vote: this.trpc.procedure
+        .input(
+          z.object({
+            voteId: z.number(),
+            generalId: z.number(),
+            selection: z.array(z.number()),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.voteService.vote(input.voteId, input.generalId, input.selection);
+        }),
+
+      createVote: this.trpc.procedure
+        .input(
+          z.object({
+            opener: z.string(),
+            title: z.string(),
+            options: z.array(z.string()),
+            multipleOptions: z.number().optional(),
+            endDate: z.string().optional(),
+            keepOldVote: z.boolean().optional(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.voteService.createVote(
+            input.opener,
+            input.title,
+            input.options,
+            input.multipleOptions,
+            input.endDate,
+            input.keepOldVote
+          );
+        }),
+
+      addVoteComment: this.trpc.procedure
+        .input(
+          z.object({
+            voteId: z.number(),
+            generalId: z.number(),
+            text: z.string(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.voteService.addComment(input.voteId, input.generalId, input.text);
+        }),
+
+      getInheritPoints: this.trpc.procedure
+        .input(z.object({ userId: z.number() }))
+        .query(async ({ input }) => {
+          return this.inheritService.getPoints(input.userId);
+        }),
+
+      buyRandomUnique: this.trpc.procedure
+        .input(z.object({ userId: z.number(), generalId: z.number() }))
+        .mutation(async ({ input }) => {
+          return this.inheritService.buyRandomUnique(input.userId, input.generalId);
+        }),
+
+      buyHiddenBuff: this.trpc.procedure
+        .input(
+          z.object({
+            userId: z.number(),
+            generalId: z.number(),
+            buffType: z.string(),
+            level: z.number(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.inheritService.buyHiddenBuff(
+            input.userId,
+            input.generalId,
+            input.buffType,
+            input.level
+          );
+        }),
+
+      resetSpecialWar: this.trpc.procedure
+        .input(z.object({ userId: z.number(), generalId: z.number() }))
+        .mutation(async ({ input }) => {
+          return this.inheritService.resetSpecialWar(input.userId, input.generalId);
+        }),
+
+      setNextSpecialWar: this.trpc.procedure
+        .input(
+          z.object({
+            userId: z.number(),
+            generalId: z.number(),
+            specialType: z.string(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.inheritService.setNextSpecialWar(
+            input.userId,
+            input.generalId,
+            input.specialType
+          );
+        }),
+
+      resetStat: this.trpc.procedure
+        .input(
+          z.object({
+            userId: z.number(),
+            generalId: z.number(),
+            leadership: z.number(),
+            strength: z.number(),
+            intel: z.number(),
+            inheritBonusStat: z.array(z.number()).optional(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.inheritService.resetStat(
+            input.userId,
+            input.generalId,
+            input.leadership,
+            input.strength,
+            input.intel,
+            input.inheritBonusStat
+          );
+        }),
+
+      resetTurnTime: this.trpc.procedure
+        .input(z.object({ userId: z.number(), generalId: z.number() }))
+        .mutation(async ({ input }) => {
+          return this.inheritService.resetTurnTime(input.userId, input.generalId);
+        }),
+
+      getInheritHistory: this.trpc.procedure
+        .input(z.object({ userId: z.number(), lastId: z.number().optional() }))
+        .query(async ({ input }) => {
+          return this.inheritService.getHistory(input.userId, input.lastId);
+        }),
+
+      checkOwner: this.trpc.procedure
+        .input(
+          z.object({
+            userId: z.number(),
+            generalId: z.number(),
+            destGeneralId: z.number(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.inheritService.checkOwner(input.userId, input.generalId, input.destGeneralId);
+        }),
+
+      // Command APIs
+      pushCommand: this.trpc.procedure
+        .input(z.object({ generalId: z.number(), amount: z.number() }))
+        .mutation(async ({ input }) => {
+          return this.commandService.pushCommand(input.generalId, input.amount);
+        }),
+
+      repeatCommand: this.trpc.procedure
+        .input(z.object({ generalId: z.number(), amount: z.number() }))
+        .mutation(async ({ input }) => {
+          return this.commandService.repeatCommand(input.generalId, input.amount);
+        }),
+
+      getReservedCommands: this.trpc.procedure
+        .input(z.object({ generalId: z.number() }))
+        .query(async ({ input }) => {
+          return this.commandService.getReservedCommands(input.generalId);
+        }),
+
+      reserveCommand: this.trpc.procedure
+        .input(
+          z.object({
+            generalId: z.number(),
+            turnList: z.array(z.number()),
+            action: z.string(),
+            arg: z.record(z.unknown()).optional(),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.commandService.reserveCommand(
+            input.generalId,
+            input.turnList,
+            input.action,
+            input.arg ?? {}
+          );
+        }),
+
+      reserveBulkCommand: this.trpc.procedure
+        .input(
+          z.object({
+            generalId: z.number(),
+            commands: z.array(
+              z.object({
+                action: z.string(),
+                turnList: z.array(z.number()),
+                arg: z.record(z.unknown()).optional(),
+              })
+            ),
+          })
+        )
+        .mutation(async ({ input }) => {
+          return this.commandService.reserveBulkCommand(input.generalId, input.commands);
+        }),
     });
   }
 
