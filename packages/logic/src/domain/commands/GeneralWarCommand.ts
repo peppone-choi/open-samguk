@@ -2,11 +2,8 @@ import { RandUtil } from "@sammo/common";
 import { GeneralCommand } from "../Command.js";
 import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
+import { WarEngine } from "../WarEngine.js";
 
-/**
- * 출격 커맨드
- * 레거시: che_출격
- */
 export class GeneralWarCommand extends GeneralCommand {
   readonly actionName = "출격";
 
@@ -54,47 +51,13 @@ export class GeneralWarCommand extends GeneralCommand {
       };
     }
 
-    // 매우 단순화된 전투 로직
-    const attackerPower = iGeneral.leadership + iGeneral.strength + iGeneral.crew / 100;
-    const defenderPower = iDestCity.def + iDestCity.wall + iDestCity.pop / 1000;
+    const warEngine = new WarEngine();
+    const result = warEngine.executeBattle(rng, snapshot, actorId, destCityId);
 
-    const attackerLoss = Math.floor(defenderPower / 10);
-    const defenderLoss = Math.floor(attackerPower / 5);
-
-    const newAttackerCrew = Math.max(iGeneral.crew - attackerLoss, 0);
-    const newDefenderDef = Math.max(iDestCity.def - defenderLoss, 0);
-
-    const isCaptured = newDefenderDef <= 0;
-
-    const delta: WorldDelta = {
-      generals: {
-        [actorId]: {
-          crew: newAttackerCrew,
-          experience: iGeneral.experience + 200,
-          recentWar: snapshot.gameTime.year * 12 + snapshot.gameTime.month,
-        },
-      },
-      cities: {
-        [destCityId]: {
-          def: newDefenderDef,
-        },
-      },
-      logs: {
-        general: {
-          [actorId]: [
-            `병사 ${attackerLoss}명을 잃고 ${iDestCity.name}을 공격했습니다.`,
-            isCaptured
-              ? `${iDestCity.name}을 점령했습니다!`
-              : `${iDestCity.name}의 수비를 ${defenderLoss} 깎았습니다.`,
-          ],
-        },
-      },
-    };
-
-    if (isCaptured) {
-      delta.cities![destCityId].nationId = iGeneral.nationId;
-      delta.cities![destCityId].def = 500; // 점령 후 기본 수비
-    }
+    const delta = result.delta;
+    delta.logs = delta.logs || { general: {}, global: [] };
+    delta.logs.general = delta.logs.general || {};
+    delta.logs.general[actorId] = result.battleLog;
 
     return delta;
   }
