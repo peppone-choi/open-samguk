@@ -1,30 +1,26 @@
 /**
  * 청주(훈련) - che_훈련_청주.php 포팅
- * [내정] 훈련 효과 +30%
+ * [전투] 훈련 +40(한도 내). 1회용
  */
 import { BaseItem } from "../BaseItem.js";
-import type { DomesticTurnType, DomesticVarType } from "../types.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { StatChangeTrigger } from "../../triggers/war/StatChangeTrigger.js";
+import { TriggerPriority, RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class TrainingLiquorItem extends BaseItem {
   readonly code = "che_훈련_청주";
   readonly rawName = "청주";
   readonly name = "청주(훈련)";
-  readonly info = "[내정] 훈련 효과 +30%";
+  readonly info = "[전투] 훈련 +40(한도 내). 1회용";
   readonly type = "item" as const;
-  readonly cost = 100;
+  readonly cost = 1000;
   readonly consumable = true;
   readonly buyable = true;
-  readonly reqSecu = 20;
+  readonly reqSecu = 1000;
 
-  onCalcDomestic(
-    turnType: DomesticTurnType,
-    varType: DomesticVarType,
-    value: number,
-    _aux?: unknown
-  ): number {
-    if (turnType === "훈련" && varType === "score") {
-      return value * 1.3;
-    }
-    return value;
+  getBattleInitSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      StatChangeTrigger.trainChange(unit, TriggerPriority.BEGIN + 500, RaiseType.ITEM, "+", 40)
+    );
   }
 }

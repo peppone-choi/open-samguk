@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -15,7 +15,7 @@ import {
  * - 계략 스킬이 활성화되어 있으면 데미지 배수 적용
  * - selfEnv['magic']에서 계략 종류와 데미지 배수 읽기
  */
-export class StrategyActivateTrigger implements PriorityWarUnitTrigger {
+export class StrategyActivateTrigger implements WarUnitTrigger {
   readonly name = "계략발동";
   readonly priority = TriggerPriority.POST + 600;
   readonly raiseType = RaiseType.NONE;

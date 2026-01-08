@@ -4,6 +4,12 @@
  * [전투] 페이즈마다 40% 확률로 치료 발동(아군 피해 30% 감소, 부상 회복)
  */
 import { BaseItem } from "../BaseItem.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { BattleHealAttemptTrigger, BattleHealActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
+import { CityHealTrigger } from "../../triggers/CityHealTrigger.js";
+import { Trigger } from "../../Trigger.js";
+import { General } from "../../entities.js";
 
 export class HealingBookCheongnangItem extends BaseItem {
   readonly code = "che_의술_청낭서";
@@ -17,10 +23,15 @@ export class HealingBookCheongnangItem extends BaseItem {
   readonly buyable = false;
   readonly reqSecu = 0;
 
-  // TODO: getPreTurnExecuteTriggerList 구현
-  // new GeneralTrigger.che_도시치료(general)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new BattleHealAttemptTrigger(unit, RaiseType.ITEM, 0.4),
+      new BattleHealActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new che_전투치료시도(unit, TYPE_ITEM + TYPE_DEDUP_TYPE_BASE * 302),
-  // new che_전투치료발동(unit, TYPE_ITEM)
+  getPreTurnExecuteTriggerList(_general: General): Trigger | null {
+    // CityHealTrigger는 의술 특기와 동일한 메커니즘 제공
+    return new CityHealTrigger();
+  }
 }

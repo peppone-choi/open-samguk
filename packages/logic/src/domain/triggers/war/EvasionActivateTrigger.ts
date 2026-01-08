@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -15,7 +15,7 @@ import {
  * - 회피 스킬이 활성화되어 있으면 상대 데미지를 1/6으로 감소
  * - 중복 발동 방지
  */
-export class EvasionActivateTrigger implements PriorityWarUnitTrigger {
+export class EvasionActivateTrigger implements WarUnitTrigger {
   readonly name = "회피발동";
   readonly priority = TriggerPriority.POST + 500;
   readonly raiseType = RaiseType.NONE;

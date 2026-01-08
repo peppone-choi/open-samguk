@@ -3,6 +3,8 @@
  * [전투] 성벽 공격 시 대미지 +50%, 2회용
  */
 import { BaseItem } from "../BaseItem.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { EventSiegeRamTrigger } from "../../triggers/war/EventSiegeRamTrigger.js";
 import type { General } from "../../entities.js";
 import type { RandUtil } from "@sammo/common";
 import type { WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
@@ -37,15 +39,16 @@ export class EventSiegeRamItem extends BaseItem {
   }
 
   getWarPowerMultiplier(unit: WarUnitReadOnly): WarPowerMultiplier {
-    const oppose = unit.getOppose?.();
+    const oppose = unit.oppose;
     if (oppose && "wall" in oppose) {
       return [1.5, 1];
     }
     return [1, 1];
   }
 
-  // TODO: getBattlePhaseSkillTriggerList
-  // new event_충차아이템소모(unit, TYPE_CONSUMABLE_ITEM)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(new EventSiegeRamTrigger(unit));
+  }
 }
 
 /**

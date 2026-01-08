@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -8,7 +8,7 @@ import {
   TriggerPriority,
 } from "../../WarUnitTriggerRegistry.js";
 
-export class CounterActivateTrigger implements PriorityWarUnitTrigger {
+export class CounterActivateTrigger implements WarUnitTrigger {
   readonly name = "반계발동";
   readonly priority = TriggerPriority.POST + 250;
   readonly raiseType: RaiseTypeValue;

@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -15,7 +15,7 @@ import {
  * - 필살 스킬이 활성화되어 있으면 데미지 배수 적용
  * - 중복 발동 방지
  */
-export class KillingBlowActivateTrigger implements PriorityWarUnitTrigger {
+export class KillingBlowActivateTrigger implements WarUnitTrigger {
   readonly name = "필살발동";
   readonly priority = TriggerPriority.POST + 400;
   readonly raiseType = RaiseType.NONE;

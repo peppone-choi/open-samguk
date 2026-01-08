@@ -86,6 +86,12 @@ describe("BattleConstraints", () => {
       penalty: {},
       ownerId: 1,
       troopId: 0,
+      startAge: 20,
+      belong: 1,
+      betray: 0,
+      dedLevel: 0,
+      expLevel: 0,
+      officerLock: 0,
       ...overrides,
     });
 
@@ -128,6 +134,7 @@ describe("BattleConstraints", () => {
         messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       });
       const ctx = {
         actorId: 1,
@@ -150,11 +157,14 @@ describe("BattleConstraints", () => {
         messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       });
       const ctx = { actorId: 1, nationId: 1, args: {}, env: {}, mode: "full" as const };
       const result = constraint.test(ctx, view);
       expect(result.kind).toBe("deny");
-      expect(result.reason).toBe("이미 군주입니다.");
+      if (result.kind === "deny") {
+        expect(result.reason).toBe("이미 군주입니다.");
+      }
     });
 
     it("군주가 활동 중이면 실패해야 함", () => {
@@ -171,6 +181,7 @@ describe("BattleConstraints", () => {
         messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       });
       const ctx = {
         actorId: 1,
@@ -181,7 +192,9 @@ describe("BattleConstraints", () => {
       };
       const result = constraint.test(ctx, view);
       expect(result.kind).toBe("deny");
-      expect(result.reason).toBe("군주가 활동중입니다.");
+      if (result.kind === "deny") {
+        expect(result.reason).toBe("군주가 활동중입니다.");
+      }
     });
 
     it("군주가 NPC면 실패해야 함", () => {
@@ -198,6 +211,7 @@ describe("BattleConstraints", () => {
         messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       });
       const ctx = {
         actorId: 1,
@@ -208,7 +222,9 @@ describe("BattleConstraints", () => {
       };
       const result = constraint.test(ctx, view);
       expect(result.kind).toBe("deny");
-      expect(result.reason).toBe("군주가 NPC입니다.");
+      if (result.kind === "deny") {
+        expect(result.reason).toBe("군주가 NPC입니다.");
+      }
     });
   });
 });

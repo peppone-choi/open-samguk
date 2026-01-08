@@ -1,9 +1,10 @@
 import type { WarUnit, WarUnitCity } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
+  RaiseTypeValue,
   TriggerPriority,
 } from "../../WarUnitTriggerRegistry.js";
 
@@ -14,12 +15,14 @@ import {
  * - Priority: BEGIN + 150 (10150)
  * - 상대가 성벽(WarUnitCity)일 경우 '부상무효' 스킬 활성화
  */
-export class WallInjuryImmuneTrigger implements PriorityWarUnitTrigger {
+export class WallInjuryImmuneTrigger implements WarUnitTrigger {
   readonly name = "성벽부상무효";
   readonly priority = TriggerPriority.BEGIN + 150;
-  readonly raiseType = RaiseType.NONE;
+  readonly raiseType: RaiseTypeValue;
 
-  constructor(public readonly unit: WarUnit) {}
+  constructor(public readonly unit: WarUnit, raiseType: RaiseTypeValue = RaiseType.NONE) {
+    this.raiseType = raiseType;
+  }
 
   private isWarUnitCity(unit: WarUnit | WarUnitCity): unit is WarUnitCity {
     return "wall" in unit && "def" in unit;

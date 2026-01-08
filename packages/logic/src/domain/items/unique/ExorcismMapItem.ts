@@ -17,12 +17,19 @@ export class ExorcismMapItem extends BaseItem {
   readonly reqSecu = 0;
 
   getWarPowerMultiplier(unit: WarUnitReadOnly): WarPowerMultiplier {
-    // 상대가 지역/도시 제한 병종인 경우 보너스
     const oppose = unit.getOppose?.();
-    if (oppose && "crewType" in oppose) {
-      // 지역/도시 병종인지 확인 (TODO: UnitRegistry 연동 필요)
-      return [1.15, 0.85];
+    if (!oppose) return [1, 1];
+
+    // 상대 병종이 특수 병종(지역/도시 요구)인지 확인
+    // 레거시: $opposeCrewType->reqCities() || $opposeCrewType->reqRegions()
+    // Heuristic: ID 1000 이상이며 100의 배수가 아닌 경우 특수 병종으로 간주 (1100, 1200, 1300, 1400 제외)
+    const crewType = (oppose as any).crewType;
+    if (typeof crewType === "number" && crewType >= 1000) {
+      if (crewType % 100 !== 0) {
+        return [1.15, 0.85];
+      }
     }
+
     return [1, 1];
   }
 }

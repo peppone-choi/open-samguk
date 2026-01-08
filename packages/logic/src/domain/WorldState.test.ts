@@ -31,6 +31,7 @@ describe("WorldState (Domain Model)", () => {
       messages: {},
       gameTime: { year: 184, month: 1 },
       env: {},
+      generalTurns: {},
     };
   });
 

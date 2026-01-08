@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { TRPCProvider } from "./trpc-provider.js";
+import { TRPCProvider } from "./trpc-provider";
 
 export const metadata: Metadata = {
   title: "삼국지 모의전투",

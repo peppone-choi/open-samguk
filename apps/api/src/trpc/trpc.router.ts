@@ -121,6 +121,26 @@ export class TrpcRouter implements OnModuleInit {
           return this.generalService.getGeneralLogs(input.generalId, input.limit);
         }),
 
+      getConnectedGenerals: this.trpc.procedure
+        .input(z.object({ seconds: z.number().optional() }))
+        .query(async ({ input }) => {
+          return this.generalService.getConnectedGenerals(input.seconds);
+        }),
+
+      getGeneralList: this.trpc.procedure
+        .input(
+          z.object({
+            nationId: z.number().optional(),
+            npc: z.array(z.number()).optional(),
+            orderBy: z.string().optional(),
+            limit: z.number().optional(),
+            offset: z.number().optional(),
+          })
+        )
+        .query(async ({ input }) => {
+          return this.generalService.getGeneralList(input);
+        }),
+
       dropItem: this.trpc.procedure
         .input(
           z.object({
@@ -593,7 +613,7 @@ export class TrpcRouter implements OnModuleInit {
     });
   }
 
-  onModuleInit() {}
+  onModuleInit() { }
 }
 
 export type AppRouter = ReturnType<TrpcRouter["createRouter"]>;

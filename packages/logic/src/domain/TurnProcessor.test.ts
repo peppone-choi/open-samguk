@@ -29,6 +29,7 @@ describe("TurnProcessor", () => {
       messages: {},
       gameTime: { year: 184, month: 1 },
       env: {},
+      generalTurns: {},
     };
 
     const delta1 = processor.processGeneralTurn(snapshot, 1);
@@ -62,6 +63,7 @@ describe("TurnProcessor", () => {
       messages: {},
       gameTime: { year: 184, month: 1 },
       env: {},
+      generalTurns: {},
     };
 
     const delta1 = new TurnProcessor("seed-1").processGeneralTurn(snapshot, 1);

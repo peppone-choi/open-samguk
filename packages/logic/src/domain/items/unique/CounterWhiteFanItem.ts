@@ -4,7 +4,10 @@
  *        반목 성공시 대미지 추가(+60% → +100%), 소모 군량 +10%
  */
 import { BaseItem } from "../BaseItem.js";
-import type { GeneralReadOnly, StatName, WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
+import type { GeneralReadOnly, StatName } from "../types.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { CounterAttemptTrigger, CounterActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class CounterWhiteFanItem extends BaseItem {
   readonly code = "che_반계_백우선";
@@ -40,7 +43,10 @@ export class CounterWhiteFanItem extends BaseItem {
     return value;
   }
 
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new che_반계시도(unit, TYPE_ITEM + TYPE_DEDUP_TYPE_BASE * 301, 0.3),
-  // new che_반계발동(unit)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new CounterAttemptTrigger(unit, RaiseType.ITEM, 0.3),
+      new CounterActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 }

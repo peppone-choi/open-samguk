@@ -109,7 +109,7 @@ export class ScenarioLoader {
     const __dirname = dirname(fileURLToPath(import.meta.url));
     const projectRoot = join(__dirname, "../../../../../");
 
-    this.scenarioPath = options.scenarioPath ?? join(projectRoot, "legacy/hwe/scenario");
+    this.scenarioPath = options.scenarioPath ?? join(__dirname, "../../data/scenarios");
     this.defaultConfigPath = options.defaultConfigPath ?? join(this.scenarioPath, "default.json");
     this.mapLoader = new MapLoader({ basePath: this.scenarioPath });
   }

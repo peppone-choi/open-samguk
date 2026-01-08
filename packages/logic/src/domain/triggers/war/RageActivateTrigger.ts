@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -10,7 +10,7 @@ import {
 
 const DEFAULT_CRITICAL_DAMAGE = 2.0;
 
-export class RageActivateTrigger implements PriorityWarUnitTrigger {
+export class RageActivateTrigger implements WarUnitTrigger {
   readonly name = "격노발동";
   readonly priority = TriggerPriority.POST + 600;
   readonly raiseType: RaiseTypeValue;

@@ -7,9 +7,9 @@ import { fileURLToPath } from "url";
 export class UnitRegistry {
   private static instance: UnitRegistry;
   private units: Map<number, GameUnit> = new Map();
-  private loaded: boolean = false;
+  private lastLoadedSet: string | null = null;
 
-  private constructor() {}
+  private constructor() { }
 
   public static getInstance(): UnitRegistry {
     if (!UnitRegistry.instance) {
@@ -18,48 +18,42 @@ export class UnitRegistry {
     return UnitRegistry.instance;
   }
 
-  public async load(): Promise<void> {
-    if (this.loaded) return;
+  public async load(
+    unitSetName: string = "basic",
+    cityNameMap: Record<string, number> = {},
+    regionNameMap: Record<string, number> = {}
+  ): Promise<void> {
+    if (this.lastLoadedSet === unitSetName) return;
 
     try {
       const __dirname = dirname(fileURLToPath(import.meta.url));
-      // Path relative to built file: packages/logic/dist/domain/UnitRegistry.js
-      // We need to access src/domain/scenario/unit/basic.json or copy it to dist.
-      // Assuming resource loading pattern for now, trying to resolve from source location if dev, or dist if prod.
-      // But standard approach in this project seems to be reading from a known path or importing.
-      // Since it's a JSON file, dynamic import might be tricky with assertions in recent Node.
-      // Let's rely on fs read from a computed path.
-
-      // Attempt to locate the file. If we are in dist/domain, we need to go up and find scenario/unit/basic.json.
-      // In source: packages/logic/src/domain/scenario/unit/basic.json
-      // Let's assume the file is copied to dist/domain/scenario/unit/basic.json during build
-      // OR we just point to the source for now if running local dev.
-      // Given the environment, let's look relative to this file.
-
-      const basicJsonPath = join(__dirname, "scenario", "unit", "basic.json");
-      const content = await readFile(basicJsonPath, "utf-8");
+      // In source: packages/logic/src/domain/scenario/unit/*.json
+      // In dist: packages/logic/dist/domain/scenario/unit/*.json
+      const unitJsonPath = join(__dirname, "scenario", "unit", `${unitSetName}.json`);
+      const content = await readFile(unitJsonPath, "utf-8");
       const rawData = JSON.parse(content);
 
       if (!Array.isArray(rawData)) {
-        throw new Error("Unit data is not an array");
+        throw new Error(`Unit data for ${unitSetName} is not an array`);
       }
 
+      this.units.clear();
       for (const item of rawData) {
         // Validate with Zod
         const parsed = UnitDataSchema.safeParse(item);
         if (!parsed.success) {
-          console.error(`Failed to parse unit ${item.id}:`, parsed.error);
+          console.error(`Failed to parse unit ${item.id} in set ${unitSetName}:`, parsed.error);
           continue;
         }
 
-        const unit = new GameUnit(parsed.data);
+        const unit = new GameUnit(parsed.data, cityNameMap, regionNameMap);
         this.units.set(unit.id, unit);
       }
 
-      this.loaded = true;
-      console.log(`Loaded ${this.units.size} units.`);
+      this.lastLoadedSet = unitSetName;
+      console.log(`Loaded ${this.units.size} units from set: ${unitSetName}`);
     } catch (e) {
-      console.error("Failed to load unit registry:", e);
+      console.error(`Failed to load unit registry for set ${unitSetName}:`, e);
       throw e;
     }
   }

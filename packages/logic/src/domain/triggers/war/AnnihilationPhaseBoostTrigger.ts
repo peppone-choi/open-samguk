@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -14,7 +14,7 @@ import {
  * - Priority: POST + 800 (40800)
  * - 상대 전멸(phase === 0) 시 추가 페이즈 획득
  */
-export class AnnihilationPhaseBoostTrigger implements PriorityWarUnitTrigger {
+export class AnnihilationPhaseBoostTrigger implements WarUnitTrigger {
   readonly name = "전멸시페이즈증가";
   readonly priority = TriggerPriority.POST + 800;
   readonly raiseType = RaiseType.NONE;

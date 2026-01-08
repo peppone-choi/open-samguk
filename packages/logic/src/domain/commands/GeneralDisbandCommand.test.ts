@@ -62,6 +62,13 @@ describe("GeneralDisbandCommand", () => {
         tournamentState: 0,
         lastTurn: {},
         troopId: 0,
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
       },
       2: {
         id: 2,
@@ -114,6 +121,13 @@ describe("GeneralDisbandCommand", () => {
         tournamentState: 0,
         lastTurn: {},
         troopId: 0,
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
       },
     },
     nations: {
@@ -160,8 +174,8 @@ describe("GeneralDisbandCommand", () => {
         wall: 1000,
         wallMax: 1000,
         trust: 100,
-        gold: 0,
-        rice: 0,
+        trade: 100,
+        dead: 0,
         region: 1,
         state: 0,
         term: 0,
@@ -176,6 +190,7 @@ describe("GeneralDisbandCommand", () => {
     messages: {},
     gameTime: { year: 184, month: 2 }, // 초기 턴 이후
     env: { init_year: 184, init_month: 1 },
+    generalTurns: {},
   });
 
   it("방랑 세력 해산 시 모든 장수가 재야가 되어야 함", () => {

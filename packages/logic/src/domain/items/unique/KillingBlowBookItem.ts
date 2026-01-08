@@ -3,7 +3,8 @@
  * [전투] 필살 확률 +20%p
  */
 import { BaseItem } from "../BaseItem.js";
-import type { GeneralReadOnly, StatName } from "../types.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { KillingBlowAttemptTrigger, KillingBlowActivateTrigger } from "../../triggers/war/index.js";
 
 export class KillingBlowBookItem extends BaseItem {
   readonly code = "che_필살_둔갑천서";
@@ -16,10 +17,13 @@ export class KillingBlowBookItem extends BaseItem {
   readonly buyable = false;
   readonly reqSecu = 0;
 
-  onCalcStat(_general: GeneralReadOnly, statName: StatName, value: number, _aux?: unknown): number {
-    if (statName === "warCriticalRatio") {
-      return value + 0.2;
-    }
-    return value;
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new KillingBlowAttemptTrigger(unit, (u) => {
+        // 기본 10% + 아이템 20% = 30%
+        return 0.1 + 0.2;
+      }),
+      new KillingBlowActivateTrigger(unit)
+    );
   }
 }

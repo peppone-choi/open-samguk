@@ -23,7 +23,7 @@ export class NationRaidCommand extends GeneralCommand {
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
       ConstraintHelper.ExistsDestNation(),
-      ConstraintHelper.AllowDiplomacyStatus([], [1], "선포중인 국가에만 급습할 수 있습니다."),
+      ConstraintHelper.AllowDiplomacyStatus(["1"], "선포중인 국가에만 급습할 수 있습니다."),
       ConstraintHelper.AvailableStrategicCommand(0),
     ];
   }

@@ -5,6 +5,9 @@
  */
 import { BaseItem } from "../BaseItem.js";
 import type { WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { RageAttemptTrigger, RageActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class RageBookItem extends BaseItem {
   readonly code = "che_격노_구정신단경";
@@ -24,7 +27,10 @@ export class RageBookItem extends BaseItem {
     return [1 + 0.05 * activatedCnt, 1];
   }
 
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new che_격노시도(unit, TYPE_ITEM),
-  // new che_격노발동(unit)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new RageAttemptTrigger(unit, RaiseType.ITEM),
+      new RageActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 }

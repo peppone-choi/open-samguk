@@ -14,6 +14,7 @@ describe("Trigger System (TDD)", () => {
       messages: {},
       gameTime: { year: 1, month: 1 },
       env: {},
+      generalTurns: {},
     },
     rand: new RandUtil(new LiteHashDRBG("test")),
     env: {},

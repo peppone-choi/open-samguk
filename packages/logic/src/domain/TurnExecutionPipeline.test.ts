@@ -32,6 +32,7 @@ describe("TurnExecutionPipeline (Phase 3)", () => {
       messages: {},
       gameTime: { year: 184, month: 1 },
       env: {},
+      generalTurns: {},
     };
   });
 

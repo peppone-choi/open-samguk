@@ -1,5 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, type OnModuleInit } from "@nestjs/common";
 import { createPrismaClient, type PrismaClientType } from "@sammo/infra";
+import { AuctionFactory, getItemRegistry, BaseAuction, GameConst } from "@sammo/logic";
 
 const AUCTION_OPEN_MIN_MONTHS = 3;
 const RICE_AUCTION_MIN_AMOUNT = 100;
@@ -7,11 +8,21 @@ const RICE_AUCTION_MAX_AMOUNT = 10000;
 const UNIQUE_AUCTION_MIN_POINT = 1000;
 const CLOSE_TURN_CNT_MIN = 6;
 const CLOSE_TURN_CNT_MAX = 72;
+// @ts-ignore
 const AUCTION_EXTENSION_MINUTES = 5;
 
 @Injectable()
-export class AuctionService {
+export class AuctionService implements OnModuleInit {
   private readonly prisma: PrismaClientType = createPrismaClient();
+
+  onModuleInit() {
+    // 경매 정산 프로세스 시작 (1분마다 실행)
+    setInterval(() => {
+      this.processFinishedAuctions().catch((err) => {
+        console.error("Auction settlement error:", err);
+      });
+    }, 60 * 1000);
+  }
 
   async getAuctions(type?: string) {
     return this.prisma.auction.findMany({
@@ -56,36 +67,144 @@ export class AuctionService {
   }
 
   async bid(auctionId: number, generalId: number, amount: number, tryExtend: boolean) {
-    const auction = await this.prisma.auction.findUnique({ where: { id: auctionId } });
-    const general = await this.prisma.general.findUnique({ where: { no: generalId } });
-
-    if (!auction || auction.finished) throw new Error("종료되었거나 존재하지 않는 경매입니다.");
-    if (!general) throw new Error("장수 정보가 없습니다.");
-
-    const highestBid = await this.prisma.auctionBid.findFirst({
-      where: { auctionId },
-      orderBy: { amount: "desc" },
+    const prismaAuction = await this.prisma.auction.findUnique({
+      where: { id: auctionId },
+      include: {
+        bids: {
+          orderBy: { amount: "desc" },
+          take: 1,
+        },
+      },
     });
+    const prismaGeneral = await this.prisma.general.findUnique({ where: { no: generalId } });
 
-    if (highestBid && amount <= highestBid.amount) {
-      throw new Error("현재 최고 입찰가보다 높아야 합니다.");
+    if (!prismaAuction || prismaAuction.finished)
+      throw new Error("종료되었거나 존재하지 않는 경매입니다.");
+    if (!prismaGeneral) throw new Error("장수 정보가 없습니다.");
+
+    // Domain 객체로 변환
+    const auctionInfo = this.mapToAuctionInfo(prismaAuction);
+    const general = this.mapToGeneral(prismaGeneral);
+
+    const auction = AuctionFactory.create(auctionInfo, general);
+
+    // 최고 입찰자 정보 설정
+    if (prismaAuction.bids.length > 0) {
+      const highest = prismaAuction.bids[0];
+      auction.setHighestBid({
+        id: highest.no,
+        auctionId: highest.auctionId,
+        userId: String(highest.owner),
+        generalId: highest.generalId,
+        amount: highest.amount,
+        bidDate: highest.date,
+        aux: highest.aux as any,
+      });
     }
 
+    // 도메인 로직 호출 - _bid는 protected이므로 public 접근을 위해 약간의 우회 또는 bid() 활용
+    // 여기서는 Service가 _bid의 결과인 BidResult를 필요로 하므로,
+    // BaseAuction에 public helper를 추가했어야 함. 일단 bid()를 통해 검증만 하거나,
+    // AuctionService에서 직접 계산 (중복 로직이지만 Prisma 트랜잭션 때문)
+
+    // TODO: BaseAuction._bid를 public으로 바꾸거나 별도 유틸리티화 필요.
+    // 일단 여기서는 AuctionService에서 BidResult 로직을 직접 수행하고 도메인 클래스는 검증용으로 사용.
+    const validationError = auction.bid(amount, tryExtend);
+    if (validationError) throw new Error(validationError);
+
     return this.prisma.$transaction(async (tx) => {
+      // 1. 자원 체크 및 차감
+      const resource = auctionInfo.reqResource;
+      if (resource === "gold") {
+        if (prismaGeneral.gold < amount) throw new Error("금이 부족합니다.");
+        await tx.general.update({
+          where: { no: generalId },
+          data: { gold: { decrement: amount } },
+        });
+      } else if (resource === "rice") {
+        if (prismaGeneral.rice < amount) throw new Error("쌀이 부족합니다.");
+        await tx.general.update({
+          where: { no: generalId },
+          data: { rice: { decrement: amount } },
+        });
+      } else if (resource === "inheritancePoint") {
+        const aux = (prismaGeneral.aux as any) || {};
+        const points = aux.inheritancePoint || 0;
+        if (points < amount) throw new Error("유산 포인트가 부족합니다.");
+        await tx.general.update({
+          where: { no: generalId },
+          data: {
+            aux: {
+              ...aux,
+              inheritancePoint: points - amount,
+            },
+          },
+        });
+      }
+
+      // 2. 이전 입찰자 환불
+      if (prismaAuction.bids.length > 0) {
+        const prevBid = prismaAuction.bids[0];
+        if (prevBid.generalId !== generalId) {
+          if (resource === "gold") {
+            await tx.general.update({
+              where: { no: prevBid.generalId },
+              data: { gold: { increment: prevBid.amount } },
+            });
+          } else if (resource === "rice") {
+            await tx.general.update({
+              where: { no: prevBid.generalId },
+              data: { rice: { increment: prevBid.amount } },
+            });
+          } else if (resource === "inheritancePoint") {
+            const prevGen = await tx.general.findUnique({ where: { no: prevBid.generalId } });
+            if (prevGen) {
+              const prevAux = (prevGen.aux as any) || {};
+              await tx.general.update({
+                where: { no: prevBid.generalId },
+                data: {
+                  aux: {
+                    ...prevAux,
+                    inheritancePoint: (prevAux.inheritancePoint || 0) + prevBid.amount,
+                  },
+                },
+              });
+            }
+          }
+        }
+      }
+
+      // 3. 입찰 기록 생성
       const bid = await tx.auctionBid.create({
         data: {
           auctionId,
           generalId,
+          owner: prismaGeneral.owner,
           amount,
           date: new Date(),
-          aux: { tryExtendCloseDate: tryExtend },
+          aux: {
+            tryExtendCloseDate: tryExtend,
+            userName: prismaGeneral.ownerName || "Unknown",
+            obfuscatedName: BaseAuction.genObfuscatedName(
+              generalId,
+              String(auctionId),
+              GameConst.namePoolRaw
+            ),
+          },
         },
       });
 
+      // 4. 시간 연장
       const now = new Date();
-      const extensionThreshold = AUCTION_EXTENSION_MINUTES * 60 * 1000;
-      if (auction.closeDate.getTime() - now.getTime() < extensionThreshold) {
-        const newCloseDate = new Date(auction.closeDate.getTime() + extensionThreshold);
+      const extensionThresholdMs = 5 * 60 * 1000;
+      if (prismaAuction.closeDate.getTime() - now.getTime() < extensionThresholdMs) {
+        let newCloseDate = new Date(prismaAuction.closeDate.getTime() + extensionThresholdMs);
+        const detail = prismaAuction.detail as any;
+        if (detail.availableLatestBidCloseDate) {
+          const limit = new Date(detail.availableLatestBidCloseDate);
+          if (newCloseDate > limit) newCloseDate = limit;
+        }
+
         await tx.auction.update({
           where: { id: auctionId },
           data: { closeDate: newCloseDate },
@@ -94,6 +213,34 @@ export class AuctionService {
 
       return bid;
     });
+  }
+
+  private mapToAuctionInfo(p: any): any {
+    return {
+      id: p.id,
+      type: p.type,
+      finished: p.finished,
+      target: p.target,
+      hostGeneralId: p.hostGeneralId,
+      reqResource: p.reqResource,
+      openDate: p.openDate,
+      closeDate: p.closeDate,
+      detail: p.detail,
+    };
+  }
+
+  private mapToGeneral(p: any): any {
+    return {
+      id: p.no,
+      name: p.name,
+      weapon: p.weapon,
+      book: p.book,
+      horse: p.horse,
+      item: p.item,
+      gold: p.gold,
+      rice: p.rice,
+      aux: p.aux,
+    };
   }
 
   async openUniqueAuction(generalId: number, itemId: string, startBidAmount: number) {
@@ -307,8 +454,144 @@ export class AuctionService {
     }
   }
 
+  async processFinishedAuctions() {
+    const now = new Date();
+    const auctions = await this.prisma.auction.findMany({
+      where: {
+        finished: false,
+        closeDate: { lte: now },
+      },
+      include: {
+        bids: {
+          orderBy: { amount: "desc" },
+          take: 1,
+        },
+      },
+    });
+
+    for (const pAuction of auctions) {
+      await this.prisma.$transaction(async (tx) => {
+        // 도메인 객체로 변환 (낙찰자 입찰 정보 포함)
+        const auctionInfo = this.mapToAuctionInfo(pAuction);
+
+        let bidder: any = null;
+        let highestBid: any = null;
+
+        if (pAuction.bids.length > 0) {
+          highestBid = pAuction.bids[0];
+          bidder = await tx.general.findUnique({ where: { no: highestBid.generalId } });
+        }
+
+        const bidderGeneral = bidder ? this.mapToGeneral(bidder) : ({} as any);
+        const auction = AuctionFactory.create(auctionInfo, bidderGeneral);
+
+        if (highestBid) {
+          auction.setHighestBid({
+            id: highestBid.no,
+            auctionId: highestBid.auctionId,
+            userId: String(highestBid.owner),
+            generalId: highestBid.generalId,
+            amount: highestBid.amount,
+            bidDate: highestBid.date,
+            aux: highestBid.aux as any,
+          });
+        }
+
+        if (!bidder) {
+          // 유찰
+          await tx.auction.update({
+            where: { id: pAuction.id },
+            data: { finished: true }
+          });
+
+          // Resource 반환 (host에게)
+          if (pAuction.hostGeneralId !== 0) {
+            const resource = pAuction.type === "BuyRice" ? "rice" : pAuction.type === "SellRice" ? "gold" : null;
+            if (resource) {
+              const amount = (pAuction.detail as any).amount;
+              await this.incrementResource(tx, pAuction.hostGeneralId, resource, amount);
+            }
+          }
+          return;
+        }
+
+        // 낙찰 처리
+        const gameEnv = await this.getGameEnv();
+        const relYear = gameEnv.year - gameEnv.initYear;
+        const result = auction.finishAuction(auction.getHighestBid()!, bidder, relYear);
+
+        if (result) {
+          // 에러 시(예: 유니크 제한) 연장
+          // domain logic (AuctionUniqueItem.ts) 에서 이미 연장 메시지를 리턴했수도 있으나
+          // 여기서는 단순화해서 closeDate를 1시간 연장
+          await tx.auction.update({
+            where: { id: pAuction.id },
+            data: { closeDate: new Date(pAuction.closeDate.getTime() + 60 * 60 * 1000) }
+          });
+          return;
+        }
+
+        // 성공 시 DB 반영
+        if (pAuction.type === "UniqueItem") {
+          const itemRegistry = getItemRegistry();
+          const item = itemRegistry.create(pAuction.target!);
+          if (item) {
+            await tx.general.update({
+              where: { no: bidder.no },
+              data: { [item.type]: pAuction.target }
+            });
+          }
+        } else {
+          // 자원 경매
+          const basicAuction = auction as any; // AuctionBasicResource
+          const hostRes = basicAuction.getHostRes();
+          const bidderRes = basicAuction.getBidderRes();
+          const amount = (pAuction.detail as any).amount;
+
+          // bidder에게 hostRes 지급 (bidderRes는 입찰 시 이미 차감됨)
+          await this.incrementResource(tx, bidder.no, hostRes, amount);
+
+          // host에게 bidderRes 지급 (bidderRes는 낙찰가)
+          if (pAuction.hostGeneralId !== 0) {
+            await this.incrementResource(tx, pAuction.hostGeneralId, bidderRes, highestBid.amount);
+          }
+        }
+
+        await tx.auction.update({
+          where: { id: pAuction.id },
+          data: { finished: true }
+        });
+
+        // TODO: ActionLogger 등을 통한 로그 남기기
+      });
+    }
+  }
+
   private calculateCloseDate(now: Date, closeTurnCnt: number): Date {
     const turnDurationMs = 10 * 60 * 1000;
     return new Date(now.getTime() + closeTurnCnt * turnDurationMs);
+  }
+
+  private async incrementResource(tx: any, generalId: number, resource: string, amount: number) {
+    if (resource === "inheritancePoint") {
+      const general = await tx.general.findUnique({ where: { no: generalId } });
+      if (general) {
+        const aux = (general.aux as any) || {};
+        await tx.general.update({
+          where: { no: generalId },
+          data: {
+            aux: {
+              ...aux,
+              inheritancePoint: (aux.inheritancePoint || 0) + amount,
+            },
+          },
+        });
+      }
+    } else {
+      await tx.general.update({
+        where: { no: generalId },
+        data: { [resource]: { increment: amount } },
+      });
+    }
   }
 }

@@ -4,6 +4,8 @@
  * [전투] 계략 시도 확률 +10%p, 계략 성공 확률 +10%p
  */
 import { BaseItem } from "../BaseItem.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { StrategyAttemptTrigger, StrategyActivateTrigger, StrategyFailTrigger } from "../../triggers/war/index.js";
 import type { GeneralReadOnly, StatName, DomesticTurnType, DomesticVarType } from "../types.js";
 
 export class StrategyBookSamryakItem extends BaseItem {
@@ -17,6 +19,23 @@ export class StrategyBookSamryakItem extends BaseItem {
   readonly consumable = false;
   readonly buyable = false;
   readonly reqSecu = 0;
+
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new StrategyAttemptTrigger(
+        unit,
+        (u) => {
+          const general = u.getGeneral();
+          const intel = general.intel ?? 50;
+          let prob = intel / 100 + 0.1; // 기본 + 10%p
+          return prob;
+        },
+        (_u) => 0.7 + 0.1 // 기본 70% + 10%p
+      ),
+      new StrategyActivateTrigger(unit),
+      new StrategyFailTrigger(unit)
+    );
+  }
 
   onCalcDomestic(
     turnType: DomesticTurnType,
@@ -55,6 +74,23 @@ export class StrategyBookYukdoItem extends BaseItem {
   readonly consumable = false;
   readonly buyable = false;
   readonly reqSecu = 0;
+
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new StrategyAttemptTrigger(
+        unit,
+        (u) => {
+          const general = u.getGeneral();
+          const intel = general.intel ?? 50;
+          let prob = intel / 100 + 0.1;
+          return prob;
+        },
+        (_u) => 0.7 + 0.1
+      ),
+      new StrategyActivateTrigger(unit),
+      new StrategyFailTrigger(unit)
+    );
+  }
 
   onCalcDomestic(
     turnType: DomesticTurnType,

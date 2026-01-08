@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -8,7 +8,7 @@ import {
   TriggerPriority,
 } from "../../WarUnitTriggerRegistry.js";
 
-export class PreemptiveShotActivateTrigger implements PriorityWarUnitTrigger {
+export class PreemptiveShotActivateTrigger implements WarUnitTrigger {
   readonly name = "선제사격발동";
   readonly priority = TriggerPriority.BEGIN + 51;
   readonly raiseType: RaiseTypeValue;

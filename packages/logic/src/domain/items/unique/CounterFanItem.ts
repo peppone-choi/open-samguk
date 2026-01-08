@@ -3,7 +3,10 @@
  * [전투] 상대의 계략 성공 확률 -10%p, 상대의 계략을 20% 확률로 되돌림
  */
 import { BaseItem } from "../BaseItem.js";
-import type { GeneralReadOnly, StatName, WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
+import type { GeneralReadOnly, StatName } from "../types.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { CounterAttemptTrigger, CounterActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class CounterFanItem extends BaseItem {
   readonly code = "che_반계_파초선";
@@ -28,5 +31,10 @@ export class CounterFanItem extends BaseItem {
     return value;
   }
 
-  // TODO: getBattlePhaseSkillTriggerList 구현 시 반계 트리거 연결
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new CounterAttemptTrigger(unit, RaiseType.ITEM, 0.2),
+      new CounterActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 }

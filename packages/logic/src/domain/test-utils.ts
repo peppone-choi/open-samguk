@@ -16,6 +16,7 @@ export function createMockGeneral(overrides: Partial<General> = {}): General {
     ownerId: 0,
     nationId: 0,
     cityId: 1,
+    npc: 0,
     troopId: 0,
     gold: 1000,
     rice: 1000,
@@ -41,6 +42,11 @@ export function createMockGeneral(overrides: Partial<General> = {}): General {
     atmos: 0,
     dex: {},
     age: 20,
+    startAge: 20,
+    belong: 1,
+    betray: 0,
+    dedLevel: 0,
+    expLevel: 0,
     bornYear: 164,
     deadYear: 250,
     special: "None",
@@ -61,6 +67,7 @@ export function createMockGeneral(overrides: Partial<General> = {}): General {
     lastTurn: {},
     meta: {},
     penalty: {},
+    officerLock: 0,
     ...overrides,
   };
 }
@@ -113,13 +120,13 @@ export function createMockCity(overrides: Partial<City> = {}): City {
     wall: 1000,
     wallMax: 3000,
     trust: 50,
-    gold: 0,
-    rice: 0,
+    trade: 100,
     region: 0,
     state: 0,
     term: 0,
     conflict: {},
     meta: {},
+    dead: 0,
     ...overrides,
   };
 }
@@ -167,5 +174,6 @@ export function createMockWorldSnapshot(
     messages: overrides.messages ?? {},
     gameTime: overrides.gameTime ?? { year: 184, month: 1 },
     env: overrides.env ?? {},
+    generalTurns: {},
   };
 }

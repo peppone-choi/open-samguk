@@ -64,6 +64,13 @@ describe("GeneralHardTrainingCommand", () => {
         tournamentState: 0,
         lastTurn: {},
         troopId: 0,
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
         ...overrides,
       },
     },
@@ -111,8 +118,8 @@ describe("GeneralHardTrainingCommand", () => {
         wall: 1000,
         wallMax: 1000,
         trust: 100,
-        gold: 0,
-        rice: 0,
+        trade: 100,
+        dead: 0,
         region: 1,
         state: 0,
         term: 0,
@@ -127,6 +134,7 @@ describe("GeneralHardTrainingCommand", () => {
     messages: {},
     gameTime: { year: 184, month: 1 },
     env: {},
+    generalTurns: {},
   });
 
   it("정상 실행 시 훈련/사기/통솔경험/숙련도가 증가해야 함", () => {

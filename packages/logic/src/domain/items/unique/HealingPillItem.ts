@@ -3,8 +3,10 @@
  * [군사] 턴 실행 전 부상 회복. 3회용
  */
 import { BaseItem } from "../BaseItem.js";
-import type { General } from "../../entities.js";
-import type { RandUtil } from "@sammo/common";
+import { ItemHealTrigger } from "../../triggers/ItemHealTrigger.js";
+import { Trigger } from "../../Trigger.js";
+import { General } from "../../entities.js";
+import { RandUtil } from "@sammo/common";
 
 export class HealingPillItem extends BaseItem {
   readonly code = "che_치료_환약";
@@ -19,31 +21,30 @@ export class HealingPillItem extends BaseItem {
 
   static readonly REMAIN_KEY = "remain환약";
 
-  // TODO: getPreTurnExecuteTriggerList 구현
-  // new GeneralTrigger.che_아이템치료(general, general.getAuxVar('use_treatment') ?? 10)
+  getPreTurnExecuteTriggerList(_general: General): Trigger | null {
+    return new ItemHealTrigger();
+  }
 
   onArbitraryAction(
     general: General,
     _rng: RandUtil,
     actionType: string,
     phase?: string,
-    aux?: any
-  ): any {
-    if (actionType !== "장비매매") return aux;
-    if (phase !== "구매") return aux;
-
-    // 구매 시 사용 횟수 3으로 초기화
-    if (general.meta) {
-      general.meta[HealingPillItem.REMAIN_KEY] = 3;
+    _aux?: unknown
+  ): void {
+    if (actionType === "장비매매" && phase === "구매") {
+      if (general.meta) {
+        general.meta[HealingPillItem.REMAIN_KEY] = 3;
+      }
     }
-    return aux;
   }
 
   tryConsumeNow(general: General, actionType: string, command: string): boolean {
-    if (actionType !== "GeneralTrigger") return false;
-    if (command !== "che_아이템치료") return false;
+    if (actionType !== "GeneralTrigger" || command !== "che_아이템치료") {
+      return false;
+    }
 
-    const remainCnt = general.meta?.[HealingPillItem.REMAIN_KEY] ?? 1;
+    const remainCnt = (general.meta?.[HealingPillItem.REMAIN_KEY] as number) ?? 1;
     if (remainCnt > 1) {
       if (general.meta) {
         general.meta[HealingPillItem.REMAIN_KEY] = remainCnt - 1;

@@ -57,6 +57,13 @@ describe("GeneralLootCommand", () => {
         tournamentState: 0,
         lastTurn: {},
         troopId: 0,
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
       },
     },
     nations: {
@@ -127,8 +134,8 @@ describe("GeneralLootCommand", () => {
         wall: 1000,
         wallMax: 1000,
         trust: 100,
-        gold: 0,
-        rice: 0,
+        trade: 100,
+        dead: 0,
         region: 1,
         state: 0,
         term: 0,
@@ -156,8 +163,8 @@ describe("GeneralLootCommand", () => {
         wall: 1000,
         wallMax: 1000,
         trust: 100,
-        gold: 0,
-        rice: 0,
+        trade: 100,
+        dead: 0,
         region: 2,
         state: 0,
         term: 0,
@@ -172,6 +179,7 @@ describe("GeneralLootCommand", () => {
     messages: {},
     gameTime: { year: 184, month: 1 },
     env: { develcost: 20, startyear: 184 },
+    generalTurns: {},
   });
 
   it("성공 시 자원을 획득해야 함", () => {

@@ -25,6 +25,7 @@ export interface UnitConstraintContext {
   relativeYear: number;
   tech: number;
   nationAux: any;
+  regionIdToNameMap: Record<number, string>;
 }
 
 export abstract class BaseUnitConstraint {

@@ -1,5 +1,4 @@
 import { UnitData } from "./scenario/schema.js";
-import { RegionNameMap } from "./RegionMap.js";
 import {
   BaseUnitConstraint,
   ImpossibleConstraint,
@@ -10,6 +9,8 @@ import {
   ReqRegionsConstraint,
   ReqNationAuxConstraint,
   ReqMinRelYearConstraint,
+  ReqChiefConstraint,
+  ReqNotChiefConstraint,
   UnitConstraintContext,
 } from "./unit-constraints/index.js";
 
@@ -37,8 +38,14 @@ export class GameUnit {
   public readonly attackAbility: string | null;
   public readonly defenseAbility: string | null;
   public readonly specialAbility: string | null;
+  public readonly unitData: UnitData;
 
-  constructor(data: UnitData) {
+  constructor(
+    data: UnitData,
+    cityNameMap: Record<string, number>,
+    regionNameMap: Record<string, number>
+  ) {
+    this.unitData = data;
     this.id = data.id;
     this.type = data.type;
     this.name = data.name;
@@ -49,15 +56,13 @@ export class GameUnit {
     this.magicRate = data.magicRate;
     this.attackRange = data.attackRange;
     this.defenseRange = data.defenseRange;
-
-    this.constraints = this.parseConstraints(data.constraints || []);
     this.attackModifiers = data.attackModifiers || {};
     this.defenseModifiers = data.defenseModifiers || {};
     this.descriptions = data.descriptions;
-
     this.attackAbility = data.attackAbility || null;
     this.defenseAbility = data.defenseAbility || null;
     this.specialAbility = data.specialAbility || null;
+    this.constraints = this.parseConstraints(data.constraints || [], cityNameMap, regionNameMap);
   }
 
   /**
@@ -106,24 +111,51 @@ export class GameUnit {
     return this.defenseModifiers[attackerType.toString()] ?? 1.0;
   }
 
-  private parseConstraints(rawConstraints: any[]): BaseUnitConstraint[] {
+  private parseConstraints(
+    rawConstraints: any[],
+    cityNameMap: Record<string, number>,
+    regionNameMap: Record<string, number>
+  ): BaseUnitConstraint[] {
     return rawConstraints.map((c: any) => {
       switch (c.type) {
         case "impossible":
           return new ImpossibleConstraint();
         case "tech":
           return new ReqTechConstraint(c.value);
-        case "cities":
-          // Assuming basic.json just has IDs for now.
-          // If we want names, we'd need a lookup or pass them in JSON.
-          return new ReqCitiesConstraint(c.value);
-        case "regions":
-          const regionIds = (c.value as string[]).map((name) => RegionNameMap[name] || 0);
-          return new ReqRegionsConstraint(regionIds, c.value);
+        case "cities": {
+          const cityNames = Array.isArray(c.value) ? c.value : [c.value];
+          const cityIds = cityNames.map((name: string | number) => {
+            if (typeof name === "number") return name;
+            return cityNameMap[name] || 0;
+          });
+          return new ReqCitiesConstraint(cityIds, cityNames.map(String));
+        }
+        case "citiesWithLevel": {
+          const cityNames = Array.isArray(c.value) ? c.value : [c.value];
+          const cityIds = cityNames.map((name: string | number) => {
+            if (typeof name === "number") return name;
+            return cityNameMap[name] || 0;
+          });
+          return new ReqCitiesWithCityLevelConstraint(c.level, cityIds, cityNames.map(String));
+        }
+        case "highLevelCities":
+          return new ReqHighLevelCitiesConstraint(c.level, c.value);
+        case "regions": {
+          const regionNames = Array.isArray(c.value) ? c.value : [c.value];
+          const regionIds = regionNames.map((name: string | number) => {
+            if (typeof name === "number") return name;
+            return regionNameMap[name] || 0;
+          });
+          return new ReqRegionsConstraint(regionIds, regionNames.map(String));
+        }
         case "year":
           return new ReqMinRelYearConstraint(c.value);
         case "nationAux":
           return new ReqNationAuxConstraint(c.key, c.cmp, c.value);
+        case "chief":
+          return new ReqChiefConstraint();
+        case "notChief":
+          return new ReqNotChiefConstraint();
         default:
           return new ImpossibleConstraint();
       }

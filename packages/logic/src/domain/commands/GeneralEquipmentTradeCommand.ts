@@ -4,6 +4,7 @@ import { WorldSnapshot, WorldDelta } from "../entities.js";
 import { General } from "../models/General.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
 import { GameConst } from "../GameConst.js";
+import { getItemRegistry } from "../items/ItemRegistry.js";
 
 /**
  * 장비매매 커맨드
@@ -93,6 +94,37 @@ export class GeneralEquipmentTradeCommand extends GeneralCommand {
         ...general.addExperience(10),
       };
       logs.push(`${itemInfo.name}을(를) ${sellPrice}금에 판매했습니다.`);
+
+      // 아이템/특기 후처리 (onArbitraryAction)
+      const itemReg = getItemRegistry();
+      const equippedItems = [iGeneral.weapon, iGeneral.horse, iGeneral.book, iGeneral.item];
+      for (const code of equippedItems) {
+        if (!code || code === "None") continue;
+        const itemObj = itemReg.create(code);
+        if (itemObj?.onArbitraryAction) {
+          const actionResult = itemObj.onArbitraryAction(iGeneral, rng, "sellItem", "after", {
+            itemType,
+            itemCode: targetItemCode,
+          });
+          if (actionResult) {
+            if (actionResult.delta) {
+              // delta가 있으면 general 객체에 직접 반영하고 delta에 병합
+              if (actionResult.delta.gold) {
+                const goldDelta = actionResult.delta.gold - iGeneral.gold;
+                generalDelta = { ...generalDelta, ...general.addGold(goldDelta) };
+              }
+              if (actionResult.delta.rice) {
+                const riceDelta = actionResult.delta.rice - iGeneral.rice;
+                generalDelta = { ...generalDelta, ...general.addRice(riceDelta) };
+              }
+              // 기타 필드 필요시 추가...
+            }
+            if (actionResult.logs) {
+              logs.push(...actionResult.logs);
+            }
+          }
+        }
+      }
 
       // 진귀한 아이템 판매 시 전역 로그 (isBuyable이 false인 경우)
       if (!itemInfo.isBuyable) {

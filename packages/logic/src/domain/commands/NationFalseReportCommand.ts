@@ -23,7 +23,7 @@ export class NationFalseReportCommand extends GeneralCommand {
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
       ConstraintHelper.ExistsDestNation(), // destCityId의 소속 국가 존재 여부
-      ConstraintHelper.AllowDiplomacyStatus([], [0, 1], "선포, 전쟁중인 상대국에게만 가능합니다."),
+      ConstraintHelper.AllowDiplomacyStatus(["0", "1"], "선포, 전쟁중인 상대국에게만 가능합니다."),
     ];
   }
 

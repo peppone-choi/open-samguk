@@ -92,8 +92,8 @@ export class NationAppointCommand extends GeneralCommand {
         },
         [destGeneralId]: {
           cityId: destCityId,
-          aux: {
-            ...iDestGeneral.aux,
+          meta: {
+            ...iDestGeneral.meta,
             lastAppoint: yearMonth,
           },
         },

@@ -55,6 +55,13 @@ function createGeneral(overrides: Partial<General> = {}): General {
     lastTurn: {},
     meta: {},
     penalty: {},
+    npc: 0,
+    startAge: 20,
+    belong: 1,
+    betray: 0,
+    dedLevel: 0,
+    expLevel: 0,
+    officerLock: 0,
     ...overrides,
   };
 }
@@ -107,8 +114,8 @@ function createCity(overrides: Partial<City> = {}): City {
     wall: 5000,
     wallMax: 10000,
     trust: 80,
-    gold: 1000,
-    rice: 1000,
+    trade: 100,
+    dead: 0,
     region: 4,
     state: 0,
     term: 0,
@@ -151,6 +158,7 @@ describe("NationAcceptAllianceCommand", () => {
     messages: {},
     gameTime: { year: 186, month: 1 },
     env: { startyear: 184 },
+    generalTurns: {},
   };
 
   it("동맹 수락 시 외교 상태가 동맹(8)으로 설정되어야 함", () => {

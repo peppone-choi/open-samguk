@@ -1,8 +1,7 @@
-/**
- * 옥벽(약탈) - che_약탈_옥벽.php 포팅
- * [전투] 새로운 상대와 전투 시 20% 확률로 상대 금, 쌀 10% 약탈
- */
 import { BaseItem } from "../BaseItem.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { LootAttemptTrigger, LootActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class LootJadeItem extends BaseItem {
   readonly code = "che_약탈_옥벽";
@@ -15,7 +14,10 @@ export class LootJadeItem extends BaseItem {
   readonly buyable = false;
   readonly reqSecu = 0;
 
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new che_약탈시도(unit, TYPE_ITEM, 0.2, 0.1),
-  // new che_약탈발동(unit, TYPE_ITEM)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new LootAttemptTrigger(unit, RaiseType.ITEM, 0.2, 0.1),
+      new LootActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 }

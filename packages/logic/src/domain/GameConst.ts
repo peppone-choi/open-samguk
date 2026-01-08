@@ -110,6 +110,7 @@ export const GameConst = {
   basePopIncreaseAmount: 5000,
   expandCityPopIncreaseAmount: 100000,
   minMonthToAllowInheritItem: 4,
+  coefAidAmount: 10000, // 원조 작위 계수 (레거시: GameConst::$coefAidAmount)
 
   // 기본 아이템 목록 (Legacy: GameConst::$allItems)
   items: {
@@ -133,5 +134,13 @@ export const GameConst = {
     item: {
       Medicine: { name: "한약", cost: 300, reqSecu: 10, isBuyable: true },
     },
+  },
+  // 성/이름 풀 (익명화용)
+  namePoolRaw: {
+    first: ["김", "이", "박", "최", "정", "강", "조", "윤", "장", "임", "한", "오", "서", "신", "권"],
+    middle: [
+      "영", "철", "지", "성", "민", "재", "현", "진", "동", "수", "슬", "보", "정", "석", "준",
+    ],
+    last: ["수", "영", "호", "진", "희", "환", "석", "민", "우", "현", "훈", "태", "재", "윤", "성"],
   },
 } as const;

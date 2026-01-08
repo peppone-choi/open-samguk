@@ -55,6 +55,13 @@ function createGeneral(overrides: Partial<General> = {}): General {
     lastTurn: {},
     meta: {},
     penalty: {},
+    npc: 0,
+    startAge: 20,
+    belong: 1,
+    betray: 0,
+    dedLevel: 0,
+    expLevel: 0,
+    officerLock: 0,
     ...overrides,
   };
 }
@@ -107,8 +114,8 @@ function createCity(overrides: Partial<City> = {}): City {
     wall: 5000,
     wallMax: 10000,
     trust: 80,
-    gold: 1000,
-    rice: 1000,
+    trade: 100,
+    dead: 0,
     region: 4,
     state: 0,
     term: 0,
@@ -158,6 +165,7 @@ describe("NationProposePeaceCommand", () => {
     messages: {},
     gameTime: { year: 186, month: 1 },
     env: { startyear: 184 },
+    generalTurns: {},
   };
 
   it("교전중인 국가에 종전 제의 시 성공해야 함", () => {

@@ -3,6 +3,9 @@
  * [전투] 첫 페이즈 위압 발동(적 공격, 회피 불가, 사기 5 감소)
  */
 import { BaseItem } from "../BaseItem.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { IntimidationAttemptTrigger, IntimidationActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class IntimidationRopeItem extends BaseItem {
   readonly code = "che_위압_조목삭";
@@ -15,7 +18,10 @@ export class IntimidationRopeItem extends BaseItem {
   readonly buyable = false;
   readonly reqSecu = 0;
 
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new che_위압시도(unit),
-  // new che_위압발동(unit)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new IntimidationAttemptTrigger(unit, RaiseType.ITEM),
+      new IntimidationActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 }

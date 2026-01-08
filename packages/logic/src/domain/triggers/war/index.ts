@@ -67,3 +67,5 @@ export { ChargeContinueTrigger } from "./ChargeContinueTrigger.js";
 
 // 전멸 시 페이즈 증가 (Annihilation Phase Boost) 시스템
 export { AnnihilationPhaseBoostTrigger } from "./AnnihilationPhaseBoostTrigger.js";
+export * from "./StatMultiplierTrigger.js";
+export * from "./WarActivateSkillsTrigger.js";

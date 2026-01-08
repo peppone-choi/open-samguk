@@ -3,6 +3,9 @@
  * [전투] 새로운 상대와 전투 시 50% 확률로 저격 발동, 성공 시 사기+20
  */
 import { BaseItem } from "../BaseItem.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { SniperAttemptTrigger, SniperActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class ThrowingKnifeItem extends BaseItem {
   readonly code = "che_저격_비도";
@@ -15,7 +18,10 @@ export class ThrowingKnifeItem extends BaseItem {
   readonly buyable = false;
   readonly reqSecu = 0;
 
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new che_저격시도(unit, TYPE_ITEM, 0.5, 20, 40),
-  // new che_저격발동(unit, TYPE_ITEM)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new SniperAttemptTrigger(unit, RaiseType.ITEM, 0.5, 20, 40, 20),
+      new SniperActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 }

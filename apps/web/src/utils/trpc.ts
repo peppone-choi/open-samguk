@@ -1,4 +1,5 @@
 import { createTRPCReact } from "@trpc/react-query";
-import type { AppRouter } from "../../../api/src/trpc/trpc.router.js";
+import type { AppRouter } from "../../../api/src/trpc/trpc.router";
 
-export const trpc = createTRPCReact<AppRouter>();
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const trpc: ReturnType<typeof createTRPCReact<AppRouter>> = createTRPCReact<AppRouter>();

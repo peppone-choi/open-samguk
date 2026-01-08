@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -15,7 +15,7 @@ import {
  * - 계략실패 스킬이 활성화되어 있으면 실패 데미지 배수 적용 (상대에게 약간의 이득)
  * - selfEnv['magic']에서 계략 종류와 실패 데미지 배수 읽기
  */
-export class StrategyFailTrigger implements PriorityWarUnitTrigger {
+export class StrategyFailTrigger implements WarUnitTrigger {
   readonly name = "계략실패";
   readonly priority = TriggerPriority.POST + 610;
   readonly raiseType = RaiseType.NONE;

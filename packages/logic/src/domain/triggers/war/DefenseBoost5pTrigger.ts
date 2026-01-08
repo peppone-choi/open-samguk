@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -14,7 +14,7 @@ import {
  * - Priority: FINAL + 200 (50200)
  * - 수비 시 상대 전투력을 1/1.05 배로 감소 (실질적 방어력 5% 증가)
  */
-export class DefenseBoost5pTrigger implements PriorityWarUnitTrigger {
+export class DefenseBoost5pTrigger implements WarUnitTrigger {
   readonly name = "방어력증가5p";
   readonly priority = TriggerPriority.FINAL + 200;
   readonly raiseType = RaiseType.NONE;

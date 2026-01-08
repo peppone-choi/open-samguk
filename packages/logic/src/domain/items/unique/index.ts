@@ -21,7 +21,7 @@ import { AbacusItem } from "./AbacusItem.js";
 import { PotteryItem } from "./PotteryItem.js";
 import { MoraleLiquorItem } from "./MoraleLiquorItem.js";
 import { TrainingLiquorItem } from "./TrainingLiquorItem.js";
-import { RecruitmentLiquorItem } from "./RecruitmentLiquorItem.js";
+import { RecruitmentItem } from "./RecruitmentItem.js";
 import { SuppressionBookItem } from "./SuppressionBookItem.js";
 import { ExorcismMapItem } from "./ExorcismMapItem.js";
 import { IntimidationRopeItem } from "./IntimidationRopeItem.js";
@@ -34,9 +34,18 @@ import { SeoChokMapItem } from "./SeoChokMapItem.js";
 import { StrategyMapItem } from "./StrategyMapItem.js";
 import { FameJewelItem } from "./FameJewelItem.js";
 import { TalismanItem } from "./TalismanItem.js";
-import { DexterityToolItem } from "./DexterityToolItem.js";
+import { BronzeSparrowItem } from "./BronzeSparrowItem.js";
 import { TypeCorrectionLiquorItem } from "./TypeCorrectionLiquorItem.js";
 import { RageBookItem } from "./RageBookItem.js";
+import { InsightBookItem } from "./InsightBookItem.js";
+import { StrategyPouchItem, StrategyBagItem } from "./StrategyConsumables.js";
+import { DomesticBoostItem } from "./DomesticBoostItem.js";
+import { SiegeDefenseBookItem } from "./SiegeDefenseBookItem.js";
+import {
+  StrengthBoostLiquorItem,
+  IntelBoostLiquorItem,
+  LeadershipBoostLiquorItem,
+} from "./StatBoostLiquorItems.js";
 
 import {
   MoraleLiquor2Item,
@@ -56,12 +65,13 @@ import {
 import {
   HealingPill2Item,
   HealingPill3Item,
-  HealingBook1Item,
-  HealingBook2Item,
+  HealingPill4Item,
+  HealingHerb1Item,
 } from "./HealingVariants.js";
 
 import { StrategyBookSamryakItem, StrategyBookYukdoItem } from "./StrategyBooks.js";
-import { SiegeBookItem, DefenseBookItem } from "./SiegeDefenseBooks.js";
+import { SiegeBookItem, DefenseBookItem, DefenseBook2Item } from "./SiegeDefenseBooks.js";
+import { SainswordItem, NoneItem } from "./CheatItems.js";
 
 export {
   CounterFanItem,
@@ -82,7 +92,7 @@ export {
   PotteryItem,
   MoraleLiquorItem,
   TrainingLiquorItem,
-  RecruitmentLiquorItem,
+  RecruitmentItem,
   SuppressionBookItem,
   ExorcismMapItem,
   IntimidationRopeItem,
@@ -95,7 +105,7 @@ export {
   StrategyMapItem,
   FameJewelItem,
   TalismanItem,
-  DexterityToolItem,
+  BronzeSparrowItem,
   TypeCorrectionLiquorItem,
   RageBookItem,
   MoraleLiquor2Item,
@@ -109,12 +119,23 @@ export {
   TrainingBook2Item,
   HealingPill2Item,
   HealingPill3Item,
-  HealingBook1Item,
-  HealingBook2Item,
+  HealingPill4Item,
+  HealingHerb1Item,
   StrategyBookSamryakItem,
   StrategyBookYukdoItem,
   SiegeBookItem,
   DefenseBookItem,
+  DefenseBook2Item,
+  InsightBookItem,
+  StrategyPouchItem,
+  StrategyBagItem,
+  DomesticBoostItem,
+  SiegeDefenseBookItem,
+  StrengthBoostLiquorItem,
+  IntelBoostLiquorItem,
+  LeadershipBoostLiquorItem,
+  SainswordItem,
+  NoneItem,
 };
 
 export const ALL_UNIQUE_ITEMS = [
@@ -136,7 +157,7 @@ export const ALL_UNIQUE_ITEMS = [
   PotteryItem,
   MoraleLiquorItem,
   TrainingLiquorItem,
-  RecruitmentLiquorItem,
+  RecruitmentItem,
   SuppressionBookItem,
   ExorcismMapItem,
   IntimidationRopeItem,
@@ -149,7 +170,7 @@ export const ALL_UNIQUE_ITEMS = [
   StrategyMapItem,
   FameJewelItem,
   TalismanItem,
-  DexterityToolItem,
+  BronzeSparrowItem,
   TypeCorrectionLiquorItem,
   RageBookItem,
   MoraleLiquor2Item,
@@ -163,10 +184,21 @@ export const ALL_UNIQUE_ITEMS = [
   TrainingBook2Item,
   HealingPill2Item,
   HealingPill3Item,
-  HealingBook1Item,
-  HealingBook2Item,
+  HealingPill4Item,
+  HealingHerb1Item,
   StrategyBookSamryakItem,
   StrategyBookYukdoItem,
   SiegeBookItem,
   DefenseBookItem,
+  DefenseBook2Item,
+  InsightBookItem,
+  StrategyPouchItem,
+  StrategyBagItem,
+  DomesticBoostItem,
+  SiegeDefenseBookItem,
+  StrengthBoostLiquorItem,
+  IntelBoostLiquorItem,
+  LeadershipBoostLiquorItem,
+  SainswordItem,
+  NoneItem,
 ];

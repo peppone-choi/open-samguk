@@ -277,8 +277,8 @@ TypeScript 파일: `packages/logic/src/domain/nation-types/`
 | Enums                 | 16      | 16        | **100%** ✅ |
 | ActionNationType      | 15      | 15        | **100%** ✅ |
 | DTO                   | 14      | 14        | **100%** ✅ |
-| ActionPersonality     | 12      | 0         | 0%          |
-| GameUnitConstraint    | 11      | 0         | 0%          |
+| ActionPersonality     | 12      | 12        | **100%** ✅ |
+| GameUnitConstraint    | 11      | 11        | **100%** ✅ |
 | GeneralTrigger        | 4       | 4         | **100%** ✅ |
 | sammo/ 루트           | 62      | ~10       | 16%         |
 

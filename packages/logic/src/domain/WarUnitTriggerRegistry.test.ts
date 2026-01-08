@@ -64,6 +64,13 @@ const createMockGeneral = (id: number, name: string): General => ({
   lastTurn: {},
   meta: {},
   penalty: {},
+  npc: 0,
+  startAge: 20,
+  belong: 1,
+  betray: 0,
+  dedLevel: 0,
+  expLevel: 0,
+  officerLock: 0,
 });
 
 describe("WarUnitTriggerRegistry", () => {

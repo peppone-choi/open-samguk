@@ -158,7 +158,7 @@ export class GeneralService {
   }
 
   /**
-   * 장수 상세 정보 조회 (기존 GameService 로직 이동 권장)
+   * 장수 상세 정보 조회
    */
   async getGeneralDetail(generalId: number) {
     return this.prisma.general.findUnique({
@@ -197,7 +197,6 @@ export class GeneralService {
    * 국가 임관 (Join)
    */
   async joinNation(generalId: number, nationId: number) {
-    // 1. 중립(방랑) 상태인지 확인 등 비즈니스 로직 필요
     const general = await this.prisma.general.findUnique({ where: { no: generalId } });
     if (!general) throw new Error("장수가 없습니다.");
     if (general.nationId !== 0) throw new Error("이미 소속된 국가가 있습니다.");
@@ -206,8 +205,64 @@ export class GeneralService {
       where: { no: generalId },
       data: {
         nationId,
-        officerLevel: 1, // 일반 장수
-        belong: 1, // 호봉수 초기화
+        officerLevel: 1,
+        belong: 1,
+      },
+    });
+  }
+
+  /**
+   * 접속 중인 장수 목록 (최근 10분)
+   */
+  async getConnectedGenerals(seconds: number = 600) {
+    const threshold = new Date(Date.now() - seconds * 1000);
+    return this.prisma.general.findMany({
+      where: {
+        npc: 0,
+        accessLog: {
+          lastRefresh: { gte: threshold },
+        },
+      },
+      select: {
+        no: true,
+        name: true,
+        nationId: true,
+        nation: { select: { name: true, color: true } },
+        accessLog: { select: { lastRefresh: true } },
+      },
+      orderBy: { accessLog: { lastRefresh: "desc" } },
+    });
+  }
+
+  /**
+   * 장수 목록 조회 (필터링 및 정렬)
+   */
+  async getGeneralList(params: {
+    nationId?: number;
+    npc?: number[];
+    orderBy?: string;
+    limit?: number;
+    offset?: number;
+  }) {
+    const { nationId, npc, orderBy = "experience", limit = 100, offset = 0 } = params;
+
+    const where: any = {};
+    if (nationId !== undefined) where.nationId = nationId;
+    if (npc !== undefined) where.npc = { in: npc };
+
+    let order: any = { [orderBy]: "desc" };
+    if (orderBy === "statSum") {
+      order = { experience: "desc" };
+    }
+
+    return this.prisma.general.findMany({
+      where,
+      orderBy: order,
+      take: limit,
+      skip: offset,
+      include: {
+        nation: { select: { name: true, color: true } },
+        city: { select: { name: true } },
       },
     });
   }

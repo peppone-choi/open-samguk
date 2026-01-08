@@ -10,7 +10,7 @@
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean",
-    "dev:api": "pnpm --filter @sammo/api dev",
+    "dev:api": "pnpm --filter @sammo/api start:dev",
     "dev:engine": "pnpm --filter @sammo/engine dev",
     "dev:web": "pnpm --filter @sammo/web dev",
     "db:generate": "pnpm --filter @sammo/infra db:generate",

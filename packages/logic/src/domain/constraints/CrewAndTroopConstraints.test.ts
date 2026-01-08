@@ -57,6 +57,12 @@ describe("CrewAndTroopConstraints", () => {
     penalty: {},
     ownerId: 1,
     troopId: 0,
+    startAge: 20,
+    belong: 1,
+    betray: 0,
+    dedLevel: 0,
+    expLevel: 0,
+    officerLock: 0,
     ...overrides,
   });
 
@@ -94,8 +100,10 @@ describe("CrewAndTroopConstraints", () => {
         cities: {},
         diplomacy: {},
         troops: {},
+        messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       };
       const view = new SnapshotStateView(snapshot);
       expect(constraint.test({ actorId: 1 } as any, view).kind).toBe("allow");
@@ -110,8 +118,10 @@ describe("CrewAndTroopConstraints", () => {
         cities: {},
         diplomacy: {},
         troops: {},
+        messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       };
       const view = new SnapshotStateView(snapshot);
       expect(constraint.test({ actorId: 1 } as any, view).kind).toBe("deny");
@@ -126,8 +136,10 @@ describe("CrewAndTroopConstraints", () => {
         cities: {},
         diplomacy: {},
         troops: {},
+        messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       };
       const view = new SnapshotStateView(snapshot);
       expect(constraint.test({ actorId: 1 } as any, view).kind).toBe("deny");

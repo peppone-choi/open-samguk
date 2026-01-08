@@ -3,6 +3,9 @@
  * [군사] 턴 실행 전 부상 회복. (영구)
  */
 import { BaseItem } from "../BaseItem.js";
+import { ItemHealTrigger } from "../../triggers/ItemHealTrigger.js";
+import { Trigger } from "../../triggers/Trigger.js";
+import { General } from "../../entities.js";
 
 export class HealingOintmentItem extends BaseItem {
   readonly code = "che_치료_정력견혈";
@@ -15,6 +18,7 @@ export class HealingOintmentItem extends BaseItem {
   readonly buyable = false;
   readonly reqSecu = 0;
 
-  // TODO: getPreTurnExecuteTriggerList 구현
-  // new GeneralTrigger.che_아이템치료(general)
+  getPreTurnExecuteTriggerList(_general: General): Trigger | null {
+    return new ItemHealTrigger();
+  }
 }

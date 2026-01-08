@@ -12,9 +12,9 @@ import { JosaUtil } from "@sammo/common";
  * - 보급이 끊긴 도시의 장수들은 병력 수치가 5% 감소합니다.
  * - 보급이 끊긴 도시의 민심이 30 미만이면 해당 도시는 공백지가 됩니다.
  */
-export class UpdateCitySupplyEvent implements GameEvent {
-  public id = "update_city_supply_event";
-  public name = "도시 보급 갱신";
+export class PreMonthUpdateCitySupplyEvent implements GameEvent {
+  public id = "pre_month_update_city_supply_event";
+  public name = "도시 보급 갱신 (월초)";
   public target = EventTarget.PRE_MONTH;
   public priority = 5; // 인구 증가 및 수입 정산보다 먼저 실행
 

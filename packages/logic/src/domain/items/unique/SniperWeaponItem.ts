@@ -1,8 +1,7 @@
-/**
- * 수극(저격) - che_저격_수극.php 포팅
- * [전투] 전투 개시 시 저격. 1회용
- */
 import { BaseItem } from "../BaseItem.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { SniperAttemptTrigger, SniperActivateTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class SniperWeaponItem extends BaseItem {
   readonly code = "che_저격_수극";
@@ -15,7 +14,10 @@ export class SniperWeaponItem extends BaseItem {
   readonly buyable = true;
   readonly reqSecu = 1000;
 
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new che_저격시도(unit, TYPE_CONSUMABLE_ITEM, 1, 20, 40),
-  // new che_저격발동(unit, TYPE_CONSUMABLE_ITEM)
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new SniperAttemptTrigger(unit, RaiseType.ITEM, 1, 20, 40),
+      new SniperActivateTrigger(unit, RaiseType.ITEM)
+    );
+  }
 }

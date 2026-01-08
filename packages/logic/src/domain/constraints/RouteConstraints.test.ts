@@ -57,6 +57,12 @@ describe("RouteConstraints", () => {
     penalty: {},
     ownerId: 1,
     troopId: 0,
+    startAge: 20,
+    belong: 1,
+    betray: 0,
+    dedLevel: 0,
+    expLevel: 0,
+    officerLock: 0,
     ...overrides,
   });
 
@@ -80,8 +86,8 @@ describe("RouteConstraints", () => {
     wall: 0,
     wallMax: 0,
     trust: 0,
-    gold: 0,
-    rice: 0,
+    trade: 100,
+    dead: 0,
     region: 1,
     state: 0,
     term: 0,
@@ -101,6 +107,7 @@ describe("RouteConstraints", () => {
     messages: {},
     gameTime: { year: 0, month: 0 },
     env: {},
+    generalTurns: {},
   };
 
   describe("HasRouteConstraint", () => {

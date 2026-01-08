@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -15,7 +15,7 @@ import {
  * - 필살 스킬이 활성화되어 있으면 상대에게 '회피불가' 스킬 활성화
  * - 필살 적중 시 상대의 회피를 무효화
  */
-export class KillingBlowEnhancedTrigger implements PriorityWarUnitTrigger {
+export class KillingBlowEnhancedTrigger implements WarUnitTrigger {
   readonly name = "필살강화_회피불가";
   readonly priority = TriggerPriority.PRE + 150;
   readonly raiseType = RaiseType.NONE;

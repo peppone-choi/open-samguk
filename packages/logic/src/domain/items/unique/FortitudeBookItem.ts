@@ -3,7 +3,9 @@
  * [전투] 남은 병력이 적을수록 공격력 증가. 최대 +60%
  */
 import { BaseItem } from "../BaseItem.js";
-import type { WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
+import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
+import { StatMultiplierTrigger } from "../../triggers/war/index.js";
+import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class FortitudeBookItem extends BaseItem {
   readonly code = "che_불굴_상편";
@@ -16,20 +18,25 @@ export class FortitudeBookItem extends BaseItem {
   readonly buyable = false;
   readonly reqSecu = 0;
 
-  getWarPowerMultiplier(unit: WarUnitReadOnly): WarPowerMultiplier {
-    const general = unit.getGeneral();
-    const leadership = general.leadership;
-    const crew = general.crew;
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
+    return new WarUnitTriggerCaller(
+      new StatMultiplierTrigger(
+        unit,
+        (u) => {
+          const general = u.getGeneral();
+          const leadership = general.leadership;
+          const crew = u.getCrew(); // 현재 병력
 
-    // 병력 비율 계산 (0~1)
-    const maxCrew = leadership * 100;
-    const crewRatio = Math.max(0, Math.min(1, crew / maxCrew));
+          // 병력 비율 계산 (0~1)
+          const maxCrew = leadership * 100;
+          const crewRatio = Math.max(0, Math.min(1, crew / maxCrew));
 
-    // 병력이 적을수록 공격력 증가 (최대 +60%)
-    const attackBonus = 1 + 0.6 * (1 - crewRatio);
-    return [attackBonus, 1];
+          // 병력이 적을수록 공격력 증가 (최대 +60%)
+          const attackBonus = 1 + 0.6 * (1 - crewRatio);
+          return [attackBonus, 1];
+        },
+        RaiseType.ITEM
+      )
+    );
   }
-
-  // TODO: getBattlePhaseSkillTriggerList 구현
-  // new 전투력보정(unit, attackBonus)
 }

@@ -1,13 +1,13 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
   RaiseTypeValue,
 } from "../../WarUnitTriggerRegistry.js";
 
-export class ArcherPreemptiveStrikeTrigger implements PriorityWarUnitTrigger {
+export class ArcherPreemptiveStrikeTrigger implements WarUnitTrigger {
   readonly name = "궁병선제사격";
   readonly priority: number;
   readonly raiseType: RaiseTypeValue = RaiseType.NONE;

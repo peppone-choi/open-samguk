@@ -25,9 +25,17 @@ export abstract class BaseAuction {
   /**
    * 익명 이름 생성 (레거시 genObfuscatedName)
    */
-  static genObfuscatedName(id: number, seed: string, namePoolRaw: string[][]): string {
+  static genObfuscatedName(
+    id: number,
+    seed: string,
+    namePoolRaw: {
+      readonly first: readonly string[];
+      readonly middle: readonly string[];
+      readonly last: readonly string[];
+    }
+  ): string {
     // 레거시 로직: 3개 리스트(성, 이름1, 이름2) 조합 후 셔플
-    const [firstNames, middleNames, lastNames] = namePoolRaw;
+    const { first: firstNames, middle: middleNames, last: lastNames } = namePoolRaw;
     const pool: string[] = [];
     for (const f of firstNames) {
       for (const m of middleNames) {
@@ -70,9 +78,96 @@ export abstract class BaseAuction {
   abstract bid(amount: number, tryExtendCloseDate: boolean): string | null;
 
   /**
+   * 공통 입찰 로직
+   * @param amount 입찰 금액
+   * @param tryExtendCloseDate 종료 연장 시도 여부
+   * @param now 현재 시간
+   */
+  protected _bid(amount: number, tryExtendCloseDate: boolean, now: Date): BidResult {
+    if (this.info.finished) {
+      return { success: false, error: "경매가 이미 끝났습니다." };
+    }
+
+    if (this.info.closeDate < now) {
+      return { success: false, error: "경매가 이미 끝났습니다." };
+    }
+
+    if (this.info.openDate > now) {
+      return { success: false, error: "경매가 아직 시작되지 않았습니다." };
+    }
+
+    const detail = this.info.detail;
+
+    // 즉시판매가 체크
+    if (!detail.isReverse) {
+      if (detail.finishBidAmount !== null && amount > detail.finishBidAmount) {
+        return { success: false, error: "즉시 낙찰가보다 높을 수 없습니다." };
+      }
+    } else {
+      if (detail.finishBidAmount !== null && amount < detail.finishBidAmount) {
+        return { success: false, error: "즉시 낙찰가보다 낮을 수 없습니다." };
+      }
+    }
+
+    const highestBid = this.getHighestBid();
+
+    // 이전 입찰가와 비교
+    if (!detail.isReverse) {
+      if (highestBid && amount <= highestBid.amount) {
+        return { success: false, error: "현재 최고 입찰가보다 높아야 합니다." };
+      }
+      if (detail.startBidAmount !== null && amount < detail.startBidAmount) {
+        return { success: false, error: "시작가보다 낮을 수 없습니다." };
+      }
+    } else {
+      if (highestBid && amount >= highestBid.amount) {
+        return { success: false, error: "현재 최고 입찰가보다 낮아야 합니다." };
+      }
+      if (detail.startBidAmount !== null && amount > detail.startBidAmount) {
+        return { success: false, error: "시작가보다 높을 수 없습니다." };
+      }
+    }
+
+    // 환불 대상 확인
+    let refundInfo: { generalId: number; amount: number; resource: AuctionResourceType } | undefined;
+    if (highestBid && highestBid.generalId !== this.general.id) {
+      refundInfo = {
+        generalId: highestBid.generalId,
+        amount: highestBid.amount,
+        resource: this.info.reqResource,
+      };
+    }
+
+    // 본인 추가 공제액 계산 (레거시: 이전 입찰이 있으면 차액만 공제하지만, 여기서는 전체 공제후 환불하는 방식 또는 차액만 처리)
+    // 현재 구현은 매번 전체 금액을 지불하고 이전 입찰은 환불받는 것으로 단순화하거나,
+    // 레거시처럼 차액만 처리할 수 있음. 여기서는 "새 입찰 = 새 자원 점유"로 보고 단순 처리.
+
+    // 시간 연장 로직
+    let newCloseDate: Date | undefined;
+    const extensionThresholdMin = 5; // 5분 전 입찰 시 연장
+    if (this.info.closeDate.getTime() - now.getTime() < extensionThresholdMin * 60 * 1000) {
+      newCloseDate = new Date(this.info.closeDate.getTime() + extensionThresholdMin * 60 * 1000);
+
+      // 최대 연장 제한 확인
+      if (detail.availableLatestBidCloseDate && newCloseDate > detail.availableLatestBidCloseDate) {
+        newCloseDate = detail.availableLatestBidCloseDate;
+      }
+    }
+
+    return {
+      success: true,
+      deductGeneralId: this.general.id,
+      deductAmount: amount,
+      deductResource: this.info.reqResource,
+      refund: refundInfo,
+      newCloseDate,
+    };
+  }
+
+  /**
    * 경매 완료 처리 (추상 메서드)
    */
-  abstract finishAuction(highestBid: AuctionBid, bidder: General): string | null;
+  abstract finishAuction(highestBid: AuctionBid, bidder: General, relYear?: number): string | null;
 
   /**
    * 유찰/롤백 처리 (추상 메서드)
@@ -131,4 +226,18 @@ export abstract class BaseAuction {
       this.rollbackAuction();
     }
   }
+}
+
+export interface BidResult {
+  success: boolean;
+  error?: string;
+  refund?: {
+    generalId: number;
+    amount: number;
+    resource: AuctionResourceType;
+  };
+  deductGeneralId?: number;
+  deductAmount?: number;
+  deductResource?: AuctionResourceType;
+  newCloseDate?: Date;
 }

@@ -1,57 +1,58 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
+  RaiseType,
   RaiseTypeValue,
+  TriggerPriority,
 } from "../../WarUnitTriggerRegistry.js";
 
-export class WarActivateSkillsTrigger implements PriorityWarUnitTrigger {
-  readonly name = "스킬활성화";
-  readonly priority: number;
+/**
+ * 단순 보조 스킬 활성화 트리거
+ * 본인 또는 상대방에게 하나 이상의 보조 스킬(상태)을 부여함
+ */
+export class WarActivateSkillsTrigger implements WarUnitTrigger {
+  readonly name = "스킬발동";
+  readonly priority = TriggerPriority.BEGIN + 500;
   readonly raiseType: RaiseTypeValue;
 
   constructor(
     public readonly unit: WarUnit,
-    priority: number,
-    raiseType: RaiseTypeValue,
-    private readonly isSelf: boolean,
-    private readonly skills: string[]
+    raiseType: RaiseTypeValue = RaiseType.NONE,
+    private readonly onOpponent: boolean = false,
+    private readonly skills: string[] = []
   ) {
-    this.priority = priority;
     this.raiseType = raiseType;
   }
 
-  attempt(_ctx: WarUnitTriggerContext): boolean {
+  attempt(ctx: WarUnitTriggerContext): boolean {
+    const target = this.onOpponent ? ctx.oppose : ctx.self;
+
+    // 유닛인 경우에만 스킬 활성화 여부 확인
+    if ('hasActivatedSkill' in target) {
+      const allActivated = this.skills.every(skill => (target as any).hasActivatedSkill(skill));
+      if (allActivated) return false;
+    }
+
+    // 첫 페이즈에만 발동하는 보조 효과라 가정
+    if (ctx.phase !== 0) return false;
+
     return true;
   }
 
   actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult {
-    const target = this.isSelf ? ctx.self : ctx.oppose;
-    for (const skill of this.skills) {
-      target.activateSkill(skill);
+    const target = this.onOpponent ? ctx.oppose : ctx.self;
+
+    if ('activateSkill' in target) {
+      for (const skill of this.skills) {
+        (target as any).activateSkill(skill);
+      }
     }
+
     return {
       delta: {},
       continueExecution: true,
     };
-  }
-
-  static forSelf(
-    unit: WarUnit,
-    priority: number,
-    raiseType: RaiseTypeValue,
-    ...skills: string[]
-  ): WarActivateSkillsTrigger {
-    return new WarActivateSkillsTrigger(unit, priority, raiseType, true, skills);
-  }
-
-  static forOppose(
-    unit: WarUnit,
-    priority: number,
-    raiseType: RaiseTypeValue,
-    ...skills: string[]
-  ): WarActivateSkillsTrigger {
-    return new WarActivateSkillsTrigger(unit, priority, raiseType, false, skills);
   }
 }

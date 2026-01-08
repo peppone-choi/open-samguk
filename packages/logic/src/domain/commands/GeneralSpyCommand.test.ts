@@ -61,6 +61,13 @@ describe("GeneralSpyCommand", () => {
         defenceTrain: 80,
         tournamentState: 0,
         lastTurn: {},
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
       },
     },
     nations: {
@@ -131,8 +138,8 @@ describe("GeneralSpyCommand", () => {
         wall: 100,
         wallMax: 100,
         trust: 100,
-        gold: 0,
-        rice: 0,
+        trade: 100,
+        dead: 0,
         region: 1,
         state: 0,
         term: 0,
@@ -159,8 +166,8 @@ describe("GeneralSpyCommand", () => {
         wall: 100,
         wallMax: 100,
         trust: 100,
-        gold: 0,
-        rice: 0,
+        trade: 100,
+        dead: 0,
         region: 1,
         state: 0,
         term: 0,
@@ -174,6 +181,7 @@ describe("GeneralSpyCommand", () => {
     messages: {},
     gameTime: { year: 184, month: 1 },
     env: { develcost: 100 },
+    generalTurns: {},
   };
 
   it("타국 도시에 첩보를 실행하면 성공해야 함", () => {

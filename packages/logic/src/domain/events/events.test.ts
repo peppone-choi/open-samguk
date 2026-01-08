@@ -61,6 +61,13 @@ function createTestSnapshot(overrides: Partial<WorldSnapshot> = {}): WorldSnapsh
         lastTurn: {},
         meta: {},
         penalty: {},
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
       },
     },
     nations: {
@@ -109,8 +116,8 @@ function createTestSnapshot(overrides: Partial<WorldSnapshot> = {}): WorldSnapsh
         wall: 5000,
         wallMax: 10000,
         trust: 80,
-        gold: 1000,
-        rice: 1000,
+        trade: 100,
+        dead: 0,
         region: 1,
         state: 0,
         term: 0,
@@ -129,6 +136,7 @@ function createTestSnapshot(overrides: Partial<WorldSnapshot> = {}): WorldSnapsh
       startyear: 184,
       hiddenSeed: "test-seed-123",
     },
+    generalTurns: {},
     ...overrides,
   };
 }

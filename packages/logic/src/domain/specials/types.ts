@@ -1,5 +1,6 @@
 import type { General } from "../entities";
 import type { RandUtil } from "@sammo/common";
+import type { UnitData } from "../scenario/schema.js";
 
 /**
  * Special ability weight types for selection probability
@@ -42,6 +43,7 @@ export interface WarUnit {
   train: number;
   atmos: number;
   dex: Record<number, number>;
+  unitData?: UnitData;
   oppose?: WarUnit | WarUnitCity;
   battleLog: WarBattleLogEntry[];
 
@@ -60,6 +62,17 @@ export interface WarUnit {
   getOppose(): WarUnit | WarUnitCity | undefined;
   hasActivatedSkillOnLog(skillName: string): number;
 
+  /** HP(병력) 관리 */
+  getCrew(): number;
+  decreaseHP(damage: number): number;
+  increaseKilled(damage: number): void;
+  canContinue(): { canContinue: boolean; noRice: boolean };
+
+  /** 스탯 조회 */
+  getAttack(): number;
+  getDefense(): number;
+  getSpeed(): number;
+
   /** 스킬 활성화 */
   activateSkill(skill: string): void;
   /** 스킬 비활성화 */
@@ -68,6 +81,10 @@ export interface WarUnit {
   hasActivatedSkill(skill: string): boolean;
   /** 전투력 배수 적용 */
   multiplyWarPower(multiplier: number): void;
+
+  /** 결과 조회 */
+  getKilled(): number;
+  getDead(): number;
 }
 
 /**
@@ -92,15 +109,72 @@ export interface WarBattleLogEntry {
 }
 
 /**
- * War unit trigger for skill activation
+ * 트리거 발동 유형
+ * 레거시 BaseWarUnitTrigger.php의 TYPE_* 상수 참조
  */
-export interface WarUnitTrigger {
-  unit: WarUnit;
-  process(context: WarContext): void;
+export const RaiseType = {
+  NONE: 0,
+  ITEM: 1,
+  CONSUMABLE_ITEM: 3, // 1 | 2
+  SPECIAL: 4,
+  UNIT: 8,
+} as const;
+
+export type RaiseTypeValue = (typeof RaiseType)[keyof typeof RaiseType];
+
+/**
+ * 전투 트리거 컨텍스트
+ * 레거시 BaseWarUnitTrigger.php의 actionWar 매개변수 참조
+ */
+export interface WarUnitTriggerContext {
+  /** 트리거 소유 유닛 (자신) */
+  self: WarUnit;
+  /** 상대 유닛 */
+  oppose: WarUnit | WarUnitCity;
+  /** RNG 인스턴스 */
+  rand: RandUtil;
+  /** 자신측 환경 변수 (트리거 간 상태 공유) */
+  selfEnv: Record<string, unknown>;
+  /** 상대측 환경 변수 */
+  opposeEnv: Record<string, unknown>;
+  /** 현재 전투 페이즈 */
+  phase: number;
+  /** 공격측 여부 */
+  isAttacker: boolean;
 }
 
 /**
- * War unit trigger caller to manage multiple triggers
+ * 전투 트리거 실행 결과
+ */
+export interface WarUnitTriggerResult {
+  /** 상태 변경 델타 */
+  delta: import("../entities").WorldDelta;
+  /** false면 다음 트리거 실행 중단 (cascade control) */
+  continueExecution: boolean;
+}
+
+/**
+ * 우선순위 기반 전투 트리거 인터페이스
+ */
+export interface WarUnitTrigger {
+  readonly name: string;
+  readonly priority: number;
+  readonly raiseType: RaiseTypeValue;
+  readonly unit: WarUnit;
+
+  /**
+   * 트리거 실행 가능 여부 판정
+   */
+  attempt(ctx: WarUnitTriggerContext): boolean;
+
+  /**
+   * 트리거 실행
+   */
+  actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult;
+}
+
+/**
+ * 전투 트리거 호출자
  */
 export class WarUnitTriggerCaller {
   private triggers: WarUnitTrigger[];
@@ -111,12 +185,6 @@ export class WarUnitTriggerCaller {
 
   getTriggers(): WarUnitTrigger[] {
     return this.triggers;
-  }
-
-  execute(context: WarContext): void {
-    for (const trigger of this.triggers) {
-      trigger.process(context);
-    }
   }
 }
 

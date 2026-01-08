@@ -1,64 +1,61 @@
+"use client";
+
 import React from "react";
-import { trpc } from "../../utils/trpc.js";
+import { trpc } from "@/utils/trpc";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const NationList: React.FC = () => {
   const nationsQuery = trpc.getNations.useQuery();
 
-  if (nationsQuery.isLoading) return <div>국가 정보 로딩 중...</div>;
-  if (nationsQuery.error) return <div>국가 정보를 가져오지 못했습니다.</div>;
+  if (nationsQuery.isLoading) {
+    return <div className="text-muted-foreground">국가 정보 로딩 중...</div>;
+  }
+
+  if (nationsQuery.error) {
+    return <div className="text-destructive">국가 정보를 가져오지 못했습니다.</div>;
+  }
 
   const nations = nationsQuery.data || [];
 
   return (
-    <section style={{ marginBottom: "60px" }}>
-      <h2 style={{ marginBottom: "24px" }}>국가 목록</h2>
-      <div
-        className="stat-grid"
-        style={{ gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))" }}
-      >
+    <section className="mb-14">
+      <h2 className="mb-6">국가 목록</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {nations.map((nation: any) => (
-          <div
+          <Card
             key={nation.id}
-            className="premium-card"
-            style={{ borderLeft: `6px solid ${nation.color || "var(--primary)"}` }}
+            className="border-l-4 hover:border-primary transition-colors"
+            style={{ borderLeftColor: nation.color || "hsl(var(--primary))" }}
           >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "baseline",
-                marginBottom: "12px",
-              }}
-            >
-              <h3 style={{ margin: 0 }}>{nation.name}</h3>
-              <span style={{ fontSize: "0.8rem", color: "#888" }}>기술 {nation.tech}</span>
-            </div>
-            <div style={{ display: "flex", gap: "20px" }}>
-              <div className="stat-item">
-                <span className="stat-label">금</span>
-                <span className="stat-value" style={{ fontSize: "1.1rem" }}>
-                  {nation.gold.toLocaleString()}
-                </span>
+            <CardHeader className="pb-2">
+              <div className="flex justify-between items-baseline">
+                <CardTitle className="text-lg">{nation.name}</CardTitle>
+                <span className="text-xs text-muted-foreground">기술 {nation.tech}</span>
               </div>
-              <div className="stat-item">
-                <span className="stat-label">군량</span>
-                <span className="stat-value" style={{ fontSize: "1.1rem" }}>
-                  {nation.rice.toLocaleString()}
-                </span>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-6">
+                <div className="stat-item">
+                  <span className="stat-label">금</span>
+                  <span className="stat-value text-base">{nation.gold.toLocaleString()}</span>
+                </div>
+                <div className="stat-item">
+                  <span className="stat-label">군량</span>
+                  <span className="stat-value text-base">{nation.rice.toLocaleString()}</span>
+                </div>
               </div>
-            </div>
-            <div style={{ marginTop: "16px", fontSize: "0.85rem", color: "#ccc" }}>
-              {nation.cities?.length || 0}개의 도시 지배 중
-            </div>
-          </div>
+              <div className="mt-4 text-sm text-muted-foreground">
+                {nation.cities?.length || 0}개의 도시 지배 중
+              </div>
+            </CardContent>
+          </Card>
         ))}
         {nations.length === 0 && (
-          <div
-            className="premium-card"
-            style={{ gridColumn: "1 / -1", textAlign: "center", color: "#888" }}
-          >
-            현재 건국된 국가가 없습니다.
-          </div>
+          <Card className="col-span-full">
+            <CardContent className="py-10 text-center text-muted-foreground">
+              현재 건국된 국가가 없습니다.
+            </CardContent>
+          </Card>
         )}
       </div>
     </section>

@@ -61,6 +61,13 @@ describe("GeneralGiftCommand", () => {
         defenceTrain: 80,
         tournamentState: 0,
         lastTurn: {},
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
       },
       2: {
         id: 2,
@@ -113,6 +120,13 @@ describe("GeneralGiftCommand", () => {
         defenceTrain: 80,
         tournamentState: 0,
         lastTurn: {},
+        npc: 0,
+        startAge: 20,
+        belong: 1,
+        betray: 0,
+        dedLevel: 0,
+        expLevel: 0,
+        officerLock: 0,
       },
     },
     nations: {
@@ -159,8 +173,8 @@ describe("GeneralGiftCommand", () => {
         wall: 1000,
         wallMax: 1000,
         trust: 100,
-        gold: 0,
-        rice: 0,
+        trade: 100,
+        dead: 0,
         region: 1,
         state: 0,
         term: 0,
@@ -175,6 +189,7 @@ describe("GeneralGiftCommand", () => {
     messages: {},
     gameTime: { year: 184, month: 1 },
     env: {},
+    generalTurns: {},
   };
 
   it("금 1000을 증여해야 함", () => {

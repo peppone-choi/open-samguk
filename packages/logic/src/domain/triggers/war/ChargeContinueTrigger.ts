@@ -1,6 +1,6 @@
 import type { WarUnit, WarUnitCity } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -15,7 +15,7 @@ import {
  * - 공격 시 병종 상성이 유리하면 추가 페이즈 획득
  * - 불리하면 상대가 선제 있을 때 페이즈 감소
  */
-export class ChargeContinueTrigger implements PriorityWarUnitTrigger {
+export class ChargeContinueTrigger implements WarUnitTrigger {
   readonly name = "돌격지속";
   readonly priority = TriggerPriority.POST + 900;
   readonly raiseType = RaiseType.NONE;

@@ -22,7 +22,7 @@ export class NationProposePeaceCommand extends GeneralCommand {
       ...this.minConditionConstraints,
       ConstraintHelper.ExistsDestNation(),
       ConstraintHelper.AllowDiplomacyBetweenStatus(
-        [0, 1],
+        ["0", "1"],
         "선포, 전쟁중인 상대국에게만 가능합니다."
       ),
     ];

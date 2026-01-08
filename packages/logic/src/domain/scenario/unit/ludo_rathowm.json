@@ -1,0 +1,1783 @@
+[
+    {
+        "id": 1000,
+        "type": 0,
+        "name": "성벽",
+        "attack": 100,
+        "defense": 100,
+        "speed": 7,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 99,
+        "defenseRange": 9,
+        "constraints": [
+            {
+                "type": "impossible"
+            }
+        ],
+        "attackModifiers": {},
+        "defenseModifiers": {
+            "1": 1.2
+        },
+        "descriptions": [
+            "성벽입니다.",
+            "생성할 수 없습니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217100,
+        "type": 1,
+        "name": "보병",
+        "attack": 100,
+        "defense": 150,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 9,
+        "defenseRange": 9,
+        "constraints": [],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "표준적인 보병입니다. 보병은 방어특화입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217101,
+        "type": 1,
+        "name": "마물병",
+        "attack": 110,
+        "defense": 160,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 9,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "regions",
+                "value": [
+                    "호넷 마인령",
+                    "케이브리스 마인령"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "마군 지역 기본병종입니다. 조금더 강하지만 쌀을 많이 소비합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217102,
+        "type": 1,
+        "name": "중장보병",
+        "attack": 100,
+        "defense": 250,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 13,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "헬만 동부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "헬만 특유의 견고한 보병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217103,
+        "type": 1,
+        "name": "흑의 군 보병",
+        "attack": 150,
+        "defense": 150,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 12,
+        "defenseRange": 11,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "리자스 남부",
+                    "리자스 북부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "흑의 군 전통의 체계적인 훈련으로 공격력을 보완했습니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217104,
+        "type": 1,
+        "name": "용병",
+        "attack": 125,
+        "defense": 175,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 12,
+        "defenseRange": 11,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "자유도시 동부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "일반 보병보다 비싸지만 받은 만큼은 일해줍니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217105,
+        "type": 1,
+        "name": "사메라이",
+        "attack": 175,
+        "defense": 150,
+        "speed": 7,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 11,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "제스 남부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "검으로 난무를 가하는 몬스터 보병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217106,
+        "type": 1,
+        "name": "템플나이트병",
+        "attack": 75,
+        "defense": 275,
+        "speed": 7,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 11,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "AL교"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "공격을 포기하고 오직 방어에만 집중합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217107,
+        "type": 1,
+        "name": "메이드병",
+        "attack": 150,
+        "defense": 150,
+        "speed": 7,
+        "cost": 20,
+        "magicRate": 0,
+        "attackRange": 13,
+        "defenseRange": 11,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "메이드의 묘지"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "켓셀링크 휘하의 날렵한 전투메이드입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217108,
+        "type": 1,
+        "name": "요괴병",
+        "attack": 150,
+        "defense": 150,
+        "speed": 8,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 11,
+        "defenseRange": 13,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "오슈"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "단단한 육체를 믿고 적진을 돌파합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217109,
+        "type": 1,
+        "name": "리자스 친위병",
+        "attack": 150,
+        "defense": 200,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 12,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "리자스성"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "여왕을 수호하는 리자스 최강의 보병 정예보병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217110,
+        "type": 1,
+        "name": "케이브리스 마물병",
+        "attack": 200,
+        "defense": 150,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 13,
+        "defenseRange": 14,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "케이브리스의 성"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "케이브리스 직속의 마물 정예 전투보병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217111,
+        "type": 1,
+        "name": "투신",
+        "attack": 200,
+        "defense": 300,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 28,
+        "defenseRange": 23,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 5000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "투신도시"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "2": 1.2,
+            "3": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "2": 0.8,
+            "3": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "성마교단 유적에서 발굴된 사상 최강의 보병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_방어력증가5p",
+        "specialAbility": null
+    },
+    {
+        "id": 217200,
+        "type": 2,
+        "name": "궁병",
+        "attack": 100,
+        "defense": 100,
+        "speed": 7,
+        "cost": 20,
+        "magicRate": 0,
+        "attackRange": 10,
+        "defenseRange": 10,
+        "constraints": [],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "표준적인 궁병입니다. 궁병은 회피특화입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217201,
+        "type": 2,
+        "name": "투척마물병",
+        "attack": 150,
+        "defense": 100,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 11,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "호넷 마인령"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "날렵함을 포기하고 도끼를 투척합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217202,
+        "type": 2,
+        "name": "백의 군 궁병",
+        "attack": 100,
+        "defense": 100,
+        "speed": 8,
+        "cost": 30,
+        "magicRate": 0,
+        "attackRange": 11,
+        "defenseRange": 11,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "리자스 남부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "전략을 활용하여 치고 빠지기에 능합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217203,
+        "type": 2,
+        "name": "벌레술사병",
+        "attack": 100,
+        "defense": 150,
+        "speed": 7,
+        "cost": 20,
+        "magicRate": 0,
+        "attackRange": 12,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "호박성"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "벌레들을 부려 몸을 보호하는 궁병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217204,
+        "type": 2,
+        "name": "저격암살병",
+        "attack": 225,
+        "defense": 75,
+        "speed": 5,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 14,
+        "defenseRange": 11,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "블라디보스토크"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "독을 바른 탄환으로 적의 목숨을 앗아갑니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217205,
+        "type": 2,
+        "name": "호루스병",
+        "attack": 150,
+        "defense": 100,
+        "speed": 8,
+        "cost": 20,
+        "magicRate": 0,
+        "attackRange": 11,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "거대전함"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "민첩하게 파고드는 호루스족 궁병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217206,
+        "type": 2,
+        "name": "튤립병",
+        "attack": 200,
+        "defense": 100,
+        "speed": 7,
+        "cost": 20,
+        "magicRate": 0,
+        "attackRange": 13,
+        "defenseRange": 13,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "커스텀"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "최첨단병기 튤립으로 적을 폭격합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217207,
+        "type": 2,
+        "name": "아이스플레임 궁병",
+        "attack": 150,
+        "defense": 150,
+        "speed": 7,
+        "cost": 20,
+        "magicRate": 0,
+        "attackRange": 13,
+        "defenseRange": 13,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "라그나로크 아크"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "혁명을 성공으로 이끈 정예 게릴라 궁병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217208,
+        "type": 2,
+        "name": "카라 궁병",
+        "attack": 225,
+        "defense": 225,
+        "speed": 7,
+        "cost": 30,
+        "magicRate": 0,
+        "attackRange": 25,
+        "defenseRange": 25,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 5000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "펜실 카우"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "3": 1.2,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "3": 0.8,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "선조의 힘을 이어받은 최강의 카라 정예 궁병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217300,
+        "type": 3,
+        "name": "기동병",
+        "attack": 150,
+        "defense": 100,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 11,
+        "defenseRange": 11,
+        "constraints": [],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "표준적인 기동병입니다. 기동병은 공격특화입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217301,
+        "type": 3,
+        "name": "하치온나",
+        "attack": 175,
+        "defense": 100,
+        "speed": 7,
+        "cost": 15,
+        "magicRate": 0,
+        "attackRange": 12,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "자유도시 서부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "작은 몸으로 회피하며 따끔한 일격을 먹이는 몬스터 기동병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217302,
+        "type": 3,
+        "name": "적의 군 기동병",
+        "attack": 200,
+        "defense": 100,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 12,
+        "defenseRange": 13,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "리자스 북부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "리자스군의 자랑인 기동부대입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217303,
+        "type": 3,
+        "name": "안드로이드 기동병",
+        "attack": 175,
+        "defense": 150,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0,
+        "attackRange": 13,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "악의 탑"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "파이아르가 개발한 최첨단 안드로이드 기동병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217304,
+        "type": 3,
+        "name": "파란쵸 기동병",
+        "attack": 200,
+        "defense": 100,
+        "speed": 8,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 13,
+        "defenseRange": 11,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "파란쵸 왕국"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "적진을 일점돌파하는 파란쵸왕국의 돌격 기동병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217305,
+        "type": 3,
+        "name": "비행마물병",
+        "attack": 150,
+        "defense": 100,
+        "speed": 8,
+        "cost": 15,
+        "magicRate": 0,
+        "attackRange": 12,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "죽음의 대지"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "비행마물에 올라탄 기동마물병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217306,
+        "type": 3,
+        "name": "마물조련사병",
+        "attack": 250,
+        "defense": 200,
+        "speed": 6,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 16,
+        "defenseRange": 16,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "랑그바우"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "무시무시한 몬스터에 올라타서 싸우는 극강의 기동병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217307,
+        "type": 3,
+        "name": "기마병",
+        "attack": 200,
+        "defense": 150,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 14,
+        "defenseRange": 14,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "오와리"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "JAPAN 특유의 기마에 올라타 적을 짓밟는 기동병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217308,
+        "type": 3,
+        "name": "엔젤나이트",
+        "attack": 300,
+        "defense": 200,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0,
+        "attackRange": 25,
+        "defenseRange": 25,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 5000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "떨어진 궁도"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "1": 1.2,
+            "2": 0.8,
+            "5": 1.2,
+            "217502": 1
+        },
+        "defenseModifiers": {
+            "1": 0.8,
+            "2": 1.2,
+            "5": 0.8,
+            "217502": 1
+        },
+        "descriptions": [
+            "신의 명령으로 파멸을 내리기 위해 강림했습니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": "che_기병병종전투",
+        "specialAbility": null
+    },
+    {
+        "id": 217400,
+        "type": 4,
+        "name": "마법병",
+        "attack": 80,
+        "defense": 80,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0.6,
+        "attackRange": 9,
+        "defenseRange": 9,
+        "constraints": [],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "마법을 사용하는 병종입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217401,
+        "type": 4,
+        "name": "마물 마법병",
+        "attack": 90,
+        "defense": 90,
+        "speed": 7,
+        "cost": 0,
+        "magicRate": 0.6,
+        "attackRange": 11,
+        "defenseRange": 9,
+        "constraints": [
+            {
+                "type": "regions",
+                "value": [
+                    "호넷 마인령",
+                    "케이브리스 마인령"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "마군 지역 기본병종입니다. 조금더 강하지만 금을 많이 소비합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217402,
+        "type": 4,
+        "name": "카라 마법병",
+        "attack": 80,
+        "defense": 80,
+        "speed": 7,
+        "cost": 20,
+        "magicRate": 0.6,
+        "attackRange": 10,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "카라의 숲"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "신속히 움직이며 카라의 저주로 적을 공격합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217403,
+        "type": 4,
+        "name": "제스 마법병",
+        "attack": 100,
+        "defense": 100,
+        "speed": 7,
+        "cost": 0,
+        "magicRate": 0.6,
+        "attackRange": 10,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "제스 북부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "마법국가 제스의 전통있는 마법병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217404,
+        "type": 4,
+        "name": "무녀",
+        "attack": 80,
+        "defense": 80,
+        "speed": 8,
+        "cost": 10,
+        "magicRate": 0.6,
+        "attackRange": 10,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "JAPAN"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "신마법과 함께 신통한 춤으로 활력을 불어넣는 마법병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217405,
+        "type": 4,
+        "name": "프로즌",
+        "attack": 90,
+        "defense": 70,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0.8,
+        "attackRange": 10,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "헬만 서부"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "백병전에 불리한 연약한 몸으로 마법 사용에 집중하는 몬스터입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217406,
+        "type": 4,
+        "name": "마소한 마법병",
+        "attack": 70,
+        "defense": 90,
+        "speed": 7,
+        "cost": 10,
+        "magicRate": 0.8,
+        "attackRange": 11,
+        "defenseRange": 10,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "regions",
+                "value": [
+                    "케이브리스 마인령"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "로브를 여러겹 둘러입은 마물마법병입니다. 직접 전투보단 마법에 집중합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217407,
+        "type": 4,
+        "name": "신관병",
+        "attack": 80,
+        "defense": 130,
+        "speed": 7,
+        "cost": 5,
+        "magicRate": 0.6,
+        "attackRange": 9,
+        "defenseRange": 11,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 2000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "카이즈"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "AL교의 전투신관입니다. 몸을 보호하는 성스러운 마법을 사용합니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217408,
+        "type": 4,
+        "name": "중장마법병",
+        "attack": 80,
+        "defense": 130,
+        "speed": 7,
+        "cost": 15,
+        "magicRate": 0.6,
+        "attackRange": 11,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "로제스그라드"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "두터운 로브를 입고 불길한 주문을 읊습니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217409,
+        "type": 4,
+        "name": "악마병",
+        "attack": 130,
+        "defense": 80,
+        "speed": 7,
+        "cost": 15,
+        "magicRate": 0.6,
+        "attackRange": 11,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "올드제스"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "고대 제스 왕가의 계약에 따라 소환된 흑마법병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217410,
+        "type": 4,
+        "name": "호넷 마물병",
+        "attack": 130,
+        "defense": 130,
+        "speed": 7,
+        "cost": 0,
+        "magicRate": 0.6,
+        "attackRange": 12,
+        "defenseRange": 12,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 3000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "구 마왕성"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "호넷 직속의 최강 마물 마법병입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217411,
+        "type": 4,
+        "name": "Z가디언",
+        "attack": 180,
+        "defense": 180,
+        "speed": 7,
+        "cost": 0,
+        "magicRate": 0.7,
+        "attackRange": 28,
+        "defenseRange": 20,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 5000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "라그나로크 아크"
+                ]
+            }
+        ],
+        "attackModifiers": {
+            "5": 1.2
+        },
+        "defenseModifiers": {
+            "5": 0.8
+        },
+        "descriptions": [
+            "제스의 기술력이 집약된 최고의 마법병기입니다."
+        ],
+        "attackAbility": null,
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217500,
+        "type": 5,
+        "name": "정란",
+        "attack": 150,
+        "defense": 150,
+        "speed": 6,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 15,
+        "defenseRange": 5,
+        "constraints": [
+            {
+                "type": "year",
+                "value": 3
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "2": 0.8,
+            "3": 0.8,
+            "4": 0.8,
+            "0": 1.8
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "2": 1.2,
+            "3": 1.2,
+            "4": 1.2
+        },
+        "descriptions": [
+            "높은 구조물 위에서 공격합니다."
+        ],
+        "attackAbility": "che_성벽부상무효",
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217501,
+        "type": 5,
+        "name": "충차",
+        "attack": 150,
+        "defense": 100,
+        "speed": 6,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 20,
+        "defenseRange": 5,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 1000
+            },
+            {
+                "type": "year",
+                "value": 3
+            }
+        ],
+        "attackModifiers": {
+            "1": 0.8,
+            "2": 0.8,
+            "3": 0.8,
+            "4": 0.8,
+            "0": 2.4
+        },
+        "defenseModifiers": {
+            "1": 1.2,
+            "2": 1.2,
+            "3": 1.2,
+            "4": 1.2
+        },
+        "descriptions": [
+            "엄청난 위력으로 성벽을 부수어버립니다."
+        ],
+        "attackAbility": "che_성벽부상무효",
+        "defenseAbility": null,
+        "specialAbility": null
+    },
+    {
+        "id": 217502,
+        "type": 5,
+        "name": "튤립3호",
+        "attack": 275,
+        "defense": 300,
+        "speed": 6,
+        "cost": 0,
+        "magicRate": 0,
+        "attackRange": 35,
+        "defenseRange": 15,
+        "constraints": [
+            {
+                "type": "tech",
+                "value": 5000
+            },
+            {
+                "type": "cities",
+                "value": [
+                    "커스텀"
+                ]
+            }
+        ],
+        "attackModifiers": {},
+        "defenseModifiers": {},
+        "descriptions": [
+            "파괴적인 위력과 정말 파괴적인 비용을 자랑하는 전차입니다. "
+        ],
+        "attackAbility": "che_성벽부상무효",
+        "defenseAbility": null,
+        "specialAbility": null
+    }
+]

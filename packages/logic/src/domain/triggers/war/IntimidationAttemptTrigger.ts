@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
@@ -8,7 +8,7 @@ import {
   TriggerPriority,
 } from "../../WarUnitTriggerRegistry.js";
 
-export class IntimidationAttemptTrigger implements PriorityWarUnitTrigger {
+export class IntimidationAttemptTrigger implements WarUnitTrigger {
   readonly name = "위압시도";
   readonly priority = TriggerPriority.BEGIN + 100;
   readonly raiseType: RaiseTypeValue;

@@ -99,6 +99,12 @@ describe("NewConstraints", () => {
       penalty: {},
       ownerId: 1,
       troopId: 0,
+      startAge: 20,
+      belong: 1,
+      betray: 0,
+      dedLevel: 0,
+      expLevel: 0,
+      officerLock: 0,
       ...overrides,
     });
 
@@ -138,6 +144,7 @@ describe("NewConstraints", () => {
         messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       });
       const ctx = { actorId: 1, args: { destNationId: 2 }, env: {}, mode: "full" as const };
       expect(constraint.test(ctx, view).kind).toBe("allow");
@@ -154,6 +161,7 @@ describe("NewConstraints", () => {
         messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       });
       const ctx = { actorId: 1, args: { destNationId: 2 }, env: {}, mode: "full" as const };
       const result = constraint.test(ctx, view);
@@ -174,11 +182,14 @@ describe("NewConstraints", () => {
         messages: {},
         gameTime: { year: 0, month: 0 },
         env: {},
+        generalTurns: {},
       });
       const ctx = { actorId: 1, args: { destNationId: 2 }, env: {}, mode: "full" as const };
       const result = constraint.test(ctx, view);
       expect(result.kind).toBe("deny");
-      expect(result.reason).toContain("태수국");
+      if (result.kind === "deny") {
+        expect(result.reason).toContain("태수국");
+      }
     });
   });
 });

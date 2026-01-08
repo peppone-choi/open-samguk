@@ -856,7 +856,13 @@ export class ConstraintHelper {
     reqVal: number | string,
     errMsg?: string
   ): Constraint {
-    return new ReqNationAuxValueConstraint(key, keyNick, comp, reqVal, errMsg);
+    return new ReqNationAuxValueConstraint(
+      key,
+      keyNick,
+      comp,
+      reqVal,
+      errMsg ?? `${keyNick} 조건이 맞지 않습니다.`
+    );
   }
 
   public static MustBeTroopLeader(): Constraint {

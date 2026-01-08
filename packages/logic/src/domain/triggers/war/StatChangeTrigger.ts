@@ -1,6 +1,6 @@
 import type { WarUnit } from "../../specials/types.js";
 import {
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseTypeValue,
@@ -8,7 +8,7 @@ import {
 
 type Operator = "=" | "+" | "-" | "*" | "/";
 
-export class StatChangeTrigger implements PriorityWarUnitTrigger {
+export class StatChangeTrigger implements WarUnitTrigger {
   readonly name = "능력치변경";
   readonly priority: number;
   readonly raiseType: RaiseTypeValue;

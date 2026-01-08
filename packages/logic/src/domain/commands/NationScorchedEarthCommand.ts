@@ -31,14 +31,8 @@ export class NationScorchedEarthCommand extends GeneralCommand {
       ...this.minConditionConstraints,
       ConstraintHelper.OccupiedDestCity(),
       ConstraintHelper.SuppliedDestCity(),
-      ConstraintHelper.ReqNationValue(
-        "capitalCityId",
-        "수도",
-        "!=",
-        { kind: "arg", key: "destCityId" },
-        "수도입니다."
-      ),
-      ConstraintHelper.DisallowDiplomacyStatus([], [0], "평시에만 가능합니다."),
+      // 수도 여부는 run()에서 직접 체크 (동적 인자 참조 필요)
+      ConstraintHelper.DisallowDiplomacyStatus({ "0": "평시에만 가능합니다." }),
     ];
   }
 
