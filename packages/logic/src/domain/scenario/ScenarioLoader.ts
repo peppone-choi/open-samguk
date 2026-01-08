@@ -21,6 +21,7 @@ import {
 } from "./schema.js";
 import type { WorldSnapshot, General, Nation, City, Diplomacy } from "../entities.js";
 import { MapLoader } from "./MapLoader.js";
+import { UnitRegistry } from "../UnitRegistry.js";
 
 /**
  * 시나리오 로드 에러
@@ -189,6 +190,14 @@ export class ScenarioLoader {
     // 맵 데이터 로드
     const cityInitData = await this.mapLoader.loadMap(mapConfig.mapName);
 
+    // 맵 전용 명칭 매핑 로드
+    const cityNameMap = await this.loadCityMap(mapConfig.mapName);
+    const regionNameMap = await this.loadRegionMap(mapConfig.mapName);
+
+    // 병종 데이터 로드
+    const unitRegistry = UnitRegistry.getInstance();
+    await unitRegistry.load(scenario.map?.unitSet || "basic", cityNameMap, regionNameMap);
+
     // 국가 ID 매핑 (이름 -> ID)
     const nationIdMap = new Map<string, number>();
     const nations: Record<number, Nation> = {};
@@ -248,14 +257,18 @@ export class ScenarioLoader {
       ...(scenario.general_neutral || []),
     ];
 
-    for (const generalData of allGenerals) {
-      const general = this.createGeneral(
-        generalData,
-        generalId,
-        nationIdMap,
-        cities,
-        scenario.startYear
-      );
+    for (const generalData of (scenario.general || [])) {
+      const general = this.createGeneral(generalData, generalId, nationIdMap, cities, scenario.startYear, 2);
+      generals[generalId] = general;
+      generalId++;
+    }
+    for (const generalData of (scenario.general_ex || [])) {
+      const general = this.createGeneral(generalData, generalId, nationIdMap, cities, scenario.startYear, 2);
+      generals[generalId] = general;
+      generalId++;
+    }
+    for (const generalData of (scenario.general_neutral || [])) {
+      const general = this.createGeneral(generalData, generalId, nationIdMap, cities, scenario.startYear, 6);
       generals[generalId] = general;
       generalId++;
     }
@@ -431,7 +444,8 @@ export class ScenarioLoader {
     id: number,
     nationIdMap: Map<string, number>,
     cities: Record<number, City>,
-    startYear: number
+    startYear: number,
+    npcType: number
   ): General {
     const [
       affinity,
@@ -447,7 +461,6 @@ export class ScenarioLoader {
       death,
       ego,
       speciality,
-      speciality2, // Added speciality2 to destructuring
       ...rest
     ] = data;
     const text = rest[0] as string | undefined;
@@ -478,9 +491,10 @@ export class ScenarioLoader {
       id,
       name,
       ownerId: 0,
+      affinity: affinity ?? 0,
       nationId,
       cityId,
-      npc: 2,
+      npc: npcType,
       troopId: 0,
       gold: 0,
       rice: 500,
@@ -513,29 +527,29 @@ export class ScenarioLoader {
       expLevel: 0,
       bornYear: birth,
       deadYear: death,
-      special: speciality || "None", // Changed from ego ?? ""
+      personal: ego || "없음",
+      special: speciality || "없음", // TODO: 상세 매핑 로직
       specAge: 0,
-      special2: speciality2 || "None", // Changed from speciality ?? ""
+      special2: "없음", // TODO: 상세 매핑 로직
       specAge2: 0,
-      weapon: "",
-      book: "",
-      horse: "",
-      item: "",
+      weapon: "없음",
+      book: "없음",
+      horse: "없음",
+      item: "없음",
       turnTime: new Date(),
       recentWarTime: null,
       makeLimit: 0,
-      killTurn: 0, // Changed from -1
+      killTurn: (death - startYear) * 12,
       block: 0,
-      defenceTrain: 0,
+      defenceTrain: 80,
       tournamentState: 0,
       lastTurn: {},
       meta: {
-        affinity: affinity ?? 0,
         text: text ?? "",
       },
       penalty: {},
       officerLock: 0,
-    };
+    } as General;
   }
 
   /**
@@ -599,5 +613,45 @@ export class ScenarioLoader {
       [DIPLOMACY_TYPE.NON_AGGRESSION]: "non_aggression",
     };
     return states[diplomacyType] ?? "neutral";
+  }
+
+  /**
+   * 맵 전용 도시 명칭 매핑 로드
+   */
+  private async loadCityMap(mapName: string): Promise<Record<string, number>> {
+    try {
+      const filePath = join(this.scenarioPath, "data", "maps", mapName, "CityMap.json");
+      const content = await readFile(filePath, "utf-8");
+      return JSON.parse(content);
+    } catch {
+      // 못 찾으면 기본 che 맵 시도
+      try {
+        const filePath = join(this.scenarioPath, "data", "maps", "che", "CityMap.json");
+        const content = await readFile(filePath, "utf-8");
+        return JSON.parse(content);
+      } catch {
+        return {};
+      }
+    }
+  }
+
+  /**
+   * 맵 전용 지역 명칭 매핑 로드
+   */
+  private async loadRegionMap(mapName: string): Promise<Record<string, number>> {
+    try {
+      const filePath = join(this.scenarioPath, "data", "maps", mapName, "RegionMap.json");
+      const content = await readFile(filePath, "utf-8");
+      return JSON.parse(content);
+    } catch {
+      // 못 찾으면 기본 che 맵 시도
+      try {
+        const filePath = join(this.scenarioPath, "data", "maps", "che", "RegionMap.json");
+        const content = await readFile(filePath, "utf-8");
+        return JSON.parse(content);
+      } catch {
+        return {};
+      }
+    }
   }
 }

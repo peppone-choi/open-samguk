@@ -2,6 +2,7 @@ export interface General {
   id: number;
   name: string;
   ownerId: number; // member.id 매핑
+  affinity: number; // 상성
   nationId: number;
   cityId: number;
   npc: number; // 0: 유저, 1: 이벤트NPC, 2: 일반NPC, 3: 수뇌NPC, 4: 군주NPC...
@@ -37,6 +38,7 @@ export interface General {
   expLevel: number;
   bornYear: number;
   deadYear: number;
+  personal: string; // 성격 (ego)
   special: string; // 내정 특기
   specAge: number;
   special2: string; // 전투 특기

@@ -25,6 +25,7 @@ export const EgoSchema = z.enum([
   "재간",
   "안전",
   "은둔",
+  "없음",
 ]);
 export type Ego = z.infer<typeof EgoSchema>;
 
@@ -60,6 +61,8 @@ export const SpecialitySchema = z.enum([
   "징병",
   "통찰",
   "격노",
+  "없음",
+  "-",
 ]);
 export type Speciality = z.infer<typeof SpecialitySchema>;
 
@@ -70,10 +73,18 @@ export const NationTypeSchema = z.enum([
   "유가",
   "태평도",
   "법가",
-  "무가",
+  "병가",
   "명가",
   "오두미도",
-  "상가",
+  "덕가",
+  "도가",
+  "도적",
+  "묵가",
+  "불가",
+  "음양가",
+  "종횡가",
+  "중립",
+  "없음",
 ]);
 export type NationType = z.infer<typeof NationTypeSchema>;
 
@@ -254,9 +265,11 @@ export type ConditionOperator = z.infer<typeof ConditionOperatorSchema>;
 export const BaseConditionSchema: z.ZodType<Condition> = z.lazy(() =>
   z.union([
     z.boolean(), // 상수 부울
-    // 논리 조건: ["and", ...conditions] 또는 ["or", ...conditions]
+    // 논리 조건: ["and", ...conditions], ["or", ...conditions], ["not", condition], ["xor", ...conditions]
     z.tuple([z.literal("and")]).rest(BaseConditionSchema),
     z.tuple([z.literal("or")]).rest(BaseConditionSchema),
+    z.tuple([z.literal("not"), BaseConditionSchema]),
+    z.tuple([z.literal("xor")]).rest(BaseConditionSchema),
     // 날짜 조건: ["Date", op, year, month]
     z.tuple([
       z.literal("Date"),
@@ -275,6 +288,8 @@ export type Condition =
   | boolean
   | ["and", ...Condition[]]
   | ["or", ...Condition[]]
+  | ["not", Condition]
+  | ["xor", ...Condition[]]
   | ["Date", ConditionOperator, number | null, number | null]
   | ["DateRelative", ConditionOperator, number]
   | ["RemainNation", ConditionOperator, number];
@@ -434,6 +449,19 @@ export const UNIT_TYPE_MAP = {
  *  constraints[], attackModifiers{}, defenseModifiers{}, descriptions[],
  *  attackAbility?, defenseAbility?, specialAbility?]
  */
+const ConstraintSchema = z.discriminatedUnion("type", [
+  z.object({ type: z.literal("impossible") }),
+  z.object({ type: z.literal("tech"), value: z.number() }),
+  z.object({ type: z.literal("cities"), value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]) }),
+  z.object({ type: z.literal("citiesWithLevel"), level: z.number(), value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]) }),
+  z.object({ type: z.literal("highLevelCities"), level: z.number(), value: z.number() }),
+  z.object({ type: z.literal("regions"), value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]) }),
+  z.object({ type: z.literal("year"), value: z.number() }),
+  z.object({ type: z.literal("nationAux"), key: z.string(), cmp: z.string(), value: z.any() }),
+  z.object({ type: z.literal("chief") }),
+  z.object({ type: z.literal("notChief") }),
+]);
+
 export const UnitDataSchema = z.object({
   id: z.number(),
   type: z.number(),
@@ -445,10 +473,10 @@ export const UnitDataSchema = z.object({
   magicRate: z.number(),
   attackRange: z.number(),
   defenseRange: z.number(),
-  constraints: z.array(z.any()).optional(),
+  constraints: z.array(ConstraintSchema).optional(),
   attackModifiers: z.record(z.string(), z.number()).optional(),
   defenseModifiers: z.record(z.string(), z.number()).optional(),
-  descriptions: z.array(z.string()),
+  descriptions: z.array(z.string()).optional().default([]),
   attackAbility: z.string().nullable().optional(),
   defenseAbility: z.string().nullable().optional(),
   specialAbility: z.string().nullable().optional(),
