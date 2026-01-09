@@ -38,7 +38,7 @@ function AuctionResource() {
   const [bidAmount, setBidAmount] = useState(0);
 
   const selectedAuction = useMemo(() => {
-    return auctions?.find((a) => a.id === selectedAuctionID);
+    return (auctions as any[] | undefined)?.find((a) => a.id === selectedAuctionID);
   }, [auctions, selectedAuctionID]);
 
   useEffect(() => {
@@ -98,8 +98,8 @@ function AuctionResource() {
     }
   };
 
-  const buyRiceAuctions = auctions?.filter((a) => a.type === "BuyRice") || [];
-  const sellRiceAuctions = auctions?.filter((a) => a.type === "SellRice") || [];
+  const buyRiceAuctions = (auctions as any[] | undefined)?.filter((a) => a.type === "BuyRice") || [];
+  const sellRiceAuctions = (auctions as any[] | undefined)?.filter((a) => a.type === "SellRice") || [];
 
   if (isLoading) return <div className="p-8 text-center text-gray-500">로딩 중...</div>;
 
@@ -214,7 +214,7 @@ function AuctionResource() {
 
       <div className="bg1 text-center p-1 mt-2 font-semibold">최근 종료된 경매</div>
       <div className="p-2 space-y-1">
-        {finished?.map((a) => {
+        {(finished as any[] | undefined)?.map((a) => {
           const highest = a.bids[0];
           const detail = a.detail as any;
           return (
@@ -292,17 +292,19 @@ function AuctionUniqueItem() {
   const { data: auctions, isLoading, refetch } = trpc.getUniqueItemAuctionList.useQuery();
   const [selectedAuctionID, setSelectedAuctionID] = useState<number | null>(null);
 
-  const { data: detail } = trpc.getUniqueItemAuctionDetail.useQuery(
+  const { data: detailData } = trpc.getUniqueItemAuctionDetail.useQuery(
     { auctionId: selectedAuctionID ?? 0 },
     { enabled: !!selectedAuctionID }
   );
+
+  const detail = detailData as any;
 
   const bidUnique = trpc.bidAuction.useMutation();
   const [bidAmount, setBidAmount] = useState(0);
 
   useEffect(() => {
     if (detail) {
-      const highest = detail.bids[0]?.amount ?? (detail.detail as any).startBidAmount;
+      const highest = detail.bids?.[0]?.amount ?? detail.detail?.startBidAmount ?? 0;
       setBidAmount(Math.ceil(highest * 1.01));
     }
   }, [detail]);
@@ -348,18 +350,18 @@ function AuctionUniqueItem() {
             <div className="bg1 p-1">종료예정</div>
             <div className="font-mono">{cutDateTime(detail.closeDate, true)}</div>
             <div className="bg1 p-1">연장횟수</div>
-            <div>{(detail.detail as any).remainCloseDateExtensionCnt ?? "무제한"}</div>
+            <div>{detail.detail?.remainCloseDateExtensionCnt ?? "무제한"}</div>
           </div>
 
           <div className="bg-zinc-800 p-2 rounded">
             <div className="text-xs text-gray-400 mb-1">입찰 기록 (상위 5건)</div>
-            {detail.bids.slice(0, 5).map((bid, i) => (
+            {(detail.bids as any[]).slice(0, 5).map((bid: any, i: number) => (
               <div
                 key={i}
                 className="flex justify-between font-mono text-[11px] border-b border-gray-700 py-1"
               >
                 <span className={i === 0 ? "text-yellow-400" : "text-gray-300"}>
-                  {(bid.aux as any).obfuscatedName || "익명"}
+                  {bid.aux?.obfuscatedName || "익명"}
                 </span>
                 <span>{bid.amount.toLocaleString()} P</span>
               </div>
@@ -391,7 +393,7 @@ function AuctionUniqueItem() {
         <div className="p-1">연장</div>
         <div className="p-1 text-right pr-2">현재최고가</div>
       </div>
-      {auctions?.map((a) => {
+      {(auctions as any[] | undefined)?.map((a) => {
         const highest = a.bids[0];
         const detail = a.detail as any;
         return (

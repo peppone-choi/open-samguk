@@ -51,7 +51,7 @@ const INITIAL_RICE = 1000;
 export class GeneralService {
   private readonly prisma = createPrismaClient();
 
-  constructor(private readonly inheritService: InheritService) {}
+  constructor(private readonly inheritService: InheritService) { }
 
   /**
    * 장수 생성 (신규 가입)
@@ -129,7 +129,7 @@ export class GeneralService {
       requiredPoints += INHERIT_CONSTANTS.inheritBornCityPoint;
       logs.push(`시작 도시 지정 (${input.inheritCity})`);
     }
-    if (input.inheritBonusStat && input.inheritBonusStat.reduce((a, b) => a + b, 0) > 0) {
+    if (input.inheritBonusStat && input.inheritBonusStat.reduce((a: number, b: number) => a + b, 0) > 0) {
       requiredPoints += INHERIT_CONSTANTS.inheritBornStatPointCost;
       logs.push(`보너스 스탯 적용 ([${input.inheritBonusStat.join(",")}])`);
     }
@@ -447,25 +447,25 @@ export class GeneralService {
     // 도시 정보
     const cityInfo = general.city
       ? {
-          id: general.city.city,
-          name: general.city.name,
-          level: general.city.level,
-          trust: general.city.trust,
-          pop: [general.city.pop, general.city.popMax],
-          agri: [general.city.agri, general.city.agriMax],
-          comm: [general.city.comm, general.city.commMax],
-          secu: [general.city.secu, general.city.secuMax],
-          def: [general.city.def, general.city.defMax],
-          wall: [general.city.wall, general.city.wallMax],
-          trade: general.city.trade,
-          nationInfo: general.city.nation
-            ? {
-                id: general.city.nationId,
-                name: general.city.nation.name,
-                color: general.city.nation.color,
-              }
-            : null,
-        }
+        id: general.city.city,
+        name: general.city.name,
+        level: general.city.level,
+        trust: general.city.trust,
+        pop: [general.city.pop, general.city.popMax],
+        agri: [general.city.agri, general.city.agriMax],
+        comm: [general.city.comm, general.city.commMax],
+        secu: [general.city.secu, general.city.secuMax],
+        def: [general.city.def, general.city.defMax],
+        wall: [general.city.wall, general.city.wallMax],
+        trade: general.city.trade,
+        nationInfo: general.city.nation
+          ? {
+            id: general.city.nationId,
+            name: general.city.nation.name,
+            color: general.city.nation.color,
+          }
+          : null,
+      }
       : null;
 
     // 경매 수, 토너먼트 상태 등 글로벌 정보
@@ -567,7 +567,7 @@ export class GeneralService {
         rice: general.rice,
         crew: general.crew,
       },
-      reservedCommands: reservedCommands.map((cmd) => ({
+      reservedCommands: reservedCommands.map((cmd: any) => ({
         turnIdx: cmd.turnIdx,
         action: cmd.action,
         arg: cmd.arg,

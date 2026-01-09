@@ -12,13 +12,12 @@
  * - Check general owner
  */
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { trpc } from "@/utils/trpc";
 import { useGeneral } from "@/contexts/GeneralContext";
-import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -32,11 +31,7 @@ import {
 // Types
 // ============================================================================
 
-interface InheritLog {
-  id: number;
-  date: string;
-  text: string;
-}
+
 
 // ============================================================================
 // Constants
@@ -275,7 +270,7 @@ export default function PageInheritPoint() {
     );
   }
 
-  const historyLogs = historyData?.logs ?? [];
+  const historyLogs = (historyData?.logs ?? []) as Array<{ id: number; date: string | Date; text: string }>;
   const points = pointsData?.points ?? 0;
 
   return (

@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { trpc } from "@/utils/trpc";
 
 type CallbackStatus = "loading" | "success" | "error" | "needs_registration";
 
-export default function KakaoCallbackPage() {
+function KakaoCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const auth = useAuth();
@@ -202,5 +202,26 @@ export default function KakaoCallbackPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+// Loading fallback for Suspense
+function CallbackLoading() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500 mx-auto mb-4"></div>
+        <p className="text-gray-300">로딩 중...</p>
+      </div>
+    </div>
+  );
+}
+
+// Wrap with Suspense for useSearchParams
+export default function KakaoCallbackPage() {
+  return (
+    <Suspense fallback={<CallbackLoading />}>
+      <KakaoCallbackContent />
+    </Suspense>
   );
 }

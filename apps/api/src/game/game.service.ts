@@ -111,11 +111,11 @@ export class GameService {
       },
     });
     const countMap = new Map<string, number>();
-    serverCounts.forEach((c) => countMap.set(c.serverId, c._count._all));
+    serverCounts.forEach((c: any) => countMap.set(c.serverId, c._count._all));
 
     // 4. 데이터 조합
-    return servers.map((server) => {
-      const session = userSessions.find((s) => s.serverId === server.serverId);
+    return servers.map((server: any) => {
+      const session = userSessions.find((s: any) => s.serverId === server.serverId);
       const playerCount = countMap.get(server.serverId) || 0;
       const env = server.env as any; // JSON 타입 단언
 

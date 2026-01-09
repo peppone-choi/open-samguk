@@ -37,15 +37,7 @@ interface HistoryNation {
   type: string;
 }
 
-interface HistoryObj {
-  server_id: string;
-  year: number;
-  month: number;
-  map: MapResult;
-  global_history: string[];
-  global_action: string[];
-  nations: HistoryNation[];
-}
+
 
 // ============================================================================
 // Utility Functions

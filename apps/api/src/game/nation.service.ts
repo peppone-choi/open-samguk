@@ -57,7 +57,7 @@ export class NationService {
       where: { nationId },
     });
 
-    const resultList = generals.map((gen) => {
+    const resultList = generals.map((gen: any) => {
       const base: any = {
         no: gen.no,
         name: gen.name,
@@ -140,7 +140,7 @@ export class NationService {
         Object.assign(base, {
           st2: true,
           permission: 2,
-          reservedCommand: gen.turns.map((t) => ({
+          reservedCommand: gen.turns.map((t: any) => ({
             action: t.action,
             brief: t.brief ?? t.action,
             arg: t.arg ?? {},
@@ -153,7 +153,7 @@ export class NationService {
 
     return {
       list: resultList,
-      troops: troops.map((t) => ({ id: t.troopLeader, name: t.name })),
+      troops: troops.map((t: any) => ({ id: t.troopLeader, name: t.name })),
       env: {
         year: env.year,
         month: env.month,
@@ -385,7 +385,7 @@ export class NationService {
       diplomacyMap.set(d.youId, { state: d.state, term: d.term });
     }
 
-    const nationsList = nations.map((n) => ({
+    const nationsList = nations.map((n: any) => ({
       nation: n.nation,
       name: n.name,
       color: n.color,
@@ -418,7 +418,7 @@ export class NationService {
       where: { nationId },
       select: { officerLevel: true },
     });
-    const outcome = generals.reduce((sum, g) => sum + (g.officerLevel * 100 + 100), 0);
+    const outcome = generals.reduce((sum: number, g: any) => sum + (g.officerLevel * 100 + 100), 0);
 
     // aux parsing
     const aux = (nation.aux as any) || {};

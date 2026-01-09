@@ -385,7 +385,7 @@ export class InheritService {
           };
         }
       }
-      const sum = inheritBonusStat.reduce((a, b) => a + b, 0);
+      const sum = inheritBonusStat.reduce((a: number, b: number) => a + b, 0);
       if (sum === 0) {
         inheritBonusStat = undefined;
       } else if (sum < 3 || sum > 5) {
@@ -468,7 +468,7 @@ export class InheritService {
     } else {
       const bonusCount = 3 + Math.floor(Math.random() * 3);
       const weights = [leadership, strength, intel];
-      const total = weights.reduce((a, b) => a + b, 0);
+      const total = weights.reduce((a: number, b: number) => a + b, 0);
 
       for (let i = 0; i < bonusCount; i++) {
         const rand = Math.random() * total;

@@ -155,7 +155,7 @@ export class TournamentService {
     }
 
     // Deduct entry fee and register
-    await this.prisma.$transaction(async (tx) => {
+    await (this.prisma as any).$transaction(async (tx: any) => {
       await tx.general.update({
         where: { no: generalId },
         data: { gold: { decrement: config.develcost } },
@@ -208,19 +208,19 @@ export class TournamentService {
     const round16 = participants.filter((p) => p.grp >= 20 && p.grp < 28);
 
     // Calculate basic odds based on stats
-    const typeInfo = getTournamentTypeInfo(config.tnmtType);
+    const typeInfo = getTournamentTypeInfo(config.tnmtType) as any;
     const odds: Record<number, number> = {};
 
     let totalPower = 0;
     for (const p of round16) {
       const stat =
-        typeInfo.statKey === "total" ? p.leadership + p.strength + p.intel : p[typeInfo.statKey];
+        typeInfo.statKey === "total" ? p.leadership + p.strength + p.intel : (p as any)[typeInfo.statKey];
       totalPower += stat;
     }
 
     for (const p of round16) {
       const stat =
-        typeInfo.statKey === "total" ? p.leadership + p.strength + p.intel : p[typeInfo.statKey];
+        typeInfo.statKey === "total" ? p.leadership + p.strength + p.intel : (p as any)[typeInfo.statKey];
       // Lower stat = higher odds (underdog)
       odds[p.no] = Math.max(1.1, Math.round((totalPower / stat / round16.length) * 10) / 10);
     }
@@ -286,7 +286,7 @@ export class TournamentService {
 
     return {
       result: true,
-      history: history.map((h) => h.value),
+      history: history.map((h: any) => h.value),
     };
   }
 
@@ -326,7 +326,7 @@ export class TournamentService {
       where: { namespace: "tournament_participants" },
     });
 
-    return storage.map((s) => s.value as unknown as TournamentParticipant);
+    return storage.map((s: any) => s.value as unknown as TournamentParticipant);
   }
 
   private async getGameEnv() {
@@ -337,9 +337,9 @@ export class TournamentService {
       },
     });
 
-    const year = (storage.find((s) => s.key === "year")?.value as number) || 184;
-    const month = (storage.find((s) => s.key === "month")?.value as number) || 1;
-    const turnTerm = (storage.find((s) => s.key === "turn_term")?.value as number) || 60;
+    const year = (storage.find((s: any) => s.key === "year")?.value as number) || 184;
+    const month = (storage.find((s: any) => s.key === "month")?.value as number) || 1;
+    const turnTerm = (storage.find((s: any) => s.key === "turn_term")?.value as number) || 60;
 
     return { year, month, turnTerm };
   }

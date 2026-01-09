@@ -54,7 +54,7 @@ export class BoardService {
 
     return {
       result: true,
-      boards: boards.map((b) => ({
+      boards: boards.map((b: any) => ({
         no: b.no,
         date: b.date,
         author: b.author,
@@ -282,7 +282,7 @@ export class BoardService {
 
     return {
       result: true,
-      boards: boards.map((b) => ({
+      boards: boards.map((b: any) => ({
         no: b.no,
         nationId: b.nationId,
         date: b.date,

@@ -109,7 +109,7 @@ export class BettingService {
       _sum: { amount: true },
     });
 
-    const bettingDetail = bettingDetailRaw.map((item) => [item.bettingType, item._sum.amount || 0]);
+    const bettingDetail = bettingDetailRaw.map((item: any) => [item.bettingType, item._sum.amount || 0]);
 
     // 내 베팅 현황
     const myBettingRaw = await this.prisma.betting.groupBy({
@@ -118,7 +118,7 @@ export class BettingService {
       _sum: { amount: true },
     });
 
-    const myBetting = myBettingRaw.map((item) => [item.bettingType, item._sum.amount || 0]);
+    const myBetting = myBettingRaw.map((item: any) => [item.bettingType, item._sum.amount || 0]);
 
     // 잔여 포인트/골드 조회
     let remainPoint = 0;
@@ -196,7 +196,7 @@ export class BettingService {
       }
     }
 
-    return this.prisma.$transaction(async (tx) => {
+    return (this.prisma as any).$transaction(async (tx: any) => {
       // 자원 차감
       if (bettingInfo.reqInheritancePoint) {
         // 상속 포인트 사용
@@ -274,7 +274,7 @@ export class BettingService {
     const existingBettings = await this.prisma.storage.findMany({
       where: { namespace: "betting" },
     });
-    const maxId = existingBettings.reduce((max, item) => {
+    const maxId = existingBettings.reduce((max: number, item: any) => {
       const id = (item.value as any).id || 0;
       return Math.max(max, id);
     }, 0);
@@ -339,11 +339,11 @@ export class BettingService {
 
     // 당첨자들에게 배당금 지급
     const winnerTotalAmount = winnerBets
-      .filter((bet) => {
+      .filter((bet: any) => {
         const betType = bet.bettingType as number[];
         return winnerType.every((w) => betType.includes(w));
       })
-      .reduce((sum, bet) => sum + bet.amount, 0);
+      .reduce((sum: number, bet: any) => sum + bet.amount, 0);
 
     if (winnerTotalAmount > 0) {
       const multiplier = totalAmount / winnerTotalAmount;
@@ -413,8 +413,8 @@ export class BettingService {
       },
     });
 
-    const year = (storage.find((s) => s.key === "year")?.value as number) || 184;
-    const month = (storage.find((s) => s.key === "month")?.value as number) || 1;
+    const year = (storage.find((s: any) => s.key === "year")?.value as number) || 184;
+    const month = (storage.find((s: any) => s.key === "month")?.value as number) || 1;
 
     return { year, month };
   }

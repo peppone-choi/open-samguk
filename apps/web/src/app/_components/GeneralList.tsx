@@ -20,7 +20,11 @@ export const GeneralList: React.FC<GeneralListProps> = ({ nationId, nationName }
     return <div className="text-destructive">장수 정보를 가져오지 못했습니다.</div>;
   }
 
-  const generals = generalsQuery.data || [];
+  // Handle both array response and {list: []} response format
+  const rawData = generalsQuery.data;
+  const generals: unknown[] = Array.isArray(rawData)
+    ? rawData
+    : (rawData as Record<string, unknown>)?.list as unknown[] ?? [];
 
   return (
     <section className="mb-14">

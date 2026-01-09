@@ -32,7 +32,7 @@ export class DiplomacyService {
 
     const nationCities: Record<number, string[]> = {};
     const cities = await this.prisma.city.findMany({
-      where: { nationId: { in: nations.map((n) => n.nation) } },
+      where: { nationId: { in: nations.map((n: any) => n.nation) } },
       select: { nationId: true, name: true },
     });
 
@@ -45,8 +45,8 @@ export class DiplomacyService {
 
     const diplomacyList = await this.prisma.diplomacy.findMany({
       where: {
-        meId: { in: nations.map((n) => n.nation) },
-        youId: { in: nations.map((n) => n.nation) },
+        meId: { in: nations.map((n: any) => n.nation) },
+        youId: { in: nations.map((n: any) => n.nation) },
       },
     });
 
@@ -67,7 +67,7 @@ export class DiplomacyService {
     });
 
     const conflicts = conflictCities
-      .map((c) => {
+      .map((c: any) => {
         const conflict = c.conflict as Record<string, number>;
         const nationIds = Object.keys(conflict).map(Number);
         if (nationIds.length < 2) return null;
@@ -84,10 +84,10 @@ export class DiplomacyService {
           conflict: percentages,
         };
       })
-      .filter((c): c is NonNullable<typeof c> => c !== null);
+      .filter((c: any): c is NonNullable<typeof c> => c !== null);
 
     return {
-      nations: nations.map((n) => ({
+      nations: nations.map((n: any) => ({
         ...n,
         cities: nationCities[n.nation] ?? [],
       })),

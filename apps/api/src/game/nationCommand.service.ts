@@ -173,7 +173,7 @@ export class NationCommandService {
     const brief = this.generateCommandBrief(action, arg);
 
     // 트랜잭션으로 턴 업데이트
-    await this.prisma.$transaction(async (tx) => {
+    await (this.prisma as any).$transaction(async (tx: any) => {
       for (const turnIdx of turnList) {
         // 기존 턴 삭제 후 새로 생성 (upsert)
         await tx.nationTurn.upsert({
@@ -274,7 +274,7 @@ export class NationCommandService {
     const lastTurnIdx = lastTurn.turnIdx;
 
     // 다음 턴들에 동일한 커맨드 복사
-    await this.prisma.$transaction(async (tx) => {
+    await (this.prisma as any).$transaction(async (tx: any) => {
       for (let i = 1; i <= amount; i++) {
         const newTurnIdx = this.normalizeTurnIdx(lastTurnIdx + i);
         await tx.nationTurn.upsert({
@@ -341,7 +341,7 @@ export class NationCommandService {
     }
 
     // 트랜잭션으로 모든 턴 이동
-    await this.prisma.$transaction(async (tx) => {
+    await (this.prisma as any).$transaction(async (tx: any) => {
       // 먼저 모든 기존 턴 삭제
       await tx.nationTurn.deleteMany({
         where: { nationId, officerLevel },

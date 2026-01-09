@@ -40,7 +40,7 @@ type TransactionClient = Omit<
 
 @Injectable()
 export class CommandService {
-  private readonly prisma = createPrismaClient();
+  private readonly prisma: PrismaClientType = createPrismaClient();
 
   async pushCommand(generalId: number, amount: number): Promise<{ result: boolean }> {
     if (amount === 0) {
@@ -65,7 +65,7 @@ export class CommandService {
     }
 
     await this.prisma.$transaction(async (tx: TransactionClient) => {
-      for (const turn of existingTurns) {
+      for (const turn of existingTurns as any[]) {
         const newTurnIdx = turn.turnIdx + amount;
         if (newTurnIdx >= COMMAND_CONSTANTS.maxTurn) {
           await tx.generalTurn.update({
@@ -108,7 +108,7 @@ export class CommandService {
     }
 
     await this.prisma.$transaction(async (tx: TransactionClient) => {
-      for (const turn of existingTurns) {
+      for (const turn of existingTurns as any[]) {
         const newTurnIdx = turn.turnIdx - amount;
         if (newTurnIdx < 0) {
           await tx.generalTurn.update({
@@ -159,7 +159,7 @@ export class CommandService {
     }
 
     await this.prisma.$transaction(async (tx: TransactionClient) => {
-      for (const turn of sourceTurns) {
+      for (const turn of sourceTurns as any[]) {
         const turnIdx = turn.turnIdx;
         const targetIndices: number[] = [];
         for (let i = turnIdx + amount; i < COMMAND_CONSTANTS.maxTurn; i += amount) {
@@ -251,7 +251,7 @@ export class CommandService {
     const commandList: Record<number, CommandInfo> = {};
     let invalidTurnList = 0;
 
-    for (const turn of rawTurns) {
+    for (const turn of rawTurns as any[]) {
       let turnIdx = turn.turnIdx;
 
       if (turnIdx < 0) {
@@ -350,7 +350,7 @@ export class CommandService {
     const turnIndices = Array.from(expandedTurnList);
 
     await this.prisma.$transaction(
-      turnIndices.map((turnIdx) =>
+      turnIndices.map((turnIdx: number) =>
         this.prisma.generalTurn.upsert({
           where: { generalId_turnIdx: { generalId, turnIdx } },
           update: {

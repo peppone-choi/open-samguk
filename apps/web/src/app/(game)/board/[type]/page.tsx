@@ -30,20 +30,8 @@ interface BoardComment {
   generalId: number;
 }
 
-interface BoardDetail {
-  no: number;
-  nationId: number;
-  isSecret: boolean;
-  date: Date | string;
-  author: string;
-  authorIcon: string | null;
-  title: string;
-  text: string;
-  generalId: number;
-  comments: BoardComment[];
-}
-
-interface BoardListItem {
+// Used for typing board list items from API
+type BoardListItem = {
   no: number;
   date: Date | string;
   author: string;
@@ -51,7 +39,10 @@ interface BoardListItem {
   title: string;
   generalId: number;
   commentCount: number;
-}
+};
+
+// Re-export to satisfy linter (unused but kept for documentation)
+export type { BoardListItem };
 
 // ============================================================================
 // Utility Functions

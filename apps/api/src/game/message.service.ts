@@ -67,7 +67,7 @@ export class MessageService {
     // 결과 정렬 및 시퀀스 결정
     const allFetched = [...privateMsgs, ...publicMsgs, ...nationalMsgs, ...diplomacyMsgs];
     const nextSequence =
-      allFetched.length > 0 ? Math.max(...allFetched.map((m) => m.id)) : sequence;
+      allFetched.length > 0 ? Math.max(...allFetched.map((m: any) => m.id)) : sequence;
 
     return {
       private: privateMsgs,
@@ -234,7 +234,7 @@ export class MessageService {
     });
 
     // soft delete된 메시지 필터링
-    const filteredMessages = messages.filter((msg) => {
+    const filteredMessages = messages.filter((msg: any) => {
       const messageData = (msg.message as any) || {};
       const deletedBy = messageData.deletedBy || [];
       return !deletedBy.includes(generalId);

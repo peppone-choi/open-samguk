@@ -11,7 +11,7 @@
  * - View other officers' reserved commands (read-only)
  */
 
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/utils/trpc";

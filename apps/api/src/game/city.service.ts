@@ -65,7 +65,7 @@ export class CityService {
 
     return {
       result: true,
-      generals: generals.map((g) => ({
+      generals: generals.map((g: any) => ({
         ...g,
         nationName: g.nation?.name,
         nationColor: g.nation?.color,
@@ -91,7 +91,7 @@ export class CityService {
 
     return {
       result: true,
-      cities: cities.map((c) => ({
+      cities: cities.map((c: any) => ({
         city: c.city,
         name: c.name,
         level: c.level,
@@ -135,7 +135,7 @@ export class CityService {
 
     return {
       result: true,
-      cities: cities.map((c) => ({
+      cities: cities.map((c: any) => ({
         city: c.city,
         name: c.name,
         level: c.level,
@@ -194,7 +194,7 @@ export class CityService {
     return {
       result: true,
       currentCity: city,
-      adjacentCities: adjacentCities.map((c) => ({
+      adjacentCities: adjacentCities.map((c: any) => ({
         city: c.city,
         name: c.name,
         nationId: c.nationId,

@@ -11,7 +11,7 @@
  * - Kick member / Change troop name (if leader or admin)
  */
 
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,7 +52,7 @@ interface TroopInfo {
 
 export default function PageTroop() {
   const { selectedGeneral, selectedGeneralId, isLoading: isGeneralLoading } = useGeneral();
-  const { gameTime } = useGameConst();
+  useGameConst(); // Keep hook call for potential side effects
 
   const [newTroopName, setNewTroopName] = useState("");
 
@@ -61,7 +61,7 @@ export default function PageTroop() {
     data: rawTroops,
     isLoading: isTroopsLoading,
     refetch,
-  } = trpc.getTroopList.useQuery(
+  } = trpc.getTroops.useQuery(
     { nationId: selectedGeneral?.nationId ?? 0 },
     { enabled: !!selectedGeneral?.nationId }
   );
@@ -142,7 +142,7 @@ export default function PageTroop() {
     }
   };
 
-  const handleKick = async (troopId: number) => {
+  const handleKick = async (_troopId: number) => {
     if (!kickMemberId || !selectedGeneralId) return;
     try {
       await kickFromTroopMutation.mutateAsync({

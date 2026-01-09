@@ -15,7 +15,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
-import { trpc } from "@/utils/trpc";
+// import { trpc } from "@/utils/trpc"; // TODO: Enable when tournament API is ready
 import { useGeneral } from "@/contexts/GeneralContext";
 
 // ============================================================================
@@ -305,7 +305,8 @@ interface BracketMatchProps {
   winner?: TournamentParticipant | null;
 }
 
-function BracketMatch({ left, right, winner }: BracketMatchProps) {
+// Exported for future use in bracket visualization
+export function BracketMatch({ left, right, winner }: BracketMatchProps) {
   const leftWon = winner && left && winner.no === left.no;
   const rightWon = winner && right && winner.no === right.no;
 

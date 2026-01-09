@@ -6,9 +6,7 @@
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "strict": false,
-    "noImplicitAny": false
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*"

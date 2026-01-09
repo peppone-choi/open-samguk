@@ -14,11 +14,8 @@
 
 import {
   useState,
-  useEffect,
   useCallback,
   useMemo,
-  forwardRef,
-  useImperativeHandle,
   type ReactNode,
 } from "react";
 import { cn, getKoreanInitials } from "@/lib/utils";

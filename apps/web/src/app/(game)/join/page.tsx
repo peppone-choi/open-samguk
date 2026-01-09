@@ -37,7 +37,8 @@ interface GameIActionInfo {
   info: string;
 }
 
-interface CityInfo {
+// CityInfo type for city selection (exported for potential reuse)
+export interface CityInfo {
   id: number;
   name: string;
   region: string;
@@ -231,76 +232,9 @@ function abilityPowint(stats: Stats): [number, number, number] {
 }
 
 // ============================================================================
-// Mock Data (TODO: Replace with actual tRPC queries)
+// Constants
 // ============================================================================
 
-const MOCK_NATIONS: NationInfo[] = [
-  {
-    nation: 1,
-    name: "위",
-    color: "#0066CC",
-    scout: 1,
-    scoutmsg: "<b>위나라</b>에 오신 것을 환영합니다!<br/>강력한 기병대와 함께하세요.",
-  },
-  {
-    nation: 2,
-    name: "촉",
-    color: "#CC0000",
-    scout: 1,
-    scoutmsg: "<b>촉나라</b>의 의로운 깃발 아래 모이십시오!<br/>인덕으로 천하를 평정합니다.",
-  },
-  {
-    nation: 3,
-    name: "오",
-    color: "#00AA00",
-    scout: 1,
-    scoutmsg: "<b>오나라</b>의 수군과 함께 강동을 지키세요!<br/>풍요로운 강남의 땅입니다.",
-  },
-];
-
-const MOCK_MEMBER: MemberInfo = {
-  name: "플레이어",
-  grade: 1,
-  picture: "default.jpg",
-  imgsvr: 0,
-};
-
-const MOCK_STATS: Stats = {
-  min: 10,
-  max: 100,
-  total: 180,
-  bonusMin: 1,
-  bonusMax: 5,
-};
-
-const MOCK_PERSONALITIES: Record<string, GameIActionInfo> = {
-  Random: { value: "Random", name: "???", info: "무작위 성격을 선택합니다." },
-  Cool: { value: "Cool", name: "냉정", info: "냉정하고 침착한 성격입니다." },
-  Brave: { value: "Brave", name: "용맹", info: "용맹하고 대담한 성격입니다." },
-  Wise: { value: "Wise", name: "지혜", info: "지혜롭고 신중한 성격입니다." },
-  Noble: { value: "Noble", name: "인덕", info: "인덕이 있는 성격입니다." },
-};
-
-const MOCK_INHERIT_SPECIALS: Record<string, GameIActionInfo> = {
-  SpecialWar1: {
-    value: "SpecialWar1",
-    name: "기병의 달인",
-    info: "기병 전투에서 큰 보너스를 받습니다.",
-  },
-  SpecialWar2: {
-    value: "SpecialWar2",
-    name: "궁병의 달인",
-    info: "궁병 전투에서 큰 보너스를 받습니다.",
-  },
-};
-
-const MOCK_CITIES: CityInfo[] = [
-  { id: 1, name: "낙양", region: "사예" },
-  { id: 2, name: "장안", region: "옹주" },
-  { id: 3, name: "업", region: "기주" },
-  { id: 4, name: "성도", region: "익주" },
-  { id: 5, name: "건업", region: "양주" },
-];
 
 const MOCK_TURN_TERM = 60; // seconds
 
@@ -312,14 +246,17 @@ export default function JoinPage() {
   const router = useRouter();
 
   // Queries
-  const { data: userData } = trpc.me.useQuery();
+  const { data: userData } = trpc.auth.session.useQuery();
   const { data: rawNations } = trpc.getNations.useQuery();
   const { data: cityData } = trpc.getAllCities.useQuery();
   const { data: gameConst } = trpc.getGameConst.useQuery();
+  const userId = (userData as Record<string, unknown>)?.memberId as number | undefined;
   const { data: inheritPoints } = trpc.getInheritPoints.useQuery(
-    { userId: userData?.id ?? 0 },
-    { enabled: !!userData?.id }
+    { userId: userId ?? 0 },
+    { enabled: !!userId }
   );
+
+  const blockCustomGeneralName = (gameConst as any)?.consts?.blockCustomGeneralName ?? false;
 
   const nationList = useMemo(() => {
     if (!rawNations) return [];
@@ -336,8 +273,8 @@ export default function JoinPage() {
   const member = useMemo<MemberInfo>(
     () => ({
       name: userData?.name ?? "플레이어",
-      grade: 1,
-      picture: userData?.picture ?? "default.jpg",
+      grade: userData?.grade ?? 1,
+      picture: "default.jpg",
       imgsvr: 0,
     }),
     [userData]
@@ -357,12 +294,12 @@ export default function JoinPage() {
 
   const availablePersonality = useMemo(() => {
     const c = (gameConst as any)?.consts || {};
-    return c.availablePersonalities || MOCK_PERSONALITIES;
+    return (c.availablePersonalities || {}) as Record<string, GameIActionInfo>;
   }, [gameConst]);
 
   const availableInheritSpecial = useMemo(() => {
     const c = (gameConst as any)?.consts || {};
-    return c.availableInheritSpecials || MOCK_INHERIT_SPECIALS;
+    return (c.availableInheritSpecials || {}) as Record<string, GameIActionInfo>;
   }, [gameConst]);
 
   const availableInheritCity = useMemo(() => {
@@ -644,13 +581,11 @@ export default function JoinPage() {
             nationList.map((nation) => (
               <div
                 key={nation.nation}
-                className={`grid border-b border-gray-700 cursor-pointer ${
-                  selectedNation === nation.nation ? "bg-zinc-800" : ""
-                } ${
-                  toggleZoom
+                className={`grid border-b border-gray-700 cursor-pointer ${selectedNation === nation.nation ? "bg-zinc-800" : ""
+                  } ${toggleZoom
                     ? "grid-rows-[auto_minmax(0,200px)]"
                     : "grid-rows-[auto_minmax(0,115px)]"
-                } lg:grid-cols-[130px_1fr] lg:grid-rows-1`}
+                  } lg:grid-cols-[130px_1fr] lg:grid-rows-1`}
                 onClick={() => setSelectedNation(nation.nation)}
               >
                 {/* Nation Name */}
@@ -672,16 +607,14 @@ export default function JoinPage() {
 
                 {/* Scout Message */}
                 <div
-                  className={`p-2 overflow-hidden ${
-                    toggleZoom ? "overflow-y-auto max-h-[200px]" : "max-h-[115px]"
-                  } lg:max-h-none lg:overflow-visible`}
+                  className={`p-2 overflow-hidden ${toggleZoom ? "overflow-y-auto max-h-[200px]" : "max-h-[115px]"
+                    } lg:max-h-none lg:overflow-visible`}
                 >
                   <div
-                    className={`${
-                      !toggleZoom
-                        ? "origin-top-left scale-[0.575] w-[870px] sm:scale-100 sm:w-auto"
-                        : ""
-                    }`}
+                    className={`${!toggleZoom
+                      ? "origin-top-left scale-[0.575] w-[870px] sm:scale-100 sm:w-auto"
+                      : ""
+                      }`}
                     dangerouslySetInnerHTML={{
                       __html: nation.scoutmsg ?? "-",
                     }}
@@ -873,9 +806,8 @@ export default function JoinPage() {
               <div className="bg-zinc-800 border border-gray-600 rounded p-3">
                 <div className="text-xs text-gray-400 mb-1">필요 유산 포인트</div>
                 <div
-                  className={`text-lg font-semibold ${
-                    inheritRequiredPoint > inheritTotalPoint ? "text-red-400" : ""
-                  }`}
+                  className={`text-lg font-semibold ${inheritRequiredPoint > inheritTotalPoint ? "text-red-400" : ""
+                    }`}
                 >
                   {inheritRequiredPoint}
                 </div>

@@ -10,7 +10,7 @@
  * - MapViewer + SimpleNationList showing the world map
  */
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useMemo } from "react";
 import { TopBackBar } from "@/components/game";
 import { MapViewer, type MapResult } from "@/components/game/MapViewer";
 import { trpc } from "@/utils/trpc";
@@ -35,7 +35,7 @@ interface SimpleNationObj {
 }
 
 // Diplomacy state: 0 = war, 1 = declared, 2 = neutral, 7 = non-aggression
-type DiplomacyState = 0 | 1 | 2 | 7;
+export type DiplomacyState = 0 | 1 | 2 | 7;
 
 // ============================================================================
 // Utility Functions
@@ -351,7 +351,7 @@ export default function DiplomacyPage() {
               <div className="w-full max-w-[600px] aspect-square relative border border-zinc-800 rounded-md shadow-inner bg-black/20">
                 <MapViewer
                   mapName="large"
-                  mapData={mapData as MapResult}
+                  mapData={mapData as unknown as MapResult}
                   isDetailMap={true}
                   cityPosition={CITY_POSITION_CHE}
                   formatCityInfo={(c) => c}

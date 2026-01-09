@@ -16,7 +16,7 @@ const AUCTION_EXTENSION_MINUTES = 5;
 export class AuctionService implements OnModuleInit {
   private readonly prisma: PrismaClientType = createPrismaClient();
 
-  constructor(private readonly inheritService: InheritService) {}
+  constructor(private readonly inheritService: InheritService) { }
 
   onModuleInit() {
     // 경매 정산 프로세스 시작 (1분마다 실행)
@@ -143,7 +143,7 @@ export class AuctionService implements OnModuleInit {
     const validationError = auction.bid(amount, tryExtend);
     if (validationError) throw new Error(validationError);
 
-    return this.prisma.$transaction(async (tx) => {
+    return (this.prisma as any).$transaction(async (tx: any) => {
       // 1. 자원 체크 및 차감
       const resource = auctionInfo.reqResource;
       if (resource === "gold") {
@@ -332,7 +332,7 @@ export class AuctionService implements OnModuleInit {
     const now = new Date();
     const closeDate = this.calculateCloseDate(now, closeTurnCnt);
 
-    return this.prisma.$transaction(async (tx) => {
+    return (this.prisma as any).$transaction(async (tx: any) => {
       await tx.general.update({
         where: { no: generalId },
         data: { rice: { decrement: amount } },
@@ -386,7 +386,7 @@ export class AuctionService implements OnModuleInit {
     const now = new Date();
     const closeDate = this.calculateCloseDate(now, closeTurnCnt);
 
-    return this.prisma.$transaction(async (tx) => {
+    return (this.prisma as any).$transaction(async (tx: any) => {
       await tx.general.update({
         where: { no: generalId },
         data: { gold: { decrement: startBidAmount } },
@@ -430,7 +430,7 @@ export class AuctionService implements OnModuleInit {
     });
 
     const getValue = (key: string): number => {
-      const item = storage.find((storageItem) => storageItem.key === key);
+      const item = storage.find((storageItem: any) => storageItem.key === key);
       return item ? (item.value as number) : 0;
     };
 
@@ -491,7 +491,7 @@ export class AuctionService implements OnModuleInit {
     });
 
     for (const pAuction of auctions) {
-      await this.prisma.$transaction(async (tx) => {
+      await (this.prisma as any).$transaction(async (tx: any) => {
         // 도메인 객체로 변환 (낙찰자 입찰 정보 포함)
         const auctionInfo = this.mapToAuctionInfo(pAuction);
 

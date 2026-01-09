@@ -11,7 +11,7 @@
  * - Policy settings (rate, bill, secretLimit, blockWar, blockScout)
  */
 
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/utils/trpc";
@@ -359,7 +359,7 @@ function ToggleSwitch({ label, checked, onChange, disabled }: ToggleSwitchProps)
 
 export default function NationFinancePage() {
   const { selectedGeneralId, selectedGeneral } = useGeneral();
-  const { gameTime } = useGameConst();
+  const { } = useGameConst();
 
   const nationId = selectedGeneral?.nationId;
 
@@ -534,7 +534,7 @@ export default function NationFinancePage() {
             외교관계
           </div>
           <DiplomacyTable
-            nations={data.nationsList}
+            nations={data.nationsList as unknown as NationItem[]}
             nationID={data.nationID}
             year={data.year}
             month={data.month}

@@ -85,7 +85,7 @@ export class GlobalService {
         name: n.name,
         color: n.color,
         gennum: n.gennum,
-        cityCount: n._count.cities,
+        cityCount: (n as any)._count.cities,
       })),
       recentHistory,
       onlineCount,
@@ -119,15 +119,19 @@ export class GlobalService {
       }),
     ]);
 
-    const nationMap = new Map(nations.map((n) => [n.nation, n]));
+    type MapNation = { nation: number; name: string; color: string };
+    const nationMap = new Map<number, MapNation>(nations.map((n) => [n.nation, n]));
 
     return {
       result: true,
-      cities: cities.map((c) => ({
-        ...c,
-        nationName: (nationMap.get(c.nationId) as any)?.name,
-        nationColor: (nationMap.get(c.nationId) as any)?.color,
-      })),
+      cities: cities.map((c) => {
+        const nation = nationMap.get(c.nationId);
+        return {
+          ...c,
+          nationName: nation?.name,
+          nationColor: nation?.color,
+        };
+      }),
       nations,
     };
   }
@@ -255,17 +259,22 @@ export class GlobalService {
       }),
     ]);
 
-    const nationMap = new Map(nations.map((n) => [n.nation, n]));
+    type DipNation = { nation: number; name: string; color: string };
+    const nationMap = new Map<number, DipNation>(nations.map((n) => [n.nation, n]));
 
     return {
       result: true,
-      diplomacies: diplomacies.map((d) => ({
-        ...d,
-        meName: (nationMap.get(d.meId) as any)?.name,
-        meColor: (nationMap.get(d.meId) as any)?.color,
-        youName: (nationMap.get(d.youId) as any)?.name,
-        youColor: (nationMap.get(d.youId) as any)?.color,
-      })),
+      diplomacies: diplomacies.map((d) => {
+        const me = nationMap.get(d.meId);
+        const you = nationMap.get(d.youId);
+        return {
+          ...d,
+          meName: me?.name,
+          meColor: me?.color,
+          youName: you?.name,
+          youColor: you?.color,
+        };
+      }),
       nations,
     };
   }
