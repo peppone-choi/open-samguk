@@ -113,7 +113,7 @@ export class SnapshotRepository {
         recentWarTime: g.recentWar,
         makeLimit: g.makeLimit,
         killTurn: g.killTurn || 0,
-        killnum: dbRankData.find((r) => r.generalId === g.no)?.value || 0,
+        killnum: dbRankData.find((r: any) => r.generalId === g.no)?.value || 0,
         block: g.block,
         defenceTrain: g.defenceTrain,
         tournamentState: g.tnmt,
@@ -224,7 +224,7 @@ export class SnapshotRepository {
       troops: {},
       messages: {},
       gameTime: { year, month },
-      env: dbStorage.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {}),
+      env: dbStorage.reduce((acc: any, s: any) => ({ ...acc, [s.key]: s.value }), {}),
       generalTurns,
     };
   }
