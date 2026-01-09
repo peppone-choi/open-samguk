@@ -125,8 +125,8 @@ export class GlobalService {
       result: true,
       cities: cities.map((c) => ({
         ...c,
-        nationName: nationMap.get(c.nationId)?.name,
-        nationColor: nationMap.get(c.nationId)?.color,
+        nationName: (nationMap.get(c.nationId) as any)?.name,
+        nationColor: (nationMap.get(c.nationId) as any)?.color,
       })),
       nations,
     };
@@ -261,10 +261,10 @@ export class GlobalService {
       result: true,
       diplomacies: diplomacies.map((d) => ({
         ...d,
-        meName: nationMap.get(d.meId)?.name,
-        meColor: nationMap.get(d.meId)?.color,
-        youName: nationMap.get(d.youId)?.name,
-        youColor: nationMap.get(d.youId)?.color,
+        meName: (nationMap.get(d.meId) as any)?.name,
+        meColor: (nationMap.get(d.meId) as any)?.color,
+        youName: (nationMap.get(d.youId) as any)?.name,
+        youColor: (nationMap.get(d.youId) as any)?.color,
       })),
       nations,
     };
