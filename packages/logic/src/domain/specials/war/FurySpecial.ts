@@ -1,5 +1,13 @@
 import { BaseSpecial } from "../BaseSpecial";
-import { SpecialWeightType, SpecialType, type WarUnit, type WarUnitTriggerCaller } from "../types";
+import {
+  SpecialWeightType,
+  SpecialType,
+  type WarUnit,
+  WarUnitTriggerCaller,
+  RaiseType,
+} from "../types";
+import { RageAttemptTrigger } from "../../triggers/war/RageAttemptTrigger.js";
+import { RageActivateTrigger } from "../../triggers/war/RageActivateTrigger.js";
 
 /**
  * Fury (격노) - War Special Ability
@@ -21,12 +29,10 @@ export class FurySpecial extends BaseSpecial {
     return [1 + 0.2 * activatedCnt, 1];
   }
 
-  getBattlePhaseSkillTriggerList(_unit: WarUnit): WarUnitTriggerCaller | null {
-    // TODO: Implement che_격노시도 and che_격노발동 triggers
-    // return new WarUnitTriggerCaller(
-    //   new FuryAttemptTrigger(unit),
-    //   new FuryActivateTrigger(unit)
-    // );
-    return null;
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller | null {
+    return new WarUnitTriggerCaller(
+      new RageAttemptTrigger(unit, RaiseType.SPECIAL),
+      new RageActivateTrigger(unit, RaiseType.SPECIAL)
+    );
   }
 }

@@ -97,6 +97,13 @@ export interface WarUnitCity {
 }
 
 /**
+ * Type guard to check if a unit is a WarUnit (not WarUnitCity)
+ */
+export function isWarUnit(unit: WarUnit | WarUnitCity): unit is WarUnit {
+  return "general" in unit;
+}
+
+/**
  * Battle log entry
  */
 export interface WarBattleLogEntry {

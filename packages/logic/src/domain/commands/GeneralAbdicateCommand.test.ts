@@ -68,6 +68,8 @@ describe("GeneralAbdicateCommand", () => {
         dedLevel: 0,
         expLevel: 0,
         officerLock: 0,
+        affinity: 500,
+        personal: "None",
       },
       2: {
         id: 2,
@@ -127,6 +129,8 @@ describe("GeneralAbdicateCommand", () => {
         dedLevel: 0,
         expLevel: 0,
         officerLock: 0,
+        affinity: 500,
+        personal: "None",
       },
       3: {
         id: 3,
@@ -186,6 +190,8 @@ describe("GeneralAbdicateCommand", () => {
         dedLevel: 0,
         expLevel: 0,
         officerLock: 0,
+        affinity: 500,
+        personal: "None",
       },
     },
     nations: {

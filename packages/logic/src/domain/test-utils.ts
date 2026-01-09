@@ -10,7 +10,7 @@ import type {
 } from "./entities.js";
 
 export function createMockGeneral(overrides: Partial<General> = {}): General {
-  return {
+  const base: General = {
     id: 1,
     name: "테스트장수",
     ownerId: 0,
@@ -68,8 +68,15 @@ export function createMockGeneral(overrides: Partial<General> = {}): General {
     meta: {},
     penalty: {},
     officerLock: 0,
-    ...overrides,
+    affinity: 500,
+    personal: "None",
   };
+  return {
+    ...base,
+    ...overrides,
+    affinity: overrides.affinity ?? base.affinity,
+    personal: overrides.personal ?? base.personal,
+  } as General;
 }
 
 export function createMockNation(overrides: Partial<Nation> = {}): Nation {

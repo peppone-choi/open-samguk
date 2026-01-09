@@ -41,7 +41,6 @@ export class EvasionAttemptTrigger implements WarUnitTrigger {
       return false;
     }
 
-
     let prob = typeof this.avoidRatio === "function" ? this.avoidRatio(self, ctx) : this.avoidRatio;
 
     // 아이템 보정 적용 (전투 회피 확률)

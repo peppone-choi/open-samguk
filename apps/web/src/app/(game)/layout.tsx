@@ -1,6 +1,7 @@
 "use client";
 
 import { GameLayout } from "@/components/layout";
+import { ProtectedRoute } from "@/components/auth";
 import { trpc } from "@/utils/trpc";
 
 export default function GameRootLayout({ children }: { children: React.ReactNode }) {
@@ -9,5 +10,9 @@ export default function GameRootLayout({ children }: { children: React.ReactNode
     ? { year: gameStateQuery.data.year, month: gameStateQuery.data.month }
     : undefined;
 
-  return <GameLayout gameTime={gameTime}>{children}</GameLayout>;
+  return (
+    <ProtectedRoute>
+      <GameLayout gameTime={gameTime}>{children}</GameLayout>
+    </ProtectedRoute>
+  );
 }

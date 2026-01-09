@@ -198,6 +198,7 @@ export class CommandService {
     date: string;
     turn: Record<number, CommandInfo>;
     autorun_limit: number | null;
+    editable: boolean;
   }> {
     const [turnTermEntry, yearEntry, monthEntry, lastExecuteEntry] = await Promise.all([
       this.prisma.storage.findUnique({
@@ -301,6 +302,7 @@ export class CommandService {
       date: new Date().toISOString(),
       turn: commandList,
       autorun_limit: generalAux.autorun_limit ?? null,
+      editable: true,
     };
   }
 

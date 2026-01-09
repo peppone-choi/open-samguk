@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, type WarUnitCity, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -22,8 +22,8 @@ export class BatteringRamConsumeTrigger implements WarUnitTrigger {
     this.raiseType = raiseType;
   }
 
-  private isWallUnit(warUnit: WarUnit): boolean {
-    return "isCity" in warUnit && (warUnit as unknown as { isCity: boolean }).isCity === true;
+  private isWallUnit(warUnit: WarUnit | WarUnitCity): boolean {
+    return !isWarUnit(warUnit);
   }
 
   attempt(ctx: WarUnitTriggerContext): boolean {

@@ -57,9 +57,23 @@
     "availableChiefCommand": {
       "휴식": ["휴식"],
       "인사": ["che_발령", "che_포상", "che_몰수"],
-      "외교": ["che_물자원조", "che_불가침제의", "che_선전포고", "che_종전제의", "che_불가침파기제의"],
+      "외교": [
+        "che_물자원조",
+        "che_불가침제의",
+        "che_선전포고",
+        "che_종전제의",
+        "che_불가침파기제의"
+      ],
       "특수": ["che_초토화", "che_천도", "cr_인구이동"],
-      "전략": ["che_필사즉생", "che_백성동원", "che_수몰", "che_허보", "che_의병모집", "che_이호경식", "che_급습"],
+      "전략": [
+        "che_필사즉생",
+        "che_백성동원",
+        "che_수몰",
+        "che_허보",
+        "che_의병모집",
+        "che_이호경식",
+        "che_급습"
+      ],
       "기타": ["che_피장파장", "che_국기변경", "che_국호변경"]
     },
     "availableSpecialWar": [
@@ -197,7 +211,9 @@
       }
     }
   },
-  "defaultInitialEvents": [[true, ["NoticeToHistoryLog", "<S>2년간 거병 및 건국이 가능합니다.</>", 6]]],
+  "defaultInitialEvents": [
+    [true, ["NoticeToHistoryLog", "<S>2년간 거병 및 건국이 가능합니다.</>", 6]]
+  ],
   "events": [
     [
       "month",

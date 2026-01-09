@@ -5,7 +5,11 @@
  */
 import { BaseItem } from "../BaseItem.js";
 import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
-import { StrategyAttemptTrigger, StrategyActivateTrigger, StrategyFailTrigger } from "../../triggers/war/index.js";
+import {
+  StrategyAttemptTrigger,
+  StrategyActivateTrigger,
+  StrategyFailTrigger,
+} from "../../triggers/war/index.js";
 import type { GeneralReadOnly, StatName, DomesticTurnType, DomesticVarType } from "../types.js";
 
 export class StrategyBookSamryakItem extends BaseItem {

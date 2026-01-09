@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -28,7 +28,7 @@ export class PreemptiveShotActivateTrigger implements WarUnitTrigger {
       return false;
     }
 
-    if (oppose.hasActivatedSkill("선제") && oppose.isAttacker) {
+    if (isWarUnit(oppose) && oppose.hasActivatedSkill("선제") && oppose.isAttacker) {
       return false;
     }
 
@@ -52,33 +52,42 @@ export class PreemptiveShotActivateTrigger implements WarUnitTrigger {
 
     const logs: string[] = [];
 
-    if (oppose.hasActivatedSkill("선제")) {
+    if (isWarUnit(oppose)) {
+      if (oppose.hasActivatedSkill("선제")) {
+        self.multiplyWarPower(2 / 3);
+        oppose.multiplyWarPower(2 / 3);
+        logs.push(`서로 선제 사격을 주고 받았다!`);
+
+        return {
+          delta: {
+            logs: { global: logs },
+          },
+          continueExecution: true,
+        };
+      }
+
+      oppose.multiplyWarPower(0);
       self.multiplyWarPower(2 / 3);
-      oppose.multiplyWarPower(2 / 3);
-      logs.push(`서로 선제 사격을 주고 받았다!`);
 
-      return {
-        delta: {
-          logs: { global: logs },
-        },
-        continueExecution: true,
-      };
+      self.activateSkill("회피불가");
+      self.activateSkill("필살불가");
+      self.activateSkill("계략불가");
+
+      oppose.activateSkill("회피불가");
+      oppose.activateSkill("필살불가");
+      oppose.activateSkill("격노불가");
+      oppose.activateSkill("계략불가");
+
+      logs.push(`${self.general.name}이(가) 상대에게 선제 사격을 했다!`);
+      logs.push(`${oppose.general.name}이(가) 선제 사격을 받았다!`);
+    } else {
+      // WarUnitCity target
+      self.multiplyWarPower(2 / 3);
+      self.activateSkill("회피불가");
+      self.activateSkill("필살불가");
+      self.activateSkill("계략불가");
+      logs.push(`${self.general.name}이(가) 선제 사격을 했다!`);
     }
-
-    oppose.multiplyWarPower(0);
-    self.multiplyWarPower(2 / 3);
-
-    self.activateSkill("회피불가");
-    self.activateSkill("필살불가");
-    self.activateSkill("계략불가");
-
-    oppose.activateSkill("회피불가");
-    oppose.activateSkill("필살불가");
-    oppose.activateSkill("격노불가");
-    oppose.activateSkill("계략불가");
-
-    logs.push(`${self.general.name}이(가) 상대에게 선제 사격을 했다!`);
-    logs.push(`${oppose.general.name}이(가) 선제 사격을 받았다!`);
 
     return {
       delta: {

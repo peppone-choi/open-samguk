@@ -1,0 +1,311 @@
+# Parity Testing: Legacy PHP vs New TypeScript
+# Run both systems side-by-side for comparison testing
+# Based on: https://storage.hided.net/gitea/devsam/docker
+
+version: "3.8"
+
+services:
+  # ===========================================================================
+  # LEGACY PHP STACK (from devsam/docker)
+  # ===========================================================================
+
+  # MariaDB for Legacy
+  legacy-db:
+    image: mariadb:11
+    container_name: sammo-legacy-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${LEGACY_MARIADB_ROOT_PASSWORD:-legacy_root_pass}
+      MARIADB_DATABASE: ${LEGACY_MARIADB_DATABASE:-sammo_game}
+      MARIADB_USER: ${LEGACY_MARIADB_USER:-sammo}
+      MARIADB_PASSWORD: ${LEGACY_MARIADB_PASSWORD:-sammo_legacy_pass}
+    volumes:
+      - legacy-db-data:/var/lib/mysql
+      - ./docker/legacy/init-db:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "3307:3306"
+    networks:
+      - parity-net
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nginx for Legacy (reverse proxy to PHP-FPM)
+  legacy-nginx:
+    build:
+      context: .
+      dockerfile: docker/legacy/nginx/Dockerfile
+    container_name: sammo-legacy-nginx
+    restart: always
+    ports:
+      - "${LEGACY_WEB_PORT:-8080}:80"
+    volumes:
+      - legacy-code:/var/www/html:ro
+    depends_on:
+      - legacy-php
+    networks:
+      - parity-net
+
+  # PHP-FPM Application Server
+  legacy-php:
+    build:
+      context: .
+      dockerfile: docker/legacy/php-fpm/Dockerfile
+    container_name: sammo-legacy-php
+    restart: always
+    volumes:
+      - legacy-code:/var/www/html
+    env_file:
+      - docker/legacy/env/account.env
+      - docker/legacy/env/game.env
+    environment:
+      - DB_HOST=legacy-db
+      - DB_PORT=3306
+      - DB_USER=${LEGACY_MARIADB_USER:-sammo}
+      - DB_PASS=${LEGACY_MARIADB_PASSWORD:-sammo_legacy_pass}
+      - DB_NAME=${LEGACY_MARIADB_DATABASE:-sammo_game}
+    depends_on:
+      legacy-db:
+        condition: service_healthy
+    networks:
+      - parity-net
+
+  # Cron Service for Legacy (Game Turn Processing)
+  legacy-cron:
+    build:
+      context: .
+      dockerfile: docker/legacy/cron/Dockerfile
+    container_name: sammo-legacy-cron
+    restart: always
+    volumes:
+      - legacy-code:/var/www/html
+    env_file:
+      - docker/legacy/env/account.env
+      - docker/legacy/env/game.env
+    depends_on:
+      - legacy-php
+      - legacy-db
+    networks:
+      - parity-net
+
+  # Backup Service for Legacy
+  legacy-backup:
+    build:
+      context: .
+      dockerfile: docker/legacy/backup/Dockerfile
+    container_name: sammo-legacy-backup
+    restart: "no"
+    volumes:
+      - legacy-code:/var/www/html:ro
+      - legacy-backup:/var/backup
+    env_file:
+      - docker/legacy/env/account.env
+      - docker/legacy/env/game.env
+    environment:
+      - DB_HOST=legacy-db
+      - DB_USER=${LEGACY_MARIADB_USER:-sammo}
+      - DB_PASS=${LEGACY_MARIADB_PASSWORD:-sammo_legacy_pass}
+    depends_on:
+      - legacy-db
+    networks:
+      - parity-net
+
+  # Install Service for Legacy (One-time Setup)
+  legacy-install:
+    build:
+      context: .
+      dockerfile: docker/legacy/install/Dockerfile
+    container_name: sammo-legacy-install
+    restart: "no"
+    volumes:
+      - legacy-code:/var/www/html
+    env_file:
+      - docker/legacy/env/account.env
+      - docker/legacy/env/game.env
+    depends_on:
+      legacy-db:
+        condition: service_healthy
+      legacy-php:
+        condition: service_started
+    networks:
+      - parity-net
+
+  # ===========================================================================
+  # NEW TYPESCRIPT STACK
+  # ===========================================================================
+
+  # PostgreSQL for New Stack
+  new-db:
+    image: postgres:16-alpine
+    container_name: sammo-new-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${NEW_POSTGRES_USER:-sammo}
+      POSTGRES_PASSWORD: ${NEW_POSTGRES_PASSWORD:-sammo_new_pass}
+      POSTGRES_DB: ${NEW_POSTGRES_DB:-sammo}
+    volumes:
+      - new-db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - parity-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${NEW_POSTGRES_USER:-sammo} -d ${NEW_POSTGRES_DB:-sammo}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for New Stack (API <-> Engine Communication)
+  new-redis:
+    image: redis:7-alpine
+    container_name: sammo-new-redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - new-redis-data:/data
+    ports:
+      - "6380:6379"
+    networks:
+      - parity-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # NestJS API Gateway
+  new-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api
+    container_name: sammo-new-api
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://${NEW_POSTGRES_USER:-sammo}:${NEW_POSTGRES_PASSWORD:-sammo_new_pass}@new-db:5432/${NEW_POSTGRES_DB:-sammo}?schema=public
+      - REDIS_URL=redis://new-redis:6379
+      - JWT_SECRET=${JWT_SECRET:-parity_test_secret_key_change_in_production}
+      - NODE_ENV=development
+      - GAME_PORT=3000
+    ports:
+      - "3001:3000"
+    depends_on:
+      new-db:
+        condition: service_healthy
+      new-redis:
+        condition: service_healthy
+    networks:
+      - parity-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Turn Daemon (Game State Engine)
+  new-engine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: engine
+    container_name: sammo-new-engine
+    restart: always
+    environment:
+      - DATABASE_URL=postgresql://${NEW_POSTGRES_USER:-sammo}:${NEW_POSTGRES_PASSWORD:-sammo_new_pass}@new-db:5432/${NEW_POSTGRES_DB:-sammo}?schema=public
+      - REDIS_URL=redis://new-redis:6379
+      - NODE_ENV=development
+    depends_on:
+      new-db:
+        condition: service_healthy
+      new-redis:
+        condition: service_healthy
+      new-api:
+        condition: service_started
+    networks:
+      - parity-net
+
+  # Next.js Frontend
+  new-web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web
+    container_name: sammo-new-web
+    restart: always
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:${NEW_WEB_PORT:-3000}/api/trpc
+      - NODE_ENV=development
+    ports:
+      - "${NEW_WEB_PORT:-3000}:3001"
+    depends_on:
+      - new-api
+    networks:
+      - parity-net
+
+  # ===========================================================================
+  # PARITY BRIDGE (Comparison Testing Utility)
+  # ===========================================================================
+
+  parity-bridge:
+    build:
+      context: .
+      dockerfile: docker/parity-bridge/Dockerfile
+    container_name: sammo-parity-bridge
+    ports:
+      - "3100:3100"
+    environment:
+      - LEGACY_PHP_URL=http://legacy-nginx
+      - LEGACY_DB_HOST=legacy-db
+      - LEGACY_DB_PORT=3306
+      - LEGACY_DB_USER=${LEGACY_MARIADB_USER:-sammo}
+      - LEGACY_DB_PASS=${LEGACY_MARIADB_PASSWORD:-sammo_legacy_pass}
+      - LEGACY_DB_NAME=${LEGACY_MARIADB_DATABASE:-sammo_game}
+      - NEW_API_URL=http://new-api:3000
+      - NEW_DB_HOST=new-db
+      - NEW_DB_PORT=5432
+      - NEW_DB_USER=${NEW_POSTGRES_USER:-sammo}
+      - NEW_DB_PASS=${NEW_POSTGRES_PASSWORD:-sammo_new_pass}
+      - NEW_DB_NAME=${NEW_POSTGRES_DB:-sammo}
+      - NODE_ENV=test
+    volumes:
+      - parity-snapshots:/app/snapshots
+    depends_on:
+      - legacy-nginx
+      - legacy-db
+      - new-api
+      - new-db
+    networks:
+      - parity-net
+
+# ===========================================================================
+# VOLUMES
+# ===========================================================================
+volumes:
+  # Legacy
+  legacy-db-data:
+    name: sammo-legacy-db-data
+  legacy-code:
+    name: sammo-legacy-code
+  legacy-backup:
+    name: sammo-legacy-backup
+
+  # New
+  new-db-data:
+    name: sammo-new-db-data
+  new-redis-data:
+    name: sammo-new-redis-data
+
+  # Parity
+  parity-snapshots:
+    name: sammo-parity-snapshots
+
+# ===========================================================================
+# NETWORKS
+# ===========================================================================
+networks:
+  parity-net:
+    name: sammo-parity-network
+    driver: bridge

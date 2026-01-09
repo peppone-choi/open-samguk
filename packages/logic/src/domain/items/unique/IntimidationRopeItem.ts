@@ -4,7 +4,10 @@
  */
 import { BaseItem } from "../BaseItem.js";
 import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
-import { IntimidationAttemptTrigger, IntimidationActivateTrigger } from "../../triggers/war/index.js";
+import {
+  IntimidationAttemptTrigger,
+  IntimidationActivateTrigger,
+} from "../../triggers/war/index.js";
 import { RaiseType } from "../../WarUnitTriggerRegistry.js";
 
 export class IntimidationRopeItem extends BaseItem {

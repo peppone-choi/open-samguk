@@ -119,6 +119,8 @@ export class SnapshotRepository {
         meta: g.aux as Record<string, any>,
         penalty: g.penalty as Record<string, any>,
         officerLock: (g as any).officerLock || 0,
+        affinity: (g as any).affinity || 500,
+        personal: (g as any).personal || "None",
       };
     }
 

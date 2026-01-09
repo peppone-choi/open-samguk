@@ -66,13 +66,18 @@ const mockGeneral: General = {
   dedLevel: 0,
   expLevel: 0,
   officerLock: 0,
+  affinity: 500,
+  personal: "None",
 };
 
 function createMockWarUnit(general: General): WarUnit {
   const activatedSkills = new Set<string>();
+  let crew = 1000;
+  let killed = 0;
+  let dead = 0;
   return {
     general,
-    crew: 1000,
+    crew,
     crewType: 1,
     train: 50,
     atmos: 50,
@@ -90,6 +95,21 @@ function createMockWarUnit(general: General): WarUnit {
     deactivateSkill: (skill: string) => activatedSkills.delete(skill),
     hasActivatedSkill: (skill: string) => activatedSkills.has(skill),
     multiplyWarPower: () => {},
+    getCrew: () => crew,
+    decreaseHP: (damage: number) => {
+      crew -= damage;
+      dead += damage;
+      return damage;
+    },
+    increaseKilled: (damage: number) => {
+      killed += damage;
+    },
+    canContinue: () => ({ canContinue: crew > 0, noRice: false }),
+    getAttack: () => 100,
+    getDefense: () => 100,
+    getSpeed: () => 100,
+    getKilled: () => killed,
+    getDead: () => dead,
   };
 }
 

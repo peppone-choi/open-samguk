@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient } from "@sammo/infra";
 
-const INHERIT_CONSTANTS = {
+export const INHERIT_CONSTANTS = {
   inheritItemRandomPoint: 600,
   inheritBuffPoints: [0, 100, 300, 600, 1000],
   inheritResetAttrPointBase: [100, 200, 300, 500, 800, 1300, 2100],
@@ -20,6 +20,10 @@ const INHERIT_CONSTANTS = {
     warMastery: "전투 숙련",
   } as Record<string, string>,
   maxBuffStep: 4,
+  inheritBornCityPoint: 100,
+  inheritBornSpecialPoint: 300,
+  inheritBornTurntimePoint: 50,
+  inheritBornStatPointCost: 100, // Cost per bonus stat? Or total? Let's say total for 3-5 stats
 };
 
 interface GeneralAux {
@@ -720,7 +724,7 @@ export class InheritService {
     });
   }
 
-  private async deductPoints(userId: number, amount: number): Promise<void> {
+  public async deductPoints(userId: number, amount: number): Promise<void> {
     const currentPoints = await this.getPoints(userId);
     const newPoints = currentPoints.points - amount;
 
@@ -737,7 +741,7 @@ export class InheritService {
     });
   }
 
-  private async logInheritAction(userId: number, text: string): Promise<void> {
+  public async logInheritAction(userId: number, text: string): Promise<void> {
     const yearEntry = await this.prisma.storage.findUnique({
       where: { namespace_key: { namespace: "game_env", key: "year" } },
     });

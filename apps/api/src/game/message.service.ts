@@ -123,4 +123,249 @@ export class MessageService {
 
     return newMessage;
   }
+
+  /**
+   * 최신 메시지 읽음 처리
+   */
+  async readLatestMessage(generalId: number, messageIds: number[]) {
+    let updatedCount = 0;
+
+    // 개별 메시지 읽음 처리 (JSON 필드 업데이트)
+    for (const msgId of messageIds) {
+      const msg = await this.prisma.message.findFirst({
+        where: {
+          id: msgId,
+          OR: [{ mailbox: generalId }, { destId: generalId }],
+        },
+      });
+      if (msg) {
+        const messageData = (msg.message as any) || {};
+        messageData.read = true;
+        messageData.readAt = new Date().toISOString();
+        await this.prisma.message.update({
+          where: { id: msgId },
+          data: { message: messageData },
+        });
+        updatedCount++;
+      }
+    }
+
+    return { success: true, count: updatedCount };
+  }
+
+  /**
+   * 메시지 삭제
+   */
+  async deleteMessage(generalId: number, messageId: number) {
+    // 해당 장수가 접근 가능한 메시지인지 확인
+    const message = await this.prisma.message.findFirst({
+      where: {
+        id: messageId,
+        OR: [
+          { mailbox: generalId }, // 개인 사서함
+          { destId: generalId }, // 수신자
+          { srcId: generalId }, // 발신자 (자신이 보낸 메시지)
+        ],
+      },
+    });
+
+    if (!message) {
+      throw new Error("메시지를 찾을 수 없거나 삭제 권한이 없습니다.");
+    }
+
+    // 실제 삭제가 아닌 soft delete (aux에 deleted 마킹)
+    const messageData = (message.message as any) || {};
+    messageData.deletedBy = messageData.deletedBy || [];
+    if (!messageData.deletedBy.includes(generalId)) {
+      messageData.deletedBy.push(generalId);
+    }
+
+    await this.prisma.message.update({
+      where: { id: messageId },
+      data: { message: messageData },
+    });
+
+    return { success: true, messageId };
+  }
+
+  /**
+   * 과거 메시지 조회 (페이징)
+   */
+  async getOldMessages(
+    generalId: number,
+    nationId: number,
+    params: {
+      type?: "private" | "public" | "national" | "diplomacy";
+      limit?: number;
+      offset?: number;
+      beforeId?: number;
+    }
+  ) {
+    const { type, limit = 30, offset = 0, beforeId } = params;
+
+    const mailboxes = [
+      generalId, // 개인
+      MessageService.MAILBOX_PUBLIC, // 전체
+      MessageService.MAILBOX_NATIONAL + nationId, // 국가
+    ];
+
+    const where: any = {
+      mailbox: { in: mailboxes },
+      ...(type ? { type } : {}),
+      ...(beforeId ? { id: { lt: beforeId } } : {}),
+    };
+
+    const messages = await this.prisma.message.findMany({
+      where,
+      orderBy: { id: "desc" },
+      take: limit,
+      skip: offset,
+      include: {
+        src: {
+          select: {
+            no: true,
+            name: true,
+            picture: true,
+            imgSvr: true,
+            nationId: true,
+          },
+        },
+      },
+    });
+
+    // soft delete된 메시지 필터링
+    const filteredMessages = messages.filter((msg) => {
+      const messageData = (msg.message as any) || {};
+      const deletedBy = messageData.deletedBy || [];
+      return !deletedBy.includes(generalId);
+    });
+
+    return {
+      messages: filteredMessages,
+      hasMore: messages.length === limit,
+    };
+  }
+
+  /**
+   * 연락처 목록 조회 (메시지 보낼 수 있는 대상)
+   */
+  async getContactList(generalId: number) {
+    const general = await this.prisma.general.findUnique({
+      where: { no: generalId },
+      select: { nationId: true },
+    });
+
+    if (!general) throw new Error("장수 정보가 없습니다.");
+
+    // 모든 국가 목록 (외교 메시지용)
+    const nations = await this.prisma.nation.findMany({
+      where: { nation: { gt: 0 } },
+      select: {
+        nation: true,
+        name: true,
+        color: true,
+        level: true,
+      },
+      orderBy: { name: "asc" },
+    });
+
+    // 같은 국가 장수들 (국가 메시지용, NPC 제외)
+    let sameNationGenerals: any[] = [];
+    if (general.nationId > 0) {
+      sameNationGenerals = await this.prisma.general.findMany({
+        where: {
+          nationId: general.nationId,
+          npc: 0,
+          no: { not: generalId },
+        },
+        select: {
+          no: true,
+          name: true,
+          picture: true,
+          imgSvr: true,
+          officerLevel: true,
+        },
+        orderBy: { officerLevel: "desc" },
+      });
+    }
+
+    // 최근 대화 상대 (개인 메시지)
+    const recentContacts = await this.prisma.message.findMany({
+      where: {
+        type: "private",
+        OR: [{ srcId: generalId }, { destId: generalId }],
+      },
+      select: {
+        srcId: true,
+        destId: true,
+        src: {
+          select: { no: true, name: true, picture: true, imgSvr: true },
+        },
+      },
+      orderBy: { id: "desc" },
+      take: 20,
+    });
+
+    // 중복 제거한 최근 연락처
+    const contactMap = new Map();
+    for (const msg of recentContacts) {
+      const contactId = msg.srcId === generalId ? msg.destId : msg.srcId;
+      if (contactId && contactId !== generalId && !contactMap.has(contactId)) {
+        const contactGeneral = await this.prisma.general.findUnique({
+          where: { no: contactId },
+          select: { no: true, name: true, picture: true, imgSvr: true, nationId: true },
+        });
+        if (contactGeneral) {
+          contactMap.set(contactId, contactGeneral);
+        }
+      }
+    }
+
+    return {
+      nations,
+      sameNationGenerals,
+      recentContacts: Array.from(contactMap.values()),
+    };
+  }
+
+  /**
+   * 메시지 응답 결정 (외교 메시지에 대한 수락/거절)
+   */
+  async decideMessageResponse(generalId: number, messageId: number, decision: "accept" | "reject") {
+    const message = await this.prisma.message.findFirst({
+      where: {
+        id: messageId,
+        type: "diplomacy",
+      },
+    });
+
+    if (!message) {
+      throw new Error("외교 메시지를 찾을 수 없습니다.");
+    }
+
+    // 응답 권한 확인 (수뇌부만 가능)
+    const general = await this.prisma.general.findUnique({
+      where: { no: generalId },
+      select: { nationId: true, officerLevel: true },
+    });
+
+    if (!general || general.officerLevel < 5) {
+      throw new Error("외교 메시지 응답 권한이 없습니다.");
+    }
+
+    // 메시지에 응답 기록
+    const messageData = (message.message as any) || {};
+    messageData.response = {
+      decision,
+      respondedBy: generalId,
+      respondedAt: new Date().toISOString(),
+    };
+
+    await this.prisma.message.update({
+      where: { id: messageId },
+      data: { message: messageData },
+    });
+
+    return { success: true, decision };
+  }
 }

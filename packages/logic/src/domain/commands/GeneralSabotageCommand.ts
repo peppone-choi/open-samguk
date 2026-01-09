@@ -99,9 +99,9 @@ export abstract class GeneralSabotageCommand extends GeneralCommand {
     const destCity = snapshot.cities[destCityId];
     if (!iGeneral || !destCity) throw new Error("데이터 오류");
 
-    // 거리 계산 (임시: 인접 도시만 가능하도록 하거나 거리에 따른 확률 감소)
+    // 거리 계산 - MapUtil의 BFS 기반 실제 거리 계산 사용
     const actorCityId = iGeneral.cityId;
-    const dist = 1; // TODO: MapUtil에서 실제 거리 계산 필요
+    const dist = Math.max(1, MapUtil.getDistance(actorCityId, destCityId));
 
     const prob =
       (GameConst.sabotageDefaultProb +

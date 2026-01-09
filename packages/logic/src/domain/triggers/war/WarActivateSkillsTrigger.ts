@@ -30,8 +30,8 @@ export class WarActivateSkillsTrigger implements WarUnitTrigger {
     const target = this.onOpponent ? ctx.oppose : ctx.self;
 
     // 유닛인 경우에만 스킬 활성화 여부 확인
-    if ('hasActivatedSkill' in target) {
-      const allActivated = this.skills.every(skill => (target as any).hasActivatedSkill(skill));
+    if ("hasActivatedSkill" in target) {
+      const allActivated = this.skills.every((skill) => (target as any).hasActivatedSkill(skill));
       if (allActivated) return false;
     }
 
@@ -44,7 +44,7 @@ export class WarActivateSkillsTrigger implements WarUnitTrigger {
   actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult {
     const target = this.onOpponent ? ctx.oppose : ctx.self;
 
-    if ('activateSkill' in target) {
+    if ("activateSkill" in target) {
       for (const skill of this.skills) {
         (target as any).activateSkill(skill);
       }

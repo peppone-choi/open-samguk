@@ -1,5 +1,8 @@
 # 백엔드 포팅 현황 및 포팅 대상 분석 보고서
 
+> ⚠️ 참고: 본 문서는 2026-01-07 기준 분석 스냅샷입니다.
+> 최신 현황/체크리스트는 `docs/porting-status.md`, 로드맵은 `docs/remaining-work.md`를 기준으로 합니다.
+
 ## 1. 개요
 
 - **작성일**: 2026-01-07
@@ -21,14 +24,14 @@
 
 ### 2.2. 커맨드 및 제약 조건 (Commands & Constraints)
 
-- **커맨드 (General Commands)**: 약 55개 구현 완료 (휴식, 내정, 전쟁, 등용 등). `CommandHelper`를 통한 자동 등록 시스템 구축.
-- **커맨드 (Nation Commands)**: 약 39개 구현 완료 (천도, 세율 조정, 외교 등).
-- **제약 조건 (Constraints)**: `ConstraintHelper`를 통해 약 70+개 제약 조건 로직 포팅 완료.
+- **커맨드 (General Commands)**: 56개 구현 완료. `CommandHelper` 기반 자동 등록.
+- **커맨드 (Nation Commands)**: 41개 구현 완료.
+- **제약 조건 (Constraints)**: 체크리스트 기준 73개 포팅 완료(일부는 `ConstraintHelper` 팩토리 형태로 제공).
 - **병종 제한 (Unit Constraints)**: `ReqTech`, `ReqCities` 등 10개 핵심 제약 조건 클래스 포팅 완료 (**100%**) ✅.
 
 ### 2.3. 이벤트 및 트리거
 
-- **전투 트리거**: 31개 포팅 완료 (회피, 필살, 계략 등).
+- **전투 트리거**: 38개 포팅 완료.
 - **월간 이벤트**: `ProcessIncome`, `Disaster` 등 주요 월간 로직 포팅 완료 (80% 수준).
 - **장수 트리거**: 4개 포팅 완료.
 - **병종 어빌리티**: `UnitAbilityRegistry`를 통해 PHP 어빌리티 코드를 TypeScript 트리거에 매핑 완료.
@@ -36,7 +39,7 @@
 ### 2.4. 데이터
 
 - **시나리오 로더**: `ScenarioLoader`, `MapLoader` 구현 완료. `che` 맵 데이터 로딩 가능.
-- **아이템**: `BaseItem`, `ItemData` 구조 잡힘. 일부 기본 아이템 데이터 존재.
+- **아이템**: `packages/logic/src/domain/items/` 기준 161/161 포팅 완료.
 
 ### 2.5. API
 

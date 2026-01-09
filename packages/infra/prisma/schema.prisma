@@ -12,23 +12,80 @@ datasource db {
 // ========================================
 
 model Member {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String
-  icon      String?
-  grade     Int      @default(0)
-  blockUntil DateTime?
-  createdAt DateTime @default(now())
-  aux       Json     @default("{}")
+  id              Int       @id @default(autoincrement())
+  username        String    @unique @db.VarChar(64)
+  email           String?   @unique @db.VarChar(64)
+  password        String?   @db.Char(128)
+  salt            String?   @db.Char(16)
+  name            String    @db.VarChar(64)
+  icon            String?   @db.VarChar(64)
+  imgServer       Int       @default(0)
+  grade           Int       @default(1)
+  
+  // OAuth 관련
+  oauthId         BigInt?   @unique
+  oauthType       OAuthType @default(NONE)
+  oauthInfo       Json      @default("{}")
+  tokenValidUntil DateTime?
+  
+  // 기타
+  thirdUse        Boolean   @default(false)
+  acl             Json      @default("{}")
+  penalty         Json      @default("{}")
+  regCount        Int       @default(0)
+  blockCount      Int       @default(0)
+  blockUntil      DateTime?
+  deleteAfter     DateTime? @db.Date
+  createdAt       DateTime  @default(now())
+  aux             Json      @default("{}")
 
   generals      General[]
   memberLogs    MemberLog[]
   loginTokens   LoginToken[]
+  refreshTokens RefreshToken[]
   userRecords   UserRecord[]
   auctionBids   AuctionBid[]
   bettings      Betting[]
+  gameSessions  GameSession[]
 
   @@map("member")
+}
+
+enum OAuthType {
+  NONE
+  KAKAO
+}
+
+model RefreshToken {
+  id          Int      @id @default(autoincrement())
+  memberId    Int
+  token       String   @unique @db.VarChar(64)
+  userAgent   String?  @db.VarChar(256)
+  ipAddress   String?  @db.VarChar(45)
+  validUntil  DateTime
+  createdAt   DateTime @default(now())
+
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([validUntil])
+  @@map("refresh_token")
+}
+
+model GameSession {
+  id          Int      @id @default(autoincrement())
+  memberId    Int
+  serverId    String   @db.VarChar(32)
+  generalId   Int
+  generalName String   @db.VarChar(64)
+  loginAt     DateTime @default(now())
+  lastActiveAt DateTime @default(now())
+
+  member      Member   @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@unique([memberId, serverId])
+  @@index([serverId, lastActiveAt])
+  @@map("game_session")
 }
 
 model MemberLog {

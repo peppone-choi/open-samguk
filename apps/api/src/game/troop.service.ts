@@ -13,7 +13,7 @@ export class TroopService {
     const result = await Promise.all(
       troops.map(async (troop) => {
         const members = await this.prisma.general.findMany({
-          where: { nationId, troopId: troop.troopLeader },
+          where: { troopId: troop.troopLeader },
           select: {
             no: true,
             name: true,
@@ -21,11 +21,22 @@ export class TroopService {
             cityId: true,
             crew: true,
             crewType: true,
+            turnTime: true,
           },
           orderBy: [{ officerLevel: "desc" }, { no: "asc" }],
         });
 
         const leader = members.find((m) => m.no === troop.troopLeader);
+
+        // Fetch reserved commands for the leader
+        const reservedCommands = leader
+          ? await this.prisma.generalTurn.findMany({
+              where: { generalId: leader.no },
+              orderBy: { turnIdx: "asc" },
+              take: 3,
+              select: { brief: true, action: true },
+            })
+          : [];
 
         return {
           id: troop.troopLeader,
@@ -34,6 +45,8 @@ export class TroopService {
           leader: leader ?? null,
           members,
           memberCount: members.length,
+          turnTime: leader?.turnTime ?? null,
+          reservedCommandBrief: reservedCommands.map((c) => c.brief || c.action),
         };
       })
     );

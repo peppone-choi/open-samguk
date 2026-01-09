@@ -10,7 +10,8 @@ export class RecruitmentItem extends BaseItem {
   readonly code = "che_징병_낙주";
   readonly rawName = "낙주";
   readonly name = "낙주(징병)";
-  readonly info = "[군사] 징·모병비 -30%\n[기타] 통솔 순수 능력치 보정 +15%, 징병/모병/소집해제 시 인구 변동 없음";
+  readonly info =
+    "[군사] 징·모병비 -30%\n[기타] 통솔 순수 능력치 보정 +15%, 징병/모병/소집해제 시 인구 변동 없음";
   readonly type = "item" as const;
   readonly cost = 200;
   readonly consumable = false;

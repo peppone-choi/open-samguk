@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -31,11 +31,14 @@ export class LootAttemptTrigger implements WarUnitTrigger {
     const self = ctx.self;
     const oppose = ctx.oppose;
 
-    if (self.phase !== 0 && oppose.phase !== 0) {
-      return false;
+    // WarUnitCity doesn't have phase
+    if (isWarUnit(oppose)) {
+      if (self.phase !== 0 && oppose.phase !== 0) {
+        return false;
+      }
     }
 
-    const isGeneralTarget = "general" in oppose;
+    const isGeneralTarget = isWarUnit(oppose);
     if (!isGeneralTarget) {
       return false;
     }

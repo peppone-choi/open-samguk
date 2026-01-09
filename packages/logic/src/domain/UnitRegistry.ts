@@ -9,7 +9,7 @@ export class UnitRegistry {
   private units: Map<number, GameUnit> = new Map();
   private lastLoadedSet: string | null = null;
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): UnitRegistry {
     if (!UnitRegistry.instance) {

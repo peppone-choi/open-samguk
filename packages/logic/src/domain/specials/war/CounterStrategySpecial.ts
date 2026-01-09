@@ -5,8 +5,11 @@ import {
   SpecialType,
   type StatAux,
   type WarUnit,
-  type WarUnitTriggerCaller,
+  WarUnitTriggerCaller,
+  RaiseType,
 } from "../types";
+import { CounterAttemptTrigger } from "../../triggers/war/CounterAttemptTrigger.js";
+import { CounterActivateTrigger } from "../../triggers/war/CounterActivateTrigger.js";
 
 /**
  * Counter Strategy (반계) - War Special Ability
@@ -42,12 +45,10 @@ export class CounterStrategySpecial extends BaseSpecial {
     return value - (debuff[statName] ?? 0);
   }
 
-  getBattlePhaseSkillTriggerList(_unit: WarUnit): WarUnitTriggerCaller | null {
-    // TODO: Implement che_반계시도 and che_반계발동 triggers
-    // return new WarUnitTriggerCaller(
-    //   new CounterStrategyAttemptTrigger(unit),
-    //   new CounterStrategyActivateTrigger(unit)
-    // );
-    return null;
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller | null {
+    return new WarUnitTriggerCaller(
+      new CounterAttemptTrigger(unit, RaiseType.SPECIAL, 0.4),
+      new CounterActivateTrigger(unit, RaiseType.SPECIAL)
+    );
   }
 }

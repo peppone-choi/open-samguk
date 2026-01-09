@@ -4,7 +4,12 @@
 
 ## 개요
 
-총 73개의 PHP 제약조건 중 우선순위가 높은 20개의 제약조건을 TypeScript로 마이그레이션했습니다.
+레거시 PHP 제약조건(Constraints) 시스템을 TypeScript로 마이그레이션한 모듈입니다.
+
+- 제약조건은 `Constraint` 인터페이스를 구현하며, `requires()`로 필요한 데이터를 선언하고 `test()`로 허용/거부를 판정합니다.
+- 프로젝트 내에서는 개별 `*Constraint.ts` 구현체 + `ConstraintHelper`의 팩토리 메서드를 함께 사용합니다.
+
+현재 코드베이스 기준으로 레거시 제약조건은 게임 플레이에 필요한 수준으로 포팅되어 있으며, 정확한 현황은 `docs/porting-status.md`를 단일 기준으로 봅니다.
 
 ## 마이그레이션된 제약조건
 
@@ -162,19 +167,12 @@ TypeScript의 타입 시스템을 활용하여 컴파일 타임에 오류를 감
 
 상태 변경 대신 함수 호출로 결과를 반환합니다.
 
-## 향후 마이그레이션 대상
+## 참고
 
-아직 마이그레이션되지 않은 제약조건들:
+- 단일 체크리스트: `docs/porting-status.md`
+- 작업 로드맵: `docs/remaining-work.md`
 
-- ReqGeneralCrewMargin
-- ReqGeneralAtmosMargin
-- ReqGeneralTrainMargin
-- HasRoute / HasRouteWithEnemy
-- NearNation
-- BattleGroundCity
-- AllowDiplomacy 관련 제약조건들
-- 외교/전쟁 관련 제약조건들
-- 기타 특수 제약조건들 (약 50개)
+제약조건 구현은 게임 규칙/커맨드와 강하게 결합되어 있으므로, 신규 제약조건을 추가할 때는 반드시 관련 커맨드 테스트(`*.test.ts`)와 함께 추가합니다.
 
 ## 파일 구조
 

@@ -4,9 +4,12 @@ import {
   SpecialWeightType,
   SpecialType,
   type WarUnit,
-  type WarUnitTriggerCaller,
+  WarUnitTriggerCaller,
   type GeneralTriggerCaller,
+  RaiseType,
 } from "../types";
+import { BattleHealAttemptTrigger } from "../../triggers/war/BattleHealAttemptTrigger.js";
+import { BattleHealActivateTrigger } from "../../triggers/war/BattleHealActivateTrigger.js";
 
 /**
  * Medicine (의술) - War Special Ability
@@ -35,12 +38,10 @@ export class MedicineSpecial extends BaseSpecial {
     return null;
   }
 
-  getBattlePhaseSkillTriggerList(_unit: WarUnit): WarUnitTriggerCaller | null {
-    // TODO: Implement che_전투치료시도 and che_전투치료발동 triggers
-    // return new WarUnitTriggerCaller(
-    //   new BattleHealingAttemptTrigger(unit),
-    //   new BattleHealingActivateTrigger(unit)
-    // );
-    return null;
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller | null {
+    return new WarUnitTriggerCaller(
+      new BattleHealAttemptTrigger(unit, RaiseType.SPECIAL, 0.4),
+      new BattleHealActivateTrigger(unit, RaiseType.SPECIAL)
+    );
   }
 }

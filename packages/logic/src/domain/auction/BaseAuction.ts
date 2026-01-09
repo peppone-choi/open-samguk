@@ -9,9 +9,15 @@ import { AuctionInfo, AuctionBid, AuctionType, AuctionResourceType } from "./typ
 export abstract class BaseAuction {
   protected info: AuctionInfo;
 
-  // 상수 정의
+  // 상수 정의 (레거시 Auction.php lines 24-31)
+  public static readonly COEFF_AUCTION_CLOSE_MINUTES = 24;
+  public static readonly COEFF_EXTENSION_MINUTES_PER_BID = 1 / 6;
+  public static readonly COEFF_EXTENSION_MINUTES_LIMIT_BY_BID = 0.5;
+  public static readonly COEFF_EXTENSION_MINUTES_BY_EXTENSION_QUERY = 1;
   public static readonly MIN_AUCTION_CLOSE_MINUTES = 30;
   public static readonly MIN_EXTENSION_MINUTES_PER_BID = 1;
+  public static readonly MIN_EXTENSION_MINUTES_LIMIT_BY_BID = 5;
+  public static readonly MIN_EXTENSION_MINUTES_BY_EXTENSION_QUERY = 5;
 
   protected _highestBid: AuctionBid | null = null;
 
@@ -78,6 +84,27 @@ export abstract class BaseAuction {
   abstract bid(amount: number, tryExtendCloseDate: boolean): string | null;
 
   /**
+   * 유산 포인트 입찰 검증 (레거시 Auction.php bidInheritPoint lines 278-291)
+   * 1% 이상 AND 10 포인트 이상 높게 입찰해야 함
+   */
+  protected validateInheritancePointBid(
+    amount: number,
+    highestBid: AuctionBid | null
+  ): string | null {
+    if (highestBid !== null) {
+      // 1% 이상 높게 입찰해야 함
+      if (amount < highestBid.amount * 1.01) {
+        return "현재입찰가보다 1% 높게 입찰해야 합니다.";
+      }
+      // 10 포인트 이상 높게 입찰해야 함
+      if (amount < highestBid.amount + 10) {
+        return "현재입찰가보다 10 포인트 높게 입찰해야 합니다.";
+      }
+    }
+    return null;
+  }
+
+  /**
    * 공통 입찰 로직
    * @param amount 입찰 금액
    * @param tryExtendCloseDate 종료 연장 시도 여부
@@ -129,7 +156,9 @@ export abstract class BaseAuction {
     }
 
     // 환불 대상 확인
-    let refundInfo: { generalId: number; amount: number; resource: AuctionResourceType } | undefined;
+    let refundInfo:
+      | { generalId: number; amount: number; resource: AuctionResourceType }
+      | undefined;
     if (highestBid && highestBid.generalId !== this.general.id) {
       refundInfo = {
         generalId: highestBid.generalId,

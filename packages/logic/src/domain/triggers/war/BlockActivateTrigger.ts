@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -46,12 +46,14 @@ export class BlockActivateTrigger implements WarUnitTrigger {
     ctx.selfEnv["저지발동"] = true;
 
     self.multiplyWarPower(0);
-    oppose.multiplyWarPower(0);
+    if (isWarUnit(oppose)) {
+      oppose.multiplyWarPower(0);
+    }
 
-    const logs: string[] = [
-      `${self.general.name}이(가) 상대를 저지했다!`,
-      `${oppose.general.name}이(가) 저지당했다!`,
-    ];
+    const logs: string[] = [`${self.general.name}이(가) 상대를 저지했다!`];
+    if (isWarUnit(oppose)) {
+      logs.push(`${oppose.general.name}이(가) 저지당했다!`);
+    }
 
     return {
       delta: {

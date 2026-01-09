@@ -80,6 +80,8 @@ function createMockGeneral(overrides: Partial<GeneralReadOnly> = {}): GeneralRea
     meta: {},
     penalty: {},
     officerLock: 0,
+    affinity: 500,
+    personal: "None",
     ...overrides,
   };
 }
@@ -90,9 +92,12 @@ function createMockGeneral(overrides: Partial<GeneralReadOnly> = {}): GeneralRea
 function createMockWarUnit(overrides: Partial<WarUnitReadOnly> = {}): WarUnitReadOnly {
   const mockGeneral = createMockGeneral();
   const activatedSkills = new Set<string>();
+  let crew = 10000;
+  let killed = 0;
+  let dead = 0;
   return {
     general: mockGeneral,
-    crew: 10000,
+    crew,
     crewType: 0,
     train: 100,
     atmos: 100,
@@ -110,6 +115,21 @@ function createMockWarUnit(overrides: Partial<WarUnitReadOnly> = {}): WarUnitRea
     deactivateSkill: (skill: string) => activatedSkills.delete(skill),
     hasActivatedSkill: (skill: string) => activatedSkills.has(skill),
     multiplyWarPower: () => {},
+    getCrew: () => crew,
+    decreaseHP: (damage: number) => {
+      crew -= damage;
+      dead += damage;
+      return damage;
+    },
+    increaseKilled: (damage: number) => {
+      killed += damage;
+    },
+    canContinue: () => ({ canContinue: crew > 0, noRice: false }),
+    getAttack: () => 100,
+    getDefense: () => 100,
+    getSpeed: () => 100,
+    getKilled: () => killed,
+    getDead: () => dead,
     ...overrides,
   };
 }

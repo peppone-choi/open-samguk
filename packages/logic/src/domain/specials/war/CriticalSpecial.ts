@@ -5,8 +5,9 @@ import {
   SpecialType,
   type StatAux,
   type WarUnit,
-  type WarUnitTriggerCaller,
+  WarUnitTriggerCaller,
 } from "../types";
+import { KillingBlowEnhancedTrigger } from "../../triggers/war/KillingBlowEnhancedTrigger.js";
 
 /**
  * Critical (필살) - War Special Ability
@@ -37,11 +38,7 @@ export class CriticalSpecial extends BaseSpecial {
     return value;
   }
 
-  getBattlePhaseSkillTriggerList(_unit: WarUnit): WarUnitTriggerCaller | null {
-    // TODO: Implement che_필살강화_회피불가 trigger
-    // return new WarUnitTriggerCaller(
-    //   new CriticalEnhancedNoEvasionTrigger(unit)
-    // );
-    return null;
+  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller | null {
+    return new WarUnitTriggerCaller(new KillingBlowEnhancedTrigger(unit));
   }
 }

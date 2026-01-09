@@ -4,6 +4,7 @@ import {
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
+  RaiseTypeValue,
   TriggerPriority,
 } from "../../WarUnitTriggerRegistry.js";
 
@@ -17,9 +18,14 @@ import {
 export class InjuryImmuneTrigger implements WarUnitTrigger {
   readonly name = "부상무효";
   readonly priority = TriggerPriority.BEGIN + 200;
-  readonly raiseType = RaiseType.NONE;
+  readonly raiseType: RaiseTypeValue;
 
-  constructor(public readonly unit: WarUnit) {}
+  constructor(
+    public readonly unit: WarUnit,
+    raiseType: RaiseTypeValue = RaiseType.NONE
+  ) {
+    this.raiseType = raiseType;
+  }
 
   attempt(_ctx: WarUnitTriggerContext): boolean {
     return true;

@@ -37,7 +37,8 @@ export class KillingBlowAttemptTrigger implements WarUnitTrigger {
       return false;
     }
 
-    let prob = typeof this.criticalRatio === "function" ? this.criticalRatio(self, ctx) : this.criticalRatio;
+    let prob =
+      typeof this.criticalRatio === "function" ? this.criticalRatio(self, ctx) : this.criticalRatio;
 
     // 아이템 보정 적용 (전투 필살 확률)
     prob = WarStatHelper.calcStat(self, "warCriticalRatio", prob, { phase: ctx.phase });

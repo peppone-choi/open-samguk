@@ -1,4 +1,4 @@
-import RegionNameMapRaw from "./scenario/data/RegionMap.json";
+import RegionNameMapRaw from "./scenario/data/maps/che/RegionMap.json";
 
 export const RegionNameMap: Record<string, number> = RegionNameMapRaw;
 

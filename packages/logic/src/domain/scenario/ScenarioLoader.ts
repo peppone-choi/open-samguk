@@ -257,18 +257,39 @@ export class ScenarioLoader {
       ...(scenario.general_neutral || []),
     ];
 
-    for (const generalData of (scenario.general || [])) {
-      const general = this.createGeneral(generalData, generalId, nationIdMap, cities, scenario.startYear, 2);
+    for (const generalData of scenario.general || []) {
+      const general = this.createGeneral(
+        generalData,
+        generalId,
+        nationIdMap,
+        cities,
+        scenario.startYear,
+        2
+      );
       generals[generalId] = general;
       generalId++;
     }
-    for (const generalData of (scenario.general_ex || [])) {
-      const general = this.createGeneral(generalData, generalId, nationIdMap, cities, scenario.startYear, 2);
+    for (const generalData of scenario.general_ex || []) {
+      const general = this.createGeneral(
+        generalData,
+        generalId,
+        nationIdMap,
+        cities,
+        scenario.startYear,
+        2
+      );
       generals[generalId] = general;
       generalId++;
     }
-    for (const generalData of (scenario.general_neutral || [])) {
-      const general = this.createGeneral(generalData, generalId, nationIdMap, cities, scenario.startYear, 6);
+    for (const generalData of scenario.general_neutral || []) {
+      const general = this.createGeneral(
+        generalData,
+        generalId,
+        nationIdMap,
+        cities,
+        scenario.startYear,
+        6
+      );
       generals[generalId] = general;
       generalId++;
     }

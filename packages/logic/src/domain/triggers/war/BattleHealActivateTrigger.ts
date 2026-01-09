@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -45,7 +45,9 @@ export class BattleHealActivateTrigger implements WarUnitTrigger {
 
     ctx.selfEnv["치료발동"] = true;
 
-    oppose.multiplyWarPower(0.7);
+    if (isWarUnit(oppose)) {
+      oppose.multiplyWarPower(0.7);
+    }
 
     const logs: string[] = [`${self.general.name}이(가) 치료했다!`, `상대가 치료했다!`];
 

@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -24,8 +24,11 @@ export class PreemptiveShotAttemptTrigger implements WarUnitTrigger {
     const self = ctx.self;
     const oppose = ctx.oppose;
 
-    if (self.phase !== 0 && oppose.phase !== 0) {
-      return false;
+    // WarUnitCity doesn't have phase
+    if (isWarUnit(oppose)) {
+      if (self.phase !== 0 && oppose.phase !== 0) {
+        return false;
+      }
     }
 
     if (self.hasActivatedSkill("선제")) {

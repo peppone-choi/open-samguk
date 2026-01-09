@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -36,8 +36,10 @@ export class KillingBlowEnhancedTrigger implements WarUnitTrigger {
   actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult {
     const oppose = ctx.oppose;
 
-    // 상대에게 회피불가 스킬 활성화
-    oppose.activateSkill("회피불가");
+    // 상대에게 회피불가 스킬 활성화 (WarUnit only)
+    if (isWarUnit(oppose)) {
+      oppose.activateSkill("회피불가");
+    }
 
     return {
       delta: {},

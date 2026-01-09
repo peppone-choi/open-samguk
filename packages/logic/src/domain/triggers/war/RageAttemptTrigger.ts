@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -23,6 +23,11 @@ export class RageAttemptTrigger implements WarUnitTrigger {
   attempt(ctx: WarUnitTriggerContext): boolean {
     const self = ctx.self;
     const oppose = ctx.oppose;
+
+    // WarUnitCity doesn't have skills, so check if oppose is a WarUnit first
+    if (!isWarUnit(oppose)) {
+      return false;
+    }
 
     if (!oppose.hasActivatedSkill("필살") && !oppose.hasActivatedSkill("회피")) {
       return false;
@@ -50,7 +55,9 @@ export class RageAttemptTrigger implements WarUnitTrigger {
     const oppose = ctx.oppose;
 
     self.activateSkill("격노");
-    oppose.deactivateSkill("회피");
+    if (isWarUnit(oppose)) {
+      oppose.deactivateSkill("회피");
+    }
 
     ctx.selfEnv["격노발동자"] = this.raiseType;
 

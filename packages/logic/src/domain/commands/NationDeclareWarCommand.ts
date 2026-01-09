@@ -68,6 +68,29 @@ export class NationDeclareWarCommand extends GeneralCommand {
       };
     }
 
+    // 자국 체크
+    if (destNationId === iNation.id) {
+      return {
+        logs: { general: { [actorId]: ["선전포고 실패: 자국에게는 선전포고할 수 없습니다."] } },
+      };
+    }
+
+    // 중립 세력 체크
+    if (destNationId === 0) {
+      return {
+        logs: {
+          general: { [actorId]: ["선전포고 실패: 중립 세력에게는 선전포고할 수 없습니다."] },
+        },
+      };
+    }
+
+    // 인접 국가 체크
+    if (!areNationsNeighbors(iNation.id, destNationId, snapshot.cities)) {
+      return {
+        logs: { general: { [actorId]: ["선전포고 실패: 인접 국가가 아닙니다."] } },
+      };
+    }
+
     // 초반제한 체크
     const startYear = snapshot.env.startyear ?? snapshot.gameTime.year;
     if (snapshot.gameTime.year < startYear + 1) {
@@ -81,6 +104,25 @@ export class NationDeclareWarCommand extends GeneralCommand {
     const diplomacyKey = `${iNation.id}:${destNationId}`;
     const reverseDiplomacyKey = `${destNationId}:${iNation.id}`;
     const iDiplomacy = snapshot.diplomacy[diplomacyKey] || snapshot.diplomacy[reverseDiplomacyKey];
+
+    // 외교 상태 체크
+    if (iDiplomacy) {
+      if (iDiplomacy.state === "0") {
+        return {
+          logs: { general: { [actorId]: ["선전포고 실패: 이미 교전중입니다."] } },
+        };
+      }
+      if (iDiplomacy.state === "1") {
+        return {
+          logs: { general: { [actorId]: ["선전포고 실패: 이미 선포중입니다."] } },
+        };
+      }
+      if (iDiplomacy.state === "7") {
+        return {
+          logs: { general: { [actorId]: ["선전포고 실패: 불가침국입니다."] } },
+        };
+      }
+    }
 
     const josaYi = JosaUtil.pick(iActor.name, "이");
     const josaYiNation = JosaUtil.pick(iNation.name, "이");

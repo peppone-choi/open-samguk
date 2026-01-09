@@ -59,9 +59,9 @@ export class EventKillingBlowItem extends BaseItem {
   }
 }
 
-/** 비급(회피/신중) */
+/** 비급(회피) */
 export class EventEvasionItem extends BaseItem {
-  readonly code = "event_전투특기_신중";
+  readonly code = "event_전투특기_회피";
   readonly rawName = "비급";
   readonly name = "비급(회피)";
   readonly info = "[전투] 회피 확률 +30%p, 회피 허용";
@@ -95,7 +95,12 @@ export class EventCounterItem extends BaseItem {
   readonly buyable = true;
   readonly reqSecu = 3000;
 
-  onCalcOpposeStat(_general: GeneralReadOnly, statName: StatName, value: number, _aux?: unknown): number {
+  onCalcOpposeStat(
+    _general: GeneralReadOnly,
+    statName: StatName,
+    value: number,
+    _aux?: unknown
+  ): number {
     if (statName === "warMagicSuccessProb") return value - 0.15;
     return value;
   }
@@ -277,22 +282,22 @@ export class EventFortifyItem extends BaseItem {
   }
 }
 
-/** 비급(신중) */
+/** 비급(신중) - 레거시: 계략 성공 확률 100% */
 export class EventPrudentItem extends BaseItem {
   readonly code = "event_전투특기_신중";
   readonly rawName = "비급";
   readonly name = "비급(신중)";
-  readonly info = "[전투] 신중 허용";
+  readonly info = "[전투] 계략 성공 확률 100%";
   readonly type = "item" as const;
   readonly cost = 100;
   readonly consumable = false;
   readonly buyable = true;
   readonly reqSecu = 3000;
 
-  getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
-    return new WarUnitTriggerCaller(
-      new WarActivateSkillsTrigger(unit, RaiseType.ITEM, false, ["신중"])
-    );
+  onCalcStat(_general: GeneralReadOnly, statName: StatName, value: number, _aux?: unknown): number {
+    // 레거시: warMagicSuccessProb += 1 (100% 성공률)
+    if (statName === "warMagicSuccessProb") return value + 1;
+    return value;
   }
 }
 

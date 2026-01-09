@@ -40,13 +40,18 @@ export interface WarResult {
 export class WarEngine {
   /**
    * 전투 실행
+   * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷 (장수, 도시, 국가 정보)
    * @param attackerId 공격자 장수 ID
    * @param cityId 대상 도시 ID
    * @returns 전투 결과 및 발생한 변화(Delta)
    */
-  public execute(snapshot: WorldSnapshot, attackerId: number, cityId: number): WarResult {
-    const rng = new RandUtil(snapshot.env.rand_seed);
+  public execute(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    attackerId: number,
+    cityId: number
+  ): WarResult {
     const attackerGeneral = snapshot.generals[attackerId];
     const city = snapshot.cities[cityId];
     const attackerNation = snapshot.nations[attackerGeneral.nationId];
@@ -184,7 +189,14 @@ export class WarEngine {
     }
 
     return {
-      delta: this.mergeDeltas(allDeltas, attacker, cityUnit, attackerNation, defenderNation, cityConquered),
+      delta: this.mergeDeltas(
+        allDeltas,
+        attacker,
+        cityUnit,
+        attackerNation,
+        defenderNation,
+        cityConquered
+      ),
       battleLog,
       victory: cityConquered,
       cityConquered,
@@ -213,7 +225,11 @@ export class WarEngine {
           }
           // 상시 배율 보정 트리거 등록
           registry.register(
-            new StatMultiplierTrigger(unit, (u: WarUnit) => item.getWarPowerMultiplier(u), RaiseType.ITEM)
+            new StatMultiplierTrigger(
+              unit,
+              (u: WarUnit) => item.getWarPowerMultiplier(u),
+              RaiseType.ITEM
+            )
           );
 
           // 스탯 보정 적용 (예: 추가 페이즈)
@@ -241,7 +257,11 @@ export class WarEngine {
 
           // 특기 배율 보정
           registry.register(
-            new StatMultiplierTrigger(unit, (u: WarUnit) => special.getWarPowerMultiplier(u), RaiseType.SPECIAL)
+            new StatMultiplierTrigger(
+              unit,
+              (u: WarUnit) => special.getWarPowerMultiplier(u),
+              RaiseType.SPECIAL
+            )
           );
         }
       }

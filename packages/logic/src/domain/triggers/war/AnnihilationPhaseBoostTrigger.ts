@@ -1,9 +1,10 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
   WarUnitTriggerResult,
   RaiseType,
+  RaiseTypeValue,
   TriggerPriority,
 } from "../../WarUnitTriggerRegistry.js";
 
@@ -17,11 +18,17 @@ import {
 export class AnnihilationPhaseBoostTrigger implements WarUnitTrigger {
   readonly name = "전멸시페이즈증가";
   readonly priority = TriggerPriority.POST + 800;
-  readonly raiseType = RaiseType.NONE;
+  readonly raiseType: RaiseTypeValue;
 
-  constructor(public readonly unit: WarUnit) {}
+  constructor(
+    public readonly unit: WarUnit,
+    raiseType: RaiseTypeValue = RaiseType.NONE
+  ) {
+    this.raiseType = raiseType;
+  }
 
   attempt(ctx: WarUnitTriggerContext): boolean {
+    if (!isWarUnit(ctx.oppose)) return false;
     return ctx.self.phase !== 0 && ctx.oppose.phase === 0;
   }
 

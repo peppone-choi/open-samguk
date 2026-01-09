@@ -15,7 +15,7 @@ export class GeneralCRFoundNationCommand extends GeneralCommand {
   constructor() {
     super();
     this.minConditionConstraints = [
-      // TODO: Add BeOpeningPart constraint when available
+      ConstraintHelper.BeOpeningPart(),
       ConstraintHelper.ReqNationValue("level", "국가규모", "==", 0, "정식 국가가 아니어야합니다."),
     ];
     this.fullConditionConstraints = [
@@ -23,7 +23,7 @@ export class GeneralCRFoundNationCommand extends GeneralCommand {
       ConstraintHelper.BeLord(),
       ConstraintHelper.WanderingNation(),
       ConstraintHelper.ReqNationGeneralCount(2),
-      // TODO: Add AllowJoinAction constraint when available
+      ConstraintHelper.AllowJoinAction(),
       ConstraintHelper.NeutralCity(), // 중립 도시여야 함
     ];
   }

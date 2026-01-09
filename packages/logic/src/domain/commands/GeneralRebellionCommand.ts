@@ -18,7 +18,7 @@ export class GeneralRebellionCommand extends GeneralCommand {
       ConstraintHelper.OccupiedCity(),
       ConstraintHelper.SuppliedCity(),
       ConstraintHelper.NotLord(),
-      // TODO: Add AllowRebellion constraint when available
+      ConstraintHelper.AllowRebellion(),
     ];
   }
 

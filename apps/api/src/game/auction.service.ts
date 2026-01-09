@@ -1,6 +1,7 @@
 import { Injectable, type OnModuleInit } from "@nestjs/common";
 import { createPrismaClient, type PrismaClientType } from "@sammo/infra";
 import { AuctionFactory, getItemRegistry, BaseAuction, GameConst } from "@sammo/logic";
+import { InheritService } from "./inherit.service.js";
 
 const AUCTION_OPEN_MIN_MONTHS = 3;
 const RICE_AUCTION_MIN_AMOUNT = 100;
@@ -14,6 +15,8 @@ const AUCTION_EXTENSION_MINUTES = 5;
 @Injectable()
 export class AuctionService implements OnModuleInit {
   private readonly prisma: PrismaClientType = createPrismaClient();
+
+  constructor(private readonly inheritService: InheritService) {}
 
   onModuleInit() {
     // 경매 정산 프로세스 시작 (1분마다 실행)
@@ -53,6 +56,34 @@ export class AuctionService implements OnModuleInit {
         hostGeneral: true,
         bids: {
           orderBy: { amount: "desc" },
+          include: {
+            general: {
+              select: {
+                no: true,
+                name: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  async getFinishedAuctions(limit: number = 20) {
+    return this.prisma.auction.findMany({
+      where: { finished: true },
+      orderBy: { closeDate: "desc" },
+      take: limit,
+      include: {
+        hostGeneral: {
+          select: {
+            no: true,
+            name: true,
+          },
+        },
+        bids: {
+          orderBy: { amount: "desc" },
+          take: 1,
           include: {
             general: {
               select: {
@@ -128,18 +159,13 @@ export class AuctionService implements OnModuleInit {
           data: { rice: { decrement: amount } },
         });
       } else if (resource === "inheritancePoint") {
-        const aux = (prismaGeneral.aux as any) || {};
-        const points = aux.inheritancePoint || 0;
+        const { points } = await this.inheritService.getPoints(prismaGeneral.owner);
         if (points < amount) throw new Error("유산 포인트가 부족합니다.");
-        await tx.general.update({
-          where: { no: generalId },
-          data: {
-            aux: {
-              ...aux,
-              inheritancePoint: points - amount,
-            },
-          },
-        });
+        await this.inheritService.deductPoints(prismaGeneral.owner, amount);
+        await this.inheritService.logInheritAction(
+          prismaGeneral.owner,
+          `경매 입찰: ${auctionInfo.id}번에 ${amount}포인트`
+        );
       }
 
       // 2. 이전 입찰자 환불
@@ -159,16 +185,11 @@ export class AuctionService implements OnModuleInit {
           } else if (resource === "inheritancePoint") {
             const prevGen = await tx.general.findUnique({ where: { no: prevBid.generalId } });
             if (prevGen) {
-              const prevAux = (prevGen.aux as any) || {};
-              await tx.general.update({
-                where: { no: prevBid.generalId },
-                data: {
-                  aux: {
-                    ...prevAux,
-                    inheritancePoint: (prevAux.inheritancePoint || 0) + prevBid.amount,
-                  },
-                },
-              });
+              await this.inheritService.deductPoints(prevGen.owner, -prevBid.amount); // refund
+              await this.inheritService.logInheritAction(
+                prevGen.owner,
+                `경매 상위 입찰 발생으로 환불: ${auctionId}번에 ${prevBid.amount}포인트`
+              );
             }
           }
         }
@@ -501,12 +522,13 @@ export class AuctionService implements OnModuleInit {
           // 유찰
           await tx.auction.update({
             where: { id: pAuction.id },
-            data: { finished: true }
+            data: { finished: true },
           });
 
           // Resource 반환 (host에게)
           if (pAuction.hostGeneralId !== 0) {
-            const resource = pAuction.type === "BuyRice" ? "rice" : pAuction.type === "SellRice" ? "gold" : null;
+            const resource =
+              pAuction.type === "BuyRice" ? "rice" : pAuction.type === "SellRice" ? "gold" : null;
             if (resource) {
               const amount = (pAuction.detail as any).amount;
               await this.incrementResource(tx, pAuction.hostGeneralId, resource, amount);
@@ -526,7 +548,7 @@ export class AuctionService implements OnModuleInit {
           // 여기서는 단순화해서 closeDate를 1시간 연장
           await tx.auction.update({
             where: { id: pAuction.id },
-            data: { closeDate: new Date(pAuction.closeDate.getTime() + 60 * 60 * 1000) }
+            data: { closeDate: new Date(pAuction.closeDate.getTime() + 60 * 60 * 1000) },
           });
           return;
         }
@@ -538,7 +560,7 @@ export class AuctionService implements OnModuleInit {
           if (item) {
             await tx.general.update({
               where: { no: bidder.no },
-              data: { [item.type]: pAuction.target }
+              data: { [item.type]: pAuction.target },
             });
           }
         } else {
@@ -559,7 +581,7 @@ export class AuctionService implements OnModuleInit {
 
         await tx.auction.update({
           where: { id: pAuction.id },
-          data: { finished: true }
+          data: { finished: true },
         });
 
         // TODO: ActionLogger 등을 통한 로그 남기기
@@ -576,16 +598,11 @@ export class AuctionService implements OnModuleInit {
     if (resource === "inheritancePoint") {
       const general = await tx.general.findUnique({ where: { no: generalId } });
       if (general) {
-        const aux = (general.aux as any) || {};
-        await tx.general.update({
-          where: { no: generalId },
-          data: {
-            aux: {
-              ...aux,
-              inheritancePoint: (aux.inheritancePoint || 0) + amount,
-            },
-          },
-        });
+        await this.inheritService.deductPoints(general.owner, -amount); // increment
+        await this.inheritService.logInheritAction(
+          general.owner,
+          `경매 정산 결과 환불/지급: ${amount}포인트`
+        );
       }
     } else {
       await tx.general.update({
@@ -593,5 +610,130 @@ export class AuctionService implements OnModuleInit {
         data: { [resource]: { increment: amount } },
       });
     }
+  }
+
+  /**
+   * 활성화된 자원 경매 목록 조회 (BuyRice, SellRice)
+   */
+  async getActiveResourceAuctionList() {
+    return this.prisma.auction.findMany({
+      where: {
+        finished: false,
+        type: { in: ["BuyRice", "SellRice"] },
+      },
+      include: {
+        hostGeneral: {
+          select: {
+            no: true,
+            name: true,
+            nationId: true,
+          },
+        },
+        bids: {
+          orderBy: { amount: "desc" },
+          take: 1,
+          select: {
+            amount: true,
+            generalId: true,
+            general: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+      orderBy: { closeDate: "asc" },
+    });
+  }
+
+  /**
+   * 유니크 아이템 경매 목록 조회
+   */
+  async getUniqueItemAuctionList() {
+    return this.prisma.auction.findMany({
+      where: {
+        finished: false,
+        type: "UniqueItem",
+      },
+      include: {
+        hostGeneral: {
+          select: {
+            no: true,
+            name: true,
+            nationId: true,
+          },
+        },
+        bids: {
+          orderBy: { amount: "desc" },
+          take: 1,
+          select: {
+            amount: true,
+            generalId: true,
+            general: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+      orderBy: { closeDate: "asc" },
+    });
+  }
+
+  /**
+   * 유니크 아이템 경매 상세 조회
+   */
+  async getUniqueItemAuctionDetail(auctionId: number) {
+    return this.prisma.auction.findUnique({
+      where: { id: auctionId, type: "UniqueItem" },
+      include: {
+        hostGeneral: {
+          select: {
+            no: true,
+            name: true,
+            nationId: true,
+            picture: true,
+            imgSvr: true,
+          },
+        },
+        bids: {
+          orderBy: { amount: "desc" },
+          include: {
+            general: {
+              select: {
+                no: true,
+                name: true,
+                picture: true,
+                imgSvr: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * 쌀 구매 경매 입찰 (BuyRice - 쌀 판매자에게 금으로 입찰)
+   */
+  async bidBuyRiceAuction(auctionId: number, generalId: number, amount: number) {
+    return this.bid(auctionId, generalId, amount, false);
+  }
+
+  /**
+   * 쌀 판매 경매 입찰 (SellRice - 쌀 구매자에게 쌀로 입찰)
+   */
+  async bidSellRiceAuction(auctionId: number, generalId: number, amount: number) {
+    return this.bid(auctionId, generalId, amount, false);
+  }
+
+  /**
+   * 유니크 아이템 경매 입찰
+   */
+  async bidUniqueAuction(
+    auctionId: number,
+    generalId: number,
+    amount: number,
+    tryExtend: boolean = true
+  ) {
+    return this.bid(auctionId, generalId, amount, tryExtend);
   }
 }

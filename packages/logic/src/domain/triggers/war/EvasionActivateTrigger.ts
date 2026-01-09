@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -53,7 +53,9 @@ export class EvasionActivateTrigger implements WarUnitTrigger {
     ctx.selfEnv["회피발동"] = true;
 
     // 상대 전투력 감소 적용 (회피 시 상대 공격력 1/6)
-    oppose.multiplyWarPower(this.damageReductionMultiplier);
+    if (isWarUnit(oppose)) {
+      oppose.multiplyWarPower(this.damageReductionMultiplier);
+    }
 
     // 전투 로그 추가 (WarUnitGeneral인 경우)
     if ("addBattleLog" in self) {

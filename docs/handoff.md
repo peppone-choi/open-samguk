@@ -1,5 +1,8 @@
 # 핸드오프 문서 - 삼국지 모의전투 HiDCHe TypeScript 포팅
 
+> ⚠️ 참고: 본 문서는 초기 포팅 단계(2026-01-06 기준)의 스냅샷입니다.
+> 최신 현황/체크리스트는 `docs/porting-status.md`, 로드맵은 `docs/remaining-work.md`, 작업 큐는 루트 `HANDOFF.md`를 기준으로 합니다.
+
 ## 프로젝트 개요
 
 **삼국지 모의전투 HiDCHe** 레거시 PHP 게임 엔진을 TypeScript로 포팅하는 프로젝트입니다.

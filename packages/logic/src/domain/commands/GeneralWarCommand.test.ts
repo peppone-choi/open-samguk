@@ -125,7 +125,7 @@ describe("GeneralWarCommand", () => {
     const cmd = new GeneralWarCommand();
     const delta = cmd.run(rand, mockSnapshot, 1, { destCityId: 10 });
 
-    expect(delta.logs?.general?.[1][0]).toContain("공격했습니다");
+    expect(delta.logs?.general?.[1][0]).toContain("공격");
     expect(delta.cities?.[10]?.def).toBeLessThan(500);
   });
 

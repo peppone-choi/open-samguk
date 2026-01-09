@@ -42,11 +42,51 @@ export class NPCAutomation {
       return { action: "휴식", arg: {} };
     }
 
+    const priorityList = this.getPriorityList(nation, general);
+    const policy = this.getPolicy(nation);
+
     const isAtWar = this.isNationAtWar(snapshot, general.nationId);
     const frontCities = this.getFrontCities(snapshot, general.nationId);
     const rearCities = this.getRearCities(snapshot, general.nationId);
     const isOnFront = frontCities.some((c) => c.id === general.cityId);
     const isOnRear = rearCities.some((c) => c.id === general.cityId);
+
+    // 우선순위 리스트가 있으면 그에 따라 행동 결정
+    if (priorityList.length > 0) {
+      for (const actionName of priorityList) {
+        let result: NPCAction | null = null;
+        switch (actionName) {
+          case "recruit":
+          case "recruitment":
+            if (general.crew < general.leadership * policy.minWarCrew) {
+              result = this.recruitAction(rng, snapshot, generalId);
+            }
+            break;
+          case "train":
+          case "training":
+            if (
+              general.crew > 0 &&
+              (general.train < policy.properWarTrainAtmos ||
+                general.atmos < policy.properWarTrainAtmos)
+            ) {
+              result = this.trainAction(rng, snapshot, generalId);
+            }
+            break;
+          case "devel":
+          case "development":
+            if (general.gold >= policy.reqNPCDevelGold && general.rice >= policy.reqNPCDevelRice) {
+              result = this.developAction(rng, snapshot, generalId, city);
+            }
+            break;
+          case "war":
+            if (isAtWar && general.crew >= general.leadership * policy.minWarCrew) {
+              result = this.warAction(rng, snapshot, generalId, isOnFront, frontCities);
+            }
+            break;
+        }
+        if (result && result.action !== "휴식") return result;
+      }
+    }
 
     if (isAtWar) {
       return this.decideWarAction(
@@ -56,11 +96,31 @@ export class NPCAutomation {
         isOnFront,
         isOnRear,
         frontCities,
-        rearCities
+        rearCities,
+        policy
       );
     }
 
-    return this.decidePeaceAction(rng, snapshot, generalId, city, frontCities, rearCities);
+    return this.decidePeaceAction(rng, snapshot, generalId, city, frontCities, rearCities, policy);
+  }
+
+  private getPolicy(nation: any) {
+    const policy = (nation.aux?.nationPolicy as any) || {};
+    return {
+      minWarCrew: policy.minWarCrew ?? 50,
+      properWarTrainAtmos: policy.properWarTrainAtmos ?? 80,
+      reqNPCDevelGold: policy.reqNPCDevelGold ?? 20,
+      reqNPCDevelRice: policy.reqNPCDevelRice ?? 20,
+      minNPCWarLeadership: policy.minNPCWarLeadership ?? 30,
+    };
+  }
+
+  private getPriorityList(nation: any, general: any): string[] {
+    const aux = nation.aux as any;
+    if (general.officerLevel >= 5) {
+      return aux?.chiefPriority || [];
+    }
+    return aux?.generalPriority || [];
   }
 
   private decideWandererAction(
@@ -87,11 +147,12 @@ export class NPCAutomation {
     isOnFront: boolean,
     isOnRear: boolean,
     frontCities: CityEntity[],
-    rearCities: CityEntity[]
+    rearCities: CityEntity[],
+    policy: any
   ): NPCAction {
     const general = snapshot.generals[generalId];
 
-    if (general.crew < general.leadership * 50) {
+    if (general.crew < general.leadership * policy.minWarCrew) {
       if (isOnRear) {
         return this.recruitAction(rng, snapshot, generalId);
       }
@@ -105,30 +166,46 @@ export class NPCAutomation {
     }
 
     if (general.crew > 0) {
-      if (general.train < 80 || general.atmos < 80) {
+      if (
+        general.train < policy.properWarTrainAtmos ||
+        general.atmos < policy.properWarTrainAtmos
+      ) {
         return this.trainAction(rng, snapshot, generalId);
       }
 
-      if (!isOnFront && frontCities.length > 0) {
-        const dest = rng.choice(frontCities);
-        return {
-          action: "NPC능동",
-          arg: { optionText: "순간이동", destCityID: dest.id },
-        };
-      }
-
-      if (isOnFront) {
-        const enemyCity = this.findAdjacentEnemyCity(snapshot, general.cityId);
-        if (enemyCity) {
-          return {
-            action: "출병",
-            arg: { destCityID: enemyCity.id },
-          };
-        }
-      }
+      const warAction = this.warAction(rng, snapshot, generalId, isOnFront, frontCities);
+      if (warAction.action !== "휴식") return warAction;
     }
 
     return this.recruitAction(rng, snapshot, generalId);
+  }
+
+  private warAction(
+    rng: RandUtil,
+    snapshot: WorldSnapshot,
+    generalId: number,
+    isOnFront: boolean,
+    frontCities: CityEntity[]
+  ): NPCAction {
+    const general = snapshot.generals[generalId];
+    if (!isOnFront && frontCities.length > 0) {
+      const dest = rng.choice(frontCities);
+      return {
+        action: "NPC능동",
+        arg: { optionText: "순간이동", destCityID: dest.id },
+      };
+    }
+
+    if (isOnFront) {
+      const enemyCity = this.findAdjacentEnemyCity(snapshot, general.cityId);
+      if (enemyCity) {
+        return {
+          action: "출병",
+          arg: { destCityID: enemyCity.id },
+        };
+      }
+    }
+    return { action: "휴식", arg: {} };
   }
 
   private decidePeaceAction(
@@ -137,20 +214,24 @@ export class NPCAutomation {
     generalId: number,
     city: CityEntity,
     frontCities: CityEntity[],
-    rearCities: CityEntity[]
+    rearCities: CityEntity[],
+    policy: any
   ): NPCAction {
     const general = snapshot.generals[generalId];
 
-    if (general.crew < general.leadership * 30) {
+    if (general.crew < general.leadership * (policy.minWarCrew * 0.6)) {
       return this.recruitAction(rng, snapshot, generalId);
     }
 
-    if (general.crew > 0 && (general.train < 70 || general.atmos < 70)) {
+    if (
+      general.crew > 0 &&
+      (general.train < policy.properWarTrainAtmos - 10 ||
+        general.atmos < policy.properWarTrainAtmos - 10)
+    ) {
       return this.trainAction(rng, snapshot, generalId);
     }
 
-    const develCost = snapshot.env["develcost"] ?? 20;
-    if (general.gold >= develCost && general.rice >= develCost) {
+    if (general.gold >= policy.reqNPCDevelGold && general.rice >= policy.reqNPCDevelRice) {
       return this.developAction(rng, snapshot, generalId, city);
     }
 

@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -33,9 +33,11 @@ export class IntimidationActivateTrigger implements WarUnitTrigger {
   actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult {
     const oppose = ctx.oppose;
 
-    oppose.multiplyWarPower(0);
+    if (isWarUnit(oppose)) {
+      oppose.multiplyWarPower(0);
+    }
 
-    const isGeneralTarget = "general" in oppose;
+    const isGeneralTarget = isWarUnit(oppose);
     if (isGeneralTarget) {
       const currentAtmos = oppose.general.atmos;
       const newAtmos = Math.max(currentAtmos - 5, 40);

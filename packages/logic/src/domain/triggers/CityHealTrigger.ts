@@ -13,7 +13,7 @@ export class CityHealTrigger implements Trigger {
     private readonly sourceName: string = "의술",
     private readonly healProb: number = 0.5,
     private readonly allyOnly: boolean = false
-  ) { }
+  ) {}
 
   attempt(_ctx: TriggerContext): boolean {
     return true;

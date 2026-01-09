@@ -62,6 +62,8 @@ function createGeneral(overrides: Partial<General> = {}): General {
     dedLevel: 0,
     expLevel: 0,
     officerLock: 0,
+    affinity: 500,
+    personal: "None",
     ...overrides,
   };
 }

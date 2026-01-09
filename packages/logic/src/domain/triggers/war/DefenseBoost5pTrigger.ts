@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -26,7 +26,9 @@ export class DefenseBoost5pTrigger implements WarUnitTrigger {
   }
 
   actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult {
-    ctx.oppose.multiplyWarPower(1 / 1.05);
+    if (isWarUnit(ctx.oppose)) {
+      ctx.oppose.multiplyWarPower(1 / 1.05);
+    }
 
     return {
       delta: {},

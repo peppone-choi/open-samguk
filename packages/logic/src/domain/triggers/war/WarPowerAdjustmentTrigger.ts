@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -27,7 +27,9 @@ export class WarPowerAdjustmentTrigger implements WarUnitTrigger {
 
   actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult {
     if (this.selfMultiplier !== 1.0) ctx.self.multiplyWarPower(this.selfMultiplier);
-    if (this.opposeMultiplier !== 1.0) ctx.oppose.multiplyWarPower(this.opposeMultiplier);
+    if (this.opposeMultiplier !== 1.0 && isWarUnit(ctx.oppose)) {
+      ctx.oppose.multiplyWarPower(this.opposeMultiplier);
+    }
     return {
       delta: {},
       continueExecution: true,

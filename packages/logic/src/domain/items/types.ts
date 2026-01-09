@@ -7,6 +7,7 @@ import {
   StatAux,
   DomesticAux,
 } from "../specials/types.js";
+import type { Trigger } from "../Trigger.js";
 
 /**
  * 아이템 타입 (무기, 서적, 명마, 보물 등)
@@ -105,7 +106,7 @@ export interface IItem extends ItemInfo {
   ): number;
   getWarPowerMultiplier(unit: WarUnitReadOnly): WarPowerMultiplier;
 
-  getPreTurnExecuteTriggerList?(general: General): GeneralTriggerCaller | null;
+  getPreTurnExecuteTriggerList?(general: General): Trigger | null;
   getBattleInitSkillTriggerList?(unit: WarUnit): WarUnitTriggerCaller | null;
   getBattlePhaseSkillTriggerList?(unit: WarUnit): WarUnitTriggerCaller | null;
   onArbitraryAction?(

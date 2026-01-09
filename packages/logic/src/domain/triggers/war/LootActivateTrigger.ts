@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -32,7 +32,7 @@ export class LootActivateTrigger implements WarUnitTrigger {
       return false;
     }
 
-    const isGeneralTarget = "general" in oppose;
+    const isGeneralTarget = isWarUnit(oppose);
     if (!isGeneralTarget) {
       return false;
     }
@@ -45,6 +45,11 @@ export class LootActivateTrigger implements WarUnitTrigger {
     const oppose = ctx.oppose;
 
     ctx.selfEnv["약탈발동"] = true;
+
+    // Only proceed if oppose is a WarUnit (attempt already checked this)
+    if (!isWarUnit(oppose)) {
+      return { delta: {}, continueExecution: true };
+    }
 
     const theftRatio = ctx.selfEnv["theftRatio"] as number;
 

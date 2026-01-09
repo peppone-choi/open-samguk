@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -28,6 +28,10 @@ export class CounterAttemptTrigger implements WarUnitTrigger {
     const self = ctx.self;
     const oppose = ctx.oppose;
 
+    if (!isWarUnit(oppose)) {
+      return false;
+    }
+
     if (!oppose.hasActivatedSkill("계략")) {
       return false;
     }
@@ -48,7 +52,9 @@ export class CounterAttemptTrigger implements WarUnitTrigger {
     const oppose = ctx.oppose;
 
     self.activateSkill("반계");
-    oppose.deactivateSkill("계략");
+    if (isWarUnit(oppose)) {
+      oppose.deactivateSkill("계략");
+    }
 
     return {
       delta: {

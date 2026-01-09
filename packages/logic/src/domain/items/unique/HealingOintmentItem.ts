@@ -4,7 +4,7 @@
  */
 import { BaseItem } from "../BaseItem.js";
 import { ItemHealTrigger } from "../../triggers/ItemHealTrigger.js";
-import { Trigger } from "../../triggers/Trigger.js";
+import { Trigger } from "../../Trigger.js";
 import { General } from "../../entities.js";
 
 export class HealingOintmentItem extends BaseItem {

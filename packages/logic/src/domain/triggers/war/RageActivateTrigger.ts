@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -51,7 +51,8 @@ export class RageActivateTrigger implements WarUnitTrigger {
 
     ctx.selfEnv["격노발동"] = true;
 
-    const targetAct = oppose.hasActivatedSkill("필살") ? "필살 공격" : "회피 시도";
+    const targetAct =
+      isWarUnit(oppose) && oppose.hasActivatedSkill("필살") ? "필살 공격" : "회피 시도";
     const is진노 = self.hasActivatedSkill("진노");
     const reaction = is진노 ? "진노" : "격노";
 

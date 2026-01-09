@@ -4,7 +4,7 @@
  */
 import { BaseItem } from "../BaseItem.js";
 import { CityHealTrigger } from "../../triggers/CityHealTrigger.js";
-import { Trigger } from "../../triggers/Trigger.js";
+import { Trigger } from "../../Trigger.js";
 import { General } from "../../entities.js";
 
 export class HealingPowderItem extends BaseItem {
@@ -19,7 +19,7 @@ export class HealingPowderItem extends BaseItem {
   readonly reqSecu = 0;
 
   getPreTurnExecuteTriggerList(_general: General): Trigger | null {
-    // 본인은 100%, 타인은 80%? 
+    // 본인은 100%, 타인은 80%?
     // 레거시 che_의술_정력견혈산.php를 보면 CityHealTrigger 80% 일 확률이 높음.
     return new CityHealTrigger("정력견혈산", 0.8, false);
   }

@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { LiteHashDRBG, RandUtil } from "@sammo/common";
 import {
   WarUnitTriggerRegistry,
-  PriorityWarUnitTrigger,
+  WarUnitTrigger,
   WarUnitTriggerContext,
   RaiseType,
   TriggerPriority,
@@ -71,6 +71,8 @@ const createMockGeneral = (id: number, name: string): General => ({
   dedLevel: 0,
   expLevel: 0,
   officerLock: 0,
+  affinity: 500,
+  personal: "None",
 });
 
 describe("WarUnitTriggerRegistry", () => {
@@ -91,7 +93,7 @@ describe("WarUnitTriggerRegistry", () => {
       name: string,
       priority: number,
       unit: WarUnitGeneral
-    ): PriorityWarUnitTrigger => ({
+    ): WarUnitTrigger => ({
       name,
       priority,
       raiseType: RaiseType.NONE,
@@ -260,7 +262,7 @@ describe("WarUnitTriggerRegistry", () => {
     const attacker = new WarUnitGeneral(createMockGeneral(1, "공격자"), rng, true);
     const defender = new WarUnitGeneral(createMockGeneral(2, "수비자"), rng, false);
 
-    const createTrigger = (name: string, priority: number): PriorityWarUnitTrigger => ({
+    const createTrigger = (name: string, priority: number): WarUnitTrigger => ({
       name,
       priority,
       raiseType: RaiseType.NONE,

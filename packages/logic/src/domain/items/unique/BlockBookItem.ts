@@ -20,26 +20,22 @@ export class BlockBookItem extends BaseItem {
 
   getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller {
     return new WarUnitTriggerCaller(
-      new BlockAttemptTrigger(
-        unit,
-        RaiseType.ITEM,
-        (u) => {
-          // 수비측만 발동
-          if (u.isAttacker) return 0;
+      new BlockAttemptTrigger(unit, RaiseType.ITEM, (u) => {
+        // 수비측만 발동
+        if (u.isAttacker) return 0;
 
-          const phase = u.phase;
-          const blockCount = u.hasActivatedSkillOnLog("저지");
+        const phase = u.phase;
+        const blockCount = u.hasActivatedSkillOnLog("저지");
 
-          if (phase === 0 && blockCount === 0) {
-            return 1; // 첫 페이즈 저지 100%
-          }
-          if (phase === 1 && blockCount === 1) {
-            return 0.5; // 2 페이즈 저지 50%
-          }
-
-          return 0;
+        if (phase === 0 && blockCount === 0) {
+          return 1; // 첫 페이즈 저지 100%
         }
-      ),
+        if (phase === 1 && blockCount === 1) {
+          return 0.5; // 2 페이즈 저지 50%
+        }
+
+        return 0;
+      }),
       new BlockActivateTrigger(unit, RaiseType.ITEM)
     );
   }

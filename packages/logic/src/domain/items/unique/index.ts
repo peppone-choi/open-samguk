@@ -40,7 +40,7 @@ import { RageBookItem } from "./RageBookItem.js";
 import { InsightBookItem } from "./InsightBookItem.js";
 import { StrategyPouchItem, StrategyBagItem } from "./StrategyConsumables.js";
 import { DomesticBoostItem } from "./DomesticBoostItem.js";
-import { SiegeDefenseBookItem } from "./SiegeDefenseBookItem.js";
+// SiegeDefenseBookItem removed - duplicate of DefenseBook2Item (both have code "che_농성_주서음부")
 import {
   StrengthBoostLiquorItem,
   IntelBoostLiquorItem,
@@ -130,7 +130,6 @@ export {
   StrategyPouchItem,
   StrategyBagItem,
   DomesticBoostItem,
-  SiegeDefenseBookItem,
   StrengthBoostLiquorItem,
   IntelBoostLiquorItem,
   LeadershipBoostLiquorItem,
@@ -195,7 +194,6 @@ export const ALL_UNIQUE_ITEMS = [
   StrategyPouchItem,
   StrategyBagItem,
   DomesticBoostItem,
-  SiegeDefenseBookItem,
   StrengthBoostLiquorItem,
   IntelBoostLiquorItem,
   LeadershipBoostLiquorItem,

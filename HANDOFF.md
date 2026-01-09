@@ -1,10 +1,13 @@
-# 핸드오프 문서 - 삼국지 모의전투 TypeScript 포팅
+# 삼국지 모의전투 - 멀티 에이전트 작업 문서
 
-> 최종 업데이트: 2026-01-07
+> 최종 업데이트: 2026-01-09
+> 작업 방식: 각 에이전트가 하나의 TASK를 선택하여 독립적으로 수행
+
+---
 
 ## 프로젝트 개요
 
-**삼국지 모의전투 HiDCHe** 레거시 PHP 게임 엔진을 TypeScript로 1:1 포팅하는 프로젝트.
+**삼국지 모의전투 HiDCHe** - PHP 레거시 게임을 TypeScript로 포팅하는 프로젝트
 
 | 항목          | 값                                  |
 | ------------- | ----------------------------------- |
@@ -12,276 +15,171 @@
 | 레거시 코드   | `legacy/`                           |
 | 새 코드       | `packages/`, `apps/`                |
 | 패키지 매니저 | pnpm (workspace)                    |
+| 실행 명령어   | `pnpm dev` (API + Web 동시 실행)    |
 
 ---
 
-## 현재 진행 상황
+## 완료된 작업 요약
 
-### 전체 요약
+### 백엔드 (packages/logic)
 
-| 분류         | 레거시 | 구현 완료 | 진행률      |
-| ------------ | ------ | --------- | ----------- |
-| 장수 커맨드  | 55개   | 42개      | 76%         |
-| 국가 커맨드  | 39개   | 23개      | 59%         |
-| **제약조건** | 73개   | **73개**  | **100%** ✅ |
-| 전투 트리거  | 32개   | 31개      | 97% ✅      |
-| 장수 트리거  | 4개    | 4개       | 100% ✅     |
-| 국가 성향    | 15개   | 15개      | 100% ✅     |
-| 전투 특기    | 21개   | 1개       | 5%          |
-| 내정 특기    | 30개   | 0개       | 0%          |
+- 제약조건: 73/73 (100%) ✅
+- 장수 커맨드: 56/56 (100%) ✅
+- 국가 커맨드: 41/41 (100%) ✅
+- 전투 트리거: 38/38 (100%) ✅
+- 전투 특기 트리거 연결: 5/5 (100%) ✅
+  - FurySpecial → RageAttemptTrigger, RageActivateTrigger
+  - SniperSpecial → SniperAttemptTrigger, SniperActivateTrigger
+  - IntimidationSpecial → IntimidationAttemptTrigger, IntimidationActivateTrigger
+  - MedicineSpecial → BattleHealAttemptTrigger, BattleHealActivateTrigger
+  - CounterStrategySpecial → CounterAttemptTrigger, CounterActivateTrigger
+- GeneralSabotageCommand: MapUtil.getDistance() 사용하도록 수정 완료 ✅
 
-### 이번 세션 완료 (2026-01-07)
+### 프론트엔드 인증
 
-**Constraint 포팅 16개 (완성):**
+- ✅ JWT 인증 시스템 (Access + Refresh Token)
+- ✅ 카카오 OAuth 연동
+- ✅ 세션 만료 경고 모달
+- ✅ 비밀번호 재설정 기능
 
-| 제약조건            | PHP 원본                        | TypeScript                                  | 로직                                                   |
-| ------------------- | ------------------------------- | ------------------------------------------- | ------------------------------------------------------ | ----- | --------- |
-| 상인 요구           | `ReqCityTrader.php`             | `ReqCityTraderConstraint.ts` ✅             | `city.trade !== null                                   |       | arg >= 2` |
-| 부대장 필수         | `MustBeTroopLeader.php`         | `MustBeTroopLeaderConstraint.ts` ✅         | `general.no === general.troop`                         |
-| 임관 허용           | `AllowJoinAction.php`           | `AllowJoinActionConstraint.ts` ✅           | `general.makelimit === 0`                              |
-| 외교 상태 허용      | `AllowDiplomacyStatus.php`      | `AllowDiplomacyStatusConstraint.ts` ✅      | `diplomacy.state in allowList`                         |
-| 외교 상태 불허      | `DisallowDiplomacyStatus.php`   | `DisallowDiplomacyStatusConstraint.ts` ✅   | `diplomacy.state not in disallowList`                  |
-| 기간 외교 허용      | `AllowDiplomacyWithTerm.php`    | `AllowDiplomacyWithTermConstraint.ts` ✅    | `diplomacy.state === code && term >= min`              |
-| 임관 허용(대상)     | `AllowJoinDestNation.php`       | `AllowJoinDestNationConstraint.ts` ✅       | `scoutLevel === 0 && gennum limit && npc prefix check` |
-| 전장 도시           | `BattleGroundCity.php`          | `BattleGroundCityConstraint.ts` ✅          | `diplomacy.state === '0'`                              |
-| 반란 허용           | `AllowRebellion.php`            | `AllowRebellionConstraint.ts` ✅            | `lord.killTurn < env.killTurn && lord is not NPC`      |
-| 국가명 중복 확인    | `CheckNationNameDuplicate.php`  | `CheckNationNameDuplicateConstraint.ts` ✅  | `Snapshot` 전수 검사                                   |
-| 임관 가능 국가 존재 | `ExistsAllowJoinNation.php`     | `ExistsAllowJoinNationConstraint.ts` ✅     | `Snapshot` 전수 검사 (인원 제한 포함)                  |
-| 경로 탐색           | `HasRoute.php`                  | `HasRouteConstraint.ts` ✅                  | `MapUtil.getDistanceWithNation` (자국령)               |
-| 적진 포함 경로      | `HasRouteWithEnemy.php`         | `HasRouteWithEnemyConstraint.ts` ✅         | `MapUtil.getDistanceWithNation` (교전국 포함)          |
-| 병사 마진           | `ReqGeneralCrewMargin.php`      | `ReqGeneralCrewMarginConstraint.ts` ✅      | `crew < leadership * 100`                              |
-| 부대원 요구         | `ReqTroopMembers.php`           | `ReqTroopMembersConstraint.ts` ✅           | `troopId !== 0 && member count > 1`                    |
-| 전략 커맨드 허용    | `AllowStrategicCommand.php`     | `AllowStrategicCommandConstraint.ts` ✅     | `warState === 0`                                       |
-| 전략 커맨드 가용    | `AvailableStrategicCommand.php` | `AvailableStrategicCommandConstraint.ts` ✅ | `strategicCmdLimit <= arg`                             |
-| 징병 타입 가용      | `AvailableRecruitCrewType.php`  | `AvailableRecruitCrewTypeConstraint.ts` ✅  | (임시) `allow`                                         |
-| 콜백 제약조건       | `AdhocCallback.php`             | `AdhocCallbackConstraint.ts` ✅             | `callback(): string                                    | null` |
+### 프론트엔드 페이지 (33/33 완료) ✅
 
-**GameConst 추가:**
-
-- `joinActionLimit: 12` (거병, 임관 제한 기간)
-
-**테스트:** 266개 모두 통과 ✅
+- ✅ Phase 0-4: 기반 설정, Gateway, 컴포넌트, 유틸리티 페이지
+- [x] p5-5: PageNationStratFinan - 내무부 (`/nation/finance`)
+- [x] p5-6: PageTroop - 부대 편성 (`/troop`)
+- ✅ Phase 7: 메인 대시보드 (1/1) - Dashboard.tsx 완전 재작성
 
 ---
 
-## 다음 작업
+## 🎯 가용 TASK 목록 (현 시점 기준)
 
-### 즉시 - 국가 커맨드 (16개 남음)
-
-**Phase 1 - 전략 커맨드:**
-
-- [ ] `che_피장파장.php` → `NationRetaliationCommand.ts`
-- [ ] `che_필사즉생.php` → `NationDesperateCommand.ts`
-
-**Phase 2 - 내정 커맨드:**
-
-- [ ] `che_백성동원.php` → `NationMobilizeCommand.ts`
-- [ ] `che_의병모집.php` → `NationRecruitMilitiaCommand.ts`
-- [ ] `che_이호경식.php` → `NationEconomicWarfareCommand.ts`
-- [ ] `cr_인구이동.php` → `NationMigratePopulationCommand.ts`
+> **원칙**: 이미 포팅된 페이지/커맨드 재작업은 금지.
+> 아래는 실제 남아있는 "연동/운영 플로우/검증" 중심 작업입니다.
 
 ---
 
-## 프로젝트 구조
+### TASK-H1: 프론트엔드 tRPC 실연동/실시간 업데이트
+
+- **목표**: `apps/web`이 모든 주요 tRPC 엔드포인트를 사용하도록 정리하고, 실시간 이벤트 흐름(SSE/WebSocket)을 운영 가능한 수준으로 완성
+- **참조**: `docs/remaining-work.md`의 H1
+
+### TASK-H2: 엔딩/통일 이벤트 검증 및 운영 플로우 연결
+
+- **목표**: 통일 조건 판정/엔딩 처리/명예의 전당 저장/게임 초기화 플로우를 실제 엔진 루프에서 검증
+- **참조**: `docs/remaining-work.md`의 H2
+
+### TASK-H3: 경매 시스템 운영 플로우 검증 (월간 처리 포함)
+
+- **목표**: AuctionService + API + 프론트 페이지의 end-to-end 동작을 점검하고 월간 처리 훅까지 검증
+- **참조**: `docs/remaining-work.md`의 H3
+
+### TASK-M4: 메시지/게시판 실시간 완성
+
+- **목표**: 메시지/게시판의 실시간 푸시 + UI 연동 완성
+- **참조**: `docs/remaining-work.md`의 M4
+
+### TASK-M5: 랭킹/통계 API
+
+- **목표**: 랭킹/통계 조회 API + 캐싱 전략 적용
+- **참조**: `docs/remaining-work.md`의 M5
+
+---
+
+## 공통 참조 정보
+
+### 프로젝트 구조
 
 ```
 /Users/apple/Desktop/open-samguk/
-├── packages/
-│   ├── common/          # @sammo/common - RNG, JosaUtil, StringUtil
-│   ├── infra/           # @sammo/infra - Prisma, Redis
-│   └── logic/           # @sammo/logic - 게임 로직 (핵심)
-│       └── src/domain/
-│           ├── commands/        # 장수/국가 커맨드
-│           ├── constraints/     # 제약 조건 (55개 완료)
-│           ├── triggers/        # 트리거 (war/, 루트)
-│           ├── nation-types/    # 국가 성향
-│           ├── specials/        # 특기 (war/, domestic/)
-│           ├── items/           # 아이템
-│           └── events/          # 월별 이벤트
-│
 ├── apps/
-│   ├── api/             # NestJS API 서버
+│   ├── api/             # NestJS API 서버 (포트 3001)
 │   ├── engine/          # Turn Daemon
-│   └── web/             # Next.js 프론트엔드
-│
-├── legacy/              # 레거시 PHP 코드
-│   └── hwe/sammo/
-│       ├── Command/Nation/    # 국가 커맨드 원본
-│       ├── Command/General/   # 장수 커맨드 원본
-│       ├── Constraint/        # 제약조건 원본 (73개)
-│       └── ...
-│
+│   └── web/             # Next.js 프론트엔드 (포트 3000)
+├── packages/
+│   ├── common/          # 공통 유틸리티
+│   ├── infra/           # Prisma, Redis
+│   └── logic/           # 게임 로직 (핵심)
+├── legacy/              # PHP 레거시 코드
+│   └── hwe/ts/          # Vue 컴포넌트 (포팅 원본)
 └── docs/                # 문서
-    ├── architecture/
-    └── implementation-progress.md
 ```
 
----
+### 프론트엔드 스타일링 규칙
 
-## 포팅 패턴
+```tsx
+// 최대 너비
+className = "max-w-[1000px]"; // 데스크톱
+className = "max-w-[500px]"; // 모바일
 
-### Constraint 파일 구조
+// 배경 클래스 (globals.css에 정의)
+className = "bg0"; // 가장 어두운 배경
+className = "bg1"; // 중간 배경
+className = "bg2"; // 밝은 배경
 
-```typescript
-// packages/logic/src/domain/constraints/XxxConstraint.ts
-import {
-  Constraint,
-  ConstraintContext,
-  ConstraintResult,
-  StateView,
-} from "../Constraint.js";
-
-export class XxxConstraint implements Constraint {
-  name = "Xxx";
-
-  constructor(private param?: number) {}
-
-  requires(ctx: ConstraintContext) {
-    return [{ kind: "general" as const, id: ctx.actorId }];
-  }
-
-  test(ctx: ConstraintContext, view: StateView): ConstraintResult {
-    const general = view.get({ kind: "general", id: ctx.actorId });
-    if (!general) {
-      return { kind: "deny", reason: "장수 정보를 찾을 수 없습니다." };
-    }
-
-    if (/* condition */) {
-      return { kind: "allow" };
-    }
-    return { kind: "deny", reason: "에러 메시지" };
-  }
-}
+// 컬러 로그 파싱 (MessagePanel 등)
+const LOG_REGEX = /<([RBGMCLSODYW]1?|1|\/)>/g;
+// <R>빨강</> → <span style="color: red;">빨강</span>
 ```
 
-### index.ts에 export 추가 필수
+### 컴포넌트 임포트 패턴
 
-```typescript
-// packages/logic/src/domain/constraints/index.ts
-export { XxxConstraint } from "./XxxConstraint.js";
+```tsx
+"use client";
+
+import { TopBackBar, GeneralBasicCard } from "@/components/game";
+import { Button } from "@/components/ui/button";
+import { trpc } from "@/utils/trpc";
 ```
 
----
-
-## 핵심 타입 참조
-
-### Constraint 타입
-
-```typescript
-type RequirementKey =
-  | { kind: "general"; id: number }
-  | { kind: "city"; id: number }
-  | { kind: "nation"; id: number }
-  | { kind: "destGeneral"; id: number }
-  | { kind: "destCity"; id: number }
-  | { kind: "destNation"; id: number }
-  | { kind: "arg"; key: string }
-  | { kind: "env"; key: string };
-
-type ConstraintResult =
-  | { kind: "allow" }
-  | { kind: "deny"; reason: string; code?: string }
-  | { kind: "unknown"; missing: RequirementKey[] };
-```
-
-### entities.ts 주요 타입
-
-```typescript
-interface General {
-  id: number;
-  name: string;
-  nationId: number;
-  cityId: number;
-  officerLevel: number; // 관직 레벨 (5 이상 = 수뇌, 12 = 군주)
-  npc: number; // >= 2 이면 NPC
-  troop: number; // 부대 ID (자신 = 부대장)
-  makelimit: number; // 임관 제한 (0이면 임관 가능)
-  // ...
-}
-
-interface City {
-  id: number;
-  name: string;
-  nationId: number;
-  trade: number | null; // 상인 (null이면 없음)
-  // ...
-}
-
-interface Nation {
-  id: number;
-  name: string;
-  level: number; // 0 = 방랑군
-  war: number; // 전쟁 상태
-  // ...
-}
-```
-
----
-
-## 빌드 명령어
+### 빌드/테스트 명령어
 
 ```bash
-# 의존성 설치
-pnpm install
+pnpm install          # 의존성 설치
+pnpm dev              # 개발 서버 (API + Web)
+pnpm -w run test      # 테스트 실행
+pnpm -w run typecheck # 타입 체크
+```
 
-# 전체 테스트 (필수)
-pnpm -w run test
+### 금지 사항
 
-# 타입 체크
-cd packages/logic && pnpm tsc --noEmit
+| 금지               | 이유                |
+| ------------------ | ------------------- |
+| `as any`           | 타입 안전성 파괴    |
+| `@ts-ignore`       | 타입 에러 숨김      |
+| `@ts-expect-error` | 타입 에러 숨김      |
+| 테스트 삭제        | 빌드 통과 꼼수 금지 |
 
-# Constraint 파일 수 확인
-ls packages/logic/src/domain/constraints/*.ts | wc -l  # 현재 56 (55 + index)
+---
+
+## 작업 완료 보고 형식
+
+```markdown
+## TASK-XX-XX 완료 보고
+
+### 변경된 파일
+
+- `apps/web/src/app/(game)/xxx/page.tsx` - 신규 생성
+- `apps/api/src/game/xxx.service.ts` - 수정
+
+### 구현 내용
+
+1. ...
+2. ...
+
+### 테스트 결과
+
+- TypeScript 에러: 없음
+- 빌드: 성공
+
+### 스크린샷 (해당 시)
+
+[UI 스크린샷 또는 설명]
+
+### 다음 작업 제안
+
+- TASK-XX-XX와 연계 필요
 ```
 
 ---
 
-## 제약사항
-
-| 금지                    | 이유                      |
-| ----------------------- | ------------------------- |
-| `as any`                | 타입 안전성 파괴          |
-| `@ts-ignore`            | 타입 에러 숨김            |
-| `@ts-expect-error`      | 타입 에러 숨김            |
-| 불필요한 주석           | 코드로 설명 가능하면 제거 |
-| 테스트 삭제로 빌드 통과 | 절대 금지                 |
-
----
-
-## 레거시 참조
-
-| 기능        | 레거시 위치                                              |
-| ----------- | -------------------------------------------------------- |
-| 국가 커맨드 | `legacy/hwe/sammo/Command/Nation/`                       |
-| 장수 커맨드 | `legacy/hwe/sammo/Command/General/`                      |
-| 제약 조건   | `legacy/hwe/sammo/Constraint/`                           |
-| 트리거      | `legacy/hwe/sammo/WarUnitTrigger/`, `GeneralTrigger/`    |
-| 상수        | `legacy/hwe/sammo/GameConstBase.php`                     |
-| 엔티티      | `legacy/hwe/sammo/General.php`, `Nation.php`, `City.php` |
-
----
-
-## 작업 시작 프롬프트
-
-```
-# 삼국지 모의전투 PHP → TypeScript 1:1 포팅
-
-## 현재 상태
-Constraint 포팅: 61/73개 완료 (84%)
-국가 커맨드 포팅: 23/39개 완료 (59%)
-
-## Constraint 작업
-1. 레거시 PHP 파일 읽기: `legacy/hwe/sammo/Constraint/Xxx.php`
-2. 기존 패턴 참고: `packages/logic/src/domain/constraints/MustBeTroopLeaderConstraint.ts`
-3. 새 Constraint 작성
-4. index.ts에 export 추가
-5. 테스트 확인: `pnpm -w run test`
-
-## 다음 포팅 대상 (Constraint)
-- CheckNationNameDuplicate → CheckNationNameDuplicateConstraint
-- ExistsAllowJoinNation → ExistsAllowJoinNationConstraint
-```
-
----
-
-_마지막 업데이트: 2026-01-07_
+_문서 버전: 2026-01-09 v2.0_

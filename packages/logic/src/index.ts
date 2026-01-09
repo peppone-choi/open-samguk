@@ -9,5 +9,7 @@ export * from "./persistence/SnapshotRepository.js";
 export * from "./domain/CommandHelper.js";
 export * from "./domain/items/index.js";
 export * from "./domain/auction/index.js";
+export * from "./domain/betting/index.js";
+export * from "./domain/tournament/index.js";
 export * from "./domain/UnitRegistry.js";
 export * from "./domain/GameConst.js";

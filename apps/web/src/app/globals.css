@@ -4,26 +4,63 @@
 
 @layer base {
   :root {
+    /* Background & Foreground */
     --background: 240 10% 4%;
     --foreground: 0 0% 95%;
-    --card: 240 10% 4%;
+
+    /* Card */
+    --card: 240 10% 5%;
     --card-foreground: 0 0% 95%;
-    --popover: 240 10% 4%;
+
+    /* Popover */
+    --popover: 240 10% 6%;
     --popover-foreground: 0 0% 95%;
-    --primary: 43 40% 55%;
+
+    /* Primary - Warm Gold */
+    --primary: 43 50% 50%;
     --primary-foreground: 0 0% 0%;
-    --secondary: 240 4% 16%;
+    --primary-glow: 43 60% 55%;
+
+    /* Secondary */
+    --secondary: 240 6% 14%;
     --secondary-foreground: 0 0% 95%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 240 4% 16%;
+
+    /* Muted */
+    --muted: 240 6% 14%;
+    --muted-foreground: 240 5% 58%;
+
+    /* Accent */
+    --accent: 240 6% 16%;
     --accent-foreground: 0 0% 95%;
+
+    /* Destructive */
     --destructive: 0 62% 30%;
     --destructive-foreground: 0 0% 95%;
-    --border: 240 4% 16%;
-    --input: 240 4% 16%;
-    --ring: 43 40% 55%;
+
+    /* Borders */
+    --border: 240 6% 18%;
+    --border-subtle: 240 6% 22%;
+    --border-hover: 240 6% 30%;
+
+    /* Input */
+    --input: 240 6% 14%;
+
+    /* Ring */
+    --ring: 43 50% 50%;
+
+    /* Radius */
     --radius: 0.5rem;
+
+    /* Elevated surfaces */
+    --surface-elevated: 240 10% 7%;
+
+    /* Shadows */
+    --shadow-color: 240 10% 2%;
+    --shadow-sm: 0 1px 2px hsl(var(--shadow-color) / 0.4);
+    --shadow-md: 0 4px 8px hsl(var(--shadow-color) / 0.5);
+    --shadow-lg: 0 8px 24px hsl(var(--shadow-color) / 0.6);
+    --shadow-glow: 0 0 20px hsl(var(--primary-glow) / 0.15);
+    --shadow-glow-sm: 0 0 10px hsl(var(--primary-glow) / 0.1);
   }
 }
 
@@ -46,15 +83,33 @@
 h1,
 h2,
 h3 {
-  @apply text-primary font-bold tracking-tight;
+  @apply text-primary font-bold;
+  letter-spacing: -0.02em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+h1 {
+  @apply text-2xl;
+}
+
+h2 {
+  @apply text-xl;
+}
+
+h3 {
+  @apply text-lg;
 }
 
 .premium-card {
-  @apply bg-card/30 border border-border rounded-xl p-5 backdrop-blur-sm transition-all;
+  @apply rounded-xl p-5 backdrop-blur-md transition-all duration-200;
+  background: linear-gradient(to bottom, hsl(var(--card) / 0.4), hsl(var(--card) / 0.25));
+  border: 1px solid hsl(var(--border-subtle));
+  box-shadow: var(--shadow-sm);
 }
 
 .premium-card:hover {
-  @apply border-primary shadow-lg shadow-primary/15;
+  border-color: hsl(var(--primary) / 0.5);
+  box-shadow: var(--shadow-glow), var(--shadow-md);
 }
 
 .stat-grid {
@@ -74,5 +129,299 @@ h3 {
 }
 
 .btn-primary {
-  @apply bg-primary text-primary-foreground border-none px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-colors hover:bg-primary/80;
+  @apply text-primary-foreground border-none px-5 py-2.5 rounded-md font-semibold cursor-pointer transition-all duration-200;
+  background: linear-gradient(to bottom, hsl(var(--primary)), hsl(var(--primary) / 0.9));
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(to bottom, hsl(var(--primary) / 0.95), hsl(var(--primary) / 0.85));
+  box-shadow: var(--shadow-md), var(--shadow-glow-sm);
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ========================================
+   Legacy Utility Classes (from legacy CSS)
+   ======================================== */
+
+/* Background classes */
+.bg0 {
+  @apply bg-zinc-900;
+}
+
+.bg1 {
+  @apply bg-sammo-base2/80;
+}
+
+.bg2 {
+  @apply bg-sammo-base1/80;
+}
+
+.bg3 {
+  @apply bg-sammo-base3/80;
+}
+
+/* Border utilities */
+.s-border-t {
+  @apply border-t border-gray-600;
+}
+
+.s-border-b {
+  @apply border-b border-gray-600;
+}
+
+.s-border-tb {
+  @apply border-t border-b border-gray-600;
+}
+
+/* Text alignment */
+.center {
+  @apply text-center;
+}
+
+.a-right {
+  @apply text-right;
+}
+
+.a-left {
+  @apply text-left;
+}
+
+.a-center {
+  @apply text-center;
+}
+
+/* Fixed-width container (legacy layout) */
+.game-container {
+  @apply w-full max-w-[1000px] mx-auto;
+}
+
+.game-container-500 {
+  @apply w-full max-w-[500px] mx-auto;
+}
+
+/* Responsive containers matching legacy breakpoints */
+@media (max-width: 1000px) {
+  .game-container {
+    @apply max-w-[500px];
+  }
+}
+
+/* Event/Log text colors */
+.ev_warning {
+  @apply text-orange-600;
+  text-shadow: 0 0 8px rgba(234, 88, 12, 0.4);
+}
+
+.ev_notice {
+  @apply text-orange-600;
+  text-shadow: 0 0 8px rgba(234, 88, 12, 0.4);
+}
+
+.ev_success {
+  @apply text-green-400;
+  text-shadow: 0 0 8px rgba(74, 222, 128, 0.4);
+}
+
+.ev_sell {
+  @apply text-orange-400;
+  text-shadow: 0 0 8px rgba(251, 146, 60, 0.3);
+}
+
+.ev_failed {
+  @apply text-orange-600;
+  text-shadow: 0 0 8px rgba(234, 88, 12, 0.4);
+}
+
+.ev_highlight {
+  @apply text-orange-600 font-semibold;
+  text-shadow: 0 0 8px rgba(234, 88, 12, 0.4);
+}
+
+/* Text color utilities */
+.t_red {
+  @apply text-red-500;
+}
+
+.t_blue {
+  @apply text-blue-500;
+}
+
+.t_green {
+  @apply text-green-500;
+}
+
+.t_magenta {
+  @apply text-fuchsia-500;
+}
+
+.t_cyan {
+  @apply text-cyan-400;
+}
+
+.t_limegreen {
+  @apply text-lime-400;
+}
+
+.t_skyblue {
+  @apply text-sky-400;
+}
+
+.t_orangered {
+  @apply text-orange-600;
+}
+
+.t_yellow {
+  @apply text-yellow-400;
+}
+
+.t_white {
+  @apply text-white;
+}
+
+/* Table layout (legacy compatibility) */
+.tb_layout {
+  @apply border-collapse text-sm;
+}
+
+.tb_layout td,
+.tb_layout th {
+  @apply border border-[hsl(var(--border-subtle))] p-0 break-all;
+}
+
+.tb_layout tr:hover td {
+  background-color: hsl(var(--accent) / 0.3);
+}
+
+.tb_layout th {
+  @apply bg-secondary/50;
+}
+
+/* Section title styling */
+.section_title {
+  @apply text-lg font-semibold py-2 px-4;
+  background: linear-gradient(to right, hsl(var(--card) / 0.6), transparent);
+  border-bottom: 2px solid hsl(var(--primary) / 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.section_title.with_border {
+  @apply border border-gray-600;
+  border-bottom: 2px solid hsl(var(--primary) / 0.4);
+}
+
+/* Button with skin (legacy form buttons) */
+.with_skin {
+  @apply text-white border border-gray-600 px-3 py-1.5 rounded cursor-pointer transition-all duration-200;
+  background: linear-gradient(to bottom, #3f3f46, #27272a);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.with_skin:hover {
+  background: linear-gradient(to bottom, #52525b, #3f3f46);
+  border-color: hsl(var(--primary) / 0.5);
+}
+
+.with_skin:active {
+  transform: scale(0.98);
+}
+
+/* Form control skin */
+input.with_skin,
+select.with_skin {
+  @apply bg-zinc-800 text-white border border-gray-600 px-2 py-1;
+}
+
+/* Server type colors */
+.Entrance_Che {
+  @apply text-red-500 font-bold;
+}
+
+.Entrance_Kwe {
+  @apply text-blue-400 font-bold;
+}
+
+.Entrance_Pwe {
+  @apply text-green-400 font-bold;
+}
+
+.Entrance_Twe {
+  @apply text-yellow-400 font-bold;
+}
+
+.Entrance_Nya {
+  @apply text-pink-400 font-bold;
+}
+
+.Entrance_Pya {
+  @apply text-purple-400 font-bold;
+}
+
+.Entrance_Hwe {
+  @apply text-orange-400 font-bold;
+}
+
+.Entrance_Alert {
+  @apply text-orange-400;
+}
+
+/* Center ordered items (for button groups) */
+.center_ordered_items {
+  @apply flex justify-center items-center gap-2 p-4;
+}
+
+/* Avoid text wrap */
+.avoid-wrap {
+  @apply inline-block;
+}
+
+/* Date/time styling */
+.t_date {
+  @apply text-xs text-muted-foreground;
+}
+
+/* War log styling */
+.small_war_log {
+  @apply inline-block;
+}
+
+.small_war_log .war_type_attack {
+  @apply text-cyan-400;
+}
+
+.small_war_log .war_type_defense {
+  @apply text-fuchsia-500;
+}
+
+.small_war_log .war_type_siege {
+  @apply text-white;
+}
+
+.small_war_log .name_plate {
+  @apply text-xs;
+}
+
+.small_war_log .name_plate_cover {
+  @apply text-yellow-400;
+}
+
+.small_war_log .crew_plate {
+  @apply text-orange-600 text-[90%];
+}
+
+/* Compensation colors */
+.compensatePositive {
+  @apply text-sky-400;
+}
+
+.compensateNegative {
+  @apply text-orange-400;
+}
+
+/* Command styling */
+.commandBasic.commandImpossible {
+  @apply bg-red-600 text-white;
 }

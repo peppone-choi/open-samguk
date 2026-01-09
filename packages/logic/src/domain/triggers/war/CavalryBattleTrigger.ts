@@ -20,7 +20,10 @@ export class CavalryBattleTrigger implements WarUnitTrigger {
   readonly priority = TriggerPriority.BEGIN + 150;
   readonly raiseType: RaiseTypeValue;
 
-  constructor(public readonly unit: WarUnit, raiseType: RaiseTypeValue = RaiseType.NONE) {
+  constructor(
+    public readonly unit: WarUnit,
+    raiseType: RaiseTypeValue = RaiseType.NONE
+  ) {
     this.raiseType = raiseType;
   }
 

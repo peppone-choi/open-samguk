@@ -452,10 +452,20 @@ export const UNIT_TYPE_MAP = {
 const ConstraintSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("impossible") }),
   z.object({ type: z.literal("tech"), value: z.number() }),
-  z.object({ type: z.literal("cities"), value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]) }),
-  z.object({ type: z.literal("citiesWithLevel"), level: z.number(), value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]) }),
+  z.object({
+    type: z.literal("cities"),
+    value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]),
+  }),
+  z.object({
+    type: z.literal("citiesWithLevel"),
+    level: z.number(),
+    value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]),
+  }),
   z.object({ type: z.literal("highLevelCities"), level: z.number(), value: z.number() }),
-  z.object({ type: z.literal("regions"), value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]) }),
+  z.object({
+    type: z.literal("regions"),
+    value: z.union([z.array(z.union([z.string(), z.number()])), z.string(), z.number()]),
+  }),
   z.object({ type: z.literal("year"), value: z.number() }),
   z.object({ type: z.literal("nationAux"), key: z.string(), cmp: z.string(), value: z.any() }),
   z.object({ type: z.literal("chief") }),

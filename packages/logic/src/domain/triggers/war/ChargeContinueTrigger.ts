@@ -1,4 +1,4 @@
-import type { WarUnit, WarUnitCity } from "../../specials/types.js";
+import { type WarUnit, type WarUnitCity, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -32,12 +32,8 @@ export class ChargeContinueTrigger implements WarUnitTrigger {
     this.maxPhase = maxPhase;
   }
 
-  private isWarUnitCity(unit: WarUnit | WarUnitCity): unit is WarUnitCity {
-    return "wall" in unit && "def" in unit;
-  }
-
   attempt(ctx: WarUnitTriggerContext): boolean {
-    if (this.isWarUnitCity(ctx.oppose)) {
+    if (!isWarUnit(ctx.oppose)) {
       return false;
     }
     if (!ctx.isAttacker) {
@@ -49,6 +45,10 @@ export class ChargeContinueTrigger implements WarUnitTrigger {
   actionWar(ctx: WarUnitTriggerContext): WarUnitTriggerResult {
     const self = ctx.self;
     const oppose = ctx.oppose;
+
+    if (!isWarUnit(oppose)) {
+      return { delta: {}, continueExecution: true };
+    }
 
     const attackCoef = ctx.selfEnv["attackCoef"] as number | undefined;
 

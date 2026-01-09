@@ -52,7 +52,7 @@ export class GeneralWarCommand extends GeneralCommand {
     }
 
     const warEngine = new WarEngine();
-    const result = warEngine.executeBattle(rng, snapshot, actorId, destCityId);
+    const result = warEngine.execute(rng, snapshot, actorId, destCityId);
 
     const delta = result.delta;
     delta.logs = delta.logs || { general: {}, global: [] };

@@ -34,7 +34,9 @@ export class StrategyAttemptTrigger implements WarUnitTrigger {
   readonly raiseType = RaiseType.NONE;
 
   private readonly magicTrialProb: number | ((unit: WarUnit, ctx: WarUnitTriggerContext) => number);
-  private readonly magicSuccessProb: number | ((unit: WarUnit, ctx: WarUnitTriggerContext) => number);
+  private readonly magicSuccessProb:
+    | number
+    | ((unit: WarUnit, ctx: WarUnitTriggerContext) => number);
 
   constructor(
     public readonly unit: WarUnit,
@@ -56,7 +58,10 @@ export class StrategyAttemptTrigger implements WarUnitTrigger {
       return false;
     }
 
-    let trialProb = typeof this.magicTrialProb === "function" ? this.magicTrialProb(self, ctx) : this.magicTrialProb;
+    let trialProb =
+      typeof this.magicTrialProb === "function"
+        ? this.magicTrialProb(self, ctx)
+        : this.magicTrialProb;
 
     // 첫 페이즈 지력 특화 보정
     if (ctx.phase === 0 && typeof this.magicTrialProb !== "function") {
@@ -86,12 +91,21 @@ export class StrategyAttemptTrigger implements WarUnitTrigger {
     const magic = ctx.rand.choice(magicTypes);
     let [successDamage, failDamage] = magicTable[magic];
 
-    let successProb = typeof this.magicSuccessProb === "function" ? this.magicSuccessProb(self, ctx) : this.magicSuccessProb;
+    let successProb =
+      typeof this.magicSuccessProb === "function"
+        ? this.magicSuccessProb(self, ctx)
+        : this.magicSuccessProb;
 
     // 아이템 보정 적용 (계략 성공 확률 및 데미지)
-    successProb = WarStatHelper.calcStat(self, "warMagicSuccessProb", successProb, { phase: ctx.phase });
-    successDamage = WarStatHelper.calcStat(self, "warMagicSuccessDamage", successDamage, { phase: ctx.phase });
-    failDamage = WarStatHelper.calcStat(self, "warMagicFailDamage", failDamage, { phase: ctx.phase });
+    successProb = WarStatHelper.calcStat(self, "warMagicSuccessProb", successProb, {
+      phase: ctx.phase,
+    });
+    successDamage = WarStatHelper.calcStat(self, "warMagicSuccessDamage", successDamage, {
+      phase: ctx.phase,
+    });
+    failDamage = WarStatHelper.calcStat(self, "warMagicFailDamage", failDamage, {
+      phase: ctx.phase,
+    });
 
     const success = ctx.rand.nextBool(successProb);
 

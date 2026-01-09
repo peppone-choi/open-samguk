@@ -60,6 +60,8 @@ export const GeneralHelper = {
       meta: {},
       penalty: {},
       officerLock: 0,
+      affinity: 500,
+      personal: "None",
     };
   },
 };

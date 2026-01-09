@@ -1,4 +1,4 @@
-import type { WarUnit } from "../../specials/types.js";
+import { type WarUnit, isWarUnit } from "../../specials/types.js";
 import {
   WarUnitTrigger,
   WarUnitTriggerContext,
@@ -24,8 +24,11 @@ export class IntimidationAttemptTrigger implements WarUnitTrigger {
     const self = ctx.self;
     const oppose = ctx.oppose;
 
-    if (self.phase !== 0 && oppose.phase !== 0) {
-      return false;
+    // WarUnitCity doesn't have phase, skip check for cities
+    if (isWarUnit(oppose)) {
+      if (self.phase !== 0 && oppose.phase !== 0) {
+        return false;
+      }
     }
 
     if (self.hasActivatedSkill("위압불가")) {
@@ -40,9 +43,11 @@ export class IntimidationAttemptTrigger implements WarUnitTrigger {
     const oppose = ctx.oppose;
 
     self.activateSkill("위압");
-    oppose.activateSkill("회피불가");
-    oppose.activateSkill("필살불가");
-    oppose.activateSkill("계략불가");
+    if (isWarUnit(oppose)) {
+      oppose.activateSkill("회피불가");
+      oppose.activateSkill("필살불가");
+      oppose.activateSkill("계략불가");
+    }
 
     return {
       delta: {
