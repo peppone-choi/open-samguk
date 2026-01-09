@@ -1,19 +1,26 @@
 # 구현 진행 현황 보고서
 
 > 생성일: 2026-01-05
-> 최종 수정: 2026-01-06
+> 최종 수정: 2026-01-10
+>
+> ⚠️ 참고: 본 문서는 초기 구현 시점의 스냅샷입니다. 최신 현황은 `docs/porting-status.md`와 `docs/remaining-work.md`를 기준으로 합니다.
 
 ## 요약
 
 | 분류            | 레거시 | 구현 완료 | 진행률      |
 | --------------- | ------ | --------- | ----------- |
-| **장수 커맨드** | 55개   | **55개**  | **100%** ✅ |
-| **국가 커맨드** | 39개   | **39개**  | **100%** ✅ |
-| **전투 특기**   | 21개   | **21개**  | **100%** ✅ |
+| **장수 커맨드** | 56개   | **56개**  | **100%** ✅ |
+| **국가 커맨드** | 41개   | **41개**  | **100%** ✅ |
+| **전투 특기**   | 38개   | **38개**  | **100%** ✅ |
 | **내정 특기**   | 10개   | **10개**  | **100%** ✅ |
-| **전투 트리거** | 32개   | **31개**  | **97%** ✅  |
+| **전투 트리거** | 38개   | **38개**  | **100%** ✅ |
 | **장수 트리거** | 4개    | **4개**   | **100%** ✅ |
 | **국가 성향**   | 15개   | **15개**  | **100%** ✅ |
+| **Constraints** | 73개   | **73개**  | **100%** ✅ |
+| **경매 시스템** | 6개    | **6개**   | **100%** ✅ |
+| **베팅 시스템** | 2개    | **2개**   | **100%** ✅ |
+| **상속 포인트** | 2개    | **2개**   | **100%** ✅ |
+| **토너먼트**    | 2개    | **2개**   | **100%** ✅ |
 
 ## 1. 장수 커맨드 (General Commands)
 
@@ -133,97 +140,19 @@
 
 모든 국가 커맨드 구현 완료! ✅
 
-## 3. 전투 특기 (ActionSpecialWar) - 21개 전체 미구현
+## 3. 전투 특기 (WarUnitTriggerRegistry) - 38개 전체 구현 ✅
 
-레거시 파일: `legacy/hwe/sammo/ActionSpecialWar/`
+모든 전투 특기가 `WarUnitTriggerRegistry`를 통해 등록되어 있습니다.
+상세 목록은 `docs/porting-status.md`를 참고하세요.
 
-| 레거시        | TypeScript     | 상태   |
-| ------------- | -------------- | ------ |
-| che\_격노.php | -              | 미구현 |
-| che\_견고.php | -              | 미구현 |
-| che\_공성.php | -              | 미구현 |
-| che\_궁병.php | -              | 미구현 |
-| che\_귀병.php | -              | 미구현 |
-| che\_기병.php | -              | 미구현 |
-| che\_돌격.php | -              | 미구현 |
-| che\_무쌍.php | -              | 미구현 |
-| che\_반계.php | -              | 미구현 |
-| che\_보병.php | -              | 미구현 |
-| che\_신산.php | -              | 미구현 |
-| che\_신중.php | -              | 미구현 |
-| che\_위압.php | -              | 미구현 |
-| che\_의술.php | -              | 미구현 |
-| che\_저격.php | -              | 미구현 |
-| che\_집중.php | -              | 미구현 |
-| che\_징병.php | -              | 미구현 |
-| che\_척사.php | -              | 미구현 |
-| che\_필살.php | -              | 미구현 |
-| che\_환술.php | -              | 미구현 |
-| None.php      | BaseSpecial.ts | 완료   |
+## 4. 내정 특기 (ActionSpecialDomestic) - 10개 전체 구현 ✅
 
-## 4. 내정 특기 (ActionSpecialDomestic) - 30개 전체 미구현
+모든 내정 특기가 `packages/logic/src/domain/specials/`에 포팅되었습니다.
 
-레거시 파일: `legacy/hwe/sammo/ActionSpecialDomestic/`
+## 5. 전투 트리거 (WarUnitTrigger) - 38개 전체 구현 ✅
 
-| 레거시                 | TypeScript | 상태   |
-| ---------------------- | ---------- | ------ |
-| che\_경작.php          | -          | 미구현 |
-| che\_거상.php          | -          | 미구현 |
-| che\_귀모.php          | -          | 미구현 |
-| che\_발명.php          | -          | 미구현 |
-| che\_상재.php          | -          | 미구현 |
-| che\_수비.php          | -          | 미구현 |
-| che\_인덕.php          | -          | 미구현 |
-| che\_축성.php          | -          | 미구현 |
-| che\_통찰.php          | -          | 미구현 |
-| che*event*격노.php     | -          | 미구현 |
-| che*event*견고.php     | -          | 미구현 |
-| che*event*공성.php     | -          | 미구현 |
-| ... (21개 이벤트 특기) | -          | 미구현 |
-
-## 5. 전투 트리거 (WarUnitTrigger) - 32개 중 31개 구현 ✅
-
-레거시 파일: `legacy/hwe/sammo/WarUnitTrigger/`
-TypeScript 파일: `packages/logic/src/domain/triggers/war/`
-
-| 레거시                      | TypeScript                             | 상태    |
-| --------------------------- | -------------------------------------- | ------- |
-| che\_필살발동.php           | KillingBlowActivateTrigger.ts          | ✅ 완료 |
-| che\_필살시도.php           | KillingBlowAttemptTrigger.ts           | ✅ 완료 |
-| che\_회피발동.php           | EvasionActivateTrigger.ts              | ✅ 완료 |
-| che\_회피시도.php           | EvasionAttemptTrigger.ts               | ✅ 완료 |
-| che\_계략시도.php           | StrategyAttemptTrigger.ts              | ✅ 완료 |
-| che\_계략발동.php           | StrategyActivateTrigger.ts             | ✅ 완료 |
-| che\_계략실패.php           | StrategyFailTrigger.ts                 | ✅ 완료 |
-| che\_저격시도.php           | SniperAttemptTrigger.ts                | ✅ 완료 |
-| che\_저격발동.php           | SniperActivateTrigger.ts               | ✅ 완료 |
-| che\_반계시도.php           | CounterAttemptTrigger.ts               | ✅ 완료 |
-| che\_반계발동.php           | CounterActivateTrigger.ts              | ✅ 완료 |
-| che\_위압시도.php           | IntimidationAttemptTrigger.ts          | ✅ 완료 |
-| che\_위압발동.php           | IntimidationActivateTrigger.ts         | ✅ 완료 |
-| che\_약탈시도.php           | LootAttemptTrigger.ts                  | ✅ 완료 |
-| che\_약탈발동.php           | LootActivateTrigger.ts                 | ✅ 완료 |
-| che\_선제사격시도.php       | PreemptiveShotAttemptTrigger.ts        | ✅ 완료 |
-| che\_선제사격발동.php       | PreemptiveShotActivateTrigger.ts       | ✅ 완료 |
-| che\_돌격지속.php           | ChargeContinueTrigger.ts               | ✅ 완료 |
-| che\_전멸시페이즈증가.php   | AnnihilationPhaseBoostTrigger.ts       | ✅ 완료 |
-| che\_기병병종전투.php       | CavalryBattleTrigger.ts                | ✅ 완료 |
-| che\_궁병선제사격.php       | (DEPRECATED - PreemptiveShot으로 대체) | ⚠️ 폐기 |
-| che\_전투치료시도.php       | BattleHealAttemptTrigger.ts            | ✅ 완료 |
-| che\_전투치료발동.php       | BattleHealActivateTrigger.ts           | ✅ 완료 |
-| che\_저지시도.php           | BlockAttemptTrigger.ts                 | ✅ 완료 |
-| che\_저지발동.php           | BlockActivateTrigger.ts                | ✅ 완료 |
-| che\_격노시도.php           | RageAttemptTrigger.ts                  | ✅ 완료 |
-| che\_격노발동.php           | RageActivateTrigger.ts                 | ✅ 완료 |
-| che\_부상무효.php           | InjuryImmuneTrigger.ts                 | ✅ 완료 |
-| che\_성벽부상무효.php       | WallInjuryImmuneTrigger.ts             | ✅ 완료 |
-| che\_퇴각부상무효.php       | RetreatInjuryImmuneTrigger.ts          | ✅ 완료 |
-| che\_방어력증가5p.php       | DefenseBoost5pTrigger.ts               | ✅ 완료 |
-| che\_필살강화\_회피불가.php | KillingBlowEnhancedTrigger.ts          | ✅ 완료 |
-| event\_충차아이템소모.php   | (유틸리티 파일 - 별도 처리)            | -       |
-| 능력치변경.php              | (유틸리티 파일 - 별도 처리)            | -       |
-| 전투력보정.php              | (유틸리티 파일 - 별도 처리)            | -       |
-| WarActivateSkills.php       | (유틸리티 파일 - 별도 처리)            | -       |
+모든 전투 트리거가 포팅 완료되었습니다.
+상세 목록은 `docs/porting-status.md`를 참고하세요.
 
 ## 6. 장수 트리거 (GeneralTrigger) - 4개 전체 구현 완료 ✅
 
