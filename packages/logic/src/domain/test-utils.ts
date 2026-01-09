@@ -61,6 +61,7 @@ export function createMockGeneral(overrides: Partial<General> = {}): General {
     recentWarTime: null,
     makeLimit: 0,
     killTurn: 72,
+    killnum: 0,
     block: 0,
     defenceTrain: 80,
     tournamentState: 0,

@@ -21,7 +21,7 @@ import {
   useImperativeHandle,
   type ReactNode,
 } from "react";
-import { cn } from "@/lib/utils";
+import { cn, getKoreanInitials } from "@/lib/utils";
 
 // ============================================================================
 // Shared Types
@@ -253,7 +253,7 @@ export function SelectCityModal({
         simpleName: city.name,
         info: city.info,
         notAvailable: city.notAvailable,
-        searchText: city.name, // TODO: Add Korean initial consonant search
+        searchText: `${city.name} ${getKoreanInitials(city.name)}`,
       });
     }
     return result;
@@ -325,7 +325,7 @@ export function SelectNationModal({
         color: nation.color,
         info: nation.info,
         notAvailable: nation.notAvailable,
-        searchText: nation.name,
+        searchText: `${nation.name} ${getKoreanInitials(nation.name)}`,
       });
     }
     return result;
@@ -428,7 +428,7 @@ export function SelectGeneralModal({
       strength: gen.strength,
       intel: gen.intel,
       npc: gen.npc,
-      searchText: gen.name,
+      searchText: `${gen.name} ${getKoreanInitials(gen.name)}`,
     }));
   }, [generals, textHelper]);
 

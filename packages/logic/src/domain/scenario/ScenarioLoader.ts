@@ -561,6 +561,7 @@ export class ScenarioLoader {
       recentWarTime: null,
       makeLimit: 0,
       killTurn: (death - startYear) * 12,
+      killnum: 0,
       block: 0,
       defenceTrain: 80,
       tournamentState: 0,

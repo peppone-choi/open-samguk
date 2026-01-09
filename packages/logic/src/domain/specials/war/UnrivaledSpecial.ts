@@ -29,9 +29,7 @@ export class UnrivaledSpecial extends BaseSpecial {
     let attackMultiplier = 1.05;
     let defenceMultiplier = 0.98;
 
-    // TODO: Implement killnum tracking from RankColumn
-    // const killnum = unit.getGeneral().getRankVar(RankColumn.killnum);
-    const killnum = 0; // Placeholder
+    const killnum = unit.getGeneral().killnum || 0;
 
     attackMultiplier += Math.log(Math.max(1, killnum / 5)) / Math.log(2) / 20;
     defenceMultiplier -= Math.log(Math.max(1, killnum / 5)) / Math.log(2) / 50;

@@ -10,7 +10,7 @@ import { MapUtil } from "./MapData.js";
  * 레거시의 preUpdateMonthly, postUpdateMonthly 로직을 담당함
  */
 export class MonthlyPipeline {
-  constructor(private eventRegistry: EventRegistry) {}
+  constructor(private eventRegistry: EventRegistry) { }
 
   /**
    * 월간 처리 시작 전 전처리 (수입 정산 및 자원 분배)
@@ -118,7 +118,7 @@ export class MonthlyPipeline {
   /**
    * 게임 시간 전진
    */
-  public advanceTime(snapshot: WorldSnapshot): WorldDelta {
+  public advanceTime(snapshot: WorldSnapshot, now: Date): WorldDelta {
     let { year, month } = snapshot.gameTime;
     month += 1;
     if (month > 12) {
@@ -128,6 +128,9 @@ export class MonthlyPipeline {
 
     const delta: WorldDelta = {
       gameTime: { year, month },
+      env: {
+        turntime: now.toISOString(),
+      },
       logs: { global: [`${year}년 ${month}월이 되었습니다.`] },
     };
 

@@ -27,6 +27,7 @@ export { InvaderEndingEvent } from "./InvaderEndingEvent.js";
 export { MergeInheritPointRankEvent } from "./MergeInheritPointRankEvent.js";
 export { ChangeCityEvent } from "./ChangeCityEvent.js";
 export { RegNPCEvent } from "./RegNPCEvent.js";
+export { RegNeutralNPCEvent } from "./RegNeutralNPCEvent.js";
 export {
   UnificationCheckEvent,
   UnificationPostProcessEvent,

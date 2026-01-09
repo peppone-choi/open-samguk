@@ -26,7 +26,7 @@ import {
   EventGhostItem,
 } from "./SpecialtyItems.js";
 
-import { EventSiegeRamItem, EventPepperoItem } from "./MiscItems.js";
+import { EventSiegeRamItem, EventPepperoItem, EventBronzeSparrowItem } from "./MiscItems.js";
 
 export {
   EventRageItem,
@@ -52,6 +52,7 @@ export {
   EventGhostItem,
   EventSiegeRamItem,
   EventPepperoItem,
+  EventBronzeSparrowItem,
 };
 
 export const ALL_EVENT_ITEMS = [
@@ -78,4 +79,5 @@ export const ALL_EVENT_ITEMS = [
   EventGhostItem,
   EventSiegeRamItem,
   EventPepperoItem,
+  EventBronzeSparrowItem,
 ];

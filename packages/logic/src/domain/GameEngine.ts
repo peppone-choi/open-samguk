@@ -40,9 +40,9 @@ export class GameEngine {
   /**
    * 1턴(1개월)을 진행합니다.
    */
-  public step(snapshot: WorldSnapshot): WorldDelta {
+  public step(snapshot: WorldSnapshot, now: Date): WorldDelta {
     // ... (existing monthly step)
-    const timeDelta = this.pipeline.advanceTime(snapshot);
+    const timeDelta = this.pipeline.advanceTime(snapshot, now);
     const timeSnapshot = DeltaUtil.apply(snapshot, timeDelta);
 
     const preDelta = this.pipeline.preUpdateMonthly(timeSnapshot);

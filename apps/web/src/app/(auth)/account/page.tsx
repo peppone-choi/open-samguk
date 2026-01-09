@@ -20,7 +20,7 @@ function getGradeText(grade: number): string {
 }
 
 export default function AccountPage() {
-  const { user: authUser, isLoading, isAuthenticated } = useAuth();
+  const { user: authUser } = useAuth();
 
   // Map auth user to display format
   const user = {

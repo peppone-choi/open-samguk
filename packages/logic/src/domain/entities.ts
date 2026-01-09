@@ -51,6 +51,7 @@ export interface General {
   recentWarTime: Date | null;
   makeLimit: number;
   killTurn: number;
+  killnum?: number;
   block: number; // 차단 상태
   defenceTrain: number;
   tournamentState: number;

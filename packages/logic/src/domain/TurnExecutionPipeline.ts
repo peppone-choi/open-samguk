@@ -26,8 +26,19 @@ export class TurnExecutionPipeline {
       return false;
     }
 
-    // TODO: 서버의 전역 턴 시간(env.turntime)을 기준으로 월 전환 여부를 판단하도록 고도화 필요
-    // 현재는 단순하게 실행 대상 장수가 없으면 전환 가능한 것으로 가정 (MVP)
+    // 서버의 전역 턴 시간(env.turntime)을 기준으로 월 전환 여부를 판단
+    const lastTurnTime = snapshot.env["turntime"];
+    const turnTerm = snapshot.env["turnterm"] || 10; // 분 단위
+
+    if (lastTurnTime) {
+      const lastTurnDate = new Date(lastTurnTime);
+      const nextMonthTime = new Date(lastTurnDate.getTime() + turnTerm * 60 * 1000);
+
+      if (targetTime < nextMonthTime) {
+        return false;
+      }
+    }
+
     return true;
   }
 }

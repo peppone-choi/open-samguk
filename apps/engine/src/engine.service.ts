@@ -92,7 +92,7 @@ export class EngineService implements OnModuleInit, OnModuleDestroy {
         this.logger.log(
           `Monthly transition: ${this.snapshot.gameTime.year}년 ${this.snapshot.gameTime.month}월 -> next`
         );
-        const monthDelta = this.engine.step(this.snapshot);
+        const monthDelta = this.engine.step(this.snapshot, now);
         accumulatedDelta = DeltaUtil.merge(accumulatedDelta, monthDelta);
         this.snapshot = DeltaUtil.apply(this.snapshot, monthDelta);
       }

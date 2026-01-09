@@ -14,7 +14,7 @@ import {
  * WorldSnapshot을 Prisma DB와 동기화하는 리포지토리
  */
 export class SnapshotRepository {
-  constructor(private readonly prisma: PrismaClientType) {}
+  constructor(private readonly prisma: PrismaClientType) { }
 
   /**
    * DB에서 generalTurns만 다시 로드 (턴 실행 전 최신 명령 반영용)
@@ -44,13 +44,14 @@ export class SnapshotRepository {
    * DB에서 현재 게임 상태를 로드하여 Snapshot 생성
    */
   async load(): Promise<WorldSnapshot> {
-    const [dbGenerals, dbNations, dbCities, dbDiplomacy, dbStorage, dbTurns] = await Promise.all([
+    const [dbGenerals, dbNations, dbCities, dbDiplomacy, dbStorage, dbTurns, dbRankData] = await Promise.all([
       this.prisma.general.findMany(),
       this.prisma.nation.findMany(),
       this.prisma.city.findMany(),
       this.prisma.diplomacy.findMany(),
       this.prisma.storage.findMany({ where: { namespace: "game_env" } }),
       this.prisma.generalTurn.findMany(),
+      this.prisma.rankData.findMany({ where: { type: "killnum" } }),
     ]);
 
     const generals: Record<number, General> = {};
@@ -112,6 +113,7 @@ export class SnapshotRepository {
         recentWarTime: g.recentWar,
         makeLimit: g.makeLimit,
         killTurn: g.killTurn || 0,
+        killnum: dbRankData.find((r) => r.generalId === g.no)?.value || 0,
         block: g.block,
         defenceTrain: g.defenceTrain,
         tournamentState: g.tnmt,
@@ -222,7 +224,7 @@ export class SnapshotRepository {
       troops: {},
       messages: {},
       gameTime: { year, month },
-      env: {},
+      env: dbStorage.reduce((acc, s) => ({ ...acc, [s.key]: s.value }), {}),
       generalTurns,
     };
   }

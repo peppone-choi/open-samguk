@@ -7,7 +7,7 @@ import { WarUnitTriggerCaller, type WarUnit } from "../../specials/types.js";
 import { EventSiegeRamTrigger } from "../../triggers/war/EventSiegeRamTrigger.js";
 import type { General } from "../../entities.js";
 import type { RandUtil } from "@sammo/common";
-import type { WarPowerMultiplier, WarUnitReadOnly } from "../types.js";
+import type { WarPowerMultiplier, WarUnitReadOnly, GeneralReadOnly, StatName } from "../types.js";
 
 export class EventSiegeRamItem extends BaseItem {
   readonly code = "event_충차";
@@ -59,10 +59,38 @@ export class EventPepperoItem extends BaseItem {
   readonly code = "event_빼빼로";
   readonly rawName = "빼빼로";
   readonly name = "빼빼로";
-  readonly info = "[이벤트] 특별 이벤트 아이템";
+  readonly info = "1의 상징입니다.\n통솔 +1, 무력 +1, 지력 +1";
   readonly type = "item" as const;
-  readonly cost = 100;
-  readonly consumable = true;
-  readonly buyable = false;
+  readonly cost = 1500;
+  readonly consumable = false;
+  readonly buyable = true;
+  readonly reqSecu = 12000;
+
+  onCalcStat(_general: GeneralReadOnly, statName: StatName, value: number): number {
+    if (["leadership", "strength", "intel"].includes(statName)) {
+      return value + 1;
+    }
+    return value;
+  }
+}
+
+/**
+ * 동작 - che_숙련_동작.php 포팅
+ * 숙련도 획득량 +20%
+ */
+export class EventBronzeSparrowItem extends BaseItem {
+  readonly code = "che_숙련_동작";
+  readonly rawName = "동작";
+  readonly name = "동작(숙련)";
+  readonly info = "숙련도 획득량 +20%";
+  readonly type = "item" as const;
+  readonly cost = 200;
+  readonly consumable = false;
+  readonly buyable = true;
   readonly reqSecu = 0;
+
+  onCalcStat(_general: GeneralReadOnly, statName: StatName, value: number): number {
+    if (statName === "addDex") return value * 1.2;
+    return value;
+  }
 }
