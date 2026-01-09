@@ -1,0 +1,84 @@
+#!/bin/bash
+set -e
+
+APP_DIR="/app"
+GIT_REPO=${GIT_REPO:-"https://github.com/peppone-choi/open-samguk.git"}
+GIT_BRANCH=${GIT_BRANCH:-"main"}
+
+echo "=== Sammo TS Runtime Entrypoint ==="
+
+# 1. Clone or Update Source
+if [ ! -d "$APP_DIR/.git" ]; then
+    echo "Directory $APP_DIR is empty. Cloning from $GIT_REPO ($GIT_BRANCH)..."
+    git clone -b "$GIT_BRANCH" "$GIT_REPO" "$APP_DIR"
+else
+    echo "Source code already exists in $APP_DIR. Pulling latest..."
+    cd "$APP_DIR"
+    git pull origin "$GIT_BRANCH"
+fi
+
+cd "$APP_DIR"
+
+# Ensure pnpm is available and updated
+corepack enable
+pnpm --version
+
+# 2. Install Dependencies
+# We use a Lock file to determine if we need to install
+if [ ! -d "node_modules" ] || [ "$FORCE_UPDATE" = "true" ]; then
+    echo "Installing/Updating dependencies with pnpm..."
+    pnpm install
+fi
+
+# 3. Build
+# Check if the specific service's build artifacts exist and are complete
+BUILD_REQUIRED=false
+case "$SERVICE_TYPE" in
+    "api") [ ! -f "apps/api/dist/main.js" ] && BUILD_REQUIRED=true ;;
+    "engine") [ ! -f "apps/engine/dist/main.js" ] && BUILD_REQUIRED=true ;;
+    "web") [ ! -f "apps/web/.next/BUILD_ID" ] && BUILD_REQUIRED=true ;;
+    "setup") [ ! -f "packages/infra/dist/index.js" ] && BUILD_REQUIRED=true ;;
+    *) [ ! -d "packages/logic/dist" ] && BUILD_REQUIRED=true ;;
+esac
+
+if [ "$BUILD_REQUIRED" = "true" ] || [ "$FORCE_UPDATE" = "true" ]; then
+    echo "Found incomplete build or update forced for $SERVICE_TYPE. Building packages and apps..."
+    pnpm run build
+fi
+
+# Setup Database URL if not provided but Postgres info is there
+if [ -z "$DATABASE_URL" ] && [ -n "$POSTGRES_USER" ]; then
+    export DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
+fi
+
+# 4. Specific Service Execution
+case "$SERVICE_TYPE" in
+    "api")
+        echo "Starting API Service..."
+        exec pnpm --filter @sammo/api start:prod
+        ;;
+    "engine")
+        echo "Starting Engine Service..."
+        exec pnpm --filter @sammo/engine start
+        ;;
+    "web")
+        echo "Starting Web Service..."
+        exec pnpm --filter @sammo/web start
+        ;;
+    "setup")
+        echo "Starting Initial Setup..."
+        # Wait for DB
+        until node -e "require('net').createConnection(5432, 'postgres').on('connect', () => process.exit(0)).on('error', () => process.exit(1))" 2>/dev/null; do
+            echo "Waiting for Database..."
+            sleep 2
+        done
+        echo "Running DB Push..."
+        pnpm --filter @sammo/infra db:push
+        echo "Setup Complete!"
+        exit 0
+        ;;
+    *)
+        echo "Unknown SERVICE_TYPE: $SERVICE_TYPE"
+        exec "$@"
+        ;;
+esac

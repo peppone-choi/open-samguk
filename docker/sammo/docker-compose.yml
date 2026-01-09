@@ -1,0 +1,190 @@
+version: "3.8"
+
+services:
+  # ===========================================
+  # DATABASE & CACHE
+  # ===========================================
+  postgres:
+    image: postgres:16-alpine
+    container_name: sammo-postgres
+    restart: always
+    env_file:
+      - env/account.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - sammo-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sammo-redis
+    restart: always
+    command: redis-server --appendonly yes
+    volumes:
+      - redis-data:/data
+    networks:
+      - sammo-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===========================================
+  # APPLICATION SERVICES (TypeScript Stack)
+  # ===========================================
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.runtime
+    container_name: sammo-api
+    restart: always
+    environment:
+      - SERVICE_TYPE=api
+      - GIT_REPO=${GIT_REPO:-https://github.com/peppone-choi/open-samguk.git}
+      - GIT_BRANCH=${GIT_BRANCH:-main}
+    env_file:
+      - env/account.env
+      - env/game.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      setup:
+        condition: service_completed_successfully
+    volumes:
+      - sammo-app:/app
+    networks:
+      - sammo-net
+
+  engine:
+    build:
+      context: .
+      dockerfile: Dockerfile.runtime
+    container_name: sammo-engine
+    restart: always
+    environment:
+      - SERVICE_TYPE=engine
+      - GIT_REPO=${GIT_REPO:-https://github.com/peppone-choi/open-samguk.git}
+      - GIT_BRANCH=${GIT_BRANCH:-main}
+    env_file:
+      - env/account.env
+      - env/game.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api:
+        condition: service_started
+    volumes:
+      - sammo-app:/app
+    networks:
+      - sammo-net
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.runtime
+    container_name: sammo-web
+    restart: always
+    environment:
+      - SERVICE_TYPE=web
+      - GIT_REPO=${GIT_REPO:-https://github.com/peppone-choi/open-samguk.git}
+      - GIT_BRANCH=${GIT_BRANCH:-main}
+    env_file:
+      - env/game.env
+    depends_on:
+      - api
+    volumes:
+      - sammo-app:/app
+    networks:
+      - sammo-net
+
+  # ===========================================
+  # REVERSE PROXY & GATEWAY
+  # ===========================================
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    container_name: sammo-nginx
+    restart: always
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api
+      - web
+    networks:
+      - sammo-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ===========================================
+  # MAINTENANCE
+  # ===========================================
+  backup:
+    build:
+      context: .
+      dockerfile: backup/Dockerfile
+    container_name: sammo-backup
+    restart: always
+    env_file:
+      - env/account.env
+    environment:
+      - POSTGRES_HOST=postgres
+    volumes:
+      - backup-data:/var/backup
+    depends_on:
+      postgres:
+        condition: service_healthy
+      setup:
+        condition: service_completed_successfully
+    networks:
+      - sammo-net
+
+  # ===========================================
+  # INITIAL SETUP (One-time)
+  # ===========================================
+  setup:
+    build:
+      context: .
+      dockerfile: Dockerfile.runtime
+    container_name: sammo-setup
+    environment:
+      - SERVICE_TYPE=setup
+      - GIT_REPO=${GIT_REPO:-https://github.com/peppone-choi/open-samguk.git}
+      - GIT_BRANCH=${GIT_BRANCH:-main}
+    env_file:
+      - env/account.env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - sammo-app:/app
+    networks:
+      - sammo-net
+
+volumes:
+  postgres-data:
+    name: sammo-postgres-data
+  redis-data:
+    name: sammo-redis-data
+  backup-data:
+    name: sammo-backup-data
+  sammo-app:
+    name: sammo-app-code
+
+networks:
+  sammo-net:
+    name: sammo-network
+    driver: bridge

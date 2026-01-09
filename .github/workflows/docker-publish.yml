@@ -1,0 +1,64 @@
+name: Docker Build and Publish
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: actions/setup-buildx-action@v3
+
+      - name: Log in to the Container registry
+        uses: actions/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # 1. Build & Push Multi-stage Images (api, engine, web, setup)
+      - name: Build and push multi-stage images
+        uses: docker/bake-action@v5
+        with:
+          push: true
+          files: |
+            docker/sammo/docker-bake.hcl
+          set: |
+            *.cache-from=type=gha
+            *.cache-to=type=gha,mode=max
+
+      # 2. Build & Push Nginx
+      - name: Build and push Nginx
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/sammo/nginx/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/nginx:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # 3. Build & Push Backup
+      - name: Build and push Backup
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: docker/sammo/backup/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/backup:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
