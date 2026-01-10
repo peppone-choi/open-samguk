@@ -24,10 +24,23 @@ corepack enable
 pnpm --version
 
 # 2. Install Dependencies
-# We use a Lock file to determine if we need to install
-if [ ! -d "node_modules" ] || [ "$FORCE_UPDATE" = "true" ]; then
-    echo "Installing/Updating dependencies with pnpm..."
-    pnpm install
+# Check if node_modules exists AND has the expected structure
+# The shared volume may have incomplete or stale dependencies
+INSTALL_REQUIRED=false
+if [ ! -d "node_modules" ]; then
+    echo "node_modules not found."
+    INSTALL_REQUIRED=true
+elif [ ! -d "node_modules/.pnpm" ]; then
+    echo "node_modules/.pnpm not found - incomplete install detected."
+    INSTALL_REQUIRED=true
+elif [ "$FORCE_UPDATE" = "true" ]; then
+    echo "Force update requested."
+    INSTALL_REQUIRED=true
+fi
+
+if [ "$INSTALL_REQUIRED" = "true" ]; then
+    echo "Installing dependencies with pnpm..."
+    pnpm install --frozen-lockfile
 fi
 
 # 3. Build
