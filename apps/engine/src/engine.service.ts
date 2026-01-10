@@ -59,8 +59,8 @@ export class EngineService implements OnModuleInit, OnModuleDestroy {
       while (!this.stopping) {
         try {
           await this.runTurnCycle();
-        } catch (err) {
-          this.logger.error("Error in turn cycle:", err);
+        } catch (err: any) {
+          this.logger.error(`Error in turn cycle (${this.snapshot?.gameTime.year}년 ${this.snapshot?.gameTime.month}월):`, err.stack || err);
         }
 
         // 다음 체크까지 대기

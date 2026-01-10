@@ -14,7 +14,7 @@ import {
  * WorldSnapshot을 Prisma DB와 동기화하는 리포지토리
  */
 export class SnapshotRepository {
-  constructor(private readonly prisma: PrismaClientType) {}
+  constructor(private readonly prisma: PrismaClientType) { }
 
   /**
    * DB에서 generalTurns만 다시 로드 (턴 실행 전 최신 명령 반영용)
@@ -388,20 +388,52 @@ export class SnapshotRepository {
       // 1. 장수 업데이트
       if (delta.generals) {
         for (const [id, gDelta] of Object.entries(delta.generals)) {
-          await tx.general.update({
-            where: { no: parseInt(id) },
-            data: this.mapGeneralDelta(gDelta),
-          });
+          const no = parseInt(id);
+          const existing = await tx.general.findUnique({ where: { no } });
+          const mappedData = this.mapGeneralDelta(gDelta);
+          if (existing) {
+            await tx.general.update({
+              where: { no },
+              data: mappedData,
+            });
+          } else {
+            // 새 장수 생성 (전체 데이터가 있어야 함)
+            // events(RaiseInvader, RaiseNPCNation 등)는 전체 데이터를 넘겨줌
+            await tx.general.create({
+              data: {
+                no,
+                ...mappedData,
+                picture: (gDelta as any).picture || "default.jpg",
+                turnTime: (gDelta as any).turnTime || new Date(),
+                // 나머지 필드는 DB default값 사용
+              },
+            });
+          }
         }
       }
 
       // 2. 국가 업데이트
       if (delta.nations) {
         for (const [id, nDelta] of Object.entries(delta.nations)) {
-          await tx.nation.update({
-            where: { nation: parseInt(id) },
-            data: this.mapNationDelta(nDelta),
-          });
+          const nationId = parseInt(id);
+          const existing = await tx.nation.findUnique({ where: { nation: nationId } });
+          const mappedData = this.mapNationDelta(nDelta);
+          if (existing) {
+            await tx.nation.update({
+              where: { nation: nationId },
+              data: mappedData,
+            });
+          } else {
+            // 새 국가 생성
+            await tx.nation.create({
+              data: {
+                nation: nationId,
+                name: nDelta.name || `Nation ${nationId}`,
+                color: nDelta.color || "#ffffff",
+                ...mappedData,
+              },
+            });
+          }
         }
       }
 
@@ -596,21 +628,33 @@ export class SnapshotRepository {
   private mapGeneralDelta(gDelta: Partial<General>): any {
     const data: any = {};
     if (gDelta.name !== undefined) data.name = gDelta.name;
+    if (gDelta.ownerId !== undefined) data.owner = gDelta.ownerId;
     if (gDelta.nationId !== undefined) data.nationId = gDelta.nationId;
     if (gDelta.cityId !== undefined) data.cityId = gDelta.cityId;
+    if (gDelta.npc !== undefined) data.npc = gDelta.npc;
     if (gDelta.gold !== undefined) data.gold = gDelta.gold;
     if (gDelta.rice !== undefined) data.rice = gDelta.rice;
     if (gDelta.leadership !== undefined) data.leadership = gDelta.leadership;
+    if (gDelta.leadershipExp !== undefined) data.leadershipExp = gDelta.leadershipExp;
     if (gDelta.strength !== undefined) data.strength = gDelta.strength;
+    if (gDelta.strengthExp !== undefined) data.strengthExp = gDelta.strengthExp;
     if (gDelta.intel !== undefined) data.intel = gDelta.intel;
+    if (gDelta.intelExp !== undefined) data.intelExp = gDelta.intelExp;
     if (gDelta.age !== undefined) data.age = gDelta.age;
+    if (gDelta.bornYear !== undefined) data.bornYear = gDelta.bornYear;
+    if (gDelta.deadYear !== undefined) data.deadYear = gDelta.deadYear;
     if (gDelta.belong !== undefined) data.belong = gDelta.belong;
     if (gDelta.injury !== undefined) data.injury = gDelta.injury;
     if (gDelta.experience !== undefined) data.experience = gDelta.experience;
     if (gDelta.dedication !== undefined) data.dedication = gDelta.dedication;
+    if (gDelta.officerLevel !== undefined) data.officerLevel = gDelta.officerLevel;
+    if (gDelta.officerCity !== undefined) data.officerCity = gDelta.officerCity;
     if (gDelta.crew !== undefined) data.crew = gDelta.crew;
+    if (gDelta.crewType !== undefined) data.crewType = gDelta.crewType;
     if (gDelta.train !== undefined) data.train = gDelta.train;
     if (gDelta.atmos !== undefined) data.atmos = gDelta.atmos;
+    if (gDelta.turnTime !== undefined) data.turnTime = gDelta.turnTime;
+    if (gDelta.recentWarTime !== undefined) data.recentWar = gDelta.recentWarTime;
     if (gDelta.dex !== undefined) {
       if (gDelta.dex[1] !== undefined) data.dex1 = gDelta.dex[1];
       if (gDelta.dex[2] !== undefined) data.dex2 = gDelta.dex[2];
@@ -618,16 +662,25 @@ export class SnapshotRepository {
       if (gDelta.dex[4] !== undefined) data.dex4 = gDelta.dex[4];
       if (gDelta.dex[5] !== undefined) data.dex5 = gDelta.dex[5];
     }
+    if (gDelta.special !== undefined) data.special = gDelta.special;
+    if (gDelta.special2 !== undefined) data.special2 = gDelta.special2;
+    if (gDelta.personal !== undefined) data.personal = gDelta.personal;
+    if (gDelta.meta !== undefined) data.aux = gDelta.meta;
     return data;
   }
 
   private mapNationDelta(nDelta: Partial<Nation>): any {
     const data: any = {};
+    if (nDelta.name !== undefined) data.name = nDelta.name;
+    if (nDelta.color !== undefined) data.color = nDelta.color;
     if (nDelta.gold !== undefined) data.gold = nDelta.gold;
     if (nDelta.rice !== undefined) data.rice = nDelta.rice;
     if (nDelta.level !== undefined) data.level = nDelta.level;
     if (nDelta.tech !== undefined) data.tech = nDelta.tech;
     if (nDelta.gennum !== undefined) data.gennum = nDelta.gennum;
+    if (nDelta.chiefGeneralId !== undefined) data.chiefSet = nDelta.chiefGeneralId;
+    if (nDelta.capitalCityId !== undefined) data.capital = nDelta.capitalCityId;
+    if (nDelta.typeCode !== undefined) data.type = nDelta.typeCode;
     return data;
   }
 
