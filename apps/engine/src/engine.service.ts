@@ -61,6 +61,7 @@ export class EngineService implements OnModuleInit, OnModuleDestroy {
           await this.runTurnCycle();
         } catch (err: any) {
           this.logger.error(`Error in turn cycle (${this.snapshot?.gameTime.year}년 ${this.snapshot?.gameTime.month}월):`, err.stack || err);
+          this.snapshot = null; // Flush 실패 시 다음 루프에서 DB로부터 재로드 강제
         }
 
         // 다음 체크까지 대기
@@ -70,7 +71,11 @@ export class EngineService implements OnModuleInit, OnModuleDestroy {
   }
 
   private async runTurnCycle() {
-    if (this.running || !this.snapshot) return;
+    if (this.running) return;
+    if (!this.snapshot) {
+      await this.loadInitialState();
+    }
+    if (!this.snapshot) return;
     this.running = true;
 
     try {

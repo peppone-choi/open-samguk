@@ -8,6 +8,7 @@ import { TurnExecutionPipeline } from "./TurnExecutionPipeline.js";
 
 /**
  * 게임 엔진 핵심 클래스
+ * 월간 전환(Pipeline)과 개별 장수 턴(TurnProcessor)의 실행을 총괄합니다.
  */
 export class GameEngine {
   private pipeline: MonthlyPipeline;
@@ -19,15 +20,18 @@ export class GameEngine {
     this.registry = new EventRegistry();
     this.registerAllEvents();
     this.pipeline = new MonthlyPipeline(this.registry);
-    this.turnProcessor = new TurnProcessor("default-seed"); // TODO: 환경변수 등에서 로드
+    this.turnProcessor = new TurnProcessor("default-seed"); // TODO: 환경변수 등에서 실제 시드 로드
     this.executionPipeline = new TurnExecutionPipeline();
   }
 
+  /**
+   * 시스템에 정의된 모든 이벤트를 등록합니다.
+   */
   private registerAllEvents() {
     // 모든 월간 이벤트 등록
     for (const EventClass of Object.values(MonthlyEvents)) {
       try {
-        // 인자가 필요 없는 이벤트만 자동 등록 (나머지는 시나리오 등에서 동적 등록)
+        // 인자가 필요 없는 기본 이벤트만 자동 등록
         if (EventClass.length === 0) {
           this.registry.register(new (EventClass as any)());
         }
@@ -39,9 +43,13 @@ export class GameEngine {
 
   /**
    * 1턴(1개월)을 진행합니다.
+   * 연월 변경, 세금 징수, 재해 발생 등 월간 업데이트를 수행합니다.
+   * 
+   * @param snapshot 현재 월드 상태
+   * @param now 실행 시점의 서버 시간
+   * @returns 월간 전환에 따른 상태 변경 델타
    */
   public step(snapshot: WorldSnapshot, now: Date): WorldDelta {
-    // ... (existing monthly step)
     const timeDelta = this.pipeline.advanceTime(snapshot, now);
     const timeSnapshot = DeltaUtil.apply(snapshot, timeDelta);
 
@@ -57,20 +65,24 @@ export class GameEngine {
   }
 
   /**
-   * 특정 시점(now)까지 실행되어야 할 장수들의 턴을 개별적으로 처리합니다.
+   * 특정 시점(now)까지 실행되어야 할 장수들의 개인 턴을 순차적으로 처리합니다.
+   * 
+   * @param snapshot 현재 월드 상태
+   * @param now 실행 시적의 서버 시간
+   * @returns 실행된 모든 장수 턴의 합산 델타
    */
   public stepGenerals(snapshot: WorldSnapshot, now: Date): WorldDelta {
     const executableIds = this.executionPipeline.findExecutableGenerals(snapshot, now);
     let combinedDelta: WorldDelta = {};
 
     for (const id of executableIds) {
-      // 현재까지 누적된 변경사항이 반영된 임시 스냅샷 생성
+      // 이전 장수의 행동 결과가 반영된 스냅샷 위에서 다음 장수 행동 계산
       const currentSnapshot = DeltaUtil.apply(snapshot, combinedDelta);
 
-      // 장수 턴 실행
+      // 개별 장수 턴 실행 (TurnProcessor 호출)
       const turnDelta = this.turnProcessor.processGeneralTurn(currentSnapshot, id);
 
-      // 턴 실행 후 다음 턴 시간 갱신 (예: 1분 뒤)
+      // 실행 완료 후 다음 턴 시간 갱신 (기본 1분 간격)
       const nextTurnTime = new Date(currentSnapshot.generals[id].turnTime.getTime() + 60 * 1000);
       const timeUpdateDelta: WorldDelta = {
         generals: { [id]: { turnTime: nextTurnTime } },
@@ -84,12 +96,15 @@ export class GameEngine {
   }
 
   /**
-   * 월간 전환이 필요한지 확인합니다.
+   * 현재 시점에서 월간 전환(연월 변경)이 필요한 상태인지 확인합니다.
    */
   public shouldAdvanceMonth(snapshot: WorldSnapshot, now: Date): boolean {
     return this.executionPipeline.shouldAdvanceMonth(snapshot, now);
   }
 
+  /**
+   * 현재 등록된 이벤트 레지스트리를 반환합니다.
+   */
   public getRegistry(): EventRegistry {
     return this.registry;
   }

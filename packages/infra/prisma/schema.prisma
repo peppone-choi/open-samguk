@@ -129,7 +129,7 @@ model BannedMember {
 
 model General {
   no            Int      @id @default(autoincrement())
-  owner         Int      @default(0)
+  owner         Int?
   npcMsg        String   @default("")
   npc           Int      @default(0)
   npcOrg        Int      @default(0)
@@ -142,8 +142,8 @@ model General {
   name          String
   ownerName     String?
 
-  nationId      Int      @default(0)
-  cityId        Int      @default(3)
+  nationId      Int?
+  cityId        Int?
   troopId       Int      @default(0)
 
   leadership    Int      @default(50)
@@ -284,7 +284,7 @@ model Nation {
   nation           Int      @id @default(autoincrement())
   name             String
   color            String
-  capital          Int      @default(0)
+  capital          Int?
   capset           Int      @default(0)
   gennum           Int      @default(1)
 
@@ -295,7 +295,7 @@ model Nation {
   rateTmp          Int      @default(0)
   secretLimit      Int      @default(3)
 
-  chiefSet         Int      @default(0)
+  chiefSet         Int?
   scout            Int      @default(0)
   war              Int      @default(0)
   strategicCmdLimit Int     @default(36)
@@ -360,7 +360,7 @@ model City {
   city        Int      @id @default(autoincrement())
   name        String
   level       Int
-  nationId    Int      @default(0)
+  nationId    Int?
   supply      Int      @default(1)
   front       Int      @default(0)
 

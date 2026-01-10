@@ -60,9 +60,9 @@ export class SnapshotRepository {
       generals[g.no] = {
         id: g.no,
         name: g.name,
-        ownerId: g.owner,
-        nationId: g.nationId,
-        cityId: g.cityId,
+        ownerId: g.owner || 0,
+        nationId: g.nationId || 0,
+        cityId: g.cityId || 0,
         npc: g.npc,
         troopId: g.troopId,
         gold: g.gold,
@@ -133,8 +133,8 @@ export class SnapshotRepository {
         id: n.nation,
         name: n.name,
         color: n.color,
-        chiefGeneralId: n.chiefSet,
-        capitalCityId: n.capital,
+        chiefGeneralId: n.chiefSet || 0,
+        capitalCityId: n.capital || 0,
         gold: n.gold,
         rice: n.rice,
         rate: n.rate,
@@ -159,7 +159,7 @@ export class SnapshotRepository {
       cities[c.city] = {
         id: c.city,
         name: c.name,
-        nationId: c.nationId,
+        nationId: c.nationId || 0,
         level: c.level,
         supply: c.supply,
         front: c.front,
@@ -249,7 +249,7 @@ export class SnapshotRepository {
             city: city.id,
             name: city.name,
             level: city.level,
-            nationId: city.nationId,
+            nationId: city.nationId || null,
             supply: city.supply,
             front: city.front,
             pop: city.pop,
@@ -282,8 +282,8 @@ export class SnapshotRepository {
             nation: nation.id,
             name: nation.name,
             color: nation.color,
-            chiefSet: nation.chiefGeneralId,
-            capital: nation.capitalCityId,
+            chiefSet: nation.chiefGeneralId || null,
+            capital: nation.capitalCityId || null,
             gold: nation.gold,
             rice: nation.rice,
             rate: nation.rate,
@@ -308,10 +308,10 @@ export class SnapshotRepository {
         await tx.general.create({
           data: {
             no: general.id,
-            owner: general.ownerId,
+            owner: general.ownerId || null,
             name: general.name,
-            nationId: general.nationId || 0,
-            cityId: general.cityId,
+            nationId: general.nationId || null,
+            cityId: general.cityId || null,
             npc: general.npc,
             troopId: general.troopId,
             gold: general.gold,
@@ -397,15 +397,17 @@ export class SnapshotRepository {
               data: mappedData,
             });
           } else {
-            // 새 장수 생성 (전체 데이터가 있어야 함)
-            // events(RaiseInvader, RaiseNPCNation 등)는 전체 데이터를 넘겨줌
+            // 새 장수 생성 (최소한 이름은 있어야 함)
+            if (!mappedData.name) {
+              console.warn(`Skipping creation of general ${no}: missing name`);
+              continue;
+            }
             await tx.general.create({
               data: {
                 no,
                 ...mappedData,
                 picture: (gDelta as any).picture || "default.jpg",
                 turnTime: (gDelta as any).turnTime || new Date(),
-                // 나머지 필드는 DB default값 사용
               },
             });
           }
@@ -425,10 +427,14 @@ export class SnapshotRepository {
             });
           } else {
             // 새 국가 생성
+            if (!nDelta.name) {
+              console.warn(`Skipping creation of nation ${nationId}: missing name`);
+              continue;
+            }
             await tx.nation.create({
               data: {
                 nation: nationId,
-                name: nDelta.name || `Nation ${nationId}`,
+                name: nDelta.name,
                 color: nDelta.color || "#ffffff",
                 ...mappedData,
               },
@@ -628,9 +634,9 @@ export class SnapshotRepository {
   private mapGeneralDelta(gDelta: Partial<General>): any {
     const data: any = {};
     if (gDelta.name !== undefined) data.name = gDelta.name;
-    if (gDelta.ownerId !== undefined) data.owner = gDelta.ownerId;
-    if (gDelta.nationId !== undefined) data.nationId = gDelta.nationId;
-    if (gDelta.cityId !== undefined) data.cityId = gDelta.cityId;
+    if (gDelta.ownerId !== undefined) data.owner = gDelta.ownerId || null;
+    if (gDelta.nationId !== undefined) data.nationId = gDelta.nationId || null;
+    if (gDelta.cityId !== undefined) data.cityId = gDelta.cityId || null;
     if (gDelta.npc !== undefined) data.npc = gDelta.npc;
     if (gDelta.gold !== undefined) data.gold = gDelta.gold;
     if (gDelta.rice !== undefined) data.rice = gDelta.rice;
@@ -678,8 +684,8 @@ export class SnapshotRepository {
     if (nDelta.level !== undefined) data.level = nDelta.level;
     if (nDelta.tech !== undefined) data.tech = nDelta.tech;
     if (nDelta.gennum !== undefined) data.gennum = nDelta.gennum;
-    if (nDelta.chiefGeneralId !== undefined) data.chiefSet = nDelta.chiefGeneralId;
-    if (nDelta.capitalCityId !== undefined) data.capital = nDelta.capitalCityId;
+    if (nDelta.chiefGeneralId !== undefined) data.chiefSet = nDelta.chiefGeneralId || null;
+    if (nDelta.capitalCityId !== undefined) data.capital = nDelta.capitalCityId || null;
     if (nDelta.typeCode !== undefined) data.type = nDelta.typeCode;
     return data;
   }
@@ -693,7 +699,7 @@ export class SnapshotRepository {
     if (cDelta.def !== undefined) data.def = cDelta.def;
     if (cDelta.wall !== undefined) data.wall = cDelta.wall;
     if (cDelta.state !== undefined) data.state = cDelta.state;
-    if (cDelta.nationId !== undefined) data.nationId = cDelta.nationId;
+    if (cDelta.nationId !== undefined) data.nationId = cDelta.nationId || null;
     if (cDelta.trust !== undefined) data.trust = cDelta.trust;
     return data;
   }
