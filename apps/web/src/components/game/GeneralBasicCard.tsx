@@ -207,7 +207,7 @@ export function GeneralBasicCard({
   turnTerm,
   lastExecuted,
   gameConstStore,
-  imagePath = "/game",
+  imagePath,
 }: GeneralBasicCardProps) {
   const { gameConst, iActionInfo } = gameConstStore;
   const statUpThreshold = gameConst.upgradeLimit;
