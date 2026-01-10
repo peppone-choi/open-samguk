@@ -5,8 +5,8 @@ import { General } from "../models/General.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
- * 건국 커맨드
- * 레거시: che_건국
+ * 건국 커맨드 (레거시: che_건국)
+ * 방랑군 상태에서 정식 국가를 선포하고 국호를 정합니다.
  */
 export class GeneralFoundNationCommand extends GeneralCommand {
   readonly actionName = "건국";
@@ -16,13 +16,23 @@ export class GeneralFoundNationCommand extends GeneralCommand {
     this.minConditionConstraints = [ConstraintHelper.NoPenalty("NoFoundNation")];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
-      ConstraintHelper.BeLord(),
-      ConstraintHelper.WanderingNation(),
-      ConstraintHelper.ReqNationGeneralCount(2),
-      ConstraintHelper.ConstructableCity(),
+      ConstraintHelper.BeLord(), // 군주(방랑군 대장)여야 함
+      ConstraintHelper.WanderingNation(), // 현재 방랑군 상태여야 함
+      ConstraintHelper.ReqNationGeneralCount(2), // 최소 인원 필요
+      ConstraintHelper.ConstructableCity(), // 건국 가능한 도시여야 함
     ];
   }
 
+  /**
+   * 건국 명령을 실행합니다.
+   * 국가의 이름을 정하고 레벨을 상승시키며 전역 로그를 남깁니다.
+   * 
+   * @param rng 난수 생성기
+   * @param snapshot 월드 스냅샷
+   * @param actorId 건국을 주도하는 장수 ID
+   * @param args { nationName: 국가명, nationType: 국가 성향, colorType: 국가 색상 }
+   * @returns 건국 결과가 반영된 상태 변경 델타
+   */
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,

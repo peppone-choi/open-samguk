@@ -5,12 +5,22 @@ import { General } from "../models/General.js";
 import { City } from "../models/City.js";
 
 /**
- * 농지 개간 커맨드
- * 레거시: che_농지개간
+ * 농지 개간 커맨드 (레거시: che_농지개간)
+ * 현재 머무르고 있는 도시의 농지 수치를 상승시킵니다.
  */
 export class GeneralDevelopAgricultureCommand extends GeneralCommand {
   readonly actionName = "농지 개간";
 
+  /**
+   * 농지 개간 명령을 실행합니다.
+   * 장수의 정치력에 비례하여 농지가 상승합니다.
+   * 
+   * @param rng 난수 생성기
+   * @param snapshot 월드 스냅샷
+   * @param actorId 장수 ID
+   * @param args 추가 인자 (필요 없음)
+   * @returns 상태 변경 델타
+   */
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,

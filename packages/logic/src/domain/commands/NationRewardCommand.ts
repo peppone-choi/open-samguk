@@ -5,8 +5,8 @@ import { ConstraintHelper } from "../ConstraintHelper.js";
 import { GameConst } from "../GameConst.js";
 
 /**
- * 포상 커맨드
- * 레거시: che_포상
+ * 포상 커맨드 (레거시: che_포상)
+ * 국고를 사용하여 소속 국가의 다른 장수에게 금 또는 쌀을 지급합니다.
  */
 export class NationRewardCommand extends GeneralCommand {
   readonly actionName = "포상";
@@ -16,16 +16,26 @@ export class NationRewardCommand extends GeneralCommand {
     this.minConditionConstraints = [
       ConstraintHelper.NotBeNeutral(),
       ConstraintHelper.OccupiedCity(),
-      ConstraintHelper.BeChief(),
+      ConstraintHelper.BeChief(), // 수뇌부만 국고 포상 가능
       ConstraintHelper.SuppliedCity(),
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
-      ConstraintHelper.ExistsDestGeneral(),
-      ConstraintHelper.FriendlyDestGeneral(),
+      ConstraintHelper.ExistsDestGeneral(), // 대상 장수가 존재해야 함
+      ConstraintHelper.FriendlyDestGeneral(), // 같은 국가 장수여야 함
     ];
   }
 
+  /**
+   * 포상 명령을 실행합니다.
+   * 국고에서 자원을 차감하고 대상 장수의 사유 재산을 증가시킵니다.
+   * 
+   * @param rng 난수 생성기
+   * @param snapshot 월드 스냅샷
+   * @param actorId 명령을 내리는 수뇌 장수 ID
+   * @param args { destGeneralId: 대상 장수 ID, amount: 금액, isGold: 금/쌀 여부 }
+   * @returns 국고 및 장수 재산 변경이 포함된 상태 변경 델타
+   */
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,

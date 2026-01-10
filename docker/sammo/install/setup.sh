@@ -10,6 +10,6 @@ until node -e "require('net').createConnection(5432, 'postgres').on('connect', (
 done
 
 echo "Database is ready. Synchronizing Schema..."
-npx prisma db push
+./node_modules/.bin/prisma db push --schema=prisma/schema.prisma
 
 echo "Setup Complete!"

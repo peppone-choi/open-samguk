@@ -6,8 +6,8 @@ import { ConstraintHelper } from "../ConstraintHelper.js";
 import { MapUtil } from "../MapData.js";
 
 /**
- * 이동 커맨드
- * 레거시: che_이동
+ * 이동 커맨드 (레거시: che_이동)
+ * 장수를 인접한 도시로 이동시킵니다.
  */
 export class GeneralMoveCommand extends GeneralCommand {
   readonly actionName = "이동";
@@ -15,11 +15,23 @@ export class GeneralMoveCommand extends GeneralCommand {
   constructor() {
     super();
     this.minConditionConstraints = [
-      ConstraintHelper.ReqGeneralGold(100), // 임시 비용
+      ConstraintHelper.ReqGeneralGold(100), // 임시 이동 비용
     ];
-    this.fullConditionConstraints = [...this.minConditionConstraints, ConstraintHelper.NearCity(1)];
+    this.fullConditionConstraints = [
+      ...this.minConditionConstraints,
+      ConstraintHelper.NearCity(1), // 인접한 도시여야 함
+    ];
   }
 
+  /**
+   * 이동 명령을 실행합니다.
+   * 
+   * @param rng 난수 생성기
+   * @param snapshot 월드 스냅샷
+   * @param actorId 장수 ID
+   * @param args { destCityId: 목적지 도시 ID }
+   * @returns 상태 변경 델타
+   */
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,

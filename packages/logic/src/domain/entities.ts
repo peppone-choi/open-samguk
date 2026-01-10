@@ -311,75 +311,150 @@ export interface City {
   dead: number;
 }
 
+/**
+ * 외교 관계 엔티티
+ */
 export interface Diplomacy {
+  /** 외교 고유 ID */
   id: number;
+  /** 요청 국가 ID */
   srcNationId: number;
+  /** 대상 국가 ID */
   destNationId: number;
-  state: string; // 관계 상태
-  term: number; // 잔여 기한
+  /** 관계 상태 (0: 교전, 1: 선포, 2: 아국, 7: 불가침, 9: 동맹 등) */
+  state: string;
+  /** 관계 유지/적용 잔여 기한 (월 단위) */
+  term: number;
+  /** 확장 메타 데이터 */
   meta: Record<string, any>;
 }
 
+/**
+ * 부대 엔티티
+ * 장수들이 그룹을 이루어 행동하기 위한 단위입니다.
+ */
 export interface Troop {
-  id: number; // 리더 장수 ID
-  nationId: number;
-  name: string;
-  meta: Record<string, any>;
-}
-
-export interface Message {
+  /** 부대 ID (부대장 장수의 ID와 동일) */
   id: number;
-  mailbox: string; // 수신함 타입
-  srcId: number | null;
-  destId: number | null;
-  text: string;
-  sentAt: Date;
+  /** 소속 국가 ID */
+  nationId: number;
+  /** 부대 이름 */
+  name: string;
+  /** 확장 메타 데이터 */
   meta: Record<string, any>;
 }
 
+/**
+ * 메시지(서신) 엔티티
+ * 플레이어나 시스템이 발송하는 정보를 담습니다.
+ */
+export interface Message {
+  /** 메시지 고유 ID */
+  id: number;
+  /** 수신함 타입 (private, nation:ID, global 등) */
+  mailbox: string;
+  /** 발신 장수 ID (null이면 시스템) */
+  srcId: number | null;
+  /** 수신 장수 ID (null이면 전체/국가 수신) */
+  destId: number | null;
+  /** 메시지 내용 */
+  text: string;
+  /** 발송 시각 */
+  sentAt: Date;
+  /** 확장 메타 데이터 */
+  meta: Record<string, any>;
+}
+
+/**
+ * 게임 내 시간 정보
+ */
 export interface GameTime {
+  /** 년도 */
   year: number;
+  /** 월 (1-12) */
   month: number;
 }
 
+/**
+ * 예약된 턴 정보
+ */
 export interface ReservedTurn {
+  /** 장수 ID */
   generalId: number;
+  /** 턴 인덱스 (0-5 등) */
   turnIdx: number;
+  /** 실행할 액션 이름 */
   action: string;
+  /** 액션 인자 */
   arg: Record<string, any>;
 }
 
+/**
+ * 월드 전체 스냅샷
+ * 특정 시점의 모든 게임 상태를 담고 있습니다.
+ */
 export interface WorldSnapshot {
+  /** 장수 목록 (ID 기반 매핑) */
   generals: Record<number, General>;
+  /** 국가 목록 (ID 기반 매핑) */
   nations: Record<number, Nation>;
+  /** 도시 목록 (ID 기반 매핑) */
   cities: Record<number, City>;
-  diplomacy: Record<string, Diplomacy>; // key: "src:dest"
+  /** 외교 관계 목록 (Key: "src:dest") */
+  diplomacy: Record<string, Diplomacy>;
+  /** 부대 목록 (ID 기반 매핑) */
   troops: Record<number, Troop>;
+  /** 메시지 목록 (ID 기반 매핑) */
   messages: Record<number, Message>;
+  /** 현재 게임 시간 */
   gameTime: GameTime;
+  /** 서버 환경 설정 및 전역 변수 */
   env: Record<string, any>;
-  generalTurns: Record<number, ReservedTurn[]>; // key: generalId
+  /** 장수별 예약된 턴 목록 */
+  generalTurns: Record<number, ReservedTurn[]>;
 }
 
+/** 델타 타입 (객체의 일부 필드만 포함 가능) */
 export type Delta<T> = Partial<T>;
 
+/**
+ * 월드 상태 변경 델타
+ * 커맨드나 이벤트 실행 결과로 발생하는 모든 상태 변화를 기록합니다.
+ */
 export interface WorldDelta {
+  /** 변경된 장수 정보 */
   generals?: Record<number, Delta<General>>;
+  /** 변경된 국가 정보 */
   nations?: Record<number, Delta<Nation>>;
+  /** 변경된 도시 정보 */
   cities?: Record<number, Delta<City>>;
+  /** 변경된 외교 정보 */
   diplomacy?: Record<string, Delta<Diplomacy>>;
+  /** 변경된 부대 정보 */
   troops?: Record<number, Delta<Troop>>;
+  /** 새로 생성된 메시지 목록 */
   messages?: Message[];
+  /** 삭제할 메시지 ID 목록 */
   deleteMessages?: number[];
+  /** 변경된 게임 시간 */
   gameTime?: Delta<GameTime>;
+  /** 변경된 환경 설정 */
   env?: Delta<Record<string, any>>;
+  /** 게임 로그 기록 */
   logs?: {
+    /** 장수별 개인 로그 */
     general?: Record<number, string[]>;
+    /** 국가별 세력 로그 */
     nation?: Record<number, string[]>;
+    /** 전역 시스템 로그 */
     global?: string[];
   };
-  deleteEvents?: string[]; // 삭제할 이벤트 ID 목록
+  /** 삭제할 이벤트 ID 목록 */
+  deleteEvents?: string[];
+  /** 삭제할 국가 ID 목록 (멸망 등) */
   deleteNations?: number[];
+  /** 삭제할 장수 ID 목록 (사망 등) */
   deleteGenerals?: number[];
+  /** 삭제할 예약 턴 정보 */
   deleteGeneralTurns?: { generalId: number; turnIdx: number }[];
 }

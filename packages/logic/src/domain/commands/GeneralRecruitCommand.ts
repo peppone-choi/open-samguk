@@ -5,8 +5,8 @@ import { General } from "../models/General.js";
 import { ConstraintHelper } from "../ConstraintHelper.js";
 
 /**
- * 등용 커맨드
- * 레거시: che_등용
+ * 등용 커맨드 (레거시: che_등용)
+ * 특정 대상 장수에게 등용 권유 서신을 보냅니다.
  */
 export class GeneralRecruitCommand extends GeneralCommand {
   readonly actionName = "등용";
@@ -19,11 +19,21 @@ export class GeneralRecruitCommand extends GeneralCommand {
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
-      ConstraintHelper.ExistsDestGeneral(),
-      ConstraintHelper.DifferentNationDestGeneral(),
+      ConstraintHelper.ExistsDestGeneral(), // 대상 장수가 존재해야 함
+      ConstraintHelper.DifferentNationDestGeneral(), // 다른 세력이거나 재야여야 함
     ];
   }
 
+  /**
+   * 등용 명령을 실행합니다.
+   * 대상 장수에게 서신을 발송하고 소모 비용을 정산합니다.
+   * 
+   * @param rng 난수 생성기
+   * @param snapshot 월드 스냅샷
+   * @param actorId 등용을 시도하는 장수 ID
+   * @param args { destGeneralId: 대상 장수 ID }
+   * @returns 서신 발송 및 자금 소모가 포함된 상태 변경 델타
+   */
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,

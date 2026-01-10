@@ -5,8 +5,9 @@ import { ConstraintHelper } from "../ConstraintHelper.js";
 import { areNationsNeighbors } from "../constraints/NearNationConstraint.js";
 
 /**
- * 선전포고 커맨드
- * 레거시: che_선전포고
+ * 선전포고 커맨드 (레거시: che_선전포고)
+ * 국경이 인접한 다른 세력에 전쟁을 선포합니다.
+ * 선포 후 일정 기간(24턴)이 지나야 실제 공격이 가능합니다.
  */
 export class NationDeclareWarCommand extends GeneralCommand {
   readonly actionName = "선전포고";
@@ -15,16 +16,15 @@ export class NationDeclareWarCommand extends GeneralCommand {
     super();
     const startYear = 0; // 초기화 시점에는 snapshots가 없으므로 0으로 두거나 생성자에서 처리 불가
     this.minConditionConstraints = [
-      ConstraintHelper.BeChief(),
+      ConstraintHelper.BeChief(), // 수뇌부(태수 이상)만 가능
       ConstraintHelper.NotBeNeutral(),
       ConstraintHelper.OccupiedCity(),
-      ConstraintHelper.SuppliedCity(),
-      // ConstraintHelper.ReqEnvValue("year", ">=", startYear + 1, "초반제한 해제 2년전부터 가능합니다."),
+      ConstraintHelper.SuppliedCity(), // 보급로가 연결되어 있어야 함
     ];
     this.fullConditionConstraints = [
       ...this.minConditionConstraints,
-      ConstraintHelper.ExistsDestNation(),
-      ConstraintHelper.NearNation(),
+      ConstraintHelper.ExistsDestNation(), // 대상 국가가 존재해야 함
+      ConstraintHelper.NearNation(), // 인접한 국가여야 함
       ConstraintHelper.DisallowDiplomacyBetweenStatus({
         0: "아국과 이미 교전중입니다.",
         1: "아국과 이미 선포중입니다.",
@@ -33,8 +33,16 @@ export class NationDeclareWarCommand extends GeneralCommand {
     ];
   }
 
-  // NOTE: ReqEnvValue 에서 startYear + 1 체크는 run에서 수행하거나 ConstraintHelper를 보강해야 함.
-
+  /**
+   * 선전포고 명령을 실행합니다.
+   * 외교 상태를 '선포(1)'로 변경하고 전역 로그 및 메시지를 발송합니다.
+   * 
+   * @param rng 난수 생성기
+   * @param snapshot 월드 스냅샷
+   * @param actorId 명령을 내리는 수뇌 장수 ID
+   * @param args { destNationId: 대상 국가 ID }
+   * @returns 외교 상태 변경 및 로그가 포함된 상태 변경 델타
+   */
   run(
     rng: RandUtil,
     snapshot: WorldSnapshot,
