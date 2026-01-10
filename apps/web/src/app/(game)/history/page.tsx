@@ -277,7 +277,7 @@ export default function HistoryPage() {
   // Build global action list
   const globalAction: string[] = useMemo(() => {
     if (!globalRecords) return [];
-    return globalRecords.map((r) => r.text);
+    return globalRecords.map((r: { text: string }) => r.text);
   }, [globalRecords]);
 
   // Generate year/month options for selector
