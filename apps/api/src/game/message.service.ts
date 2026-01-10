@@ -271,7 +271,7 @@ export class MessageService {
 
     // 같은 국가 장수들 (국가 메시지용, NPC 제외)
     let sameNationGenerals: any[] = [];
-    if (general.nationId > 0) {
+    if (general.nationId && general.nationId > 0) {
       sameNationGenerals = await this.prisma.general.findMany({
         where: {
           nationId: general.nationId,

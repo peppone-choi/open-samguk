@@ -236,8 +236,9 @@ export class CityService {
       stats.total++;
       stats.totalPop += city.pop;
 
-      const nationCount = stats.byNation.get(city.nationId) || 0;
-      stats.byNation.set(city.nationId, nationCount + 1);
+      const nId = city.nationId ?? 0;
+      const nationCount = stats.byNation.get(nId) || 0;
+      stats.byNation.set(nId, nationCount + 1);
     }
 
     const result: Array<{

@@ -16,7 +16,7 @@ const AUCTION_EXTENSION_MINUTES = 5;
 export class AuctionService implements OnModuleInit {
   private readonly prisma: PrismaClientType = createPrismaClient();
 
-  constructor(private readonly inheritService: InheritService) {}
+  constructor(private readonly inheritService: InheritService) { }
 
   onModuleInit() {
     // 경매 정산 프로세스 시작 (1분마다 실행)
@@ -159,11 +159,12 @@ export class AuctionService implements OnModuleInit {
           data: { rice: { decrement: amount } },
         });
       } else if (resource === "inheritancePoint") {
-        const { points } = await this.inheritService.getPoints(prismaGeneral.owner);
+        const ownerId = prismaGeneral.owner!;
+        const { points } = await this.inheritService.getPoints(ownerId);
         if (points < amount) throw new Error("유산 포인트가 부족합니다.");
-        await this.inheritService.deductPoints(prismaGeneral.owner, amount);
+        await this.inheritService.deductPoints(ownerId, amount);
         await this.inheritService.logInheritAction(
-          prismaGeneral.owner,
+          ownerId,
           `경매 입찰: ${auctionInfo.id}번에 ${amount}포인트`
         );
       }
@@ -184,7 +185,7 @@ export class AuctionService implements OnModuleInit {
             });
           } else if (resource === "inheritancePoint") {
             const prevGen = await tx.general.findUnique({ where: { no: prevBid.generalId } });
-            if (prevGen) {
+            if (prevGen && prevGen.owner) {
               await this.inheritService.deductPoints(prevGen.owner, -prevBid.amount); // refund
               await this.inheritService.logInheritAction(
                 prevGen.owner,

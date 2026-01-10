@@ -37,6 +37,7 @@ export class DiplomacyService {
     });
 
     for (const city of cities) {
+      if (city.nationId === null) continue;
       if (!nationCities[city.nationId]) {
         nationCities[city.nationId] = [];
       }

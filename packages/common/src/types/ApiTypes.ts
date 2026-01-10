@@ -74,8 +74,8 @@ export interface GeneralListItem {
   no: number;
   name: string;
   picture: string;
-  nationId: number;
-  cityId: number;
+  nationId: number | null;
+  cityId: number | null;
   officerLevel: number;
   leadership: number;
   strength: number;
@@ -155,7 +155,7 @@ export interface CityBasic {
   id: number;
   city: number;
   name: string;
-  nationId: number;
+  nationId: number | null;
   level: number;
 }
 
@@ -290,8 +290,8 @@ export interface GeneralDetail {
   name: string;
   picture: string;
   imgsvr: number;
-  nationId: number;
-  cityId: number;
+  nationId: number | null;
+  cityId: number | null;
   officerLevel: number;
   leadership: number;
   leadershipExp: number;

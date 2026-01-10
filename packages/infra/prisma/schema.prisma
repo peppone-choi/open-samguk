@@ -316,6 +316,8 @@ model Nation {
   worldHistories   WorldHistory[]
   boards           Board[]
   comments         Comment[]
+  votes            Vote[]
+  voteComments     VoteComment[]
 
   diplomacyMe      Diplomacy[]  @relation("DiplomacyMe")
   diplomacyYou     Diplomacy[]  @relation("DiplomacyYou")
@@ -402,10 +404,10 @@ model City {
 
 model Troop {
   troopLeader Int      @id
-  nationId    Int
+  nationId    Int?
   name        String
 
-  nation      Nation   @relation(fields: [nationId], references: [nation], onDelete: Cascade)
+  nation      Nation?  @relation(fields: [nationId], references: [nation], onDelete: Cascade)
 
   @@map("troop")
 }
@@ -747,10 +749,11 @@ model Vote {
   id         Int      @id @default(autoincrement())
   voteId     Int
   generalId  Int
-  nationId   Int
+  nationId   Int?
   selection  Json
 
   general    General  @relation(fields: [generalId], references: [no], onDelete: Cascade)
+  nation     Nation?  @relation(fields: [nationId], references: [nation], onDelete: Cascade)
 
   @@unique([generalId, voteId])
   @@index([voteId])
@@ -761,13 +764,14 @@ model VoteComment {
   id          Int       @id @default(autoincrement())
   voteId      Int
   generalId   Int
-  nationId    Int
+  nationId    Int?
   generalName String
   nationName  String
   text        String
   date        DateTime?
 
   general     General   @relation(fields: [generalId], references: [no], onDelete: Cascade)
+  nation      Nation?   @relation(fields: [nationId], references: [nation], onDelete: Cascade)
 
   @@index([voteId])
   @@map("vote_comment")

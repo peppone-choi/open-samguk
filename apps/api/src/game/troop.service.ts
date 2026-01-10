@@ -31,11 +31,11 @@ export class TroopService {
         // Fetch reserved commands for the leader
         const reservedCommands = leader
           ? await this.prisma.generalTurn.findMany({
-              where: { generalId: leader.no },
-              orderBy: { turnIdx: "asc" },
-              take: 3,
-              select: { brief: true, action: true },
-            })
+            where: { generalId: leader.no },
+            orderBy: { turnIdx: "asc" },
+            take: 3,
+            select: { brief: true, action: true },
+          })
           : [];
 
         return {
@@ -60,7 +60,7 @@ export class TroopService {
     });
 
     if (!general) throw new Error("장수가 없습니다.");
-    if (general.nationId === 0) throw new Error("소속 국가가 없습니다.");
+    if (!general.nationId) throw new Error("소속 국가가 없습니다.");
     if (general.troopId !== 0) throw new Error("이미 부대에 소속되어 있습니다.");
 
     const existingTroop = await this.prisma.troop.findUnique({
@@ -72,7 +72,7 @@ export class TroopService {
     const troop = await this.prisma.troop.create({
       data: {
         troopLeader: generalId,
-        nationId: general.nationId,
+        nationId: general.nationId!,
         name,
       },
     });

@@ -20,7 +20,7 @@ interface VoteCommentData {
   id: number;
   voteId: number;
   generalId: number;
-  nationId: number;
+  nationId: number | null;
   generalName: string;
   nationName: string;
   text: string;
@@ -31,7 +31,7 @@ interface VoteCommentRecord {
   id: number;
   voteId: number;
   generalId: number;
-  nationId: number;
+  nationId: number | null;
   generalName: string;
   nationName: string;
   text: string;
