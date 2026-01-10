@@ -1,96 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { createPrismaClient, type PrismaClientType, Prisma } from "@sammo/infra";
-
-// ============================================================================
-// Type Definitions using Prisma utility types
-// ============================================================================
-
-type NationWithCityCount = Prisma.NationGetPayload<{
-  select: {
-    nation: true;
-    name: true;
-    color: true;
-    gennum: true;
-    _count: { select: { cities: true } };
-  };
-}>;
-
-type CityForMap = Prisma.CityGetPayload<{
-  select: {
-    city: true;
-    name: true;
-    level: true;
-    nationId: true;
-    region: true;
-    pop: true;
-    front: true;
-    supply: true;
-  };
-}>;
-
-type NationBasic = Prisma.NationGetPayload<{
-  select: { nation: true; name: true; color: true };
-}>;
-
-type WorldHistoryWithNation = Prisma.WorldHistoryGetPayload<{
-  include: { nation: { select: { name: true; color: true } } };
-}>;
-
-type GeneralWithRelations = Prisma.GeneralGetPayload<{
-  select: {
-    no: true;
-    name: true;
-    picture: true;
-    nationId: true;
-    cityId: true;
-    leadership: true;
-    strength: true;
-    intel: true;
-    officerLevel: true;
-    npc: true;
-    experience: true;
-    dedication: true;
-    crew: true;
-    nation: { select: { name: true; color: true } };
-    city: { select: { name: true } };
-  };
-}>;
-
-type CityForMapData = Prisma.CityGetPayload<{
-  select: {
-    city: true;
-    level: true;
-    state: true;
-    nationId: true;
-    region: true;
-    supply: true;
-  };
-}>;
-
-type NationForMapData = Prisma.NationGetPayload<{
-  select: { nation: true; name: true; color: true; capital: true };
-}>;
-
-type NationForDiplomacy = Prisma.NationGetPayload<{
-  select: {
-    nation: true;
-    name: true;
-    color: true;
-    power: true;
-    gennum: true;
-    level: true;
-    capital: true;
-    cities: { select: { name: true } };
-  };
-}>;
-
-type CityWithConflict = Prisma.CityGetPayload<{
-  select: { city: true; conflict: true };
-}>;
-
-// ============================================================================
-// Service Implementation
-// ============================================================================
+import { createPrismaClient, type PrismaClientType } from "@sammo/infra";
 
 @Injectable()
 export class GlobalService {
@@ -171,7 +80,7 @@ export class GlobalService {
     return {
       result: true,
       env: gameEnv.env,
-      nations: nations.map((n: NationWithCityCount) => ({
+      nations: nations.map((n) => ({
         nation: n.nation,
         name: n.name,
         color: n.color,
@@ -210,13 +119,12 @@ export class GlobalService {
       }),
     ]);
 
-    const nationMap = new Map<number, NationBasic>(
-      nations.map((n: NationBasic) => [n.nation, n])
-    );
+    type NationBasic = (typeof nations)[number];
+    const nationMap = new Map<number, NationBasic>(nations.map((n) => [n.nation, n]));
 
     return {
       result: true,
-      cities: cities.map((c: CityForMap) => {
+      cities: cities.map((c) => {
         const nation = nationMap.get(c.nationId);
         return {
           ...c,
@@ -275,7 +183,7 @@ export class GlobalService {
       result: true,
       year,
       month,
-      history: history.map((h: WorldHistoryWithNation) => ({
+      history: history.map((h) => ({
         id: h.id,
         text: h.text,
         nationId: h.nationId,
@@ -316,7 +224,7 @@ export class GlobalService {
     });
 
     // 간단한 해시 생성 (변경 감지용)
-    const newToken = Buffer.from(JSON.stringify(generals.map((g: GeneralWithRelations) => g.no)))
+    const newToken = Buffer.from(JSON.stringify(generals.map((g) => g.no)))
       .toString("base64")
       .slice(0, 16);
 
@@ -328,7 +236,7 @@ export class GlobalService {
       result: true,
       changed: true,
       token: newToken,
-      generals: generals.map((g: GeneralWithRelations) => ({
+      generals: generals.map((g) => ({
         ...g,
         nationName: g.nation?.name,
         nationColor: g.nation?.color,
@@ -351,9 +259,8 @@ export class GlobalService {
       }),
     ]);
 
-    const nationMap = new Map<number, NationBasic>(
-      nations.map((n: NationBasic) => [n.nation, n])
-    );
+    type NationBasic = (typeof nations)[number];
+    const nationMap = new Map<number, NationBasic>(nations.map((n) => [n.nation, n]));
 
     return {
       result: true,
@@ -406,7 +313,7 @@ export class GlobalService {
     return {
       result: true,
       generalRecords,
-      worldHistory: worldHistory.map((h: WorldHistoryWithNation) => ({
+      worldHistory: worldHistory.map((h) => ({
         id: h.id,
         year: h.year,
         month: h.month,
@@ -504,15 +411,8 @@ export class GlobalService {
       year: (env.year as number) || 0,
       month: (env.month as number) || 0,
       startYear: (env.startYear as number) || 184,
-      cityList: cities.map((c: CityForMapData) => [
-        c.city,
-        c.level,
-        c.state,
-        c.nationId,
-        c.region,
-        c.supply,
-      ]),
-      nationList: nations.map((n: NationForMapData) => [n.nation, n.name, n.color, n.capital]),
+      cityList: cities.map((c) => [c.city, c.level, c.state, c.nationId, c.region, c.supply]),
+      nationList: nations.map((n) => [n.nation, n.name, n.color, n.capital]),
       spyList: {},
       shownByGeneralList: [],
       myCity,
@@ -562,14 +462,14 @@ export class GlobalService {
     }
 
     const conflict: [number, Record<number, number>][] = cities
-      .filter((c: CityWithConflict) => {
+      .filter((c) => {
         const conflictData = c.conflict as Record<string, number> | null;
         return conflictData && Object.keys(conflictData).length > 0;
       })
-      .map((c: CityWithConflict) => [c.city, c.conflict as Record<number, number>]);
+      .map((c) => [c.city, c.conflict as Record<number, number>]);
 
     return {
-      nations: nations.map((n: NationForDiplomacy) => ({
+      nations: nations.map((n) => ({
         nation: n.nation,
         name: n.name,
         color: n.color,
@@ -577,7 +477,7 @@ export class GlobalService {
         gennum: n.gennum,
         level: n.level,
         capital: n.capital,
-        cities: n.cities.map((c: { name: string }) => c.name),
+        cities: n.cities.map((c) => c.name),
       })),
       conflict,
       diplomacyList: diplomacyMatrix,
