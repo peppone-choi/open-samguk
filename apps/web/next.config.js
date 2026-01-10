@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ["@sammo/common", "@sammo/logic"],
+  output: "standalone",
 };
 
 module.exports = nextConfig;
