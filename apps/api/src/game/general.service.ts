@@ -1,5 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient } from "@sammo/infra";
+import {
+  type GeneralDetail,
+  type FrontInfoResponse,
+  type GeneralListItem,
+  type SuccessResponse
+} from "@sammo/common";
 import { InheritService, INHERIT_CONSTANTS } from "./inherit.service.js";
 
 /** 장수 생성 입력 DTO */
@@ -222,14 +228,34 @@ export class GeneralService {
   /**
    * 장수 상세 정보 조회
    */
-  async getGeneralDetail(generalId: number) {
-    return this.prisma.general.findUnique({
+  async getGeneralDetail(generalId: number): Promise<GeneralDetail | null> {
+    const general = await this.prisma.general.findUnique({
       where: { no: generalId },
       include: {
         nation: true,
         city: true,
       },
     });
+
+    if (!general) return null;
+
+    return {
+      ...general,
+      turnTime: general.turnTime.toISOString(),
+      nation: general.nation ? {
+        nation: general.nation.nation,
+        name: general.nation.name,
+        color: general.nation.color,
+        level: general.nation.level,
+      } : undefined,
+      city: general.city ? {
+        id: general.city.city,
+        city: general.city.city,
+        name: general.city.name,
+        nationId: general.city.nationId,
+        level: general.city.level,
+      } : undefined,
+    } as unknown as GeneralDetail;
   }
 
   /**
@@ -305,7 +331,7 @@ export class GeneralService {
     orderBy?: string;
     limit?: number;
     offset?: number;
-  }) {
+  }): Promise<GeneralListItem[]> {
     const { nationId, npc, orderBy = "experience", limit = 100, offset = 0 } = params;
 
     const where: any = {};
@@ -317,16 +343,45 @@ export class GeneralService {
       order = { experience: "desc" };
     }
 
-    return this.prisma.general.findMany({
+    const generals = await this.prisma.general.findMany({
       where,
       orderBy: order,
       take: limit,
       skip: offset,
       include: {
-        nation: { select: { name: true, color: true } },
-        city: { select: { name: true } },
+        nation: { select: { nation: true, name: true, color: true, level: true } },
+        city: { select: { city: true, name: true, nationId: true, level: true } },
       },
     });
+
+    return generals.map(g => ({
+      no: g.no,
+      name: g.name,
+      picture: g.picture,
+      nationId: g.nationId,
+      cityId: g.cityId,
+      officerLevel: g.officerLevel,
+      leadership: g.leadership,
+      strength: g.strength,
+      intel: g.intel,
+      experience: g.experience,
+      dedication: g.dedication,
+      gold: g.gold,
+      rice: g.rice,
+      crew: g.crew,
+      crewType: g.crewType,
+      trainLevel: g.train,
+      train: g.train,
+      atmos: g.atmos,
+      age: g.age,
+      troopId: g.troopId,
+      killturn: g.killTurn, // DB 필드명 확인 필요 (killTurn vs killturn)
+      npc: g.npc,
+      lastTurn: g.turnTime.toISOString(),
+      specialDomestic: g.special,
+      specialWar: g.special2,
+      personal: g.personal,
+    })) as unknown as GeneralListItem[];
   }
 
   /**
@@ -336,14 +391,14 @@ export class GeneralService {
   async getFrontInfo(
     generalId: number,
     options?: { lastRecordId?: number; lastHistoryId?: number }
-  ) {
+  ): Promise<FrontInfoResponse> {
     const general = await this.prisma.general.findUnique({
       where: { no: generalId },
       include: {
         nation: true,
         city: {
           include: {
-            nation: { select: { name: true, color: true } },
+            nation: { select: { nation: true, name: true, color: true, level: true } },
           },
         },
         accessLog: true,
@@ -419,6 +474,7 @@ export class GeneralService {
 
       nationInfo = {
         id: general.nationId,
+        nation: general.nationId,
         name: general.nation.name,
         color: general.nation.color,
         level: general.nation.level,
@@ -448,6 +504,7 @@ export class GeneralService {
     const cityInfo = general.city
       ? {
         id: general.city.city,
+        city: general.city.city,
         name: general.city.name,
         level: general.city.level,
         trust: general.city.trust,
@@ -461,8 +518,10 @@ export class GeneralService {
         nationInfo: general.city.nation
           ? {
             id: general.city.nationId,
+            nation: general.city.nation.nation,
             name: general.city.nation.name,
             color: general.city.nation.color,
+            level: general.city.nation.level,
           }
           : null,
       }
@@ -499,7 +558,7 @@ export class GeneralService {
         crewtype: general.crewType,
         train: general.train,
         atmos: general.atmos,
-        turntime: general.turnTime,
+        turntime: general.turnTime.toISOString(),
         horse: general.horse,
         weapon: general.weapon,
         book: general.book,
@@ -512,7 +571,7 @@ export class GeneralService {
         month: gameEnv.month,
         startyear: gameEnv.startyear ?? gameEnv.init_year,
         turnterm: gameEnv.turnterm,
-        lastExecuted: gameEnv.turntime,
+        lastExecuted: gameEnv.turntime ? new Date(gameEnv.turntime).toISOString() : new Date().toISOString(),
         auctionCount,
         isTournamentActive: (gameEnv.tournament ?? 0) > 0,
         isLocked: false,
@@ -639,7 +698,7 @@ export class GeneralService {
   /**
    * 게임 시작 전 사망 (Prestart 상태에서 장수 삭제)
    */
-  async dieOnPrestart(generalId: number) {
+  async dieOnPrestart(generalId: number): Promise<SuccessResponse> {
     const general = await this.prisma.general.findUnique({ where: { no: generalId } });
     if (!general) throw new Error("장수 정보가 없습니다.");
 

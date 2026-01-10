@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import { trpc } from "@/utils/trpc";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import type { GeneralDetail, HistoryItem } from "@sammo/common";
 
 const OFFICER_LEVELS: Record<number, string> = {
   0: "재야",
@@ -112,8 +113,8 @@ export default function GeneralDetailPage() {
     },
   });
 
-  const general = generalQuery.data;
-  const logs = logsQuery.data || [];
+  const general = generalQuery.data as GeneralDetail | undefined;
+  const logs = (logsQuery.data || []) as HistoryItem[];
   const commands = commandsQuery.data;
 
   if (generalQuery.isLoading) {
@@ -144,8 +145,8 @@ export default function GeneralDetailPage() {
 
   const turnEntries = commands?.turn
     ? Object.entries(commands.turn)
-        .map(([idx, cmd]) => ({ turnIdx: Number(idx), ...cmd }))
-        .sort((a, b) => a.turnIdx - b.turnIdx)
+      .map(([idx, cmd]) => ({ turnIdx: Number(idx), ...cmd }))
+      .sort((a, b) => a.turnIdx - b.turnIdx)
     : [];
 
   return (
@@ -344,7 +345,7 @@ export default function GeneralDetailPage() {
             <div className="text-muted-foreground text-center py-4">기록이 없습니다</div>
           ) : (
             <div className="space-y-2 max-h-[400px] overflow-y-auto">
-              {logs.map((log: any) => (
+              {logs.map((log) => (
                 <div key={log.id} className="flex gap-3 p-3 bg-muted/30 rounded-lg text-sm">
                   <span className="shrink-0 text-muted-foreground font-mono">
                     {log.year}년 {log.month}월

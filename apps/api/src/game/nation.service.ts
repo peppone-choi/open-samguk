@@ -1,5 +1,10 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient } from "@sammo/infra";
+import {
+  type NationInfo,
+  type SuccessResponse,
+  type NationGeneralListResponse
+} from "@sammo/common";
 
 @Injectable()
 export class NationService {
@@ -8,21 +13,45 @@ export class NationService {
   /**
    * 국가 상세 정보 조회
    */
-  async getNationInfo(nationId: number) {
-    return this.prisma.nation.findUnique({
+  async getNationInfo(nationId: number): Promise<NationInfo | null> {
+    const nation = await this.prisma.nation.findUnique({
       where: { nation: nationId },
       include: {
         cities: {
-          select: { city: true, name: true, level: true },
+          select: { city: true, name: true, level: true, nationId: true },
         },
       },
     });
+
+    if (!nation) return null;
+
+    return {
+      nation: nation.nation,
+      name: nation.name,
+      color: nation.color,
+      level: nation.level,
+      capital: nation.capital,
+      gold: nation.gold,
+      rice: nation.rice,
+      tech: nation.tech,
+      rate: nation.rate,
+      bill: nation.bill,
+      scout: nation.scout,
+      war: nation.war,
+      cities: nation.cities.map(c => ({
+        id: c.city,
+        city: c.city,
+        name: c.name,
+        level: c.level,
+        nationId: c.nationId,
+      })),
+    };
   }
 
   /**
    * 국가 소속 장수 목록 조회 (상세 정보 포함)
    */
-  async getNationGeneralList(nationId: number, viewerGeneralId?: number) {
+  async getNationGeneralList(nationId: number, viewerGeneralId?: number): Promise<NationGeneralListResponse> {
     const viewer = viewerGeneralId
       ? await this.prisma.general.findUnique({ where: { no: viewerGeneralId } })
       : null;
@@ -157,7 +186,7 @@ export class NationService {
       env: {
         year: env.year,
         month: env.month,
-        turntime: env.turntime,
+        turntime: env.turntime ? new Date(env.turntime).toISOString() : new Date().toISOString(),
         turnterm: env.turnterm,
         killturn: env.killturn ?? 80,
       },

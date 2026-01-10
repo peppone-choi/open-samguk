@@ -10,3 +10,34 @@ export type { Nullable } from "./types/Nullable.js";
 export type { BytesLike } from "./types/BytesLike.js";
 
 export { convertBytesLikeToUint8Array } from "./bytes/convertBytesLikeToUint8Array.js";
+
+// API Response Types
+export type {
+  BoardListItem,
+  BoardListResponse,
+  BoardComment,
+  BoardDetail,
+  BoardDetailResponse,
+  GeneralBasic,
+  GeneralListItem,
+  NationBasic,
+  DiplomacyRelation,
+  CityBasic,
+  CityForMap,
+  HistoryItem,
+  AuctionItem,
+  AuctionBid,
+  BettingInfo,
+  BettingCandidate,
+  TournamentInfo,
+  TournamentParticipant,
+  MessageItem,
+  SuccessResponse,
+  ErrorResponse,
+  GeneralDetail,
+  NationInfo,
+  NationGeneralListResponse,
+  GameStateResponse,
+  ServerInfo,
+  FrontInfoResponse,
+} from "./types/ApiTypes.js";

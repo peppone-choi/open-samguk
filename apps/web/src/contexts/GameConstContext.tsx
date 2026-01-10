@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useMemo, type ReactNode } from "react";
 import { trpc } from "@/utils/trpc";
+import { type GameStateResponse } from "@sammo/common";
 
 export interface GameTime {
   year: number;
@@ -72,9 +73,12 @@ export function GameConstProvider({ children }: GameConstProviderProps) {
 
   const value = useMemo<GameConstContextValue>(
     () => ({
-      gameTime: gameState ? { year: gameState.year, month: gameState.month } : null,
-      nations: gameState?.nations ?? [],
-      cities: gameState?.cities ?? [],
+      gameTime: (gameState as GameStateResponse | undefined) ? {
+        year: (gameState as GameStateResponse).year,
+        month: (gameState as GameStateResponse).month
+      } : null,
+      nations: (gameState as GameStateResponse | undefined)?.nations ?? [],
+      cities: (gameState as GameStateResponse | undefined)?.cities ?? [],
       isLoading,
       error: error as Error | null,
       refetch,

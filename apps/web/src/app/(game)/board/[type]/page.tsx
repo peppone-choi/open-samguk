@@ -305,7 +305,7 @@ export default function BoardPage() {
     refetch();
   }, [refetch]);
 
-  const boards = boardListData?.boards ?? [];
+  const boards: BoardListItem[] = (boardListData?.boards ?? []) as BoardListItem[];
 
   return (
     <>

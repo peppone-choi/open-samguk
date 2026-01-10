@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { LogOut, Settings, Users } from "lucide-react";
 import { trpc } from "@/utils/trpc";
+import { type ServerInfo } from "@sammo/common";
 
 // Server type colors matching legacy CSS
 const serverTypeColors: Record<string, string> = {

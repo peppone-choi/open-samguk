@@ -1,17 +1,30 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient } from "@sammo/infra";
+import {
+  type GameStateResponse,
+  type ServerInfo
+} from "@sammo/common";
 
 @Injectable()
 export class GameService {
   private readonly prisma = createPrismaClient();
 
-  async getGameState(): Promise<any> {
+  async getGameState(): Promise<GameStateResponse> {
     // TODO: DB에서 현재 상태 로드
+    const nations = await this.prisma.nation.findMany();
+    const cities = await this.prisma.city.findMany();
+
     return {
       year: 184,
       month: 1,
-      nations: await this.prisma.nation.findMany(),
-      cities: await this.prisma.city.findMany(),
+      nations,
+      cities: cities.map(c => ({
+        id: c.city,
+        city: c.city,
+        name: c.name,
+        nationId: c.nationId,
+        level: c.level
+      })),
     };
   }
 
@@ -91,7 +104,7 @@ export class GameService {
     return registry.getAllUnits();
   }
 
-  async getServerList(userId: number): Promise<any[]> {
+  async getServerList(userId: number): Promise<ServerInfo[]> {
     // 1. 모든 서버 정보 조회
     const servers = await this.prisma.ngGames.findMany({
       orderBy: { date: "desc" },
@@ -136,7 +149,8 @@ export class GameService {
         korName: server.scenarioName, // 시나리오 이름을 표시명으로 사용하거나 별도 매핑 필요
         status: "running", // running, waiting, closed 판단 로직 필요. 일단 running
         scenario: server.scenarioName,
-        year: `${year}년 ${month}월`,
+        year: `${year}년`,
+        month: `${month}월`,
         turnTime: `${turnTime}분`,
         players: playerCount,
         maxPlayers: env.maxUser || 100,

@@ -1,5 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient, type PrismaClientType } from "@sammo/infra";
+import type {
+  BoardListItem,
+  BoardListResponse,
+  BoardComment,
+  BoardDetailResponse,
+} from "@sammo/common";
 
 /** 게시판 유형 */
 export type BoardType = "public" | "nation" | "secret";
@@ -16,12 +22,22 @@ export class BoardService {
     type: BoardType;
     limit?: number;
     offset?: number;
-  }) {
+  }): Promise<BoardListResponse> {
     const { nationId, type, limit = 20, offset = 0 } = params;
     const isSecret = type === "secret";
 
     // public인 경우 nationId = 0
     const whereNationId = type === "public" ? 0 : nationId;
+
+    interface BoardQueryResult {
+      no: number;
+      date: Date;
+      author: string;
+      authorIcon: string | null;
+      title: string;
+      generalId: number;
+      _count: { comments: number };
+    }
 
     const [boards, total] = await Promise.all([
       this.prisma.board.findMany({
@@ -43,7 +59,7 @@ export class BoardService {
             select: { comments: true },
           },
         },
-      }),
+      }) as Promise<BoardQueryResult[]>,
       this.prisma.board.count({
         where: {
           nationId: whereNationId,
@@ -52,17 +68,19 @@ export class BoardService {
       }),
     ]);
 
+    const boardItems: BoardListItem[] = boards.map((b: BoardQueryResult) => ({
+      no: b.no,
+      date: b.date,
+      author: b.author,
+      authorIcon: b.authorIcon,
+      title: b.title,
+      generalId: b.generalId,
+      commentCount: b._count.comments,
+    }));
+
     return {
       result: true,
-      boards: boards.map((b: any) => ({
-        no: b.no,
-        date: b.date,
-        author: b.author,
-        authorIcon: b.authorIcon,
-        title: b.title,
-        generalId: b.generalId,
-        commentCount: b._count.comments,
-      })),
+      boards: boardItems,
       total,
       limit,
       offset,
@@ -72,7 +90,26 @@ export class BoardService {
   /**
    * 게시글 상세 조회
    */
-  async getBoardDetail(boardNo: number) {
+  async getBoardDetail(boardNo: number): Promise<BoardDetailResponse> {
+    interface BoardWithComments {
+      no: number;
+      nationId: number;
+      isSecret: boolean;
+      date: Date;
+      author: string;
+      authorIcon: string | null;
+      title: string;
+      text: string;
+      generalId: number;
+      comments: Array<{
+        no: number;
+        date: Date;
+        author: string;
+        text: string;
+        generalId: number;
+      }>;
+    }
+
     const board = await this.prisma.board.findUnique({
       where: { no: boardNo },
       include: {
@@ -87,25 +124,32 @@ export class BoardService {
           },
         },
       },
-    });
+    }) as BoardWithComments | null;
 
     if (!board) {
       throw new Error("게시글이 존재하지 않습니다.");
     }
+
+    const comments: BoardComment[] = board.comments.map((c) => ({
+      no: c.no,
+      date: c.date,
+      author: c.author,
+      text: c.text,
+      generalId: c.generalId,
+    }));
 
     return {
       result: true,
       board: {
         no: board.no,
         nationId: board.nationId,
-        isSecret: board.isSecret,
         date: board.date,
         author: board.author,
         authorIcon: board.authorIcon,
         title: board.title,
         text: board.text,
         generalId: board.generalId,
-        comments: board.comments,
+        comments,
       },
     };
   }
