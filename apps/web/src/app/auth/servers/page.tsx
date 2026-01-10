@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { LogOut, Settings, Users } from "lucide-react";
+import { LogOut, Settings, Users, Shield } from "lucide-react";
 import { trpc } from "@/utils/trpc";
+import { useAuth } from "@/contexts/AuthContext";
 
 // Server type colors matching legacy CSS
 const serverTypeColors: Record<string, string> = {
@@ -56,6 +57,7 @@ const serverDescriptions = [
 
 export default function ServersPage() {
   const [notice] = useState("현재 서버가 운영중입니다.");
+  const { user } = useAuth();
   const { data: servers, isLoading, error } = trpc.getServerList.useQuery();
 
   const handleLogout = () => {
@@ -263,6 +265,47 @@ export default function ServersPage() {
             </table>
           </div>
         </div>
+
+        {user?.grade && user.grade >= 5 && (
+          <div className="mb-4 premium-card p-6 flex flex-col md:flex-row justify-between items-center gap-4 border-amber-500/30 bg-amber-950/10">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-500/20 rounded-lg text-amber-400">
+                <Shield size={24} />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-amber-400">관리자 메뉴</h3>
+                <p className="text-xs text-amber-400/70">서버 및 회원 관리, 시스템 설정</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2 justify-center md:justify-end">
+              <Link
+                href="/admin/servers"
+                className="px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 hover:text-amber-300 rounded-lg transition-all duration-300 text-sm font-medium"
+              >
+                서버 관리
+              </Link>
+              <Link
+                href="/admin/members"
+                className="px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 hover:text-amber-300 rounded-lg transition-all duration-300 text-sm font-medium"
+              >
+                회원 관리
+              </Link>
+              <Link
+                href="/admin/settings"
+                className="px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 hover:text-amber-300 rounded-lg transition-all duration-300 text-sm font-medium"
+              >
+                게임 설정
+              </Link>
+              <Link
+                href="/admin/logs"
+                className="px-4 py-2 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 text-amber-400 hover:text-amber-300 rounded-lg transition-all duration-300 text-sm font-medium"
+              >
+                시스템 로그
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* Account Management Section */}
         <div className="premium-card p-6 flex flex-col md:flex-row justify-between items-center gap-4">
