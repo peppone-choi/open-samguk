@@ -271,7 +271,7 @@ export default function HistoryPage() {
   // Build global history list
   const globalHistory: string[] = useMemo(() => {
     if (!historyData) return [];
-    return historyData.map((h) => h.text);
+    return historyData.map((h: { text: string }) => h.text);
   }, [historyData]);
 
   // Build global action list
