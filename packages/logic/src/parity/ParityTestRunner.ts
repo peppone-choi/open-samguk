@@ -1,6 +1,6 @@
 /**
- * Parity Test Runner
- * Coordinates testing between legacy PHP and new TypeScript implementations
+ * 패리티 테스트 러너
+ * 레거시 PHP와 신규 TypeScript 구현 간 비교 테스트 조정
  */
 
 import {
@@ -38,7 +38,7 @@ export interface LegacyBridgeResponse {
 
 export interface NewSystemExecutor {
   /**
-   * Execute a command on the new TypeScript system
+   * 신규 TypeScript 시스템에서 명령 실행
    */
   execute(
     command: string,
@@ -48,18 +48,18 @@ export interface NewSystemExecutor {
   ): Promise<ParityCommandResult>;
 
   /**
-   * Reset the new system database to a fixture state
+   * 신규 시스템 데이터베이스를 픽스처 상태로 초기화
    */
   reset(fixture: string): Promise<void>;
 
   /**
-   * Capture current state snapshot
+   * 현재 상태 스냅샷 캡처
    */
   captureSnapshot(): Promise<ParitySnapshot>;
 }
 
 /**
- * Parity Test Runner - orchestrates comparison between legacy and new systems
+ * 패리티 테스트 러너 - 레거시와 신규 시스템 간 비교 조정
  */
 export class ParityTestRunner {
   private config: ParityTestConfig;
@@ -72,18 +72,18 @@ export class ParityTestRunner {
   }
 
   /**
-   * Run a single parity test case
+   * 단일 패리티 테스트 케이스 실행
    */
   async runTest(testCase: ParityTestCase): Promise<ParityComparisonResult> {
     const { command, fixture, skipLegacyComparison } = testCase;
 
-    // 1. Reset both systems to fixture state
+    // 1. 양쪽 시스템을 픽스처 상태로 초기화
     await this.resetSystems(fixture);
 
-    // 2. Execute on new system
+    // 2. 신규 시스템에서 실행
     const newResult = await this.executeOnNewSystem(command);
 
-    // 3. Execute on legacy system (unless skipped)
+    // 3. 레거시 시스템에서 실행 (스킵하지 않는 경우)
     let legacyResult: ParityCommandResult;
     if (skipLegacyComparison) {
       legacyResult = this.createSkippedResult();
@@ -91,7 +91,7 @@ export class ParityTestRunner {
       legacyResult = await this.executeOnLegacy(command);
     }
 
-    // 4. Compare results
+    // 4. 결과 비교
     const differences = this.compareResults(legacyResult, newResult);
     const deltasMatch = differences.filter((d) => d.severity === "critical").length === 0;
 
@@ -106,7 +106,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Run multiple test cases
+   * 여러 테스트 케이스 실행
    */
   async runTests(testCases: ParityTestCase[]): Promise<ParityComparisonResult[]> {
     const results: ParityComparisonResult[] = [];
@@ -138,18 +138,18 @@ export class ParityTestRunner {
   }
 
   /**
-   * Reset both systems to fixture state
+   * 양쪽 시스템을 픽스처 상태로 초기화
    */
   private async resetSystems(fixture: string): Promise<void> {
-    // Reset legacy via bridge
+    // 브릿지를 통해 레거시 초기화
     await this.callLegacyBridge("/reset", { fixture });
 
-    // Reset new system
+    // 신규 시스템 초기화
     await this.newSystemExecutor.reset(fixture);
   }
 
   /**
-   * Execute command on new TypeScript system
+   * 신규 TypeScript 시스템에서 명령 실행
    */
   private async executeOnNewSystem(command: {
     command: string;
@@ -183,7 +183,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Execute command on legacy PHP system via bridge
+   * 브릿지를 통해 레거시 PHP 시스템에서 명령 실행
    */
   private async executeOnLegacy(command: {
     command: string;
@@ -221,7 +221,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Call the legacy bridge service
+   * 레거시 브릿지 서비스 호출
    */
   private async callLegacyBridge<T>(endpoint: string, body?: unknown): Promise<T> {
     const url = `${this.config.legacyBridgeUrl}${endpoint}`;
@@ -243,11 +243,11 @@ export class ParityTestRunner {
   }
 
   /**
-   * Convert legacy snapshot to parity snapshot format
+   * 레거시 스냅샷을 패리티 스냅샷 형식으로 변환
    */
   private convertLegacySnapshot(legacyState: unknown): ParitySnapshot {
-    // Legacy state from parity-bridge already follows WorldSnapshot structure
-    // Map to ParitySnapshot format
+    // parity-bridge에서 온 레거시 상태는 이미 WorldSnapshot 구조를 따름
+    // ParitySnapshot 형식으로 매핑
     const state = legacyState as Record<string, unknown>;
 
     return {
@@ -275,7 +275,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Extract entities from legacy table snapshot
+   * 레거시 테이블 스냅샷에서 엔티티 추출
    */
   private extractEntities(tableSnapshot: unknown): any[] {
     if (!tableSnapshot) return [];
@@ -284,7 +284,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Convert legacy delta to parity delta format
+   * 레거시 델타를 패리티 델타 형식으로 변환
    */
   private convertLegacyDelta(legacyDelta: unknown): ParityDelta {
     const delta = legacyDelta as {
@@ -301,7 +301,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Compare legacy and new results to find differences
+   * 레거시와 신규 결과를 비교하여 차이점 탐색
    */
   private compareResults(
     legacyResult: ParityCommandResult,
@@ -309,7 +309,7 @@ export class ParityTestRunner {
   ): ParityDifference[] {
     const differences: ParityDifference[] = [];
 
-    // Compare success status
+    // 성공 상태 비교
     if (legacyResult.success !== newResult.success) {
       differences.push({
         path: "success",
@@ -319,14 +319,14 @@ export class ParityTestRunner {
       });
     }
 
-    // Compare deltas
+    // 델타 비교
     this.compareDelta(legacyResult.delta, newResult.delta, differences);
 
     return differences;
   }
 
   /**
-   * Compare two deltas recursively
+   * 두 델타를 재귀적으로 비교
    */
   private compareDelta(
     legacyDelta: ParityDelta,
@@ -334,10 +334,10 @@ export class ParityTestRunner {
     differences: ParityDifference[],
     pathPrefix = "delta"
   ): void {
-    // Compare added entities
+    // 추가된 엔티티 비교
     this.compareEntityGroups(legacyDelta.added, newDelta.added, differences, `${pathPrefix}.added`);
 
-    // Compare modified entities
+    // 수정된 엔티티 비교
     this.compareEntityGroups(
       legacyDelta.modified,
       newDelta.modified,
@@ -345,7 +345,7 @@ export class ParityTestRunner {
       `${pathPrefix}.modified`
     );
 
-    // Compare deleted entities
+    // 삭제된 엔티티 비교
     this.compareEntityGroups(
       legacyDelta.deleted,
       newDelta.deleted,
@@ -355,7 +355,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Compare entity groups (e.g., added.generals vs added.generals)
+   * 엔티티 그룹 비교 (예: added.generals vs added.generals)
    */
   private compareEntityGroups(
     legacyGroup: Record<string, unknown> | undefined,
@@ -366,7 +366,7 @@ export class ParityTestRunner {
     const allKeys = new Set([...Object.keys(legacyGroup || {}), ...Object.keys(newGroup || {})]);
 
     for (const key of allKeys) {
-      // Skip ignored fields
+      // 무시할 필드는 건너뜀
       if (this.config.ignoreFields.some((f) => key.includes(f))) {
         continue;
       }
@@ -387,32 +387,32 @@ export class ParityTestRunner {
   }
 
   /**
-   * Deep equality check with numeric tolerance
+   * 숫자 허용 오차를 포함한 깊은 동등성 검사
    */
   private deepEqual(a: unknown, b: unknown): boolean {
     if (a === b) return true;
     if (typeof a !== typeof b) return false;
     if (a === null || b === null) return a === b;
 
-    // Numeric tolerance
+    // 숫자 허용 오차
     if (typeof a === "number" && typeof b === "number") {
       return Math.abs(a - b) <= this.config.numericTolerance;
     }
 
-    // Arrays
+    // 배열
     if (Array.isArray(a) && Array.isArray(b)) {
       if (a.length !== b.length) return false;
       return a.every((val, idx) => this.deepEqual(val, b[idx]));
     }
 
-    // Objects
+    // 객체
     if (typeof a === "object" && typeof b === "object") {
       const aObj = a as Record<string, unknown>;
       const bObj = b as Record<string, unknown>;
       const allKeys = new Set([...Object.keys(aObj), ...Object.keys(bObj)]);
 
       for (const key of allKeys) {
-        // Skip ignored fields
+        // 무시할 필드는 건너뜀
         if (this.config.ignoreFields.includes(key)) continue;
         if (!this.deepEqual(aObj[key], bObj[key])) return false;
       }
@@ -423,10 +423,10 @@ export class ParityTestRunner {
   }
 
   /**
-   * Determine severity of a difference based on the field
+   * 필드에 따라 차이점의 심각도 결정
    */
   private determineSeverity(field: string): "critical" | "warning" | "info" {
-    // Critical fields that must match exactly
+    // 정확히 일치해야 하는 중요 필드
     const criticalFields = [
       "gold",
       "rice",
@@ -452,7 +452,7 @@ export class ParityTestRunner {
       return "critical";
     }
 
-    // Warning fields - important but may have acceptable variance
+    // 경고 필드 - 중요하지만 허용 가능한 차이가 있을 수 있음
     const warningFields = ["message", "log", "name"];
     if (warningFields.some((f) => field.includes(f))) {
       return "warning";
@@ -462,7 +462,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Create a skipped result placeholder
+   * 스킵된 결과 플레이스홀더 생성
    */
   private createSkippedResult(): ParityCommandResult {
     return {
@@ -475,7 +475,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Create an error result
+   * 에러 결과 생성
    */
   private createErrorResult(error: unknown): ParityCommandResult {
     return {
@@ -489,7 +489,7 @@ export class ParityTestRunner {
   }
 
   /**
-   * Generate a summary report from test results
+   * 테스트 결과로부터 요약 보고서 생성
    */
   static generateReport(results: ParityComparisonResult[]): string {
     const total = results.length;

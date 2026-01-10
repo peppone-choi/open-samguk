@@ -1,25 +1,25 @@
 /**
- * Parity Testing Types
- * Defines schemas for comparing TypeScript implementation with legacy PHP
+ * 패리티 테스트 타입
+ * TypeScript 구현과 레거시 PHP 비교를 위한 스키마 정의
  */
 
 /**
- * Represents a captured game state snapshot
+ * 캡처된 게임 상태 스냅샷
  */
 export interface ParitySnapshot {
-  /** Unique identifier for this snapshot */
+  /** 스냅샷 고유 식별자 */
   id: string;
-  /** When this snapshot was captured */
+  /** 스냅샷 캡처 시점 */
   capturedAt: Date;
-  /** Source system (legacy or new) */
+  /** 소스 시스템 (legacy 또는 new) */
   source: "legacy" | "new";
-  /** RNG seed used for determinism */
+  /** 결정론적 실행을 위한 RNG 시드 */
   rngSeed: string;
-  /** Game time when snapshot was taken */
+  /** 스냅샷 캡처 시점의 게임 시간 */
   gameTime: GameTime;
-  /** All game entities */
+  /** 모든 게임 엔티티 */
   entities: SnapshotEntities;
-  /** Environment/configuration values */
+  /** 환경/설정 값 */
   env: Record<string, unknown>;
 }
 
@@ -160,42 +160,42 @@ export interface MessageSnapshot {
 }
 
 /**
- * Command execution input for parity testing
+ * 패리티 테스트용 커맨드 실행 입력
  */
 export interface ParityCommandInput {
-  /** Command name (e.g., "휴식", "농지개간") */
+  /** 커맨드 이름 (예: "휴식", "농지개간") */
   command: string;
-  /** Command arguments */
+  /** 커맨드 인자 */
   args: Record<string, unknown>;
-  /** General ID executing the command */
+  /** 커맨드를 실행하는 장수 ID */
   generalId: number;
-  /** RNG seed for deterministic execution */
+  /** 결정론적 실행을 위한 RNG 시드 */
   rngSeed: string;
 }
 
 /**
- * Result of a parity command execution
+ * 패리티 커맨드 실행 결과
  */
 export interface ParityCommandResult {
-  /** Whether execution succeeded */
+  /** 실행 성공 여부 */
   success: boolean;
-  /** State before execution */
+  /** 실행 전 상태 */
   beforeState: ParitySnapshot;
-  /** State after execution */
+  /** 실행 후 상태 */
   afterState: ParitySnapshot;
-  /** Computed delta between states */
+  /** 상태 간 계산된 델타 */
   delta: ParityDelta;
-  /** Any error message */
+  /** 에러 메시지 (있을 경우) */
   error?: string;
-  /** Execution time in ms */
+  /** 실행 시간 (ms) */
   executionTime: number;
 }
 
 /**
- * Delta between two snapshots
+ * 두 스냅샷 간의 델타
  */
 export interface ParityDelta {
-  /** Entities added */
+  /** 추가된 엔티티 */
   added: {
     generals?: GeneralSnapshot[];
     nations?: NationSnapshot[];
@@ -205,7 +205,7 @@ export interface ParityDelta {
     messages?: MessageSnapshot[];
     auctions?: AuctionSnapshot[];
   };
-  /** Entities modified with before/after values */
+  /** 수정된 엔티티 (변경 전/후 값 포함) */
   modified: {
     generals?: EntityChange<GeneralSnapshot>[];
     nations?: EntityChange<NationSnapshot>[];
@@ -213,7 +213,7 @@ export interface ParityDelta {
     diplomacy?: EntityChange<DiplomacySnapshot>[];
     troops?: EntityChange<TroopSnapshot>[];
   };
-  /** Entity IDs deleted */
+  /** 삭제된 엔티티 ID */
   deleted: {
     generals?: number[];
     nations?: number[];
@@ -234,40 +234,40 @@ export interface EntityChange<T> {
 }
 
 /**
- * Parity test case definition
+ * 패리티 테스트 케이스 정의
  */
 export interface ParityTestCase {
-  /** Test case name */
+  /** 테스트 케이스 이름 */
   name: string;
-  /** Test case description */
+  /** 테스트 케이스 설명 */
   description: string;
-  /** Initial state fixture (SQL or snapshot) */
+  /** 초기 상태 픽스처 (SQL 또는 스냅샷) */
   fixture: string;
-  /** Command to execute */
+  /** 실행할 커맨드 */
   command: ParityCommandInput;
-  /** Expected delta (if verifying specific changes) */
+  /** 예상 델타 (특정 변경 검증 시) */
   expectedDelta?: Partial<ParityDelta>;
-  /** Skip legacy comparison (for new-only features) */
+  /** 레거시 비교 스킵 (신규 전용 기능) */
   skipLegacyComparison?: boolean;
-  /** Tags for filtering tests */
+  /** 테스트 필터링용 태그 */
   tags?: string[];
 }
 
 /**
- * Result of comparing legacy vs new execution
+ * 레거시 vs 신규 실행 비교 결과
  */
 export interface ParityComparisonResult {
-  /** Test case that was run */
+  /** 실행된 테스트 케이스 */
   testCase: ParityTestCase;
-  /** Legacy system result */
+  /** 레거시 시스템 결과 */
   legacyResult: ParityCommandResult;
-  /** New system result */
+  /** 신규 시스템 결과 */
   newResult: ParityCommandResult;
-  /** Whether deltas match */
+  /** 델타 일치 여부 */
   deltasMatch: boolean;
-  /** Specific differences found */
+  /** 발견된 차이점 */
   differences: ParityDifference[];
-  /** Overall pass/fail */
+  /** 전체 통과/실패 */
   passed: boolean;
 }
 
@@ -279,20 +279,20 @@ export interface ParityDifference {
 }
 
 /**
- * Configuration for the parity test runner
+ * 패리티 테스트 러너 설정
  */
 export interface ParityTestConfig {
-  /** Legacy PHP bridge URL */
+  /** 레거시 PHP 브릿지 URL */
   legacyBridgeUrl: string;
-  /** Whether to save snapshots to disk */
+  /** 스냅샷 디스크 저장 여부 */
   saveSnapshots: boolean;
-  /** Directory to save snapshots */
+  /** 스냅샷 저장 디렉토리 */
   snapshotDir: string;
-  /** Timeout for legacy calls (ms) */
+  /** 레거시 호출 타임아웃 (ms) */
   legacyTimeout: number;
-  /** Fields to ignore in comparison */
+  /** 비교 시 무시할 필드 */
   ignoreFields: string[];
-  /** Tolerance for numeric comparisons */
+  /** 숫자 비교 허용 오차 */
   numericTolerance: number;
 }
 
@@ -301,6 +301,6 @@ export const DEFAULT_PARITY_CONFIG: ParityTestConfig = {
   saveSnapshots: true,
   snapshotDir: "./parity-snapshots",
   legacyTimeout: 30000,
-  ignoreFields: ["capturedAt", "turnTime"], // Timestamps will differ
-  numericTolerance: 0.0001, // For floating point comparisons
+  ignoreFields: ["capturedAt", "turnTime"], // 타임스탬프는 다를 수 있음
+  numericTolerance: 0.0001, // 부동소수점 비교용
 };

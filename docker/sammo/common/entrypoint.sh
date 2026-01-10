@@ -64,8 +64,9 @@ case "$SERVICE_TYPE" in
 esac
 
 if [ "$INSTALL_REQUIRED" = "true" ]; then
-    echo "Installing dependencies with pnpm..."
-    pnpm install --frozen-lockfile
+    echo "Installing dependencies with pnpm (method: copy)..."
+    # Use copy method to avoid broken hardlinks when sharing node_modules via volumes
+    pnpm install --frozen-lockfile --package-import-method=copy
 fi
 
 # 3. Build
@@ -89,7 +90,13 @@ if [ -z "$DATABASE_URL" ] && [ -n "$POSTGRES_USER" ]; then
     export DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public"
 fi
 
-# 4. Specific Service Execution
+# 4. Ensure Prisma Client
+if [ -d "packages/infra/prisma" ]; then
+    echo "Syncing Prisma Client..."
+    pnpm --filter @sammo/infra db:generate
+fi
+
+# 5. Specific Service Execution
 case "$SERVICE_TYPE" in
     "api")
         echo "Starting API Service..."

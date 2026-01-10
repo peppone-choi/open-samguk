@@ -11,7 +11,7 @@ export type { BytesLike } from "./types/BytesLike.js";
 
 export { convertBytesLikeToUint8Array } from "./bytes/convertBytesLikeToUint8Array.js";
 
-// API Response Types
+// API 응답 타입
 export type {
   BoardListItem,
   BoardListResponse,

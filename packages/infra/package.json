@@ -13,7 +13,8 @@
     }
   },
   "scripts": {
-    "build": "tsdown src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "postinstall": "prisma generate",
+    "build": "prisma generate && tsdown src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
     "clean": "rm -rf dist",
     "typecheck": "tsc --noEmit",
     "db:generate": "prisma generate",

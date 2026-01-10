@@ -3,15 +3,15 @@ import type { RandUtil } from "@sammo/common";
 import type { UnitData } from "../scenario/schema.js";
 
 /**
- * Special ability weight types for selection probability
+ * 특수 능력 선택 확률을 위한 가중치 유형
  */
 export enum SpecialWeightType {
-  NORM = 1, // Normal weight-based selection
-  PERCENT = 2, // Percentage-based selection
+  NORM = 1, // 일반 가중치 기반 선택
+  PERCENT = 2, // 백분율 기반 선택
 }
 
 /**
- * Special ability type flags for stat-based conditions
+ * 스탯 기반 조건을 위한 특수 능력 유형 플래그
  */
 export enum SpecialType {
   DISABLED = 0x1,
@@ -34,7 +34,7 @@ export enum SpecialType {
 }
 
 /**
- * War unit for battle calculations
+ * 전투 계산용 전쟁 유닛
  */
 export interface WarUnit {
   general: General;
@@ -88,7 +88,7 @@ export interface WarUnit {
 }
 
 /**
- * City unit for battle calculations
+ * 전투 계산용 도시 유닛
  */
 export interface WarUnitCity {
   def: number;
@@ -97,14 +97,14 @@ export interface WarUnitCity {
 }
 
 /**
- * Type guard to check if a unit is a WarUnit (not WarUnitCity)
+ * 유닛이 WarUnit인지 확인하는 타입 가드 (WarUnitCity가 아님)
  */
 export function isWarUnit(unit: WarUnit | WarUnitCity): unit is WarUnit {
   return "general" in unit;
 }
 
 /**
- * Battle log entry
+ * 전투 로그 항목
  */
 export interface WarBattleLogEntry {
   phase: number;
@@ -196,7 +196,7 @@ export class WarUnitTriggerCaller {
 }
 
 /**
- * General trigger for pre-turn execution
+ * 턴 실행 전 장수 트리거
  */
 export interface GeneralTrigger {
   general: General;
@@ -204,7 +204,7 @@ export interface GeneralTrigger {
 }
 
 /**
- * General trigger caller to manage multiple triggers
+ * 여러 트리거를 관리하는 장수 트리거 호출자
  */
 export class GeneralTriggerCaller {
   private triggers: GeneralTrigger[];
@@ -225,7 +225,7 @@ export class GeneralTriggerCaller {
 }
 
 /**
- * War context for battle calculations
+ * 전투 계산용 전쟁 컨텍스트
  */
 export interface WarContext {
   phase: number;
@@ -237,7 +237,7 @@ export interface WarContext {
 }
 
 /**
- * General context for turn execution
+ * 턴 실행용 장수 컨텍스트
  */
 export interface GeneralContext {
   turn: number;
@@ -245,7 +245,7 @@ export interface GeneralContext {
 }
 
 /**
- * Domestic calculation auxiliary data
+ * 내정 계산 보조 데이터
  */
 export interface DomesticAux {
   armType?: number;
@@ -253,7 +253,7 @@ export interface DomesticAux {
 }
 
 /**
- * Stat calculation auxiliary data
+ * 스탯 계산 보조 데이터
  */
 export interface StatAux {
   isAttacker?: boolean;
@@ -264,57 +264,57 @@ export interface StatAux {
 }
 
 /**
- * Base special ability interface
+ * 기본 특수 능력 인터페이스
  */
 export interface BaseSpecial {
-  /** Unique ID of the special ability */
+  /** 특수 능력의 고유 ID */
   id: number;
 
-  /** Name of the special ability */
+  /** 특수 능력의 이름 */
   name: string;
 
-  /** Description of the special ability */
+  /** 특수 능력의 설명 */
   info: string;
 
-  /** Get the name of the special ability */
+  /** 특수 능력의 이름 조회 */
   getName(): string;
 
-  /** Get the description of the special ability */
+  /** 특수 능력의 설명 조회 */
   getInfo(): string;
 
-  /** Get pre-turn execution triggers */
+  /** 턴 실행 전 트리거 목록 조회 */
   getPreTurnExecuteTriggerList(general: General): GeneralTriggerCaller | null;
 
-  /** Calculate domestic action modifiers */
+  /** 내정 행동 보정값 계산 */
   onCalcDomestic(turnType: string, varType: string, value: number, aux?: DomesticAux): number;
 
-  /** Calculate stat modifiers for the general */
+  /** 장수의 스탯 보정값 계산 */
   onCalcStat(general: General, statName: string, value: any, aux?: StatAux): any;
 
-  /** Calculate stat modifiers for the opponent */
+  /** 상대의 스탯 보정값 계산 */
   onCalcOpposeStat(general: General, statName: string, value: any, aux?: StatAux): any;
 
-  /** Calculate strategic command modifiers */
+  /** 전략 명령 보정값 계산 */
   onCalcStrategic(turnType: string, varType: string, value: any): any;
 
-  /** Calculate national income modifiers */
+  /** 국가 수입 보정값 계산 */
   onCalcNationalIncome(type: string, amount: number): number;
 
-  /** Get war power multipliers [attack, defense] */
+  /** 전투력 배수 조회 [공격, 방어] */
   getWarPowerMultiplier(unit: WarUnit): [number, number];
 
-  /** Get battle initialization triggers */
+  /** 전투 초기화 트리거 목록 조회 */
   getBattleInitSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller | null;
 
-  /** Get battle phase triggers */
+  /** 전투 페이즈 트리거 목록 조회 */
   getBattlePhaseSkillTriggerList(unit: WarUnit): WarUnitTriggerCaller | null;
 
-  /** Handle arbitrary actions */
+  /** 임의 행동 처리 */
   onArbitraryAction(general: General, actionType: string, phase?: string | null, aux?: any): any;
 }
 
 /**
- * War special ability static configuration
+ * 전투 특수 능력 정적 설정
  */
 export interface WarSpecialStaticConfig {
   selectWeightType: SpecialWeightType;
@@ -323,7 +323,7 @@ export interface WarSpecialStaticConfig {
 }
 
 /**
- * Domestic special ability static configuration
+ * 내정 특수 능력 정적 설정
  */
 export interface DomesticSpecialStaticConfig {
   selectWeightType: SpecialWeightType;
