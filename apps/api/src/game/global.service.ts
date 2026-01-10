@@ -80,12 +80,12 @@ export class GlobalService {
     return {
       result: true,
       env: gameEnv.env,
-      nations: nations.map((n) => ({
+      nations: nations.map((n: any) => ({
         nation: n.nation,
         name: n.name,
         color: n.color,
         gennum: n.gennum,
-        cityCount: (n as any)._count.cities,
+        cityCount: n._count.cities,
       })),
       recentHistory,
       onlineCount,
@@ -120,11 +120,11 @@ export class GlobalService {
     ]);
 
     type MapNation = { nation: number; name: string; color: string };
-    const nationMap = new Map<number, MapNation>(nations.map((n) => [n.nation, n]));
+    const nationMap = new Map<number, MapNation>(nations.map((n: any) => [n.nation, n]));
 
     return {
       result: true,
-      cities: cities.map((c) => {
+      cities: cities.map((c: any) => {
         const nation = nationMap.get(c.nationId);
         return {
           ...c,
@@ -183,7 +183,7 @@ export class GlobalService {
       result: true,
       year,
       month,
-      history: history.map((h) => ({
+      history: history.map((h: any) => ({
         id: h.id,
         text: h.text,
         nationId: h.nationId,
@@ -224,7 +224,7 @@ export class GlobalService {
     });
 
     // 간단한 해시 생성 (변경 감지용)
-    const newToken = Buffer.from(JSON.stringify(generals.map((g) => g.no)))
+    const newToken = Buffer.from(JSON.stringify(generals.map((g: any) => g.no)))
       .toString("base64")
       .slice(0, 16);
 
@@ -236,7 +236,7 @@ export class GlobalService {
       result: true,
       changed: true,
       token: newToken,
-      generals: generals.map((g) => ({
+      generals: generals.map((g: any) => ({
         ...g,
         nationName: g.nation?.name,
         nationColor: g.nation?.color,
@@ -260,11 +260,11 @@ export class GlobalService {
     ]);
 
     type DipNation = { nation: number; name: string; color: string };
-    const nationMap = new Map<number, DipNation>(nations.map((n) => [n.nation, n]));
+    const nationMap = new Map<number, DipNation>(nations.map((n: any) => [n.nation, n]));
 
     return {
       result: true,
-      diplomacies: diplomacies.map((d) => {
+      diplomacies: diplomacies.map((d: any) => {
         const me = nationMap.get(d.meId);
         const you = nationMap.get(d.youId);
         return {
@@ -313,7 +313,7 @@ export class GlobalService {
     return {
       result: true,
       generalRecords,
-      worldHistory: worldHistory.map((h) => ({
+      worldHistory: worldHistory.map((h: any) => ({
         id: h.id,
         year: h.year,
         month: h.month,
@@ -411,13 +411,13 @@ export class GlobalService {
       year: env.year || 0,
       month: env.month || 0,
       startYear: env.startYear || 184,
-      cityList: cities.map((c) => [c.city, c.level, c.state, c.nationId, c.region, c.supply]),
-      nationList: nations.map((n) => [n.nation, n.name, n.color, n.capital]),
+      cityList: cities.map((c: any) => [c.city, c.level, c.state, c.nationId, c.region, c.supply]),
+      nationList: nations.map((n: any) => [n.nation, n.name, n.color, n.capital]),
       spyList: {},
       shownByGeneralList: [],
       myCity,
       myNation,
-      history: worldHistory.map((h) => h.text),
+      history: worldHistory.map((h: any) => h.text),
     };
   }
 
@@ -462,11 +462,11 @@ export class GlobalService {
     }
 
     const conflict: [number, Record<number, number>][] = cities
-      .filter((c) => c.conflict && Object.keys(c.conflict as any).length > 0)
-      .map((c) => [c.city, c.conflict as any]);
+      .filter((c: any) => c.conflict && Object.keys(c.conflict as any).length > 0)
+      .map((c: any) => [c.city, c.conflict as any]);
 
     return {
-      nations: nations.map((n) => ({
+      nations: nations.map((n: any) => ({
         nation: n.nation,
         name: n.name,
         color: n.color,
@@ -474,7 +474,7 @@ export class GlobalService {
         gennum: n.gennum,
         level: n.level,
         capital: n.capital,
-        cities: n.cities.map((c) => c.name),
+        cities: n.cities.map((c: any) => c.name),
       })),
       conflict,
       diplomacyList: diplomacyMatrix,
