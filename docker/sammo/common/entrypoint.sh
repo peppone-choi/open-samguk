@@ -26,6 +26,8 @@ pnpm --version
 # 2. Install Dependencies
 # Check if node_modules exists AND has the expected structure
 # The shared volume may have incomplete or stale dependencies
+# IMPORTANT: pnpm workspaces create symlinks in each package's node_modules
+# These symlinks MUST exist for ESM module resolution to work
 INSTALL_REQUIRED=false
 if [ ! -d "node_modules" ]; then
     echo "node_modules not found."
@@ -37,6 +39,29 @@ elif [ "$FORCE_UPDATE" = "true" ]; then
     echo "Force update requested."
     INSTALL_REQUIRED=true
 fi
+
+# Check service-specific node_modules symlinks (critical for ESM resolution)
+# pnpm creates symlinks from apps/*/node_modules -> root node_modules/.pnpm
+case "$SERVICE_TYPE" in
+    "api")
+        if [ ! -d "apps/api/node_modules" ]; then
+            echo "apps/api/node_modules symlink missing - install required."
+            INSTALL_REQUIRED=true
+        fi
+        ;;
+    "engine")
+        if [ ! -d "apps/engine/node_modules" ]; then
+            echo "apps/engine/node_modules symlink missing - install required."
+            INSTALL_REQUIRED=true
+        fi
+        ;;
+    "web")
+        if [ ! -d "apps/web/node_modules" ]; then
+            echo "apps/web/node_modules symlink missing - install required."
+            INSTALL_REQUIRED=true
+        fi
+        ;;
+esac
 
 if [ "$INSTALL_REQUIRED" = "true" ]; then
     echo "Installing dependencies with pnpm..."
