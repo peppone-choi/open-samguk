@@ -868,11 +868,13 @@ export default function JoinPage() {
                       }
                     >
                       <option value="">사용안함</option>
-                      {availableInheritCity.map((city) => (
-                        <option key={city.id} value={city.id}>
-                          [{city.region}] {city.name}
-                        </option>
-                      ))}
+                      {availableInheritCity.map(
+                        (city: { id: number; name: string; region: string }) => (
+                          <option key={city.id} value={city.id}>
+                            [{city.region}] {city.name}
+                          </option>
+                        )
+                      )}
                     </select>
                   </div>
                 </div>
