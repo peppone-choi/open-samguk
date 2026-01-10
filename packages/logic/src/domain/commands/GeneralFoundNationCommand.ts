@@ -26,7 +26,7 @@ export class GeneralFoundNationCommand extends GeneralCommand {
   /**
    * 건국 명령을 실행합니다.
    * 국가의 이름을 정하고 레벨을 상승시키며 전역 로그를 남깁니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param actorId 건국을 주도하는 장수 ID

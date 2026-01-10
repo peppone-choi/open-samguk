@@ -60,7 +60,10 @@ export class EngineService implements OnModuleInit, OnModuleDestroy {
         try {
           await this.runTurnCycle();
         } catch (err: any) {
-          this.logger.error(`Error in turn cycle (${this.snapshot?.gameTime.year}년 ${this.snapshot?.gameTime.month}월):`, err.stack || err);
+          this.logger.error(
+            `Error in turn cycle (${this.snapshot?.gameTime.year}년 ${this.snapshot?.gameTime.month}월):`,
+            err.stack || err
+          );
           this.snapshot = null; // Flush 실패 시 다음 루프에서 DB로부터 재로드 강제
         }
 

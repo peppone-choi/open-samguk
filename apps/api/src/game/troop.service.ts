@@ -31,11 +31,11 @@ export class TroopService {
         // Fetch reserved commands for the leader
         const reservedCommands = leader
           ? await this.prisma.generalTurn.findMany({
-            where: { generalId: leader.no },
-            orderBy: { turnIdx: "asc" },
-            take: 3,
-            select: { brief: true, action: true },
-          })
+              where: { generalId: leader.no },
+              orderBy: { turnIdx: "asc" },
+              take: 3,
+              select: { brief: true, action: true },
+            })
           : [];
 
         return {

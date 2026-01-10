@@ -25,7 +25,7 @@ export class CommandHelper {
 
   /**
    * 행동 이름(actionName)으로 등록된 커맨드 객체를 조회합니다.
-   * 
+   *
    * @param actionName 조회할 커맨드 이름
    * @returns 해당 커맨드 객체 또는 undefined
    */

@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { trpc } from "@/utils/trpc";
 import { useGeneral } from "@/contexts/GeneralContext";
 import { cn } from "@/lib/utils";
+import { ChevronLeft, ChevronRight, RefreshCw, Save, History, Layers } from "lucide-react";
 
 // = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =
 // Types
@@ -94,32 +95,51 @@ function OfficerRow({
     <div
       onClick={onSelect}
       className={cn(
-        "grid grid-cols-[100px_60px_1fr] border-b border-zinc-800 cursor-pointer transition-colors",
-        isSelected ? "bg-blue-900/30 ring-1 ring-inset ring-blue-700" : "hover:bg-zinc-800/50",
-        isMe && !isSelected && "bg-cyan-900/10"
+        "grid grid-cols-[100px_60px_1fr] border-b border-white/5 cursor-pointer transition-all duration-300 group",
+        isSelected
+          ? "bg-primary/10 border-primary/20 shadow-[inset_0_0_20px_rgba(234,179,8,0.1)]"
+          : "hover:bg-white/5",
+        isMe && !isSelected && "bg-blue-500/5"
       )}
     >
-      <div className="bg-zinc-900/80 p-2 flex flex-col items-center justify-center border-r border-zinc-800">
-        <span className="text-[10px] text-gray-500 uppercase">{levelName}</span>
+      <div className="p-3 flex flex-col items-center justify-center border-r border-white/5 relative overflow-hidden">
+        {/* Active Indicator Strip */}
+        {isSelected && (
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary shadow-[0_0_10px_#eab308]" />
+        )}
+
+        <span
+          className={cn(
+            "text-[10px] uppercase tracking-wider mb-1 font-medium",
+            isSelected
+              ? "text-primary"
+              : "text-muted-foreground group-hover:text-primary/70 transition-colors"
+          )}
+        >
+          {levelName}
+        </span>
         <span
           className={cn(
             "text-sm font-bold truncate w-full text-center",
-            isEmpty ? "text-zinc-700" : "text-zinc-200",
-            officer?.npc === 1 && "text-zinc-500",
-            officer?.npc === 5 && "text-amber-400"
+            isEmpty ? "text-muted-foreground/50" : "text-foreground",
+            officer?.npc === 1 && "text-muted-foreground",
+            officer?.npc === 5 && "text-amber-400",
+            isSelected &&
+              !isEmpty &&
+              "text-primary-foreground drop-shadow-[0_0_5px_rgba(234,179,8,0.5)]"
           )}
         >
           {isEmpty ? "- 공석 -" : officer.name}
         </span>
       </div>
 
-      <div className="p-2 border-r border-zinc-800 flex items-center justify-center bg-zinc-950/30">
-        <span className="text-[10px] font-mono text-gray-400">
+      <div className="p-2 border-r border-white/5 flex items-center justify-center bg-black/20">
+        <span className="text-[10px] font-mono text-muted-foreground/70 group-hover:text-muted-foreground transition-colors">
           {officer?.turnTime ? officer.turnTime.slice(11, 16) : "-"}
         </span>
       </div>
 
-      <div className="p-1 px-2 overflow-x-auto flex items-center gap-1 scrollbar-hide">
+      <div className="p-2 px-3 overflow-x-auto flex items-center gap-1.5 scrollbar-hide mask-linear-fade">
         {Array.from({ length: MAX_CHIEF_TURN }).map((_, idx) => {
           const turn = officer?.turn?.[idx];
           const isRest = !turn || turn.action === "rest" || turn.action === "휴식";
@@ -127,14 +147,16 @@ function OfficerRow({
             <div
               key={idx}
               className={cn(
-                "flex-shrink-0 w-16 h-8 text-center rounded-sm flex flex-col items-center justify-center border",
+                "flex-shrink-0 w-16 h-8 text-center rounded flex flex-col items-center justify-center border transition-all duration-200",
                 isRest
-                  ? "bg-zinc-800/30 border-zinc-800 text-zinc-600"
-                  : "bg-zinc-700 border-zinc-600 text-zinc-100 shadow-sm"
+                  ? "bg-black/20 border-white/5 text-muted-foreground/40"
+                  : "bg-secondary/50 border-white/10 text-foreground shadow-sm group-hover:border-white/20"
               )}
             >
-              <span className="text-[8px] opacity-40 leading-none mb-0.5">{idx + 1}</span>
-              <span className="text-[10px] truncate w-full px-1">{isRest ? "-" : turn.brief}</span>
+              <span className="text-[8px] opacity-30 leading-none mb-0.5">{idx + 1}</span>
+              <span className={cn("text-[10px] truncate w-full px-1", !isRest && "font-medium")}>
+                {isRest ? "-" : turn.brief}
+              </span>
             </div>
           );
         })}
@@ -226,9 +248,14 @@ export default function ChiefPage() {
 
   if (isLoading || !data) {
     return (
-      <div className="bg0 min-h-screen">
+      <div className="min-h-screen bg-background text-foreground">
         <TopBackBar title="사령부" type="normal" />
-        <div className="flex items-center justify-center p-20 text-gray-500">로딩 중...</div>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-muted-foreground animate-pulse gap-4">
+          <div className="w-12 h-12 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
+          <span className="text-sm font-medium tracking-widest uppercase">
+            Loading Command Center...
+          </span>
+        </div>
       </div>
     );
   }
@@ -237,52 +264,69 @@ export default function ChiefPage() {
   const currentOfficer = data.chiefList[selectedLevel];
 
   return (
-    <div className="bg0 min-h-screen text-white pb-20">
+    <div className="min-h-screen bg-background text-foreground pb-20 relative overflow-x-hidden">
+      {/* Background Ambience */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[1200px] h-[500px] bg-primary/5 blur-[100px] rounded-full opacity-50" />
+      </div>
+
       <TopBackBar title="사령부" type="normal" reloadable onReload={() => refetch()} />
 
-      <div className="max-w-[1000px] mx-auto p-2 md:p-4 space-y-4">
+      <div className="max-w-[1000px] mx-auto p-4 space-y-6 relative z-10">
         {/* Game Env Info */}
-        <div className="flex justify-between items-center text-[11px] text-zinc-500 bg-zinc-900/50 p-2 rounded-sm border border-zinc-800/50">
-          <div className="flex gap-4">
-            <span>
-              {data.year}년 {data.month}월
+        <div className="glass flex justify-between items-center text-xs text-muted-foreground p-3 rounded-lg border-white/5">
+          <div className="flex gap-6 items-center">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_#eab308]" />
+              <span className="font-bold text-foreground">
+                {data.year}년 {data.month}월
+              </span>
+            </div>
+            <span className="bg-white/5 px-2 py-0.5 rounded text-[10px] uppercase tracking-wider border border-white/5">
+              Turn Interval: {data.turnTerm}m
             </span>
-            <span>턴 간격: {data.turnTerm}분</span>
           </div>
-          <div className="font-mono opacity-60">REFRESHED: {new Date().toLocaleTimeString()}</div>
+          <div className="font-mono opacity-50 text-[10px]">
+            SYNC: {new Date().toLocaleTimeString()}
+          </div>
         </div>
 
         {/* Officers List Table */}
-        <div className="border border-zinc-800 bg-zinc-900 rounded-sm overflow-hidden shadow-xl">
-          <div className="bg-zinc-800/80 p-2 text-center text-xs font-bold text-zinc-400 border-b border-zinc-700 uppercase tracking-widest">
-            수뇌부 명령 현황
+        <div className="glass rounded-2xl overflow-hidden shadow-2xl border-white/10 ring-1 ring-white/5">
+          <div className="bg-white/5 p-3 px-4 flex justify-between items-center border-b border-white/5">
+            <div className="text-sm font-bold text-primary tracking-widest uppercase flex items-center gap-2">
+              <Layers className="w-4 h-4" />
+              수뇌부 명령 현황
+            </div>
+            <div className="flex gap-4 text-[10px] text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 bg-primary rounded-full shadow-[0_0_5px_#eab308]" />
+                <span>선택됨</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 bg-blue-500 rounded-full opacity-50" />
+                <span>내 관직</span>
+              </div>
+            </div>
           </div>
-          <div className="grid grid-cols-[100px_60px_1fr] bg-zinc-950/40 text-[10px] text-center text-gray-500 border-b border-zinc-800 uppercase">
-            <div className="p-1 border-r border-zinc-800">관직/이름</div>
-            <div className="p-1 border-r border-zinc-800">턴 시각</div>
-            <div className="p-1">명령 예약 (1~12턴)</div>
-          </div>
-          {CHIEF_LEVELS.map((level) => (
-            <OfficerRow
-              key={level}
-              level={level}
-              officer={data.chiefList[level]}
-              isMe={level === data.officerLevel}
-              isSelected={level === selectedLevel}
-              onSelect={() => setSelectedLevel(level)}
-            />
-          ))}
-        </div>
 
-        {/* Legend */}
-        <div className="flex gap-4 text-[10px] text-zinc-500 px-1">
-          <div className="flex items-center gap-1.5 font-medium">
-            <div className="w-2.5 h-2.5 bg-blue-900/40 border border-blue-700 rounded-sm" />
-            <span>선택됨</span>
+          <div className="grid grid-cols-[100px_60px_1fr] bg-black/40 text-[10px] text-center text-muted-foreground/70 border-b border-white/5 uppercase tracking-wider font-medium">
+            <div className="p-2 border-r border-white/5">Rank / Name</div>
+            <div className="p-2 border-r border-white/5">Last Act</div>
+            <div className="p-2">Command Queue (1-12)</div>
           </div>
-          <div className="flex items-center gap-1.5 font-medium">
-            <div className="w-2.5 h-2.5 bg-cyan-900/10 border border-cyan-700/30 rounded-sm" />
-            <span>내 관직</span>
+
+          <div className="divide-y divide-white/5">
+            {CHIEF_LEVELS.map((level) => (
+              <OfficerRow
+                key={level}
+                level={level}
+                officer={data.chiefList[level]}
+                isMe={level === data.officerLevel}
+                isSelected={level === selectedLevel}
+                onSelect={() => setSelectedLevel(level)}
+              />
+            ))}
           </div>
         </div>
 
@@ -290,46 +334,53 @@ export default function ChiefPage() {
         {currentOfficer && (
           <div
             className={cn(
-              "border border-zinc-800 rounded-sm overflow-hidden transition-all duration-300",
+              "rounded-2xl overflow-hidden transition-all duration-500 border border-white/10",
               isMe
-                ? "bg-zinc-900 ring-1 ring-inset ring-cyan-900/20"
-                : "bg-zinc-900/50 grayscale-[0.5] opacity-90"
+                ? "bg-card/80 backdrop-blur-xl shadow-[0_0_40px_-10px_rgba(234,179,8,0.1)] ring-1 ring-primary/20"
+                : "bg-black/40 backdrop-blur-sm grayscale-[0.8] opacity-70"
             )}
           >
             {/* Editor Header */}
-            <div className="bg-zinc-800/50 p-2 px-4 flex justify-between items-center border-b border-zinc-800">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-cyan-400 uppercase tracking-wider">
+            <div className="bg-gradient-to-r from-white/5 to-transparent p-4 flex justify-between items-center border-b border-white/5">
+              <div className="flex items-center gap-3">
+                <span className="text-sm font-bold text-primary uppercase tracking-widest drop-shadow-[0_0_10px_rgba(234,179,8,0.3)]">
                   {OFFICER_LEVEL_NAMES[selectedLevel]}
                 </span>
-                <span className="text-sm font-bold text-white">{currentOfficer.name}</span>
-                <span className="text-[10px] text-zinc-500 bg-zinc-950 px-1.5 py-0.5 rounded ml-2">
-                  명령 편집
+                <span className="text-lg font-bold text-white tracking-tight">
+                  {currentOfficer.name}
                 </span>
+                {isMe && (
+                  <span className="text-[10px] font-bold text-black bg-primary px-2 py-0.5 rounded shadow-[0_0_10px_#eab308]">
+                    EDIT MODE
+                  </span>
+                )}
               </div>
-              <div className="flex gap-1.5">
+
+              <div className="flex gap-2">
                 <Button
-                  size="xs"
+                  size="sm"
                   variant="outline"
+                  className="h-8 border-white/10 bg-black/20 hover:bg-white/10 text-muted-foreground hover:text-white transition-colors"
                   onClick={() => handlePush(-1)}
                   disabled={!isMe || !data.editable}
                 >
-                  ← 당기기
+                  <ChevronLeft className="w-3 h-3 mr-1" /> 당기기
                 </Button>
                 <Button
-                  size="xs"
+                  size="sm"
                   variant="outline"
+                  className="h-8 border-white/10 bg-black/20 hover:bg-white/10 text-muted-foreground hover:text-white transition-colors"
                   onClick={() => handlePush(1)}
                   disabled={!isMe || !data.editable}
                 >
-                  미루기 →
+                  미루기 <ChevronRight className="w-3 h-3 ml-1" />
                 </Button>
               </div>
             </div>
 
             {/* Turn Interaction Grid */}
-            <div className="p-3 bg-zinc-950/30">
-              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-1.5">
+            <div className="p-4 bg-black/20">
+              <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-12 gap-2">
                 {Array.from({ length: MAX_CHIEF_TURN }).map((_, idx) => {
                   const turn = currentOfficer.turn?.[idx];
                   const isRest = !turn || turn.action === "rest" || turn.action === "휴식";
@@ -338,20 +389,34 @@ export default function ChiefPage() {
                   return (
                     <button
                       key={idx}
+                      disabled={!isMe || !data.editable}
                       onClick={() =>
                         isMe && data.editable && setActiveTurnIdx(isActive ? null : idx)
                       }
                       className={cn(
-                        "flex flex-col items-center justify-center p-1.5 rounded-sm border transition-all text-center",
+                        "group relative flex flex-col items-center justify-center p-2 rounded-lg border transition-all duration-300 overflow-hidden",
                         isActive
-                          ? "bg-cyan-600 border-cyan-400 ring-2 ring-cyan-500/50 scale-105 z-10"
+                          ? "bg-primary border-primary text-black scale-105 shadow-[0_0_20px_rgba(234,179,8,0.4)] z-10"
                           : isRest
-                            ? "bg-zinc-900 border-zinc-800 hover:border-zinc-700 text-zinc-600"
-                            : "bg-zinc-800 border-zinc-700 hover:border-zinc-600 text-zinc-200"
+                            ? "bg-white/5 border-white/5 text-muted-foreground/50 hover:bg-white/10 hover:border-white/10"
+                            : "bg-secondary/60 border-white/10 text-foreground hover:bg-secondary hover:border-white/20 hover:shadow-lg"
                       )}
                     >
-                      <span className="text-[9px] font-mono opacity-50 mb-0.5">{idx + 1}</span>
-                      <span className="text-[10px] font-bold truncate w-full">
+                      {isActive && <div className="absolute inset-0 bg-white/20 animate-pulse" />}
+                      <span
+                        className={cn(
+                          "text-[9px] font-mono mb-1 transition-colors",
+                          isActive ? "opacity-70 text-black font-bold" : "opacity-30"
+                        )}
+                      >
+                        {idx + 1}
+                      </span>
+                      <span
+                        className={cn(
+                          "text-[11px] font-bold truncate w-full tracking-tight",
+                          isActive && "scale-105"
+                        )}
+                      >
                         {isRest ? "-" : turn.brief}
                       </span>
                     </button>
@@ -362,27 +427,42 @@ export default function ChiefPage() {
 
             {/* Command Picker */}
             {activeTurnIdx !== null && isMe && (
-              <div className="p-4 border-t border-zinc-800 bg-zinc-900/80 animate-in fade-in slide-in-from-top-2 duration-200">
-                <div className="flex justify-between items-center mb-4">
-                  <span className="text-xs font-bold text-zinc-400 uppercase">
-                    <span className="text-cyan-400 mr-1">{activeTurnIdx + 1}턴</span> 명령 선택
-                  </span>
-                  <Button size="xs" variant="destructive" onClick={handleClear}>
-                    명령 초기화
+              <div className="p-5 border-t border-white/10 bg-gradient-to-b from-card/95 to-background animate-in slide-in-from-top-4 fade-in duration-300">
+                <div className="flex justify-between items-center mb-5">
+                  <div className="flex items-center gap-3">
+                    <div className="flex flex-col">
+                      <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-widest">
+                        Target Turn
+                      </span>
+                      <span className="text-xl font-bold text-primary drop-shadow-md">
+                        TURN {activeTurnIdx + 1}
+                      </span>
+                    </div>
+                    <div className="h-8 w-px bg-white/10 mx-2" />
+                    <span className="text-sm text-muted-foreground">Select a command below</span>
+                  </div>
+
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    onClick={handleClear}
+                    className="bg-red-900/20 text-red-400 border border-red-900/50 hover:bg-red-900/40 hover:text-red-300"
+                  >
+                    Clear Slot
                   </Button>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-1.5 mb-4 overflow-x-auto pb-1 scrollbar-hide">
+                <div className="flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide mask-linear-fade">
                   {categories.map((cat) => (
                     <button
                       key={cat}
                       onClick={() => setActiveCategory(cat)}
                       className={cn(
-                        "px-3 py-1 text-xs font-bold rounded-sm border transition-colors whitespace-nowrap",
+                        "px-4 py-2 text-xs font-bold rounded-lg border transition-all duration-300 min-w-[80px]",
                         activeCategory === cat
-                          ? "bg-cyan-600 border-cyan-500 text-white"
-                          : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:text-zinc-200"
+                          ? "bg-primary text-black border-primary shadow-[0_0_15px_rgba(234,179,8,0.3)] transform -translate-y-0.5"
+                          : "bg-white/5 border-white/5 text-muted-foreground hover:bg-white/10 hover:text-foreground"
                       )}
                     >
                       {cat}
@@ -391,18 +471,22 @@ export default function ChiefPage() {
                 </div>
 
                 {/* Grid */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {filteredCommands.map((cmd) => (
                     <button
                       key={cmd.key}
                       onClick={() => handleReserve(cmd.key)}
-                      className="text-left p-2 bg-zinc-800/60 hover:bg-zinc-700 border border-zinc-700/50 rounded-sm group transition-all"
+                      className="group relative text-left p-3 bg-white/5 hover:bg-white/10 border border-white/5 hover:border-primary/30 rounded-lg transition-all duration-300 hover:shadow-[0_0_15px_rgba(234,179,8,0.1)] hover:-translate-y-0.5 overflow-hidden"
                     >
-                      <div className="text-xs font-bold text-zinc-200 group-hover:text-cyan-400">
-                        {cmd.name}
-                      </div>
-                      <div className="text-[9px] text-zinc-500 mt-0.5 leading-tight">
-                        {cmd.info}
+                      <div className="absolute inset-0 bg-gradient-to-br from-primary/0 to-primary/0 group-hover:to-primary/5 transition-all duration-500" />
+                      <div className="relative z-10">
+                        <div className="text-sm font-bold text-foreground group-hover:text-primary transition-colors flex justify-between items-center">
+                          {cmd.name}
+                          <div className="w-1.5 h-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity shadow-[0_0_5px_#eab308]" />
+                        </div>
+                        <div className="text-[10px] text-muted-foreground mt-1 leading-relaxed opacity-70 group-hover:opacity-100 transition-opacity">
+                          {cmd.info}
+                        </div>
                       </div>
                     </button>
                   ))}
@@ -411,43 +495,95 @@ export default function ChiefPage() {
             )}
 
             {!isMe && (
-              <div className="p-3 bg-amber-950/20 border-t border-amber-900/30 text-[11px] text-amber-500 px-4">
-                ⚠️ 다른 관직자의 예약 명령을 열람 중입니다. 자신의 관직(
-                {OFFICER_LEVEL_NAMES[data.officerLevel]})만 수정 가능합니다.
+              <div className="p-4 bg-amber-950/20 border-t border-amber-900/30 flex items-start gap-3">
+                <div className="mt-0.5 text-amber-500">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                    <path d="M12 9v4" />
+                    <path d="M12 17h.01" />
+                  </svg>
+                </div>
+                <div className="text-xs text-amber-500/90 leading-relaxed">
+                  Viewing <strong>{OFFICER_LEVEL_NAMES[selectedLevel]}</strong>'s reserved commands.{" "}
+                  <br />
+                  You can only modify your own commands ({OFFICER_LEVEL_NAMES[data.officerLevel]}).
+                </div>
               </div>
             )}
           </div>
         )}
 
         {/* Quick Utilities */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-2 opacity-60 hover:opacity-100 transition-opacity">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 pt-4">
           <Button
             variant="outline"
-            className="h-auto py-3 bg-zinc-900/50 border-zinc-800"
+            className="h-auto py-4 bg-card/40 border-white/5 hover:bg-primary/10 hover:border-primary/30 group transition-all duration-300"
             disabled={!data.editable}
             onClick={() => handleRepeat(1)}
           >
-            <div className="text-center space-y-1">
-              <span className="block text-lg">♻️</span>
-              <span className="block text-[10px] font-bold text-zinc-400">명령 반복</span>
+            <div className="text-center space-y-2">
+              <RefreshCw className="w-6 h-6 mx-auto text-muted-foreground group-hover:text-primary group-hover:rotate-180 transition-all duration-500" />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                  Repeat Command
+                </span>
+                <span className="text-[9px] text-muted-foreground/60">Fill empty slots</span>
+              </div>
             </div>
           </Button>
-          <Button variant="outline" className="h-auto py-3 bg-zinc-900/50 border-zinc-800">
-            <div className="text-center space-y-1">
-              <span className="block text-lg">💾</span>
-              <span className="block text-[10px] font-bold text-zinc-400">보관함</span>
+
+          <Button
+            variant="outline"
+            className="h-auto py-4 bg-card/40 border-white/5 hover:bg-primary/10 hover:border-primary/30 group transition-all duration-300"
+          >
+            <div className="text-center space-y-2">
+              <Save className="w-6 h-6 mx-auto text-muted-foreground group-hover:text-primary transition-colors" />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                  Saved Sets
+                </span>
+                <span className="text-[9px] text-muted-foreground/60">Load presets</span>
+              </div>
             </div>
           </Button>
-          <Button variant="outline" className="h-auto py-3 bg-zinc-900/50 border-zinc-800">
-            <div className="text-center space-y-1">
-              <span className="block text-lg">🕒</span>
-              <span className="block text-[10px] font-bold text-zinc-400">로그 확인</span>
+
+          <Button
+            variant="outline"
+            className="h-auto py-4 bg-card/40 border-white/5 hover:bg-primary/10 hover:border-primary/30 group transition-all duration-300"
+          >
+            <div className="text-center space-y-2">
+              <History className="w-6 h-6 mx-auto text-muted-foreground group-hover:text-primary transition-colors" />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                  History Log
+                </span>
+                <span className="text-[9px] text-muted-foreground/60">View past actions</span>
+              </div>
             </div>
           </Button>
-          <Button variant="outline" className="h-auto py-3 bg-zinc-900/50 border-zinc-800">
-            <div className="text-center space-y-1">
-              <span className="block text-lg">📜</span>
-              <span className="block text-[10px] font-bold text-zinc-400">명령 묶음</span>
+
+          <Button
+            variant="outline"
+            className="h-auto py-4 bg-card/40 border-white/5 hover:bg-primary/10 hover:border-primary/30 group transition-all duration-300"
+          >
+            <div className="text-center space-y-2">
+              <Layers className="w-6 h-6 mx-auto text-muted-foreground group-hover:text-primary transition-colors" />
+              <div className="flex flex-col">
+                <span className="text-xs font-bold text-foreground group-hover:text-primary transition-colors">
+                  Batch Tool
+                </span>
+                <span className="text-[9px] text-muted-foreground/60">Advanced edits</span>
+              </div>
             </div>
           </Button>
         </div>

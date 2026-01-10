@@ -1,10 +1,5 @@
 "use client";
 
-/**
- * PageNPCControl - NPC 정책
- * Ported from legacy/hwe/ts/PageNPCControl.vue
- */
-
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
@@ -30,10 +25,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-
-// ============================================================================
-// Types
-// ============================================================================
+import { clsx } from "clsx";
 
 type NationPolicy = {
   reqNationGold: number;
@@ -97,10 +89,6 @@ type NPCGeneralActions =
   | "내정워프";
 
 type SetterInfo = { setter: string | null; date: string | null };
-
-// ============================================================================
-// Constants
-// ============================================================================
 
 const MOCK_DEFAULT_POLICY: NationPolicy = {
   reqNationGold: 50000,
@@ -251,10 +239,6 @@ const NPC_PRIORITY_HELP_TEXTS: Record<string, string> = {
   내정워프: "도시에서 더이상 내정을 수행할 수 없으면 다른 도시로 이동합니다.",
 };
 
-// ============================================================================
-// Sub Components - Number Input
-// ============================================================================
-
 interface NumberInputFieldProps {
   label: string;
   value: number;
@@ -287,25 +271,27 @@ function NumberInputField({
   };
 
   return (
-    <div className="p-2 border-b border-gray-700">
-      <div className="flex justify-between items-center gap-2">
-        <label className="text-sm flex-1">{label}</label>
+    <div className="group flex flex-col justify-between gap-2 p-4 rounded-xl bg-card/40 border border-white/5 hover:bg-card/60 hover:border-primary/20 transition-all duration-300">
+      <div className="flex justify-between items-center gap-4">
+        <label className="text-sm font-medium text-muted-foreground group-hover:text-primary/90 transition-colors flex-1">
+          {label}
+        </label>
         <input
           type="number"
-          className="w-28 px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-right text-sm"
+          className="w-28 bg-black/40 border border-white/10 rounded-lg px-3 py-1.5 text-right text-sm font-mono text-foreground focus:border-primary/50 focus:ring-1 focus:ring-primary/50 outline-none transition-all placeholder:text-muted-foreground/30"
           value={displayValue}
           step={isPercentage ? 0.5 : step}
           onChange={handleChange}
         />
       </div>
-      {description && <div className="text-right text-xs text-gray-400 mt-1">{description}</div>}
+      {description && (
+        <div className="text-right text-xs text-muted-foreground/50 leading-relaxed">
+          {description}
+        </div>
+      )}
     </div>
   );
 }
-
-// ============================================================================
-// Sub Components - Drag & Drop
-// ============================================================================
 
 function SortableItem({
   id,
@@ -322,23 +308,32 @@ function SortableItem({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : 1,
+    zIndex: isDragging ? 50 : "auto",
   };
 
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`flex items-center gap-1 bg-zinc-800 px-2 py-1.5 rounded text-xs cursor-grab active:cursor-grabbing ${isDragging ? "ring-2 ring-blue-500" : ""}`}
+      className={clsx(
+        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm cursor-grab active:cursor-grabbing transition-all group",
+        isDragging
+          ? "bg-primary/20 backdrop-blur-md border border-primary/50 shadow-glow ring-1 ring-primary/50 opacity-90 scale-105"
+          : "bg-card/60 backdrop-blur-sm border border-white/5 hover:border-primary/30 hover:bg-card/80 hover:shadow-lg"
+      )}
       title={NPC_PRIORITY_HELP_TEXTS[id]}
       {...attributes}
       {...listeners}
     >
-      <span className="text-gray-500 select-none">☰</span>
+      <span className="text-muted-foreground/40 group-hover:text-primary/70 transition-colors select-none text-lg leading-none">
+        ≡
+      </span>
       {showIndex && index !== undefined && (
-        <span className="text-gray-500 w-4 flex-shrink-0 select-none">{index + 1}.</span>
+        <span className="text-primary/80 font-mono text-xs font-bold w-5 flex-shrink-0 select-none">
+          {index + 1}.
+        </span>
       )}
-      <span className="truncate flex-1 select-none">{id}</span>
+      <span className="truncate flex-1 select-none font-medium text-foreground/90">{id}</span>
     </div>
   );
 }
@@ -349,24 +344,40 @@ function DroppableColumn({
   items,
   showIndex = false,
   emptyMessage = "(없음)",
+  variant = "default",
 }: {
   id: string;
   title: string;
   items: string[];
   showIndex?: boolean;
   emptyMessage?: string;
+  variant?: "default" | "active" | "inactive";
 }) {
   const { setNodeRef, isOver } = useDroppable({ id });
   return (
-    <div>
-      <div className="bg2 text-center py-1 text-sm border border-gray-500 mb-1">{title}</div>
+    <div className="flex flex-col h-full">
+      <div
+        className={clsx(
+          "text-center py-2 text-xs font-bold tracking-widest uppercase rounded-t-lg border-x border-t transition-colors",
+          variant === "active"
+            ? "bg-primary/10 border-primary/20 text-primary"
+            : "bg-secondary/50 border-white/5 text-muted-foreground"
+        )}
+      >
+        {title}
+      </div>
       <div
         ref={setNodeRef}
-        className={`space-y-1 min-h-[200px] max-h-80 overflow-y-auto p-1 rounded transition-colors ${isOver ? "bg-zinc-700/50 ring-2 ring-blue-500/50" : ""}`}
+        className={clsx(
+          "flex-1 space-y-2 min-h-[300px] max-h-[500px] overflow-y-auto p-2 rounded-b-lg border border-white/10 transition-colors scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent",
+          isOver ? "bg-primary/5 ring-1 ring-primary/30" : "bg-black/20"
+        )}
       >
         <SortableContext items={items} strategy={verticalListSortingStrategy}>
           {items.length === 0 ? (
-            <div className="text-center text-xs text-gray-500 py-4">{emptyMessage}</div>
+            <div className="flex h-full items-center justify-center text-xs text-muted-foreground/30 italic">
+              {emptyMessage}
+            </div>
           ) : (
             items.map((item, index) => (
               <SortableItem key={item} id={item} index={index} showIndex={showIndex} />
@@ -477,12 +488,17 @@ function DndPriorityList<T extends string>({
   };
 
   return (
-    <div>
-      <div className="bg1 text-center py-1 border-y border-gray-600">{title}</div>
-      <div className="text-right px-3 text-xs text-gray-400 py-1">
-        최근 설정: {lastSetter.setter ?? "-없음-"} ({lastSetter.date ?? "설정 기록 없음"})
+    <div className="premium-card p-0 flex flex-col h-full">
+      <div className="p-5 border-b border-white/10 bg-gradient-to-r from-white/5 to-transparent flex flex-col gap-1">
+        <div className="flex justify-between items-center">
+          <h3 className="font-bold text-lg text-primary tracking-tight">{title}</h3>
+          <div className="text-xs font-mono text-muted-foreground/60 bg-black/20 px-2 py-1 rounded">
+            Last: {lastSetter.setter ?? "-"}
+          </div>
+        </div>
+        <p className="text-xs text-muted-foreground/70">{description}</p>
       </div>
-      <div className="px-3 text-xs text-gray-400 mb-2">{description}</div>
+
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -490,36 +506,58 @@ function DndPriorityList<T extends string>({
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="grid grid-cols-2 gap-2 px-2">
-          <DroppableColumn id={inactiveColumnId} title="비활성" items={inactiveItems} />
-          <DroppableColumn id={activeColumnId} title="활성" items={activeItems} showIndex />
+        <div className="grid grid-cols-2 gap-4 p-4 flex-1">
+          <DroppableColumn
+            id={inactiveColumnId}
+            title="Disabled"
+            items={inactiveItems}
+            variant="inactive"
+          />
+          <DroppableColumn
+            id={activeColumnId}
+            title="Active Priority"
+            items={activeItems}
+            showIndex
+            variant="active"
+          />
         </div>
         <DragOverlay>
           {activeId ? (
-            <div className="bg-zinc-700 px-2 py-1.5 rounded text-xs ring-2 ring-blue-500 shadow-lg">
+            <div className="bg-primary/20 backdrop-blur-md px-3 py-2.5 rounded-lg text-sm ring-1 ring-primary border border-primary/50 shadow-glow font-medium text-foreground">
               {activeId}
             </div>
           ) : null}
         </DragOverlay>
       </DndContext>
-      <div className="flex justify-end gap-2 p-2 pt-3">
-        <Button variant="outline" size="sm" onClick={onReset}>
-          초깃값으로
+
+      <div className="p-4 border-t border-white/10 bg-black/20 flex justify-end gap-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onReset}
+          className="border-white/10 bg-transparent hover:bg-white/5 hover:text-white"
+        >
+          Reset
         </Button>
-        <Button variant="secondary" size="sm" onClick={onRollback}>
-          이전값으로
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onRollback}
+          className="bg-secondary/80 hover:bg-secondary text-secondary-foreground"
+        >
+          Undo
         </Button>
-        <Button size="sm" onClick={onSubmit}>
-          설정
+        <Button
+          size="sm"
+          onClick={onSubmit}
+          className="bg-primary text-primary-foreground font-bold shadow-glow-sm hover:shadow-glow hover:bg-primary/90"
+        >
+          Save Priority
         </Button>
       </div>
     </div>
   );
 }
-
-// ============================================================================
-// Main Component
-// ============================================================================
 
 export default function NPCControlPage() {
   const { selectedGeneral, selectedGeneralId: generalId } = useGeneral();
@@ -588,202 +626,252 @@ export default function NPCControlPage() {
       if (type === "nationPolicy") policyStack.current.push(clone(payload));
       else if (type === "nationPriority") chiefStack.current.push(clone(payload));
       else generalStack.current.push(clone(payload));
-      showToast("반영되었습니다.", "success");
+      showToast("Settings saved successfully.", "success");
       refetch();
     } catch (e: any) {
-      showToast(`실패: ${e.message || e}`, "danger");
+      showToast(`Error: ${e.message || e}`, "danger");
     }
   };
 
   if (isLoading || !selectedGeneral)
     return (
-      <div className="bg0 min-h-screen">
-        <TopBackBar title="NPC 정책" type="close" />
-        <div className="p-20 text-center text-gray-500 font-bold tracking-widest animate-pulse">
-          상태 정보 로딩 중...
+      <div className="min-h-screen bg-background pb-20">
+        <TopBackBar title="NPC Policy" type="close" />
+        <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
+          <div className="w-12 h-12 border-4 border-primary/30 border-t-primary rounded-full animate-spin" />
+          <div className="text-muted-foreground animate-pulse font-medium tracking-widest uppercase text-sm">
+            Loading System Data...
+          </div>
         </div>
       </div>
     );
 
   return (
-    <div className="min-h-screen bg0">
-      <TopBackBar title="NPC 정책" type="close" />
-      <div className="max-w-[1000px] mx-auto border border-gray-600">
-        {toast && (
+    <div className="min-h-screen bg-background pb-20">
+      <TopBackBar title="NPC Policy" type="close" />
+
+      {toast && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-top-4 duration-300">
           <div
-            className={`p-2 text-center text-sm font-bold animate-in fade-in slide-in-from-top duration-300 ${toast.variant === "success" ? "bg-green-900/80 text-green-200" : toast.variant === "danger" ? "bg-red-900/80 text-red-200" : "bg-blue-900/80 text-blue-200"}`}
+            className={clsx(
+              "px-6 py-3 rounded-full shadow-glow-lg border backdrop-blur-md text-sm font-bold flex items-center gap-2",
+              toast.variant === "success"
+                ? "bg-green-950/80 border-green-500/50 text-green-400"
+                : toast.variant === "danger"
+                  ? "bg-red-950/80 border-red-500/50 text-red-400"
+                  : "bg-blue-950/80 border-blue-500/50 text-blue-400"
+            )}
           >
+            <span className="w-2 h-2 rounded-full bg-current shadow-[0_0_10px_currentColor]" />
             {toast.message}
           </div>
-        )}
-        <div className="bg-zinc-800/80 text-center py-2 border-b border-zinc-700 font-bold text-sm tracking-widest uppercase">
-          국가 정책 설정
         </div>
-        <div className="text-right px-3 text-xs text-gray-400 py-1">
-          최근 설정: {lastSetters.policy.setter ?? "-"} ({lastSetters.policy.date ?? "-"})
+      )}
+
+      <div className="max-w-6xl mx-auto px-4 mt-8 space-y-8">
+        <div className="text-center space-y-2 mb-10">
+          <h1 className="text-4xl lg:text-5xl font-bold text-primary tracking-tight drop-shadow-[0_0_20px_rgba(234,179,8,0.2)]">
+            NPC Control Protocol
+          </h1>
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            Configure automated behavior logic and resource management policies for non-player
+            characters.
+          </p>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2">
-          <NumberInputField
-            label="국가 권장 금"
-            value={nationPolicy.reqNationGold}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqNationGold: v }))}
-            description="이보다 많으면 포상, 적으면 몰수/헌납합니다."
-          />
-          <NumberInputField
-            label="국가 권장 쌀"
-            value={nationPolicy.reqNationRice}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqNationRice: v }))}
-            description="이보다 많으면 포상, 적으면 몰수/헌납합니다."
-          />
-          <NumberInputField
-            label="유저전투장 긴급포상 금"
-            value={nationPolicy.reqHumanWarUrgentGold}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarUrgentGold: v }))}
-            description={<>0이면 기본값 {MOCK_ZERO_POLICY.reqHumanWarUrgentGold}</>}
-          />
-          <NumberInputField
-            label="유저전투장 긴급포상 쌀"
-            value={nationPolicy.reqHumanWarUrgentRice}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarUrgentRice: v }))}
-            description={<>0이면 기본값 {MOCK_ZERO_POLICY.reqHumanWarUrgentRice}</>}
-          />
-          <NumberInputField
-            label="유저전투장 권장 금"
-            value={nationPolicy.reqHumanWarRecommandGold}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarRecommandGold: v }))}
-            description={<>0이면 긴급포상의 2배 ({calcVal("reqHumanWarUrgentGold") * 2})</>}
-          />
-          <NumberInputField
-            label="유저전투장 권장 쌀"
-            value={nationPolicy.reqHumanWarRecommandRice}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarRecommandRice: v }))}
-            description={<>0이면 긴급포상의 2배 ({calcVal("reqHumanWarUrgentRice") * 2})</>}
-          />
-          <NumberInputField
-            label="유저내정장 권장 금"
-            value={nationPolicy.reqHumanDevelGold}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanDevelGold: v }))}
-            description="유저내정장에게 주는 금입니다."
-          />
-          <NumberInputField
-            label="유저내정장 권장 쌀"
-            value={nationPolicy.reqHumanDevelRice}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanDevelRice: v }))}
-            description="유저내정장에게 주는 쌀입니다."
-          />
-          <NumberInputField
-            label="NPC전투장 권장 금"
-            value={nationPolicy.reqNPCWarGold}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCWarGold: v }))}
-            description={<>0이면 기본값 {MOCK_ZERO_POLICY.reqNPCWarGold}</>}
-          />
-          <NumberInputField
-            label="NPC전투장 권장 쌀"
-            value={nationPolicy.reqNPCWarRice}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCWarRice: v }))}
-            description={<>0이면 기본값 {MOCK_ZERO_POLICY.reqNPCWarRice}</>}
-          />
-          <NumberInputField
-            label="NPC내정장 권장 금"
-            value={nationPolicy.reqNPCDevelGold}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCDevelGold: v }))}
-            description={<>0이면 기본값 {MOCK_ZERO_POLICY.reqNPCDevelGold}</>}
-          />
-          <NumberInputField
-            label="NPC내정장 권장 쌀"
-            value={nationPolicy.reqNPCDevelRice}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCDevelRice: v }))}
-            description="NPC내정장에게 주는 쌀입니다."
-          />
-          <NumberInputField
-            label="포상/몰수/헌납 최소 단위"
-            value={nationPolicy.minimumResourceActionAmount}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, minimumResourceActionAmount: v }))}
-            min={100}
-            description="연산결과가 이보다 적으면 수행하지 않습니다."
-          />
-          <NumberInputField
-            label="포상/몰수/헌납 최대 단위"
-            value={nationPolicy.maximumResourceActionAmount}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, maximumResourceActionAmount: v }))}
-            min={100}
-            description="연산결과가 이보다 크면 이 값에 맞춥니다."
-          />
-          <NumberInputField
-            label="최소 전투 가능 병력 수"
-            value={nationPolicy.minWarCrew}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, minWarCrew: v }))}
-            step={50}
-            description="이보다 적으면 징병을 시도합니다."
-          />
-          <NumberInputField
-            label="NPC 최소 징병 인구"
-            value={nationPolicy.minNPCRecruitCityPopulation}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, minNPCRecruitCityPopulation: v }))}
-            description="인구가 이보다 낮으면 NPC는 후방으로 워프합니다."
-          />
-          <NumberInputField
-            label="제자리 징병 허용 인구율(%)"
-            value={nationPolicy.safeRecruitCityPopulationRatio}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, safeRecruitCityPopulationRatio: v }))}
-            min={0}
-            max={1}
-            isPercentage
-            description="후방 발령, 후방 워프의 기준입니다."
-          />
-          <NumberInputField
-            label="NPC 전투 참여 통솔"
-            value={nationPolicy.minNPCWarLeadership}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, minNPCWarLeadership: v }))}
-            step={5}
-            description="이보다 높으면 NPC전투장으로 분류됩니다."
-          />
-          <NumberInputField
-            label="훈련/사기진작 목표"
-            value={nationPolicy.properWarTrainAtmos}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, properWarTrainAtmos: v }))}
-            step={5}
-            min={20}
-            max={100}
-            description="이보다 높으면 출병합니다."
-          />
-          <NumberInputField
-            label="요양 기준"
-            value={nationPolicy.cureThreshold}
-            onChange={(v) => setNationPolicy((p) => ({ ...p, cureThreshold: v }))}
-            step={5}
-            min={10}
-            max={100}
-            description="이보다 많이 부상 입으면 요양합니다."
-          />
+
+        <div className="premium-card">
+          <div className="p-6 border-b border-white/10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gradient-to-r from-white/5 to-transparent">
+            <div>
+              <h2 className="text-2xl font-bold flex items-center gap-3 text-white">
+                <span className="w-1.5 h-6 bg-primary rounded-full shadow-[0_0_10px_#eab308]" />
+                Nation Resource Policy
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1 ml-4.5">
+                Set thresholds for automatic rewards, confiscation, and tributes.
+              </p>
+            </div>
+            <div className="text-xs font-mono text-muted-foreground/60 bg-black/40 px-3 py-1.5 rounded border border-white/5">
+              Last Update:{" "}
+              <span className="text-primary/80">{lastSetters.policy.setter ?? "-"}</span>
+            </div>
+          </div>
+
+          <div className="p-6 bg-black/10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              <NumberInputField
+                label="Nation Rec. Gold"
+                value={nationPolicy.reqNationGold}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqNationGold: v }))}
+                description="Threshold for rewards/confiscation"
+              />
+              <NumberInputField
+                label="Nation Rec. Rice"
+                value={nationPolicy.reqNationRice}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqNationRice: v }))}
+                description="Threshold for rewards/confiscation"
+              />
+              <NumberInputField
+                label="User War Urgent Gold"
+                value={nationPolicy.reqHumanWarUrgentGold}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarUrgentGold: v }))}
+                description={<>0 = Default ({MOCK_ZERO_POLICY.reqHumanWarUrgentGold})</>}
+              />
+              <NumberInputField
+                label="User War Urgent Rice"
+                value={nationPolicy.reqHumanWarUrgentRice}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarUrgentRice: v }))}
+                description={<>0 = Default ({MOCK_ZERO_POLICY.reqHumanWarUrgentRice})</>}
+              />
+              <NumberInputField
+                label="User War Rec. Gold"
+                value={nationPolicy.reqHumanWarRecommandGold}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarRecommandGold: v }))}
+                description={<>0 = 2x Urgent ({calcVal("reqHumanWarUrgentGold") * 2})</>}
+              />
+              <NumberInputField
+                label="User War Rec. Rice"
+                value={nationPolicy.reqHumanWarRecommandRice}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanWarRecommandRice: v }))}
+                description={<>0 = 2x Urgent ({calcVal("reqHumanWarUrgentRice") * 2})</>}
+              />
+              <NumberInputField
+                label="User Civil Rec. Gold"
+                value={nationPolicy.reqHumanDevelGold}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanDevelGold: v }))}
+                description="Gold reward for civil officers"
+              />
+              <NumberInputField
+                label="User Civil Rec. Rice"
+                value={nationPolicy.reqHumanDevelRice}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqHumanDevelRice: v }))}
+                description="Rice reward for civil officers"
+              />
+              <NumberInputField
+                label="NPC War Rec. Gold"
+                value={nationPolicy.reqNPCWarGold}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCWarGold: v }))}
+                description={<>0 = Default ({MOCK_ZERO_POLICY.reqNPCWarGold})</>}
+              />
+              <NumberInputField
+                label="NPC War Rec. Rice"
+                value={nationPolicy.reqNPCWarRice}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCWarRice: v }))}
+                description={<>0 = Default ({MOCK_ZERO_POLICY.reqNPCWarRice})</>}
+              />
+              <NumberInputField
+                label="NPC Civil Rec. Gold"
+                value={nationPolicy.reqNPCDevelGold}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCDevelGold: v }))}
+                description={<>0 = Default ({MOCK_ZERO_POLICY.reqNPCDevelGold})</>}
+              />
+              <NumberInputField
+                label="NPC Civil Rec. Rice"
+                value={nationPolicy.reqNPCDevelRice}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, reqNPCDevelRice: v }))}
+                description="Rice reward for NPC civil officers"
+              />
+              <NumberInputField
+                label="Action Min Amount"
+                value={nationPolicy.minimumResourceActionAmount}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, minimumResourceActionAmount: v }))}
+                min={100}
+                description="Minimum amount to perform action"
+              />
+              <NumberInputField
+                label="Action Max Amount"
+                value={nationPolicy.maximumResourceActionAmount}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, maximumResourceActionAmount: v }))}
+                min={100}
+                description="Cap amount for actions"
+              />
+              <NumberInputField
+                label="Min War Crew"
+                value={nationPolicy.minWarCrew}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, minWarCrew: v }))}
+                step={50}
+                description="Recruit if below this"
+              />
+              <NumberInputField
+                label="NPC Min Recruit Pop"
+                value={nationPolicy.minNPCRecruitCityPopulation}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, minNPCRecruitCityPopulation: v }))}
+                description="Warp if city pop too low"
+              />
+              <NumberInputField
+                label="Safe Recruit Ratio (%)"
+                value={nationPolicy.safeRecruitCityPopulationRatio}
+                onChange={(v) =>
+                  setNationPolicy((p) => ({ ...p, safeRecruitCityPopulationRatio: v }))
+                }
+                min={0}
+                max={1}
+                isPercentage
+                description="Threshold for safe recruitment"
+              />
+              <NumberInputField
+                label="NPC War Leadership"
+                value={nationPolicy.minNPCWarLeadership}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, minNPCWarLeadership: v }))}
+                step={5}
+                description="Min leadership for war role"
+              />
+              <NumberInputField
+                label="Training Target"
+                value={nationPolicy.properWarTrainAtmos}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, properWarTrainAtmos: v }))}
+                step={5}
+                min={20}
+                max={100}
+                description="Target for training/morale"
+              />
+              <NumberInputField
+                label="Healing Threshold"
+                value={nationPolicy.cureThreshold}
+                onChange={(v) => setNationPolicy((p) => ({ ...p, cureThreshold: v }))}
+                step={5}
+                min={10}
+                max={100}
+                description="Heal if injury exceeds this"
+              />
+            </div>
+          </div>
+
+          <div className="p-4 bg-black/20 border-t border-white/10 flex justify-end gap-3 rounded-b-xl">
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (confirm("Reset to default values?")) setNationPolicy(MOCK_DEFAULT_POLICY);
+              }}
+              className="border-white/10 bg-transparent hover:bg-white/5 hover:text-white"
+            >
+              Default
+            </Button>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (confirm("Revert to previous?") && policyStack.current.length > 1) {
+                  policyStack.current.pop();
+                  setNationPolicy(clone(policyStack.current[policyStack.current.length - 1]));
+                }
+              }}
+              className="bg-secondary/80 hover:bg-secondary text-secondary-foreground"
+            >
+              Undo
+            </Button>
+            <Button
+              onClick={() => submit("nationPolicy", nationPolicy)}
+              className="bg-primary text-primary-foreground font-bold shadow-glow-sm hover:shadow-glow hover:bg-primary/90"
+            >
+              Save Policy
+            </Button>
+          </div>
         </div>
-        <div className="flex justify-end gap-2 p-2 border-b border-gray-600">
-          <Button
-            variant="outline"
-            onClick={() => {
-              if (confirm("되돌릴까요?")) setNationPolicy(MOCK_DEFAULT_POLICY);
-            }}
-          >
-            초깃값으로
-          </Button>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              if (confirm("되돌릴까요?") && policyStack.current.length > 1) {
-                policyStack.current.pop();
-                setNationPolicy(clone(policyStack.current[policyStack.current.length - 1]));
-              }
-            }}
-          >
-            이전값으로
-          </Button>
-          <Button onClick={() => submit("nationPolicy", nationPolicy)}>설정</Button>
-        </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2">
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <DndPriorityList
-            title="NPC 사령턴 우선순위"
+            title="Chief Turn Priority"
             lastSetter={lastSetters.nation}
-            description="드래그하여 순서를 변경하세요."
+            description="Drag to reorder the priority of actions taken during the Chief's turn phase."
             activeItems={chiefActive}
             inactiveItems={chiefInactive}
             onItemsChange={(a, i) => {
@@ -803,9 +891,9 @@ export default function NPCControlPage() {
             groupId="chief"
           />
           <DndPriorityList
-            title="NPC 일반턴 우선순위"
+            title="General Turn Priority"
             lastSetter={lastSetters.general}
-            description="드래그하여 순서를 변경하세요."
+            description="Drag to reorder the priority of actions taken during the General's turn phase."
             activeItems={generalActive}
             inactiveItems={generalInactive}
             onItemsChange={(a, i) => {

@@ -100,21 +100,21 @@ function getNPCColor(npcType: number): string | undefined {
 }
 
 function formatInjury(injury: number): [string, string] {
-  if (injury === 0) return ["건강", "limegreen"];
-  if (injury <= 20) return ["경상", "yellow"];
-  if (injury <= 50) return ["중상", "orange"];
-  if (injury <= 80) return ["위독", "orangered"];
-  return ["빈사", "red"];
+  if (injury === 0) return ["건강", "#4ade80"];
+  if (injury <= 20) return ["경상", "#facc15"];
+  if (injury <= 50) return ["중상", "#fb923c"];
+  if (injury <= 80) return ["위독", "#f87171"];
+  return ["빈사", "#ef4444"];
 }
 
 function formatDexLevel(dex: number): { name: string; color: string } {
-  if (dex >= 9500 * 100) return { name: "신", color: "#FF00FF" };
-  if (dex >= 7000 * 100) return { name: "명", color: "#FF6699" };
-  if (dex >= 4500 * 100) return { name: "달", color: "#FF9933" };
-  if (dex >= 2500 * 100) return { name: "숙", color: "#FFCC00" };
-  if (dex >= 1000 * 100) return { name: "정", color: "#99FF00" };
-  if (dex >= 300 * 100) return { name: "초", color: "#66CCFF" };
-  return { name: "무", color: "#AAAAAA" };
+  if (dex >= 9500 * 100) return { name: "신", color: "#d946ef" };
+  if (dex >= 7000 * 100) return { name: "명", color: "#ec4899" };
+  if (dex >= 4500 * 100) return { name: "달", color: "#f97316" };
+  if (dex >= 2500 * 100) return { name: "숙", color: "#eab308" };
+  if (dex >= 1000 * 100) return { name: "정", color: "#84cc16" };
+  if (dex >= 300 * 100) return { name: "초", color: "#0ea5e9" };
+  return { name: "무", color: "#9ca3af" };
 }
 
 function formatHonor(experience: number): string {
@@ -133,17 +133,17 @@ function formatHonor(experience: number): string {
 const LOG_REGEX = /<([RBGMCLSODYW]1?|1|\/)>/g;
 
 const COLOR_MAP: Record<string, string> = {
-  R: "color: red;",
-  B: "color: blue;",
-  G: "color: green;",
-  M: "color: magenta;",
-  C: "color: cyan;",
-  L: "color: limegreen;",
-  S: "color: skyblue;",
-  O: "color: orangered;",
-  D: "color: orangered;",
-  Y: "color: yellow;",
-  W: "color: white;",
+  R: "color: #ef4444;",
+  B: "color: #60a5fa;",
+  G: "color: #4ade80;",
+  M: "color: #e879f9;",
+  C: "color: #22d3ee;",
+  L: "color: #a3e635;",
+  S: "color: #38bdf8;",
+  O: "color: #fb923c;",
+  D: "color: #fb923c;",
+  Y: "color: #facc15;",
+  W: "color: #ffffff;",
   "1": "font-size: 0.9em;",
 };
 
@@ -237,60 +237,83 @@ function GeneralSupplementCard({ general }: GeneralSupplementCardProps) {
     deathcrew > 0 ? ((killcrew / deathcrew) * 100).toFixed(2) : killcrew > 0 ? "∞" : "0.00";
 
   return (
-    <div className="bg2 text-sm">
+    <div className="premium-card p-0 overflow-hidden text-sm">
       {/* Additional Info */}
-      <div className="grid grid-cols-6 text-center border-b border-gray-600">
-        <div className="col-span-6 bg1 text-orange-400 font-bold py-1">추가 정보</div>
+      <div className="grid grid-cols-6 text-center divide-x divide-white/5 border-b border-white/10">
+        <div className="col-span-6 bg-white/5 text-gold-400 font-bold py-2 border-b border-white/10">
+          추가 정보
+        </div>
 
-        <div className="bg1 border-l border-gray-600 py-0.5">명성</div>
-        <div className="py-0.5">
+        <div className="bg-white/5 py-1.5 text-muted-foreground">명성</div>
+        <div className="py-1.5 text-foreground">
           {formatHonor(general.experience || 0)} ({(general.experience || 0).toLocaleString()})
         </div>
-        <div className="bg1 border-l border-gray-600 py-0.5">계급</div>
-        <div className="py-0.5">
+        <div className="bg-white/5 py-1.5 text-muted-foreground">계급</div>
+        <div className="py-1.5 text-foreground">
           {general.dedLevelText} ({(general.dedication || 0).toLocaleString()})
         </div>
-        <div className="bg1 border-l border-gray-600 py-0.5">봉급</div>
-        <div className="py-0.5">{(general.bill || 0).toLocaleString()}</div>
+        <div className="bg-white/5 py-1.5 text-muted-foreground">봉급</div>
+        <div className="py-1.5 text-foreground">{(general.bill || 0).toLocaleString()}</div>
 
-        <div className="bg1 border-l border-gray-600 py-0.5">전투</div>
-        <div className="py-0.5">{warnum.toLocaleString()}</div>
-        <div className="bg1 border-l border-gray-600 py-0.5">계략</div>
-        <div className="py-0.5">{(general.firenum || 0).toLocaleString()}</div>
-        <div className="bg1 border-l border-gray-600 py-0.5">사관</div>
-        <div className="py-0.5">{general.belong}년차</div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">전투</div>
+        <div className="py-1.5 border-t border-white/10 text-foreground">
+          {warnum.toLocaleString()}
+        </div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">계략</div>
+        <div className="py-1.5 border-t border-white/10 text-foreground">
+          {(general.firenum || 0).toLocaleString()}
+        </div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">사관</div>
+        <div className="py-1.5 border-t border-white/10 text-foreground">{general.belong}년차</div>
 
-        <div className="bg1 border-l border-gray-600 py-0.5">승률</div>
-        <div className="py-0.5">{winRate} %</div>
-        <div className="bg1 border-l border-gray-600 py-0.5">승리</div>
-        <div className="py-0.5">{killnum.toLocaleString()}</div>
-        <div className="bg1 border-l border-gray-600 py-0.5">패배</div>
-        <div className="py-0.5">{(general.deathnum || 0).toLocaleString()}</div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">승률</div>
+        <div className="py-1.5 border-t border-white/10 text-foreground">{winRate} %</div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">승리</div>
+        <div className="py-1.5 border-t border-white/10 text-sky-400">
+          {killnum.toLocaleString()}
+        </div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">패배</div>
+        <div className="py-1.5 border-t border-white/10 text-red-400">
+          {(general.deathnum || 0).toLocaleString()}
+        </div>
 
-        <div className="bg1 border-l border-gray-600 py-0.5">살상률</div>
-        <div className="py-0.5">{killRate} %</div>
-        <div className="bg1 border-l border-gray-600 py-0.5">사살</div>
-        <div className="py-0.5">{killcrew.toLocaleString()}</div>
-        <div className="bg1 border-l border-gray-600 py-0.5">피살</div>
-        <div className="py-0.5">{deathcrew.toLocaleString()}</div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">
+          살상률
+        </div>
+        <div className="py-1.5 border-t border-white/10 text-foreground">{killRate} %</div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">사살</div>
+        <div className="py-1.5 border-t border-white/10 text-red-400">
+          {killcrew.toLocaleString()}
+        </div>
+        <div className="bg-white/5 py-1.5 border-t border-white/10 text-muted-foreground">피살</div>
+        <div className="py-1.5 border-t border-white/10 text-foreground">
+          {deathcrew.toLocaleString()}
+        </div>
       </div>
 
       {/* Dexterity */}
-      <div className="grid grid-cols-4 text-center">
-        <div className="col-span-4 bg1 text-orange-400 font-bold py-1 border-b border-gray-600">
+      <div className="grid grid-cols-4 text-center divide-x divide-white/5">
+        <div className="col-span-4 bg-white/5 text-gold-400 font-bold py-2 border-b border-white/10">
           숙련도
         </div>
         {dexList.map(([dexType, dex]) => {
           const dexInfo = formatDexLevel(dex);
           return (
             <React.Fragment key={dexType}>
-              <div className="bg1 border-l border-b border-gray-600 py-0.5">{dexType}</div>
-              <div className="border-b border-gray-600 py-0.5" style={{ color: dexInfo.color }}>
+              <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">
+                {dexType}
+              </div>
+              <div
+                className="py-1.5 border-b border-white/10 font-bold"
+                style={{ color: dexInfo.color }}
+              >
                 {dexInfo.name}
               </div>
-              <div className="border-b border-gray-600 py-0.5">{(dex / 1000).toFixed(1)}K</div>
-              <div className="border-b border-gray-600 py-0.5 px-1 flex items-center">
-                <SammoBar height={10} percent={(dex / 1000000) * 100} />
+              <div className="py-1.5 border-b border-white/10 text-foreground">
+                {(dex / 1000).toFixed(1)}K
+              </div>
+              <div className="py-1.5 px-2 border-b border-white/10 flex items-center justify-center">
+                <SammoBar height={8} percent={(dex / 1000000) * 100} />
               </div>
             </React.Fragment>
           );
@@ -309,69 +332,93 @@ function GeneralBasicCard({ general, nation }: GeneralBasicCardProps) {
   const [injuryText, injuryColor] = formatInjury(general.injury);
 
   return (
-    <div className="bg2 border border-gray-600">
-      <div className="grid grid-cols-8 text-sm text-center">
+    <div className="premium-card p-0 overflow-hidden mb-4">
+      <div className="grid grid-cols-8 text-sm text-center divide-x divide-white/5">
         {/* Row 1: Icon + Name */}
-        <div className="row-span-3 flex items-center justify-center p-2">
-          <div className="w-16 h-16 bg-gray-700 rounded flex items-center justify-center text-xs">
+        <div className="row-span-3 flex items-center justify-center p-2 bg-black/20">
+          <div className="w-16 h-16 bg-gray-900 rounded-lg border border-white/10 flex items-center justify-center text-xs shadow-inner">
             {general.picture?.slice(0, 3) || "?"}
           </div>
         </div>
         <div
-          className="col-span-7 py-1 font-bold text-lg"
-          style={{ backgroundColor: nation.color, color: "#000" }}
+          className="col-span-7 py-2 font-bold text-lg border-b border-white/10 shadow-sm"
+          style={{
+            background: `linear-gradient(90deg, ${nation.color}DD, ${nation.color}99)`,
+            color: "#fff",
+            textShadow: "0 1px 2px rgba(0,0,0,0.8)",
+          }}
         >
           {general.name}
         </div>
 
         {/* Row 2: Basic stats */}
-        <div className="bg1 py-0.5">통솔</div>
-        <div className="py-0.5 text-blue-400">{general.leadership}</div>
-        <div className="bg1 py-0.5">무력</div>
-        <div className="py-0.5 text-red-400">{general.strength}</div>
-        <div className="bg1 py-0.5">지력</div>
-        <div className="py-0.5 text-green-400">{general.intel}</div>
-        <div className="bg1 py-0.5">상성</div>
-        <div className="py-0.5" style={{ color: injuryColor }}>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">통솔</div>
+        <div className="py-1.5 border-b border-white/10 text-sky-400 font-bold">
+          {general.leadership}
+        </div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">무력</div>
+        <div className="py-1.5 border-b border-white/10 text-red-400 font-bold">
+          {general.strength}
+        </div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">지력</div>
+        <div className="py-1.5 border-b border-white/10 text-green-400 font-bold">
+          {general.intel}
+        </div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">상성</div>
+        <div className="py-1.5 border-b border-white/10 font-bold" style={{ color: injuryColor }}>
           {injuryText}
         </div>
 
         {/* Row 3: Resources */}
-        <div className="bg1 py-0.5">금</div>
-        <div className="py-0.5 text-yellow-400">{general.gold.toLocaleString()}</div>
-        <div className="bg1 py-0.5">쌀</div>
-        <div className="py-0.5 text-green-300">{general.rice.toLocaleString()}</div>
-        <div className="bg1 py-0.5">관직</div>
-        <div className="col-span-2 py-0.5 text-cyan-400">{general.officerLevelText}</div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">금</div>
+        <div className="py-1.5 border-b border-white/10 text-yellow-400">
+          {general.gold.toLocaleString()}
+        </div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">쌀</div>
+        <div className="py-1.5 border-b border-white/10 text-green-300">
+          {general.rice.toLocaleString()}
+        </div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">관직</div>
+        <div className="col-span-2 py-1.5 border-b border-white/10 text-cyan-400 font-medium">
+          {general.officerLevelText}
+        </div>
 
         {/* Row 4: Crew info */}
-        <div className="row-span-3 flex items-center justify-center p-2">
-          <div className="w-16 h-16 bg-gray-700 rounded flex items-center justify-center text-xs">
+        <div className="row-span-3 flex items-center justify-center p-2 bg-black/20 border-t border-white/10">
+          <div className="w-16 h-16 bg-gray-900 rounded-lg border border-white/10 flex items-center justify-center text-xs shadow-inner">
             {general.crewtype?.slice(0, 2) || "?"}
           </div>
         </div>
-        <div className="bg1 py-0.5">병종</div>
-        <div className="col-span-2 py-0.5">{general.crewtype || "-"}</div>
-        <div className="bg1 py-0.5">병력</div>
-        <div className="py-0.5">{(general.crew || 0).toLocaleString()}</div>
-        <div className="bg1 py-0.5">나이</div>
-        <div className="py-0.5">{general.age}</div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">병종</div>
+        <div className="col-span-2 py-1.5 border-b border-white/10 text-foreground">
+          {general.crewtype || "-"}
+        </div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">병력</div>
+        <div className="py-1.5 border-b border-white/10 text-foreground">
+          {(general.crew || 0).toLocaleString()}
+        </div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">나이</div>
+        <div className="py-1.5 border-b border-white/10 text-foreground">{general.age}</div>
 
         {/* Row 5: Train/Atmos */}
-        <div className="bg1 py-0.5">훈련</div>
-        <div className="py-0.5">{general.train || 0}</div>
-        <div className="bg1 py-0.5">사기</div>
-        <div className="py-0.5">{general.atmos || 0}</div>
-        <div className="bg1 py-0.5">특기전</div>
-        <div className="col-span-2 py-0.5">{general.specialWar || "-"}</div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">훈련</div>
+        <div className="py-1.5 border-b border-white/10 text-foreground">{general.train || 0}</div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">사기</div>
+        <div className="py-1.5 border-b border-white/10 text-foreground">{general.atmos || 0}</div>
+        <div className="bg-white/5 py-1.5 border-b border-white/10 text-muted-foreground">
+          특기전
+        </div>
+        <div className="col-span-2 py-1.5 border-b border-white/10 text-foreground">
+          {general.specialWar || "-"}
+        </div>
 
         {/* Row 6: Equipment */}
-        <div className="bg1 py-0.5">무기</div>
-        <div className="col-span-2 py-0.5">{general.weapon || "-"}</div>
-        <div className="bg1 py-0.5">서적</div>
-        <div className="col-span-2 py-0.5">{general.book || "-"}</div>
-        <div className="bg1 py-0.5">특기내</div>
-        <div className="py-0.5">{general.specialDomestic || "-"}</div>
+        <div className="bg-white/5 py-1.5 text-muted-foreground">무기</div>
+        <div className="col-span-2 py-1.5 text-foreground">{general.weapon || "-"}</div>
+        <div className="bg-white/5 py-1.5 text-muted-foreground">서적</div>
+        <div className="col-span-2 py-1.5 text-foreground">{general.book || "-"}</div>
+        <div className="bg-white/5 py-1.5 text-muted-foreground">특기내</div>
+        <div className="py-1.5 text-foreground">{general.specialDomestic || "-"}</div>
       </div>
     </div>
   );
@@ -530,139 +577,158 @@ export default function BattleCenterPage() {
   }, [refetch]);
 
   return (
-    <div className="min-h-screen bg0">
+    <div className="min-h-screen bg-background text-foreground pb-10">
       <TopBackBar title="감찰부" reloadable={true} onReload={handleReload} type="close" />
 
-      <div className="max-w-[1000px] mx-auto px-2 pb-4">
+      <div className="max-w-[1000px] mx-auto px-4 mt-6">
         {/* Navigation Row */}
-        <div className="grid grid-cols-12 gap-1 mb-2">
+        <div className="grid grid-cols-12 gap-2 mb-6 p-4 glass rounded-xl">
           <div className="col-span-2 lg:col-span-1">
             <Button
               onClick={() => changeTargetByOffset(-1)}
-              className="w-full h-8 text-sm"
+              className="w-full h-10 text-sm bg-secondary hover:bg-secondary/80 border border-white/10"
               variant="secondary"
             >
-              ◀ 이전
+              ◀
             </Button>
           </div>
           <div className="col-span-3 lg:col-span-4">
             <select
               value={orderBy}
               onChange={(e) => handleOrderChange(e.target.value as OrderByKey)}
-              className="w-full h-8 px-2 text-sm bg-zinc-700 text-white border border-gray-600 rounded"
+              className="w-full h-10 px-3 text-sm bg-background/50 text-foreground border border-white/10 rounded-md focus:border-primary/50 focus:ring-1 focus:ring-primary/50 outline-none backdrop-blur-md appearance-none"
             >
               {Object.entries(ORDER_CONFIG).map(([key, config]) => (
-                <option key={key} value={key}>
+                <option key={key} value={key} className="bg-zinc-900">
                   {config.name}
                 </option>
               ))}
             </select>
           </div>
-          <div className="col-span-5 lg:col-span-6">
+          <div className="col-span-5 lg:col-span-6 relative">
             <select
               value={targetGeneralID ?? ""}
               onChange={(e) => setTargetGeneralID(Number(e.target.value))}
-              className="w-full h-8 px-2 text-sm bg-zinc-700 text-white border border-gray-600 rounded"
+              className="w-full h-10 px-3 text-sm bg-background/50 text-foreground border border-white/10 rounded-md focus:border-primary/50 focus:ring-1 focus:ring-primary/50 outline-none backdrop-blur-md appearance-none"
             >
               {orderedGeneralList.map((gen) => (
-                <option key={gen.no} value={gen.no} style={{ color: getNPCColor(gen.npc) }}>
+                <option
+                  key={gen.no}
+                  value={gen.no}
+                  style={{ color: getNPCColor(gen.npc) }}
+                  className="bg-zinc-900"
+                >
                   {gen.officerLevel > 4 ? `*${gen.name}*` : gen.name}(
                   {(gen.turntime || "").slice(-5)}){ORDER_CONFIG[orderBy].suffix(gen)}
                 </option>
               ))}
             </select>
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-muted-foreground">
+              ▼
+            </div>
           </div>
           <div className="col-span-2 lg:col-span-1">
             <Button
               onClick={() => changeTargetByOffset(1)}
-              className="w-full h-8 text-sm"
+              className="w-full h-10 text-sm bg-secondary hover:bg-secondary/80 border border-white/10"
               variant="secondary"
             >
-              다음 ▶
+              ▶
             </Button>
           </div>
         </div>
 
         {/* Content */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-20">
+          <div className="flex items-center justify-center py-40">
             <div className="text-center">
-              <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-blue-500 border-t-transparent mx-auto" />
-              <p className="text-gray-400">로딩 중...</p>
+              <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto shadow-glow" />
+              <p className="text-muted-foreground animate-pulse">데이터를 불러오는 중...</p>
             </div>
           </div>
         ) : targetGeneral && nationInfo ? (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 bg0">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
             {/* General Info Section */}
-            <div>
-              <div className="bg1 text-center text-sky-400 text-lg font-bold py-1 border border-gray-600">
-                장수 정보
-              </div>
-              <GeneralBasicCard general={targetGeneral} nation={nationInfo} />
-              <GeneralSupplementCard general={targetGeneral} />
-            </div>
-
-            {/* History Section */}
-            <div>
-              <div className="bg1 text-center text-orange-400 text-lg font-bold py-1 border border-gray-600">
-                장수 열전
-              </div>
-              <div className="bg2 p-2 text-sm border border-gray-600 max-h-48 overflow-y-auto">
-                {Array.from(generalLogs.generalHistory.entries()).map(([id, log]) => (
-                  <div key={id} className="mb-1" dangerouslySetInnerHTML={{ __html: log }} />
-                ))}
-                {generalLogs.generalHistory.size === 0 && (
-                  <div className="text-gray-500">기록 없음</div>
-                )}
+            <div className="space-y-6">
+              <div>
+                <div className="section_title mb-2 text-gold-400">장수 정보</div>
+                <GeneralBasicCard general={targetGeneral} nation={nationInfo} />
+                <GeneralSupplementCard general={targetGeneral} />
               </div>
             </div>
 
-            {/* Battle Detail Section */}
-            <div>
-              <div className="bg1 text-center text-orange-400 text-lg font-bold py-1 border border-gray-600">
-                전투 기록
-              </div>
-              <div className="bg2 p-2 text-sm border border-gray-600 max-h-48 overflow-y-auto">
-                {Array.from(generalLogs.battleDetail.entries()).map(([id, log]) => (
-                  <div key={id} className="mb-1" dangerouslySetInnerHTML={{ __html: log }} />
-                ))}
-                {generalLogs.battleDetail.size === 0 && (
-                  <div className="text-gray-500">기록 없음</div>
-                )}
-              </div>
-            </div>
-
-            {/* Battle Result Section */}
-            <div>
-              <div className="bg1 text-center text-orange-400 text-lg font-bold py-1 border border-gray-600">
-                전투 결과
-              </div>
-              <div className="bg2 p-2 text-sm border border-gray-600 max-h-48 overflow-y-auto">
-                {Array.from(generalLogs.battleResult.entries()).map(([id, log]) => (
-                  <div key={id} className="mb-1" dangerouslySetInnerHTML={{ __html: log }} />
-                ))}
-                {generalLogs.battleResult.size === 0 && (
-                  <div className="text-gray-500">기록 없음</div>
-                )}
-              </div>
-            </div>
-
-            {/* General Action Section (only if has content) */}
-            {generalLogs.generalAction.size > 0 && (
-              <div className="lg:col-span-2">
-                <div className="bg1 text-center text-orange-400 text-lg font-bold py-1 border border-gray-600">
-                  개인 기록
-                </div>
-                <div className="bg2 p-2 text-sm border border-gray-600 max-h-48 overflow-y-auto">
-                  {Array.from(generalLogs.generalAction.entries()).map(([id, log]) => (
-                    <div key={id} className="mb-1" dangerouslySetInnerHTML={{ __html: log }} />
+            {/* Logs Column */}
+            <div className="space-y-6">
+              {/* History Section */}
+              <div>
+                <div className="section_title mb-2 text-primary">장수 열전</div>
+                <div className="glass p-4 text-sm border border-white/10 rounded-lg max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent shadow-inner">
+                  {Array.from(generalLogs.generalHistory.entries()).map(([id, log]) => (
+                    <div
+                      key={id}
+                      className="mb-2 pb-2 border-b border-white/5 last:border-0 last:mb-0 last:pb-0"
+                      dangerouslySetInnerHTML={{ __html: log }}
+                    />
                   ))}
+                  {generalLogs.generalHistory.size === 0 && (
+                    <div className="text-muted-foreground text-center py-8">기록이 없습니다</div>
+                  )}
                 </div>
               </div>
-            )}
+
+              {/* Battle Detail Section */}
+              <div>
+                <div className="section_title mb-2 text-primary">전투 기록</div>
+                <div className="glass p-4 text-sm border border-white/10 rounded-lg max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent shadow-inner">
+                  {Array.from(generalLogs.battleDetail.entries()).map(([id, log]) => (
+                    <div
+                      key={id}
+                      className="mb-2 pb-2 border-b border-white/5 last:border-0 last:mb-0 last:pb-0"
+                      dangerouslySetInnerHTML={{ __html: log }}
+                    />
+                  ))}
+                  {generalLogs.battleDetail.size === 0 && (
+                    <div className="text-muted-foreground text-center py-8">기록이 없습니다</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Battle Result Section */}
+              <div>
+                <div className="section_title mb-2 text-primary">전투 결과</div>
+                <div className="glass p-4 text-sm border border-white/10 rounded-lg max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent shadow-inner">
+                  {Array.from(generalLogs.battleResult.entries()).map(([id, log]) => (
+                    <div
+                      key={id}
+                      className="mb-2 pb-2 border-b border-white/5 last:border-0 last:mb-0 last:pb-0"
+                      dangerouslySetInnerHTML={{ __html: log }}
+                    />
+                  ))}
+                  {generalLogs.battleResult.size === 0 && (
+                    <div className="text-muted-foreground text-center py-8">기록이 없습니다</div>
+                  )}
+                </div>
+              </div>
+
+              {/* General Action Section (only if has content) */}
+              {generalLogs.generalAction.size > 0 && (
+                <div>
+                  <div className="section_title mb-2 text-primary">개인 기록</div>
+                  <div className="glass p-4 text-sm border border-white/10 rounded-lg max-h-60 overflow-y-auto scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent shadow-inner">
+                    {Array.from(generalLogs.generalAction.entries()).map(([id, log]) => (
+                      <div
+                        key={id}
+                        className="mb-2 pb-2 border-b border-white/5 last:border-0 last:mb-0 last:pb-0"
+                        dangerouslySetInnerHTML={{ __html: log }}
+                      />
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         ) : (
-          <div className="text-center text-gray-500 py-20">
+          <div className="text-center text-muted-foreground py-40 glass rounded-xl border-dashed border-2 border-white/10">
             {nationId === 0 ? "소속 국가가 없습니다." : "장수를 선택해주세요"}
           </div>
         )}

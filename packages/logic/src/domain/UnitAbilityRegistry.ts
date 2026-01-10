@@ -19,7 +19,7 @@ export class UnitAbilityRegistry {
 
   /**
    * 지정된 코드에 해당하는 트리거 인스턴스를 생성합니다.
-   * 
+   *
    * @param code 어빌리티 코드
    * @param unit 트리거가 적용될 유닛
    * @returns 트리거 인스턴스 또는 null (정의되지 않은 경우)
@@ -33,7 +33,7 @@ export class UnitAbilityRegistry {
   /**
    * 유닛의 병종 데이터에 정의된 모든 어빌리티 트리거를 생성하여 반환합니다.
    * 전투 시작 시 WarEngine에서 호출되어 각 유닛에게 트리거를 부여합니다.
-   * 
+   *
    * @param unit 대상 유닛
    * @returns 생성된 트리거 배열
    */

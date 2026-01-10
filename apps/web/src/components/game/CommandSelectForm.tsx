@@ -161,20 +161,20 @@ export const CommandSelectForm = forwardRef<CommandSelectFormRef, CommandSelectF
     }
 
     return (
-      <div className={cn("my-1", className)}>
+      <div className={cn("my-2", className)}>
         {/* Category tabs - 6 columns (3x2 grid on mobile) */}
-        <div className="grid grid-cols-3 gap-1 mb-1">
+        <div className="grid grid-cols-3 gap-1 mb-2">
           {Array.from(categoryMap.entries()).map(([categoryKey, { deco }]) => (
             <button
               key={categoryKey}
               type="button"
               onClick={() => setChosenCategory(categoryKey)}
               className={cn(
-                "px-2 py-1.5 text-sm font-medium rounded transition-colors",
-                "border border-transparent",
+                "px-2 py-2.5 text-sm font-bold rounded-lg transition-all duration-200 backdrop-blur-sm",
+                "border relative overflow-hidden",
                 chosenCategory === categoryKey
-                  ? "bg-green-600 text-white border-green-700"
-                  : "bg-green-500/80 text-white hover:bg-green-600"
+                  ? "bg-primary text-primary-foreground border-primary shadow-[0_0_15px_rgba(250,204,21,0.3)]"
+                  : "bg-white/5 text-muted-foreground border-white/5 hover:bg-white/10 hover:text-foreground hover:border-white/10"
               )}
             >
               {deco.altName ?? deco.name}
@@ -183,11 +183,11 @@ export const CommandSelectForm = forwardRef<CommandSelectFormRef, CommandSelectF
         </div>
 
         {/* Command grid - stacked layers with visibility toggle */}
-        <div className="relative my-1" style={{ display: "grid", alignItems: "self-start" }}>
+        <div className="relative my-2" style={{ display: "grid", alignItems: "self-start" }}>
           {Array.from(categoryMap.entries()).map(([category, { values }]) => (
             <div
               key={category}
-              className="grid grid-cols-2 gap-1"
+              className="grid grid-cols-2 gap-2"
               style={{
                 visibility: category === chosenCategory ? "visible" : "hidden",
                 gridRow: "1",
@@ -207,12 +207,12 @@ export const CommandSelectForm = forwardRef<CommandSelectFormRef, CommandSelectF
 
         {/* Close button */}
         {!hideClose && (
-          <div className="grid grid-cols-4 gap-1 mt-1 mb-1">
+          <div className="grid grid-cols-4 gap-2 mt-3 mb-1">
             <div className="col-start-4">
               <button
                 type="button"
                 onClick={() => close()}
-                className="w-full px-3 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700 transition-colors"
+                className="w-full px-3 py-2 text-sm font-medium bg-white/5 text-muted-foreground border border-white/10 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-200"
               >
                 닫기
               </button>
@@ -247,32 +247,41 @@ function CommandButton({ command, onClick }: CommandButtonProps) {
       type="button"
       onClick={onClick}
       className={cn(
-        "border border-gray-500 rounded-lg overflow-hidden cursor-pointer",
-        "p-0.5 m-0 min-h-[2.8em] flex items-center justify-center",
-        "hover:bg-gray-700/50 transition-colors",
-        "focus:outline-none focus:ring-2 focus:ring-green-500/50"
+        "relative rounded-xl overflow-hidden cursor-pointer backdrop-blur-md transition-all duration-200 group",
+        "p-2 m-0 min-h-[3.5em] flex items-center justify-center",
+        "border border-white/10 bg-card/40",
+        "hover:-translate-y-0.5 hover:bg-card/60 hover:border-primary/50 hover:shadow-lg",
+        "focus:outline-none focus:ring-1 focus:ring-primary/50",
+        !command.possible &&
+          "opacity-50 grayscale cursor-not-allowed hover:translate-y-0 hover:border-white/10 hover:shadow-none"
       )}
     >
-      <div className="text-center">
+      <div className="text-center w-full">
         {/* Main command name */}
         <p
           className={cn(
-            "text-center my-0 text-sm",
-            !command.possible && "text-red-500 line-through"
+            "text-center my-0 text-sm font-bold tracking-wide",
+            command.possible
+              ? "text-gray-100 group-hover:text-primary transition-colors"
+              : "text-red-500/70 line-through"
           )}
         >
           {command.simpleName}
           {/* Compensation indicator */}
           {command.compensation > 0 && (
-            <span className="text-cyan-400 inline-block w-4 ml-0.5">▲</span>
+            <span className="text-emerald-400 inline-block w-4 ml-1">▲</span>
           )}
           {command.compensation < 0 && (
-            <span className="text-red-500 inline-block w-4 ml-0.5">▼</span>
+            <span className="text-red-400 inline-block w-4 ml-1">▼</span>
           )}
-          {command.compensation === 0 && <span className="inline-block w-4 ml-0.5" />}
+          {command.compensation === 0 && <span className="inline-block w-4 ml-1" />}
         </p>
         {/* Subtitle/details */}
-        {subtitle && <small className="block text-center text-xs text-gray-400">{subtitle}</small>}
+        {subtitle && (
+          <small className="block text-center text-[10px] text-muted-foreground/80 mt-0.5 group-hover:text-muted-foreground transition-colors">
+            {subtitle}
+          </small>
+        )}
       </div>
     </button>
   );

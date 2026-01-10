@@ -42,7 +42,7 @@ const NPC_TYPE = {
 export class NPCAutomation {
   /**
    * 장수의 행동을 결정합니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param generalId 장수 ID
@@ -426,4 +426,3 @@ export class NPCAutomation {
     ];
   }
 }
-

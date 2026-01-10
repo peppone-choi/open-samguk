@@ -54,14 +54,15 @@ export function TopBackBar({
 
   return (
     <div
-      className={`bg0 w-full max-w-[1000px] mx-auto grid h-8 items-center ${teleportZone ? "grid-cols-[90px_90px_1fr_180px]" : "grid-cols-[90px_90px_1fr_90px_90px]"
-        }`}
+      className={`glass w-full max-w-[1000px] mx-auto grid h-10 items-center transition-all duration-300 ${
+        teleportZone ? "grid-cols-[90px_90px_1fr_180px]" : "grid-cols-[90px_90px_1fr_90px_90px]"
+      }`}
     >
       {/* Back Button */}
       <button
         type="button"
         onClick={handleBack}
-        className="h-8 mr-0.5 px-2 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded-sm border border-gray-600 transition-colors"
+        className="h-8 ml-1 px-3 bg-white/5 hover:bg-white/10 text-white/90 text-sm font-medium rounded border border-white/10 hover:border-primary/50 hover:shadow-glow-sm transition-all duration-300 active:scale-95"
       >
         {buttonText}
       </button>
@@ -71,9 +72,9 @@ export function TopBackBar({
         <button
           type="button"
           onClick={handleReload}
-          className="h-8 mr-0.5 px-2 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded-sm border border-gray-600 transition-colors flex items-center justify-center gap-1"
+          className="h-8 ml-1 px-3 bg-white/5 hover:bg-white/10 text-white/90 text-sm font-medium rounded border border-white/10 hover:border-primary/50 hover:shadow-glow-sm transition-all duration-300 active:scale-95 flex items-center justify-center gap-1.5"
         >
-          <RefreshCw size={14} />
+          <RefreshCw size={14} className="opacity-80" />
           갱신
         </button>
       ) : (
@@ -81,13 +82,15 @@ export function TopBackBar({
       )}
 
       {/* Title */}
-      <h2 className="text-center text-lg font-bold text-white leading-8 m-0">{title}</h2>
+      <h2 className="text-center text-lg font-bold text-white leading-8 m-0 tracking-wide drop-shadow-md">
+        {title}
+      </h2>
 
       {/* Right side content */}
       {children ? (
         children
       ) : teleportZone ? (
-        <div id={teleportZone} className="h-8" />
+        <div id={teleportZone} className="h-8 flex items-center justify-end pr-1" />
       ) : (
         <>
           <div>&nbsp;</div>
@@ -95,10 +98,11 @@ export function TopBackBar({
             <button
               type="button"
               onClick={() => onSearchToggle?.(!searchable)}
-              className={`h-8 px-2 text-sm rounded-sm border transition-colors ${searchable
-                ? "bg-cyan-600 hover:bg-cyan-500 border-cyan-500 text-white"
-                : "bg-zinc-700 hover:bg-zinc-600 border-gray-600 text-gray-300"
-                }`}
+              className={`h-8 mr-1 px-3 text-sm font-medium rounded border transition-all duration-300 active:scale-95 ${
+                searchable
+                  ? "bg-primary/20 hover:bg-primary/30 border-primary text-primary shadow-glow-sm"
+                  : "bg-white/5 hover:bg-white/10 border-white/10 text-white/70 hover:text-white"
+              }`}
             >
               {searchable ? "검색 켜짐" : "검색 꺼짐"}
             </button>

@@ -30,7 +30,7 @@ export class WorldState {
   /**
    * 스냅샷으로부터 현재 상태를 복구하거나 초기화합니다.
    * 외부 스냅샷과의 참조를 끊기 위해 깊은 복사(JSON 기반)를 수행합니다.
-   * 
+   *
    * @param snapshot 복구할 게임 상태 스냅샷
    */
   public restoreFromSnapshot(snapshot: WorldSnapshot): void {

@@ -14,7 +14,7 @@ import {
  * WorldSnapshot을 Prisma DB와 동기화하는 리포지토리
  */
 export class SnapshotRepository {
-  constructor(private readonly prisma: PrismaClientType) { }
+  constructor(private readonly prisma: PrismaClientType) {}
 
   /**
    * DB에서 generalTurns만 다시 로드 (턴 실행 전 최신 명령 반영용)

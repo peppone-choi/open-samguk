@@ -59,10 +59,10 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60"
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm transition-opacity duration-300"
         onClick={onClose}
         role="button"
         tabIndex={-1}
@@ -70,20 +70,20 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
         onKeyDown={(e) => e.key === "Escape" && onClose()}
       />
       {/* Modal Content */}
-      <div className="relative bg-gray-800 rounded-lg shadow-xl max-w-md w-full mx-4 max-h-[80vh] flex flex-col">
+      <div className="relative bg-card/95 backdrop-blur-xl rounded-xl shadow-2xl max-w-md w-full max-h-[85vh] flex flex-col overflow-hidden border border-white/10 animate-in fade-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-700">
-          <h3 className="text-lg font-semibold text-white">{title}</h3>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-white/5">
+          <h3 className="text-lg font-bold text-primary tracking-tight">{title}</h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors"
+            className="text-muted-foreground hover:text-white transition-all p-1 hover:bg-white/10 rounded-full"
           >
             ✕
           </button>
         </div>
         {/* Body */}
-        <div className="p-4 overflow-y-auto flex-1">{children}</div>
+        <div className="p-6 overflow-y-auto flex-1 custom-scrollbar">{children}</div>
       </div>
     </div>
   );
@@ -141,56 +141,73 @@ function SearchableSelect<T extends SelectOption>({
   );
 
   return (
-    <div className="relative">
+    <div className="relative group">
       {/* Selected Value Display / Search Input */}
       <div
         className={cn(
-          "w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md",
-          "text-white cursor-pointer flex items-center justify-between",
-          isOpen && "border-cyan-500"
+          "w-full px-4 py-3 bg-black/20 border border-white/10 rounded-lg backdrop-blur-sm",
+          "text-white cursor-pointer flex items-center justify-between transition-all duration-200",
+          "hover:bg-black/30 hover:border-white/20",
+          isOpen
+            ? "border-primary/50 ring-1 ring-primary/50 shadow-[0_0_10px_rgba(250,204,21,0.1)]"
+            : ""
         )}
         onClick={() => setIsOpen(!isOpen)}
         role="button"
         tabIndex={0}
         onKeyDown={(e) => e.key === "Enter" && setIsOpen(!isOpen)}
       >
-        <span className={selectedOption ? "text-white" : "text-gray-400"}>
+        <span
+          className={cn(
+            selectedOption ? "text-white font-medium" : "text-muted-foreground",
+            "truncate pr-2"
+          )}
+        >
           {selectedOption?.simpleName ?? placeholder}
         </span>
-        <span className="text-gray-400">▼</span>
+        <span
+          className={cn(
+            "text-muted-foreground transition-transform duration-200",
+            isOpen && "rotate-180"
+          )}
+        >
+          ▼
+        </span>
       </div>
 
       {/* Dropdown */}
       {isOpen && (
-        <div className="absolute z-10 w-full mt-1 bg-gray-700 border border-gray-600 rounded-md shadow-lg">
+        <div className="absolute z-50 w-full mt-2 bg-card/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           {/* Search Input */}
           {searchable && (
-            <div className="p-2 border-b border-gray-600">
+            <div className="p-2 border-b border-white/10 bg-white/5">
               <input
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="검색..."
-                className="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded text-white text-sm focus:outline-none focus:border-cyan-500"
+                className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-md text-white text-sm focus:outline-none focus:border-primary/50 focus:bg-black/60 transition-colors"
                 autoFocus
               />
             </div>
           )}
 
           {/* Options List */}
-          <div className="overflow-y-auto" style={{ maxHeight }}>
+          <div className="overflow-y-auto custom-scrollbar" style={{ maxHeight }}>
             {filteredOptions.length === 0 ? (
-              <div className="px-3 py-2 text-gray-400 text-sm">결과가 없습니다</div>
+              <div className="px-4 py-3 text-muted-foreground text-sm text-center italic">
+                결과가 없습니다
+              </div>
             ) : (
               filteredOptions.map((option) => (
                 <div
                   key={option.value}
                   className={cn(
-                    "px-3 py-2 cursor-pointer transition-colors text-sm",
+                    "px-4 py-2.5 cursor-pointer transition-all duration-150 text-sm border-l-2 border-transparent",
                     option.value === value
-                      ? "bg-cyan-600 text-white"
-                      : "hover:bg-gray-600 text-white",
-                    option.notAvailable && "text-red-400"
+                      ? "bg-primary/10 text-primary border-primary font-medium"
+                      : "hover:bg-white/5 text-gray-300 hover:text-white hover:border-white/30",
+                    option.notAvailable && "text-red-400 opacity-60 decoration-slate-500"
                   )}
                   onClick={() => handleSelect(option)}
                   role="option"
@@ -201,8 +218,12 @@ function SearchableSelect<T extends SelectOption>({
                   ) : (
                     <span>
                       {option.title}
-                      {option.info && <span className="text-gray-400 ml-1">({option.info})</span>}
-                      {option.notAvailable && <span className="text-red-400 ml-1">(불가)</span>}
+                      {option.info && (
+                        <span className="text-muted-foreground ml-1 text-xs">({option.info})</span>
+                      )}
+                      {option.notAvailable && (
+                        <span className="text-red-400 ml-1 text-xs">(불가)</span>
+                      )}
                     </span>
                   )}
                 </div>
@@ -265,18 +286,18 @@ export function SelectCityModal({
           onChange={(v) => onChange(v)}
           placeholder="도시 선택"
         />
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-5 py-2 bg-white/5 text-gray-300 border border-white/10 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-200 font-medium text-sm"
           >
             취소
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
+            className="px-5 py-2 bg-primary text-primary-foreground border border-primary font-bold rounded-lg shadow-[0_0_15px_rgba(250,204,21,0.3)] hover:shadow-[0_0_20px_rgba(250,204,21,0.5)] hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 transition-all duration-200 text-sm"
           >
             확인
           </button>
@@ -349,18 +370,18 @@ export function SelectNationModal({
             </div>
           )}
         />
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-5 py-2 bg-white/5 text-gray-300 border border-white/10 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-200 font-medium text-sm"
           >
             취소
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
+            className="px-5 py-2 bg-primary text-primary-foreground border border-primary font-bold rounded-lg shadow-[0_0_15px_rgba(250,204,21,0.3)] hover:shadow-[0_0_20px_rgba(250,204,21,0.5)] hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 transition-all duration-200 text-sm"
           >
             확인
           </button>
@@ -502,18 +523,18 @@ export function SelectGeneralModal({
             )}
           />
         )}
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-5 py-2 bg-white/5 text-gray-300 border border-white/10 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-200 font-medium text-sm"
           >
             취소
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
+            className="px-5 py-2 bg-primary text-primary-foreground border border-primary font-bold rounded-lg shadow-[0_0_15px_rgba(250,204,21,0.3)] hover:shadow-[0_0_20px_rgba(250,204,21,0.5)] hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 transition-all duration-200 text-sm"
           >
             확인
           </button>
@@ -565,13 +586,13 @@ export function SelectAmountInput({
   );
 
   return (
-    <div className={cn("flex items-center gap-1", className)}>
+    <div className={cn("flex items-center gap-1.5", className)}>
       {/* Decrement buttons */}
       {max > 20000 && (
         <button
           type="button"
           onClick={() => handleChange(-10000)}
-          className="px-2 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+          className="px-3 py-2 text-xs font-medium bg-white/5 border border-white/10 text-gray-300 rounded-md hover:bg-white/10 hover:text-red-400 hover:border-red-400/30 transition-all"
         >
           -만
         </button>
@@ -580,7 +601,7 @@ export function SelectAmountInput({
         <button
           type="button"
           onClick={() => handleChange(-1000)}
-          className="px-2 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+          className="px-3 py-2 text-xs font-medium bg-white/5 border border-white/10 text-gray-300 rounded-md hover:bg-white/10 hover:text-red-400 hover:border-red-400/30 transition-all"
         >
           -천
         </button>
@@ -589,7 +610,7 @@ export function SelectAmountInput({
         <button
           type="button"
           onClick={() => handleChange(-100)}
-          className="px-2 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+          className="px-3 py-2 text-xs font-medium bg-white/5 border border-white/10 text-gray-300 rounded-md hover:bg-white/10 hover:text-red-400 hover:border-red-400/30 transition-all"
         >
           -백
         </button>
@@ -603,7 +624,7 @@ export function SelectAmountInput({
         min={min}
         max={max}
         step={step}
-        className="flex-1 px-3 py-1.5 bg-gray-700 border border-gray-600 rounded text-white text-right text-sm focus:outline-none focus:border-cyan-500"
+        className="flex-1 px-3 py-2 bg-black/40 border border-white/10 rounded-md text-white text-right text-sm focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all"
       />
 
       {/* Amount Guide Dropdown */}
@@ -612,12 +633,12 @@ export function SelectAmountInput({
           <button
             type="button"
             onClick={() => setShowGuide(!showGuide)}
-            className="px-2 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-2 py-2 text-xs bg-white/5 border border-white/10 text-gray-300 rounded-md hover:bg-white/10 hover:text-white transition-all h-full"
           >
             ▼
           </button>
           {showGuide && (
-            <div className="absolute right-0 mt-1 bg-gray-700 border border-gray-600 rounded shadow-lg z-10 min-w-[80px]">
+            <div className="absolute right-0 mt-2 bg-card/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-xl z-20 min-w-[100px] overflow-hidden animate-in fade-in zoom-in-95 duration-200">
               {amountGuide.map((guide) => (
                 <button
                   key={guide}
@@ -626,7 +647,7 @@ export function SelectAmountInput({
                     onChange(guide);
                     setShowGuide(false);
                   }}
-                  className="block w-full px-3 py-1.5 text-right text-sm text-white hover:bg-gray-600"
+                  className="block w-full px-4 py-2 text-right text-sm text-gray-300 hover:bg-primary/20 hover:text-primary transition-colors border-b border-white/5 last:border-0"
                 >
                   {guide.toLocaleString()}
                 </button>
@@ -641,7 +662,7 @@ export function SelectAmountInput({
         <button
           type="button"
           onClick={() => handleChange(100)}
-          className="px-2 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+          className="px-3 py-2 text-xs font-medium bg-white/5 border border-white/10 text-gray-300 rounded-md hover:bg-white/10 hover:text-emerald-400 hover:border-emerald-400/30 transition-all"
         >
           +백
         </button>
@@ -650,7 +671,7 @@ export function SelectAmountInput({
         <button
           type="button"
           onClick={() => handleChange(1000)}
-          className="px-2 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+          className="px-3 py-2 text-xs font-medium bg-white/5 border border-white/10 text-gray-300 rounded-md hover:bg-white/10 hover:text-emerald-400 hover:border-emerald-400/30 transition-all"
         >
           +천
         </button>
@@ -659,7 +680,7 @@ export function SelectAmountInput({
         <button
           type="button"
           onClick={() => handleChange(10000)}
-          className="px-2 py-1.5 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
+          className="px-3 py-2 text-xs font-medium bg-white/5 border border-white/10 text-gray-300 rounded-md hover:bg-white/10 hover:text-emerald-400 hover:border-emerald-400/30 transition-all"
         >
           +만
         </button>
@@ -716,18 +737,18 @@ export function SelectAmountModal({
           step={step}
           amountGuide={amountGuide}
         />
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-5 py-2 bg-white/5 text-gray-300 border border-white/10 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-200 font-medium text-sm"
           >
             취소
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
+            className="px-5 py-2 bg-primary text-primary-foreground border border-primary font-bold rounded-lg shadow-[0_0_15px_rgba(250,204,21,0.3)] hover:shadow-[0_0_20px_rgba(250,204,21,0.5)] hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 transition-all duration-200 text-sm"
           >
             확인
           </button>
@@ -789,44 +810,46 @@ export function SelectColorModal({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="색상 선택">
-      <div className="space-y-4">
-        <div className="grid grid-cols-5 gap-2">
+      <div className="space-y-6">
+        <div className="grid grid-cols-5 gap-3 p-2">
           {colors.map((color, index) => (
             <button
               key={color}
               type="button"
               onClick={() => onChange(index)}
               className={cn(
-                "w-full aspect-square rounded-md border-2 transition-all",
+                "w-full aspect-square rounded-lg border-2 transition-all duration-200 shadow-sm",
                 value === index
-                  ? "border-white scale-110 shadow-lg"
-                  : "border-transparent hover:border-gray-400"
+                  ? "border-white scale-110 shadow-[0_0_15px_rgba(255,255,255,0.5)] ring-2 ring-black/50 z-10"
+                  : "border-white/10 hover:border-white/50 hover:scale-105 hover:shadow-md hover:z-10 opacity-80 hover:opacity-100"
               )}
               style={{ backgroundColor: color }}
               title={color}
             />
           ))}
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-400">선택된 색상:</span>
+        <div className="flex items-center gap-3 bg-black/20 p-3 rounded-lg border border-white/5 backdrop-blur-sm">
+          <span className="text-sm text-muted-foreground font-medium">선택된 색상:</span>
           <div
-            className="w-8 h-8 rounded border border-gray-600"
+            className="w-8 h-8 rounded-full border-2 border-white/20 shadow-inner"
             style={{ backgroundColor: colors[value] }}
           />
-          <span className="text-sm text-white">{colors[value]}</span>
+          <span className="text-sm text-white font-mono bg-black/40 px-2 py-1 rounded">
+            {colors[value]}
+          </span>
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex justify-end gap-3 pt-2">
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-5 py-2 bg-white/5 text-gray-300 border border-white/10 rounded-lg hover:bg-white/10 hover:text-white transition-all duration-200 font-medium text-sm"
           >
             취소
           </button>
           <button
             type="button"
             onClick={handleConfirm}
-            className="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700"
+            className="px-5 py-2 bg-primary text-primary-foreground border border-primary font-bold rounded-lg shadow-[0_0_15px_rgba(250,204,21,0.3)] hover:shadow-[0_0_20px_rgba(250,204,21,0.5)] hover:-translate-y-0.5 hover:brightness-110 active:translate-y-0 transition-all duration-200 text-sm"
           >
             확인
           </button>

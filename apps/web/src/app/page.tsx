@@ -17,14 +17,25 @@ export default function Home() {
       {/* Navigation Header */}
       <nav className="relative z-10 flex items-center justify-between px-6 py-4 backdrop-blur-sm border-b border-white/5 sticky top-0 bg-black/20">
         <div className="flex items-center gap-8">
-          <Link href="/" className="text-xl font-bold tracking-tighter hover:text-primary transition-colors font-serif">
+          <Link
+            href="/"
+            className="text-xl font-bold tracking-tighter hover:text-primary transition-colors font-serif"
+          >
             HiDCHe
           </Link>
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-400">
-            <Link href="#" className="hover:text-white transition-colors">메뉴</Link>
-            <Link href="#" className="hover:text-white transition-colors">커뮤니티</Link>
-            <Link href="#" className="hover:text-white transition-colors">위키</Link>
-            <Link href="#" className="hover:text-white transition-colors">도움말</Link>
+            <Link href="#" className="hover:text-white transition-colors">
+              메뉴
+            </Link>
+            <Link href="#" className="hover:text-white transition-colors">
+              커뮤니티
+            </Link>
+            <Link href="#" className="hover:text-white transition-colors">
+              위키
+            </Link>
+            <Link href="#" className="hover:text-white transition-colors">
+              도움말
+            </Link>
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -56,15 +67,15 @@ export default function Home() {
 
         {/* Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 w-full items-start">
-
           {/* Left Column: Information & Login */}
           <div className="space-y-8 order-2 lg:order-1">
             <div className="space-y-6">
-              <h3 className="text-2xl font-serif font-bold border-l-4 border-primary pl-4">천하를 통일할 영웅을 기다립니다</h3>
+              <h3 className="text-2xl font-serif font-bold border-l-4 border-primary pl-4">
+                천하를 통일할 영웅을 기다립니다
+              </h3>
               <p className="text-gray-400 leading-relaxed max-w-md">
-                위, 촉, 오 세 나라가 격돌하는 난세의 한복판.
-                전략적 지혜와 외교적 수완으로 자신만의 세력을 구축하고
-                중원의 진정한 주인이 되십시오.
+                위, 촉, 오 세 나라가 격돌하는 난세의 한복판. 전략적 지혜와 외교적 수완으로 자신만의
+                세력을 구축하고 중원의 진정한 주인이 되십시오.
               </p>
             </div>
 
@@ -105,9 +116,16 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center space-y-3 z-10 transition-transform group-hover:scale-110">
-                    <div className="inline-block px-3 py-1 bg-primary/20 border border-primary/50 text-primary text-[10px] font-bold uppercase tracking-widest rounded-full mb-2">LIVE VIEW</div>
-                    <div className="text-xl font-serif font-bold italic tracking-tighter text-white/80">데이터 동기화 중...</div>
-                    <Link href="/game" className="inline-block px-6 py-2 bg-white/5 hover:bg-white/10 text-xs font-bold border border-white/10 rounded backdrop-blur-sm transition-all">
+                    <div className="inline-block px-3 py-1 bg-primary/20 border border-primary/50 text-primary text-[10px] font-bold uppercase tracking-widest rounded-full mb-2">
+                      LIVE VIEW
+                    </div>
+                    <div className="text-xl font-serif font-bold italic tracking-tighter text-white/80">
+                      데이터 동기화 중...
+                    </div>
+                    <Link
+                      href="/game"
+                      className="inline-block px-6 py-2 bg-white/5 hover:bg-white/10 text-xs font-bold border border-white/10 rounded backdrop-blur-sm transition-all"
+                    >
                       지도 크게 보기
                     </Link>
                   </div>
@@ -121,38 +139,57 @@ export default function Home() {
               <div className="p-4 bg-black/60 text-[11px] font-mono space-y-2 border-t border-gray-800 max-h-[150px] overflow-y-auto custom-scrollbar">
                 <div className="flex gap-2 text-blue-400">
                   <span>[전투]</span>
-                  <span className="text-gray-400">조조군이 원소군의 하북 지역을 맹공격하고 있습니다. (197년 7월)</span>
+                  <span className="text-gray-400">
+                    조조군이 원소군의 하북 지역을 맹공격하고 있습니다. (197년 7월)
+                  </span>
                 </div>
                 <div className="flex gap-2 text-amber-500">
                   <span>[정치]</span>
-                  <span className="text-gray-400">유비군이 서주 지역에서 세력을 확장하며 백성들의 지지를 얻고 있습니다.</span>
+                  <span className="text-gray-400">
+                    유비군이 서주 지역에서 세력을 확장하며 백성들의 지지를 얻고 있습니다.
+                  </span>
                 </div>
                 <div className="flex gap-2 text-red-500">
                   <span>[재난]</span>
-                  <span className="text-gray-400">남비, 관도 일대에 메뚜기 떼가 발생하여 식량 수급에 비상이 걸렸습니다.</span>
+                  <span className="text-gray-400">
+                    남비, 관도 일대에 메뚜기 떼가 발생하여 식량 수급에 비상이 걸렸습니다.
+                  </span>
                 </div>
                 <div className="flex gap-2 text-emerald-500">
                   <span>[인재]</span>
-                  <span className="text-gray-400">강동의 호랑이 손견의 아들 손책이 새로운 영웅으로 부상하고 있습니다.</span>
+                  <span className="text-gray-400">
+                    강동의 호랑이 손견의 아들 손책이 새로운 영웅으로 부상하고 있습니다.
+                  </span>
                 </div>
                 <div className="flex gap-2 text-purple-400">
                   <span>[황제]</span>
-                  <span className="text-gray-400">낙양의 황궁에서 천하의 영웅들을 소집하는 특별 칙령이 내려졌습니다.</span>
+                  <span className="text-gray-400">
+                    낙양의 황궁에서 천하의 영웅들을 소집하는 특별 칙령이 내려졌습니다.
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* Bottom Links */}
             <div className="grid grid-cols-3 gap-3">
-              <Link href="#" className="p-3 bg-zinc-900/50 hover:bg-zinc-800 border border-white/5 rounded text-center transition-all group">
+              <Link
+                href="#"
+                className="p-3 bg-zinc-900/50 hover:bg-zinc-800 border border-white/5 rounded text-center transition-all group"
+              >
                 <BookOpen className="w-5 h-5 mx-auto mb-2 text-gray-500 group-hover:text-primary transition-colors" />
                 <span className="text-[10px] font-bold text-gray-400">게임 위키</span>
               </Link>
-              <Link href="#" className="p-3 bg-zinc-900/50 hover:bg-zinc-800 border border-white/5 rounded text-center transition-all group">
+              <Link
+                href="#"
+                className="p-3 bg-zinc-900/50 hover:bg-zinc-800 border border-white/5 rounded text-center transition-all group"
+              >
                 <MessageSquare className="w-5 h-5 mx-auto mb-2 text-gray-500 group-hover:text-primary transition-colors" />
                 <span className="text-[10px] font-bold text-gray-400">자유 게시판</span>
               </Link>
-              <Link href="#" className="p-3 bg-zinc-900/50 hover:bg-zinc-800 border border-white/5 rounded text-center transition-all group">
+              <Link
+                href="#"
+                className="p-3 bg-zinc-900/50 hover:bg-zinc-800 border border-white/5 rounded text-center transition-all group"
+              >
                 <Trophy className="w-5 h-5 mx-auto mb-2 text-gray-500 group-hover:text-primary transition-colors" />
                 <span className="text-[10px] font-bold text-gray-400">명예의 전당</span>
               </Link>
@@ -167,21 +204,37 @@ export default function Home() {
           <div className="col-span-2 space-y-4">
             <h4 className="text-lg font-bold font-serif text-primary">삼국지 모의전투 HiDCHe</h4>
             <p className="text-sm text-gray-500 leading-relaxed max-w-sm">
-              웹 브라우저에서 즐기는 고품격 텍스트 전략 시뮬레이션.
-              역사 속 군주가 되어 천하 통일의 대업을 이루십시오.
+              웹 브라우저에서 즐기는 고품격 텍스트 전략 시뮬레이션. 역사 속 군주가 되어 천하 통일의
+              대업을 이루십시오.
             </p>
           </div>
           <div className="space-y-4">
             <h5 className="text-xs font-bold uppercase tracking-widest text-gray-400">Links</h5>
             <ul className="text-sm text-gray-500 space-y-2">
-              <li><Link href="#" className="hover:text-white transition-colors">이용약관</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">개인정보처리방침</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">문의하기</Link></li>
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  이용약관
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  개인정보처리방침
+                </Link>
+              </li>
+              <li>
+                <Link href="#" className="hover:text-white transition-colors">
+                  문의하기
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="space-y-4 text-right md:text-left">
             <h5 className="text-xs font-bold uppercase tracking-widest text-gray-400">Copyright</h5>
-            <p className="text-sm text-gray-500">© 2024 HiDCHe Development Team.<br />All rights reserved.</p>
+            <p className="text-sm text-gray-500">
+              © 2024 HiDCHe Development Team.
+              <br />
+              All rights reserved.
+            </p>
           </div>
         </div>
       </footer>

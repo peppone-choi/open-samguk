@@ -27,7 +27,7 @@ export class GeneralRecruitCommand extends GeneralCommand {
   /**
    * 등용 명령을 실행합니다.
    * 대상 장수에게 서신을 발송하고 소모 비용을 정산합니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param actorId 등용을 시도하는 장수 ID

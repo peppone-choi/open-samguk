@@ -212,14 +212,23 @@ function BettingDetail({ bettingId, onToast, onRefresh }: BettingDetailProps) {
   }
 
   return (
-    <div className="bg0 border border-gray-600 mb-2">
+    <div className="glass p-6 rounded-xl animate-fade-in mb-6">
       {/* Betting Title */}
-      <div className="bg2 p-2 text-center font-semibold">
-        {info.name} {getBettingStatus()} (총액: {bettingAmount.toLocaleString()})
+      <div className="relative overflow-hidden rounded-lg bg-gradient-to-r from-primary/20 to-transparent p-4 mb-6 border border-primary/10">
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-primary mb-1">{info.name}</h2>
+          <div className="text-sm text-muted-foreground flex justify-center items-center gap-2">
+            <span>{getBettingStatus()}</span>
+            <span className="w-1 h-1 rounded-full bg-white/20"></span>
+            <span className="text-foreground">
+              총액: <span className="text-primary font-mono">{bettingAmount.toLocaleString()}</span>
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Candidates Grid */}
-      <div className="grid grid-cols-3 lg:grid-cols-6 gap-1 p-2">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
         {info.candidates.map((candidate, idx) => {
           const isPicked = pickedCandidates.has(idx);
           const isWinner = info.isFinished && winner.has(idx);
@@ -229,20 +238,32 @@ function BettingDetail({ bettingId, onToast, onRefresh }: BettingDetailProps) {
           return (
             <div
               key={idx}
-              className={`cursor-pointer border rounded transition-colors ${
+              className={`relative group cursor-pointer transition-all duration-300 rounded-xl overflow-hidden border ${
                 isPicked || isWinner
-                  ? "border-cyan-400 bg-cyan-900/30"
-                  : "border-gray-600 hover:border-gray-400"
+                  ? "border-primary bg-primary/20 shadow-[0_0_20px_rgba(234,179,8,0.2)]"
+                  : "border-white/10 bg-black/20 hover:border-primary/50 hover:bg-black/40 hover:-translate-y-1"
               }`}
               onClick={() => toggleCandidate(idx)}
             >
-              <div className="bg1 p-1 text-center text-sm font-semibold">{candidate.name}</div>
-              <div className="p-2 text-xs text-center">
-                {(candidate.aux?.info as string) || "-"}
+              <div
+                className={`p-2 text-center text-sm font-bold border-b border-white/5 ${
+                  isPicked || isWinner
+                    ? "bg-primary/20 text-primary-foreground"
+                    : "bg-white/5 text-primary"
+                }`}
+              >
+                {candidate.name}
               </div>
-              <div className="p-1 text-xs text-center text-gray-400">
-                선택율: {pickRate.toFixed(1)}%
+              <div className="p-3 text-center space-y-2">
+                <div className="text-xs text-muted-foreground min-h-[1.5em]">
+                  {(candidate.aux?.info as string) || "-"}
+                </div>
+                <div className="text-xs font-mono text-primary/80">{pickRate.toFixed(1)}%</div>
               </div>
+              {/* Selection Indicator */}
+              {(isPicked || isWinner) && (
+                <div className="absolute inset-0 border-2 border-primary rounded-xl pointer-events-none box-border animate-pulse-glow"></div>
+              )}
             </div>
           );
         })}
@@ -250,103 +271,127 @@ function BettingDetail({ bettingId, onToast, onRefresh }: BettingDetailProps) {
 
       {/* Bet Form (only if betting is open) */}
       {isBettingOpen && (
-        <div className="grid grid-cols-12 gap-1 p-2 items-center text-sm border-t border-gray-600">
-          <div className="col-span-6 lg:col-span-3">
-            잔여 {info.reqInheritancePoint ? "포인트" : "금"}: {remainPoint.toLocaleString()}
-          </div>
-          <div className="col-span-6 lg:col-span-3">
-            사용:{" "}
-            {Array.from(myBettings.values())
-              .reduce((a, b) => a + b, 0)
-              .toLocaleString()}
-          </div>
-          <div className="col-span-6 lg:col-span-3">
-            대상: {pickedCandidates.size > 0 ? getTypeStr(Array.from(pickedCandidates)) : "-"}
-          </div>
-          <div className="col-span-4 lg:col-span-2">
-            <input
-              type="number"
-              className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-sm"
-              value={betPoint}
-              min={info.minAmount || 10}
-              max={1000}
-              step={10}
-              onChange={(e) => setBetPoint(parseInt(e.target.value) || 0)}
-            />
-          </div>
-          <div className="col-span-2 lg:col-span-1">
-            <Button size="sm" onClick={handleSubmitBet} disabled={betMutation.isPending}>
-              베팅
-            </Button>
+        <div className="bg-black/20 rounded-xl p-4 border border-white/10 mb-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-center text-sm">
+            <div className="lg:col-span-3 flex flex-col">
+              <span className="text-xs text-muted-foreground mb-1">잔여 자산</span>
+              <span className="text-lg font-mono text-emerald-400">
+                {remainPoint.toLocaleString()}{" "}
+                <span className="text-xs text-muted-foreground">
+                  {info.reqInheritancePoint ? "P" : "금"}
+                </span>
+              </span>
+            </div>
+            <div className="lg:col-span-3 flex flex-col">
+              <span className="text-xs text-muted-foreground mb-1">사용 금액</span>
+              <span className="text-lg font-mono text-red-400">
+                {Array.from(myBettings.values())
+                  .reduce((a, b) => a + b, 0)
+                  .toLocaleString()}
+              </span>
+            </div>
+            <div className="lg:col-span-3 flex flex-col">
+              <span className="text-xs text-muted-foreground mb-1">베팅 대상</span>
+              <span className="text-base text-primary font-medium truncate">
+                {pickedCandidates.size > 0 ? getTypeStr(Array.from(pickedCandidates)) : "-"}
+              </span>
+            </div>
+            <div className="lg:col-span-3 flex gap-2 items-end">
+              <div className="flex-1">
+                <input
+                  type="number"
+                  className="w-full px-3 py-2 bg-black/40 border border-white/10 rounded-lg text-white text-sm focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all font-mono"
+                  value={betPoint}
+                  min={info.minAmount || 10}
+                  max={1000}
+                  step={10}
+                  onChange={(e) => setBetPoint(parseInt(e.target.value) || 0)}
+                />
+              </div>
+              <Button
+                size="sm"
+                onClick={handleSubmitBet}
+                disabled={betMutation.isPending}
+                className="btn-primary h-[38px]"
+              >
+                베팅
+              </Button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Dividend Ranking */}
-      <div className="border-t border-gray-600">
-        <div className="bg2 p-1 text-center text-sm">배당 순위</div>
+      <div className="rounded-xl overflow-hidden border border-white/10 bg-black/20">
+        <div className="bg-white/5 p-3 text-sm font-bold text-primary border-b border-white/10 flex items-center gap-2">
+          <span className="w-1 h-4 bg-primary rounded-full shadow-[0_0_10px_rgba(234,179,8,0.5)]"></span>
+          배당 순위
+        </div>
 
         {/* Header */}
-        <div className="grid grid-cols-12 text-center text-xs border-b border-gray-600 bg-zinc-800">
-          <div className="col-span-5 p-1">대상</div>
-          <div className="col-span-2 p-1">베팅액</div>
-          <div className="col-span-3 p-1">내 베팅</div>
-          <div className="col-span-2 p-1">{info.isFinished ? "배율" : "기대 배율"}</div>
+        <div className="grid grid-cols-12 text-center text-xs border-b border-white/10 bg-black/40 text-muted-foreground py-2">
+          <div className="col-span-5">대상</div>
+          <div className="col-span-2">베팅액</div>
+          <div className="col-span-3">내 베팅</div>
+          <div className="col-span-2">{info.isFinished ? "배율" : "기대 배율"}</div>
         </div>
 
         {/* Rows */}
-        {sortedDetailBet.map(([typeData, amount], idx) => {
-          const typeKey = Array.isArray(typeData) ? JSON.stringify(typeData) : String(typeData);
-          const myBet = myBettings.get(typeKey) ?? 0;
-          const multiplier = amount > 0 ? bettingAmount / amount : 0;
+        <div className="divide-y divide-white/5">
+          {sortedDetailBet.map(([typeData, amount], idx) => {
+            const typeKey = Array.isArray(typeData) ? JSON.stringify(typeData) : String(typeData);
+            const myBet = myBettings.get(typeKey) ?? 0;
+            const multiplier = amount > 0 ? bettingAmount / amount : 0;
 
-          // Determine color for finished bettings
-          let textColor = "";
-          if (info.isFinished) {
-            try {
-              const indices = Array.isArray(typeData)
-                ? typeData
-                : (JSON.parse(String(typeData)) as number[]);
-              const matchCount = indices.filter((i) => winner.has(i)).length;
-              if (matchCount === indices.length) {
-                textColor = "text-green-400";
-              } else if (matchCount > 0) {
-                textColor = "text-yellow-400";
-              } else {
-                textColor = "text-red-400";
+            // Determine color for finished bettings
+            let textColor = "text-muted-foreground";
+            if (info.isFinished) {
+              try {
+                const indices = Array.isArray(typeData)
+                  ? typeData
+                  : (JSON.parse(String(typeData)) as number[]);
+                const matchCount = indices.filter((i) => winner.has(i)).length;
+                if (matchCount === indices.length) {
+                  textColor = "text-emerald-400 font-bold";
+                } else if (matchCount > 0) {
+                  textColor = "text-amber-400";
+                } else {
+                  textColor = "text-red-400";
+                }
+              } catch {
+                /* ignore */
               }
-            } catch {
-              /* ignore */
             }
-          }
 
-          return (
-            <div
-              key={idx}
-              className={`grid grid-cols-12 text-center text-xs border-b border-gray-700 ${textColor}`}
-            >
-              <div className={`col-span-5 p-1 ${myBet > 0 ? "font-bold" : ""}`}>
-                {getTypeStr(typeData)}
+            return (
+              <div
+                key={idx}
+                className={`grid grid-cols-12 text-center text-xs py-3 hover:bg-white/5 transition-colors items-center ${textColor}`}
+              >
+                <div className={`col-span-5 p-1 ${myBet > 0 ? "font-bold text-primary" : ""}`}>
+                  {getTypeStr(typeData)}
+                </div>
+                <div className="col-span-2 p-1 text-right pr-4 font-mono">
+                  {(amount || 0).toLocaleString()}
+                </div>
+                <div className="col-span-3 p-1 text-center font-mono">
+                  {myBet > 0 && (
+                    <span className="text-primary">
+                      {myBet.toLocaleString()} -&gt;{" "}
+                      <span className="text-emerald-400">{(myBet * multiplier).toFixed(1)}</span>
+                    </span>
+                  )}
+                </div>
+                <div className="col-span-2 p-1 text-right pr-4 font-mono">
+                  {multiplier.toFixed(1)}배
+                </div>
               </div>
-              <div className="col-span-2 p-1 text-right pr-2 font-mono">
-                {(amount || 0).toLocaleString()}
-              </div>
-              <div className="col-span-3 p-1 text-center">
-                {myBet > 0 && (
-                  <>
-                    ({myBet.toLocaleString()} -&gt; {(myBet * multiplier).toFixed(1)})
-                  </>
-                )}
-              </div>
-              <div className="col-span-2 p-1 text-right pr-2 font-mono">
-                {multiplier.toFixed(1)}배
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {sortedDetailBet.length === 0 && (
-          <div className="p-4 text-center text-gray-400">아직 베팅이 없습니다.</div>
+          <div className="p-8 text-center text-muted-foreground">아직 베팅이 없습니다.</div>
         )}
       </div>
     </div>
@@ -395,16 +440,16 @@ export default function BettingPage() {
     <>
       <TopBackBar title="국가 베팅장" type="close" reloadable onReload={handleReload} />
 
-      <div className="w-full max-w-[1000px] mx-auto border border-gray-600">
+      <div className="w-full max-w-[1000px] mx-auto space-y-6 pb-20">
         {/* Toast Message */}
         {toastMessage && (
           <div
-            className={`p-2 text-center text-sm ${
+            className={`fixed top-20 left-1/2 -translate-x-1/2 z-50 px-6 py-3 rounded-xl shadow-2xl backdrop-blur-md border animate-slide-in flex items-center gap-3 ${
               toastMessage.variant === "success"
-                ? "bg-green-800"
+                ? "bg-emerald-950/80 border-emerald-500/30 text-emerald-400"
                 : toastMessage.variant === "danger"
-                  ? "bg-red-800"
-                  : "bg-yellow-800"
+                  ? "bg-red-950/80 border-red-500/30 text-red-400"
+                  : "bg-amber-950/80 border-amber-500/30 text-amber-400"
             }`}
           >
             {toastMessage.message}
@@ -421,44 +466,69 @@ export default function BettingPage() {
         )}
 
         {/* Betting List */}
-        <div className="bg0">
-          <div className="bg2 p-2 text-center font-semibold">베팅 목록</div>
+        <div className="glass rounded-xl overflow-hidden">
+          <div className="p-4 border-b border-white/10 bg-gradient-to-r from-primary/10 to-transparent">
+            <h3 className="text-lg font-bold text-primary flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary shadow-glow"></span>
+              베팅 목록
+            </h3>
+          </div>
 
           {isLoading ? (
-            <div className="p-4 text-center text-gray-400">로딩 중...</div>
+            <div className="p-8 text-center text-muted-foreground animate-pulse">로딩 중...</div>
           ) : bettingList.length === 0 ? (
-            <div className="p-4 text-center text-gray-400">등록된 베팅이 없습니다.</div>
+            <div className="p-8 text-center text-muted-foreground">등록된 베팅이 없습니다.</div>
           ) : (
-            <div className="divide-y divide-gray-700">
+            <div className="p-2 space-y-2">
               {[...bettingList].reverse().map((item) => {
                 const closeDate = new Date(item.closeDate);
                 const isFinished = item.isFinished;
                 const isClosed = closeDate < new Date();
+                const isSelected = selectedBettingId === item.id;
 
                 return (
                   <div
                     key={item.id}
-                    className={`p-2 cursor-pointer hover:bg-zinc-700 transition-colors ${
-                      selectedBettingId === item.id ? "bg-zinc-700" : ""
+                    className={`p-4 rounded-lg cursor-pointer transition-all duration-300 border ${
+                      isSelected
+                        ? "bg-primary/10 border-primary/50 shadow-[inset_0_0_20px_rgba(234,179,8,0.1)]"
+                        : "bg-black/20 border-white/5 hover:bg-black/40 hover:border-white/20 hover:translate-x-1"
                     }`}
                     onClick={() => setSelectedBettingId(item.id)}
                   >
-                    <span className="text-cyan-300">[{closeDate.toLocaleDateString()}]</span>{" "}
-                    {item.name}{" "}
-                    <span
-                      className={`text-sm ${
-                        isFinished
-                          ? "text-gray-400"
-                          : isClosed
-                            ? "text-yellow-400"
-                            : "text-green-400"
-                      }`}
-                    >
-                      {getBettingStatus(item)}
-                    </span>
-                    <span className="text-gray-400 ml-2">
-                      (총액: {item.totalAmount?.toLocaleString() ?? 0})
-                    </span>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-mono px-2 py-0.5 rounded bg-white/5 text-muted-foreground border border-white/10">
+                          {closeDate.toLocaleDateString()}
+                        </span>
+                        <span
+                          className={`font-medium ${
+                            isSelected ? "text-primary" : "text-foreground"
+                          }`}
+                        >
+                          {item.name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-4 text-sm">
+                        <span className="text-muted-foreground hidden sm:inline-block">
+                          총액:{" "}
+                          <span className="text-foreground font-mono">
+                            {item.totalAmount?.toLocaleString() ?? 0}
+                          </span>
+                        </span>
+                        <span
+                          className={`px-2 py-0.5 rounded text-xs font-bold border ${
+                            isFinished
+                              ? "border-white/10 text-muted-foreground bg-white/5"
+                              : isClosed
+                                ? "border-amber-500/30 text-amber-400 bg-amber-950/30"
+                                : "border-emerald-500/30 text-emerald-400 bg-emerald-950/30 shadow-glow-sm"
+                          }`}
+                        >
+                          {getBettingStatus(item)}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 );
               })}

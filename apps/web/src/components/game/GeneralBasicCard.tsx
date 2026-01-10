@@ -281,18 +281,37 @@ export function GeneralBasicCard({
           grid-template-rows: repeat(9, calc(64px / 3));
           text-align: center;
           font-size: 14px;
-          border-bottom: 1px solid gray;
-          border-right: 1px solid gray;
-        }
-
-        .general-card-basic > div.bg1,
-        .general-card-basic > .general-crew-type-icon,
-        .general-card-basic > .general-icon {
-          border-left: 1px solid gray;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-right: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+          border-radius: 8px;
+          overflow: hidden;
         }
 
         .general-card-basic > div {
-          border-top: 1px solid gray;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          transition: background-color 0.2s ease;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .general-card-basic > div:hover {
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .general-card-basic > div.bg1 {
+          background-color: rgba(255, 255, 255, 0.03);
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.7);
+          border-left: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .general-card-basic > .general-crew-type-icon,
+        .general-card-basic > .general-icon {
+          border-left: 1px solid rgba(255, 255, 255, 0.1);
+          background-color: rgba(0, 0, 0, 0.2);
         }
 
         .general-icon {
@@ -307,6 +326,10 @@ export function GeneralBasicCard({
           grid-row: 1 / 2;
           grid-column: 2 / 8;
           font-weight: bold;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .general-crew-type-icon {
@@ -336,10 +359,15 @@ export function GeneralBasicCard({
         .row {
           display: flex;
           gap: 0;
+          height: 100%;
+          width: 100%;
         }
 
         .col {
           flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
 
         .align-self-center {

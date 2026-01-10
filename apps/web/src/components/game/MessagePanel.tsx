@@ -255,25 +255,38 @@ export function MessagePanel({
 
     return (
       <div
-        className={`${type === "public" || type === "private" ? "lg:border-r lg:border-gray-600" : ""}`}
+        className={`${type === "public" || type === "private" ? "lg:border-r lg:border-white/10" : ""} relative flex flex-col`}
       >
-        <div ref={anchorRef} className="relative -top-[68px] invisible" />
-        <div className="flex items-center justify-between bg-gray-900 border border-gray-700 px-2 py-1">
-          <span className="text-white font-medium">{title}</span>
+        <div ref={anchorRef} className="absolute -top-[68px] invisible" />
+        <div className="flex items-center justify-between bg-white/5 backdrop-blur-md border-y border-white/10 px-3 py-2 sticky top-0 z-10 shadow-lg">
+          <span className="text-white/90 font-bold text-sm tracking-wide flex items-center gap-2">
+            <span
+              className={`w-2 h-2 rounded-full ${
+                type === "public"
+                  ? "bg-blue-400 shadow-[0_0_8px_rgba(96,165,250,0.6)]"
+                  : type === "national"
+                    ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]"
+                    : type === "private"
+                      ? "bg-red-400 shadow-[0_0_8px_rgba(248,113,113,0.6)]"
+                      : "bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.6)]"
+              }`}
+            ></span>
+            {title}
+          </span>
           {quickTargetMailbox !== undefined && (
             <button
-              className="px-2 py-0.5 text-xs bg-blue-600 text-white rounded hover:bg-blue-500"
+              className="px-2.5 py-1 text-xs bg-white/10 hover:bg-white/20 text-blue-200 border border-white/10 rounded transition-all hover:scale-105 active:scale-95 flex items-center gap-1"
               onClick={() => setTargetMailbox(quickTargetMailbox)}
             >
-              ↩ 여기로
+              <span className="text-[10px]">↩</span> 여기로
             </button>
           )}
         </div>
 
         {filteredMessages.length === 0 ? (
-          <div className="p-4 text-gray-400 text-center">메시지가 없습니다.</div>
+          <div className="p-8 text-white/20 text-center italic text-sm">메시지가 없습니다.</div>
         ) : (
-          <div className="lg:h-[650px] lg:overflow-y-auto">
+          <div className="lg:h-[650px] lg:overflow-y-auto custom-scrollbar bg-black/20">
             {filteredMessages.map((msg) => (
               <MessagePlate
                 key={msg.id}
@@ -290,15 +303,15 @@ export function MessagePanel({
               />
             ))}
 
-            <div className="grid grid-cols-2 lg:grid-cols-1 gap-1 p-1">
+            <div className="grid grid-cols-2 lg:grid-cols-1 gap-2 p-3 border-t border-white/5 bg-black/40 backdrop-blur-sm">
               <button
-                className="lg:hidden px-3 py-1.5 bg-gray-700 text-white text-sm rounded hover:bg-gray-600"
+                className="lg:hidden px-4 py-2 bg-white/5 text-white/70 text-sm rounded border border-white/10 hover:bg-white/10 transition-colors"
                 onClick={() => handleFoldMessages(type)}
               >
                 접기
               </button>
               <button
-                className="px-3 py-1.5 bg-gray-600 text-white text-sm rounded hover:bg-gray-500"
+                className="w-full px-4 py-2 bg-white/5 text-white/70 text-sm font-medium rounded border border-white/10 hover:bg-white/10 hover:text-white transition-all shadow-sm active:translate-y-0.5"
                 onClick={() => handleLoadOldMessages(type)}
               >
                 이전 메시지 불러오기
@@ -311,20 +324,26 @@ export function MessagePanel({
   };
 
   return (
-    <div className={`${className ?? ""}`}>
+    <div
+      className={`${className ?? ""} bg-[#1a1b23] border border-white/10 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/5`}
+    >
       {/* Input Form */}
-      <div className="grid grid-cols-6 lg:grid-cols-12 gap-0 bg-gray-900">
+      <div className="grid grid-cols-6 lg:grid-cols-12 gap-0 border-b border-white/10 bg-gradient-to-r from-[#2a2b36] to-[#1f2029]">
         {/* Mailbox Selector */}
-        <div className="col-span-6 lg:col-span-2">
+        <div className="col-span-6 lg:col-span-2 border-r border-white/10 relative group">
+          <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-white/30">
+            ▼
+          </div>
           <select
             value={targetMailbox}
             onChange={(e) => setTargetMailbox(Number(e.target.value))}
-            className="w-full h-full px-2 py-2 bg-gray-800 text-white border border-gray-700 text-sm"
+            className="w-full h-full px-3 py-3 bg-transparent text-white/90 text-sm appearance-none cursor-pointer hover:bg-white/5 transition-colors focus:outline-none focus:bg-white/10"
           >
             {mailboxList.map((group) => (
               <optgroup
                 key={group.label}
                 label={group.label}
+                className="bg-gray-900 text-white"
                 style={{
                   backgroundColor: group.color ?? "#000000",
                   color: group.color && isBrightColor(group.color) ? "#000000" : "#ffffff",
@@ -349,16 +368,17 @@ export function MessagePanel({
         </div>
 
         {/* Message Input */}
-        <div className="col-span-6 lg:col-span-8 order-last lg:order-none">
+        <div className="col-span-6 lg:col-span-8 order-last lg:order-none relative">
           <input
             type="text"
             value={newMessageText}
             onChange={(e) => setNewMessageText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
             maxLength={99}
-            placeholder="메시지를 입력하세요..."
-            className="w-full h-full px-3 py-2 bg-gray-800 text-white border border-gray-700 text-sm placeholder-gray-500 focus:outline-none focus:border-blue-500"
+            placeholder="메시지를 입력하세요... (최대 99자)"
+            className="w-full h-full px-4 py-3 bg-transparent text-white text-sm placeholder-white/30 focus:outline-none focus:bg-white/5 transition-colors"
           />
+          <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500/50 to-transparent opacity-0 transition-opacity duration-300 peer-focus:opacity-100"></div>
         </div>
 
         {/* Send Button */}
@@ -366,15 +386,26 @@ export function MessagePanel({
           <button
             onClick={handleSendMessage}
             disabled={isSending}
-            className="w-full h-full px-4 py-2 bg-blue-600 text-white text-sm font-medium hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full h-full px-4 py-3 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold tracking-wide shadow-lg shadow-blue-900/20 transition-all hover:shadow-blue-600/30 relative overflow-hidden group"
           >
-            {isSending ? "전송중..." : "서신전달&갱신"}
+            <span className="relative z-10 flex items-center justify-center gap-2">
+              {isSending ? (
+                <>
+                  <span className="animate-spin text-lg">↻</span> 전송중...
+                </>
+              ) : (
+                <>
+                  <span className="text-lg">✉</span> 서신전달
+                </>
+              )}
+            </span>
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer" />
           </button>
         </div>
       </div>
 
       {/* Message Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2">
+      <div className="grid grid-cols-1 lg:grid-cols-2 bg-[#1a1b23]">
         {renderMessageSection(
           "public",
           "전체 메시지",

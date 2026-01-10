@@ -25,7 +25,7 @@ export class GeneralMoveCommand extends GeneralCommand {
 
   /**
    * 이동 명령을 실행합니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param actorId 장수 ID

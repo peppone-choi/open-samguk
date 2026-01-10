@@ -40,7 +40,7 @@ export interface WarResult {
 export class WarEngine {
   /**
    * 전투를 실행하고 결과를 요약하여 반환합니다.
-   * 
+   *
    * @param rng 난수 생성기 (결정론적 결과를 위해 필수)
    * @param snapshot 월드 스냅샷 (장수, 도시, 국가 정보)
    * @param attackerId 공격자 장수 ID
@@ -333,7 +333,7 @@ export class WarEngine {
 /**
  * 기본 전투력 계산 로직
  * 장수의 스탯, 병종 상성, 숙련도, 사기, 훈련도 등을 종합하여 페이즈별 전투력을 산출합니다.
- * 
+ *
  * @param rng 난수 생성기
  * @param attacker 공격 측 유닛
  * @param defender 수비 측 유닛
@@ -392,7 +392,7 @@ function computeWarPower(
 
 /**
  * 최종 데미지 산출 (계산된 전투력에 일정한 변동폭 적용)
- * 
+ *
  * @param rng 난수 생성기
  * @param warPower 산출된 기초 전투력
  * @returns 변동폭(±10%)이 적용된 정수 데미지
@@ -412,7 +412,7 @@ function getDexLog(attDex: number, defDex: number): number {
 /**
  * 장수의 전투 출진 순서(우선순위)를 결정합니다.
  * 관직이 높거나 스탯 합산이 높은 장수가 먼저 수비에 나섭니다.
- * 
+ *
  * @param general 대상 장수
  * @returns 출진 우선순위 점수
  */
@@ -420,4 +420,3 @@ function extractBattleOrder(general: General): number {
   // TODO: 실제 레거시의 관직 기반 우선순위 로직 보강 필요
   return (general.leadership + general.strength + general.intel) / 3;
 }
-

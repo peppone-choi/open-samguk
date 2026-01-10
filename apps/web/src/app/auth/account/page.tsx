@@ -139,323 +139,280 @@ export default function AccountPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-56px)] py-8">
-      <div className="game-container px-4">
+    <div className="min-h-[calc(100vh-56px)] py-8 relative">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="game-container px-4 relative z-10">
         {/* Header with back button */}
-        <div className="bg2 section_title with_border flex justify-between items-center">
-          <span>계 정 관 리</span>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-primary flex items-center gap-2">
+            <span className="w-1 h-6 bg-primary rounded-full shadow-[0_0_10px_hsl(var(--primary))]"></span>
+            계정 관리
+          </h1>
           <Link
             href="/auth/servers"
-            className="inline-flex items-center gap-1 px-3 py-1 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded transition-colors"
+            className="inline-flex items-center gap-1 px-4 py-2 bg-white/5 hover:bg-white/10 text-white text-sm rounded-lg transition-all duration-200 border border-white/10 hover:border-white/20"
           >
             <ArrowLeft size={16} />
             돌아가기
           </Link>
         </div>
 
-        <table className="tb_layout w-full">
-          <colgroup>
-            <col style={{ width: "90px", minWidth: "90px" }} />
-            <col style={{ width: "90px", minWidth: "90px" }} />
-            <col style={{ width: "90px", minWidth: "90px" }} />
-            <col style={{ width: "90px", minWidth: "90px" }} />
-            <col style={{ width: "90px", minWidth: "90px" }} />
-            <col style={{ minWidth: "90px" }} />
-          </colgroup>
-          <thead>
-            <tr>
-              <th colSpan={6} className="bg1 p-2">
-                회 원 정 보
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {/* ID */}
-            <tr>
-              <th className="bg1 p-2">ID</th>
-              <td colSpan={5} className="bg0 p-2">
-                <span className="text-white">{user.id}</span>
-              </td>
-            </tr>
-
-            {/* Nickname */}
-            <tr>
-              <th className="bg1 p-2">닉네임</th>
-              <td colSpan={5} className="bg0 p-2" style={{ height: "36px" }}>
-                <span className="text-amber-400">{user.nickname}</span>
-              </td>
-            </tr>
-
-            {/* Grade & ACL */}
-            <tr>
-              <th className="bg1 p-2">등급</th>
-              <td colSpan={2} className="bg0 p-2">
-                <span className="text-white">{user.grade}</span>
-              </td>
-              <td colSpan={3} className="bg0 p-2">
-                <span className="text-gray-400">{user.acl || "-"}</span>
-              </td>
-            </tr>
-
-            {/* Join date & Third party */}
-            <tr>
-              <th className="bg1 p-2">가입일시</th>
-              <td colSpan={2} className="bg0 p-2">
-                <span className="text-white">{user.joinDate}</span>
-              </td>
-              <td colSpan={3} className="bg0 p-2">
-                <span className="text-gray-300">
-                  개인정보 3자 제공 동의 :{" "}
-                  <span className={user.thirdPartyConsent ? "text-green-400" : "text-red-400"}>
-                    {user.thirdPartyConsent ? "동의" : "미동의"}
-                  </span>
+        <div className="premium-card p-0 overflow-hidden mb-8">
+          <div className="bg-black/40 border-b border-white/10 p-4 font-bold text-white/90 backdrop-blur-md">
+            회원 정보
+          </div>
+          <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-4">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                <span className="text-sm text-gray-400">ID</span>
+                <span className="text-white font-mono bg-black/20 px-3 py-1 rounded border border-white/5">
+                  {user.id}
                 </span>
-                {user.thirdPartyConsent && (
-                  <button
-                    onClick={handleRevokeThirdParty}
-                    className="ml-2 px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-white text-xs rounded transition-colors"
-                  >
-                    철회
-                  </button>
-                )}
-              </td>
-            </tr>
+              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                <span className="text-sm text-gray-400">닉네임</span>
+                <span className="text-amber-400 font-bold text-lg">{user.nickname}</span>
+              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                <span className="text-sm text-gray-400">등급</span>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 bg-primary/20 text-primary text-xs rounded border border-primary/30">
+                    {user.grade}
+                  </span>
+                  {user.acl && <span className="text-xs text-gray-500">({user.acl})</span>}
+                </div>
+              </div>
+            </div>
 
-            {/* OAuth type & Token */}
-            <tr>
-              <th className="bg1 p-2">인증 방식</th>
-              <td colSpan={2} className="bg0 p-2">
-                <span className="text-white">{user.oauthType}</span>
-              </td>
-              <td colSpan={3} className="bg0 p-2">
-                <span className="text-gray-300">{user.tokenValidUntil}까지 유효</span>
-                <button
-                  onClick={handleExtendToken}
-                  className="ml-2 px-2 py-1 bg-zinc-700 hover:bg-zinc-600 text-white text-xs rounded transition-colors"
+            <div className="space-y-4">
+              <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                <span className="text-sm text-gray-400">가입일시</span>
+                <span className="text-gray-300">{user.joinDate}</span>
+              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                <span className="text-sm text-gray-400">개인정보 제공</span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`text-sm ${user.thirdPartyConsent ? "text-emerald-400" : "text-red-400"}`}
+                  >
+                    {user.thirdPartyConsent ? "동의함 (3자 제공)" : "미동의"}
+                  </span>
+                  {user.thirdPartyConsent && (
+                    <button
+                      onClick={handleRevokeThirdParty}
+                      className="text-xs px-2 py-1 bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded transition-colors"
+                    >
+                      철회
+                    </button>
+                  )}
+                </div>
+              </div>
+              <div className="grid grid-cols-[100px_1fr] items-center gap-4">
+                <span className="text-sm text-gray-400">인증 방식</span>
+                <div className="flex flex-col gap-1">
+                  <span className="text-white text-sm">{user.oauthType}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-gray-500">{user.tokenValidUntil}까지 유효</span>
+                    <button
+                      onClick={handleExtendToken}
+                      className="text-xs px-2 py-0.5 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border border-blue-500/20 rounded transition-colors"
+                    >
+                      연장
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="premium-card p-6">
+            <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+              <span className="text-primary">🔒</span> 비밀번호 변경
+            </h3>
+            <form onSubmit={handlePasswordSubmit} className="space-y-4">
+              <div className="space-y-2">
+                <label
+                  htmlFor="currentPassword"
+                  className="text-xs uppercase text-gray-500 font-semibold tracking-wider"
                 >
-                  연장
-                </button>
-              </td>
-            </tr>
+                  현재 비밀번호
+                </label>
+                <input
+                  type="password"
+                  id="currentPassword"
+                  name="currentPassword"
+                  value={passwordForm.currentPassword}
+                  onChange={handlePasswordChange}
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                />
+                {errors.currentPassword && (
+                  <p className="text-red-400 text-xs">{errors.currentPassword}</p>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="newPassword"
+                  className="text-xs uppercase text-gray-500 font-semibold tracking-wider"
+                >
+                  새 비밀번호
+                </label>
+                <input
+                  type="password"
+                  id="newPassword"
+                  name="newPassword"
+                  value={passwordForm.newPassword}
+                  onChange={handlePasswordChange}
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                />
+                {errors.newPassword && <p className="text-red-400 text-xs">{errors.newPassword}</p>}
+              </div>
+              <div className="space-y-2">
+                <label
+                  htmlFor="confirmPassword"
+                  className="text-xs uppercase text-gray-500 font-semibold tracking-wider"
+                >
+                  비밀번호 확인
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={passwordForm.confirmPassword}
+                  onChange={handlePasswordChange}
+                  className="w-full px-4 py-2 bg-black/40 border border-white/10 rounded-lg text-white focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                />
+                {errors.confirmPassword && (
+                  <p className="text-red-400 text-xs">{errors.confirmPassword}</p>
+                )}
+              </div>
+              <button
+                type="submit"
+                className="w-full mt-2 py-2.5 bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 border border-amber-600/50 rounded-lg transition-all font-medium"
+              >
+                비밀번호 변경하기
+              </button>
+            </form>
+          </div>
 
-            {/* Section headers */}
-            <tr>
-              <th className="bg1 p-2"></th>
-              <th colSpan={2} className="bg1 p-2">
-                회원 탈퇴
-              </th>
-              <th colSpan={3} className="bg1 p-2">
-                비밀번호 변경
-              </th>
-            </tr>
-
-            {/* Delete account & Password change */}
-            <tr>
-              <th className="bg1 p-2">
-                정보
-                <br />
-                수정
-              </th>
-              <td colSpan={2} className="bg0 p-4 align-top">
-                <form onSubmit={handleDeleteSubmit} className="space-y-2">
-                  <div>
-                    <label htmlFor="delete_pw" className="text-sm text-gray-300 block mb-1">
-                      현재 비밀번호
-                    </label>
-                    <input
-                      type="password"
-                      id="delete_pw"
-                      autoComplete="current-password"
-                      value={deletePassword}
-                      onChange={(e) => {
-                        setDeletePassword(e.target.value);
-                        if (errors.deletePassword) {
-                          setErrors((prev) => ({ ...prev, deletePassword: "" }));
-                        }
-                      }}
-                      className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-sm"
-                    />
-                    {errors.deletePassword && (
-                      <p className="text-red-400 text-xs mt-1">{errors.deletePassword}</p>
-                    )}
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full px-3 py-2 bg-red-700 hover:bg-red-600 text-white text-sm rounded transition-colors"
-                  >
-                    탈퇴신청
-                  </button>
-                </form>
-              </td>
-              <td colSpan={3} className="bg0 p-4 align-top">
-                <form onSubmit={handlePasswordSubmit} className="space-y-2">
-                  <div>
-                    <label htmlFor="currentPassword" className="text-sm text-gray-300 block mb-1">
-                      현재 비밀번호
-                    </label>
-                    <input
-                      type="password"
-                      id="currentPassword"
-                      name="currentPassword"
-                      autoComplete="current-password"
-                      value={passwordForm.currentPassword}
-                      onChange={handlePasswordChange}
-                      className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-sm"
-                    />
-                    {errors.currentPassword && (
-                      <p className="text-red-400 text-xs mt-1">{errors.currentPassword}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label htmlFor="newPassword" className="text-sm text-gray-300 block mb-1">
-                      새 비밀번호
-                    </label>
-                    <input
-                      type="password"
-                      id="newPassword"
-                      name="newPassword"
-                      autoComplete="new-password"
-                      value={passwordForm.newPassword}
-                      onChange={handlePasswordChange}
-                      className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-sm"
-                    />
-                    {errors.newPassword && (
-                      <p className="text-red-400 text-xs mt-1">{errors.newPassword}</p>
-                    )}
-                  </div>
-                  <div>
-                    <label htmlFor="confirmPassword" className="text-sm text-gray-300 block mb-1">
-                      비밀번호 확인
-                    </label>
-                    <input
-                      type="password"
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      autoComplete="new-password"
-                      value={passwordForm.confirmPassword}
-                      onChange={handlePasswordChange}
-                      className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-sm"
-                    />
-                    {errors.confirmPassword && (
-                      <p className="text-red-400 text-xs mt-1">{errors.confirmPassword}</p>
-                    )}
-                  </div>
-                  <button
-                    type="submit"
-                    className="w-full px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm rounded transition-colors"
-                  >
-                    비밀번호 변경
-                  </button>
-                </form>
-              </td>
-            </tr>
-
-            {/* Icon section header */}
-            <tr>
-              <th className="bg1 p-2"></th>
-              <th colSpan={2} className="bg1 p-2">
-                현재 / 신규
-              </th>
-              <th colSpan={3} className="bg1 p-2">
-                전용 아이콘 변경
-              </th>
-            </tr>
-
-            {/* Icon upload */}
-            <tr>
-              <th className="bg1 p-2">
-                전용
-                <br />
-                아이콘
-              </th>
-              <td colSpan={2} className="bg0 p-4" style={{ height: "80px" }}>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-zinc-700 border border-gray-600 rounded flex items-center justify-center">
+          <div className="space-y-6">
+            <div className="premium-card p-6">
+              <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                <span className="text-primary">🖼️</span> 전용 아이콘
+              </h3>
+              <div className="flex gap-4 mb-4">
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-xs text-gray-500">현재</span>
+                  <div className="w-20 h-20 bg-black/40 border border-white/10 rounded-lg flex items-center justify-center overflow-hidden">
                     {user.iconUrl ? (
                       <img
                         src={user.iconUrl}
-                        alt="Current icon"
+                        alt="Current"
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <span className="text-gray-500 text-xs">없음</span>
-                    )}
-                  </div>
-                  <div className="w-16 h-16 bg-zinc-700 border border-gray-600 rounded flex items-center justify-center">
-                    {newIconPreview ? (
-                      <img
-                        src={newIconPreview}
-                        alt="New icon"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <span className="text-gray-500 text-xs">미리보기</span>
+                      <span className="text-gray-600 text-xs">없음</span>
                     )}
                   </div>
                 </div>
-              </td>
-              <td colSpan={3} className="bg0 p-4">
-                <form onSubmit={handleIconSubmit} className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="file"
-                      ref={fileInputRef}
-                      onChange={handleIconChange}
-                      accept=".avif,.webp,.jpg,.jpeg,.png,.gif"
-                      className="hidden"
-                      id="icon-upload"
-                    />
-                    <input
-                      type="text"
-                      readOnly
-                      value={fileInputRef.current?.files?.[0]?.name || ""}
-                      placeholder="파일을 선택하세요"
-                      className="flex-1 px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-sm"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      className="px-3 py-1 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded transition-colors flex items-center gap-1"
-                    >
-                      <Upload size={14} />
-                      찾아보기
-                    </button>
+                <div className="flex flex-col items-center gap-2">
+                  <span className="text-xs text-gray-500">변경할 이미지</span>
+                  <div
+                    className="w-20 h-20 bg-black/40 border-2 border-dashed border-white/20 rounded-lg flex items-center justify-center overflow-hidden relative group cursor-pointer hover:border-primary/50 transition-colors"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    {newIconPreview ? (
+                      <img
+                        src={newIconPreview}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Upload
+                        className="text-gray-500 group-hover:text-primary transition-colors"
+                        size={20}
+                      />
+                    )}
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button
-                      type="submit"
-                      className="flex-1 px-3 py-2 bg-amber-600 hover:bg-amber-500 text-white text-sm rounded transition-colors"
-                    >
-                      아이콘 변경
-                    </button>
-                    <button
-                      type="button"
-                      onClick={handleRemoveIcon}
-                      className="px-3 py-2 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded transition-colors flex items-center gap-1"
-                    >
-                      <Trash2 size={14} />
-                      제거
-                    </button>
-                  </div>
-                </form>
-              </td>
-            </tr>
-          </tbody>
-          <tfoot>
-            <tr>
-              <th className="bg1 p-2">도움말</th>
-              <td colSpan={5} className="bg0 p-4 text-left text-sm">
-                <p className="text-gray-300 leading-relaxed">
-                  아이콘은 64 x 64픽셀 ~ 128 x 128픽셀 사이, 50KB 이하의 avif, webp, jpg, gif, png
-                  파일만 가능합니다.
+                </div>
+              </div>
+
+              <form onSubmit={handleIconSubmit} className="space-y-3">
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleIconChange}
+                  accept=".avif,.webp,.jpg,.jpeg,.png,.gif"
+                  className="hidden"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex-1 py-2 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-sm text-gray-300 transition-colors"
+                  >
+                    파일 선택
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleRemoveIcon}
+                    className="px-3 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 rounded-lg text-red-400 transition-colors"
+                    title="아이콘 제거"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-600/50 rounded-lg transition-all font-medium text-sm"
+                >
+                  아이콘 적용하기
+                </button>
+                <p className="text-[10px] text-gray-500 mt-2 leading-tight">
+                  * 64x64 ~ 128x128 픽셀, 50KB 이하 (avif, webp, jpg, gif, png)
                 </p>
-                <p className="mt-4 text-fuchsia-400 leading-relaxed">
-                  탈퇴시 1개월간 정보가 보존되며, 1개월간 재가입이 불가능합니다.
+              </form>
+            </div>
+
+            <div className="premium-card p-6 border-red-900/30 bg-red-950/10">
+              <h3 className="text-lg font-bold text-red-400 mb-4 flex items-center gap-2">
+                ⚠️ 회원 탈퇴
+              </h3>
+              <form onSubmit={handleDeleteSubmit} className="space-y-3">
+                <div>
+                  <input
+                    type="password"
+                    placeholder="현재 비밀번호 확인"
+                    value={deletePassword}
+                    onChange={(e) => {
+                      setDeletePassword(e.target.value);
+                      if (errors.deletePassword) {
+                        setErrors((prev) => ({ ...prev, deletePassword: "" }));
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-black/40 border border-red-900/30 rounded-lg text-white placeholder-red-400/30 focus:outline-none focus:border-red-500/50 text-sm transition-all"
+                  />
+                  {errors.deletePassword && (
+                    <p className="text-red-400 text-xs mt-1">{errors.deletePassword}</p>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  className="w-full py-2 bg-red-600 hover:bg-red-500 text-white rounded-lg transition-colors font-medium text-sm shadow-lg shadow-red-900/20"
+                >
+                  탈퇴 신청하기
+                </button>
+                <p className="text-[10px] text-red-400/60 mt-2">
+                  * 탈퇴시 1개월간 정보가 보존되며, 1개월간 재가입이 불가능합니다.
                 </p>
-              </td>
-            </tr>
-          </tfoot>
-        </table>
+              </form>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

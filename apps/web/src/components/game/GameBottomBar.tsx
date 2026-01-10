@@ -121,19 +121,20 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
   ];
 
   if (showSecret) {
-    nationMenuItems.push({ name: "사령부", href: "/game/chief" }, { name: "부대 편성", href: "/game/troop" });
+    nationMenuItems.push(
+      { name: "사령부", href: "/game/chief" },
+      { name: "부대 편성", href: "/game/troop" }
+    );
   }
 
   return (
-    <nav className="gameBottomBar lg:hidden fixed bottom-0 left-0 right-0 bg-zinc-900 border-t border-zinc-700 z-50">
+    <nav className="gameBottomBar lg:hidden fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-xl border-t border-white/10 z-50 transition-all duration-300 shadow-[0_-5px_20px_rgba(0,0,0,0.5)]">
       <style jsx>{`
-        .gameBottomBar {
-          box-shadow: 0 -1px 0 #1f2937;
-        }
-
         .dropdown-menu {
-          max-height: calc(100vh - 50px);
+          max-height: calc(100vh - 70px);
           overflow-y: auto;
+          backdrop-filter: blur(12px);
+          -webkit-backdrop-filter: blur(12px);
         }
 
         .dropdown-menu li {
@@ -145,6 +146,19 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
           width: 100px;
           font-size: 14px;
           padding: 8px 12px;
+          position: relative;
+          overflow: hidden;
+        }
+
+        .nav-btn::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          height: 1px;
+          background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+          opacity: 0.5;
         }
 
         @media (min-width: 500px) {
@@ -155,23 +169,27 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
         }
       `}</style>
 
-      <div className="flex justify-center items-center py-2 gap-1" ref={dropdownRef}>
+      <div className="flex justify-center items-center py-3 gap-2" ref={dropdownRef}>
         {/* Global Menu */}
         <div className="relative">
           <button
-            className="nav-btn bg-zinc-700 hover:bg-zinc-600 text-white rounded transition-colors"
+            className={`nav-btn rounded-lg transition-all duration-300 border border-white/5 ${
+              openDropdown === "global"
+                ? "bg-primary/20 text-primary border-primary/30 shadow-glow-sm"
+                : "bg-white/5 hover:bg-white/10 text-white/90"
+            }`}
             onClick={() => setOpenDropdown(openDropdown === "global" ? null : "global")}
           >
             외부 메뉴 ▲
           </button>
           {openDropdown === "global" && (
-            <div className="dropdown-menu absolute bottom-full left-0 mb-1 bg-zinc-800 border border-zinc-600 rounded shadow-lg min-w-[200px]">
-              <div className="grid grid-cols-3 gap-1 p-2">
+            <div className="dropdown-menu absolute bottom-full left-0 mb-3 bg-zinc-900/95 border border-white/10 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[220px] p-1 animate-in slide-in-from-bottom-2 fade-in duration-200">
+              <div className="grid grid-cols-2 gap-1 p-1">
                 {globalMenu.map((item, idx) => (
                   <a
                     key={idx}
                     href={item.href}
-                    className="text-white hover:bg-zinc-700 px-2 py-1 text-sm rounded text-center"
+                    className="text-white/80 hover:text-white hover:bg-white/10 px-3 py-2 text-sm rounded-lg text-center transition-colors border border-transparent hover:border-white/5"
                   >
                     {item.name}
                   </a>
@@ -184,19 +202,23 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
         {/* Nation Menu */}
         <div className="relative">
           <button
-            className="nav-btn bg-sammo-nation hover:opacity-80 text-white rounded transition-colors"
+            className={`nav-btn rounded-lg transition-all duration-300 border border-white/5 ${
+              openDropdown === "nation"
+                ? "bg-blue-600/30 text-blue-300 border-blue-500/30 shadow-[0_0_15px_rgba(37,99,235,0.2)]"
+                : "bg-sammo-nation/80 hover:bg-sammo-nation text-white shadow-md"
+            }`}
             onClick={() => setOpenDropdown(openDropdown === "nation" ? null : "nation")}
           >
             국가 메뉴 ▲
           </button>
           {openDropdown === "nation" && (
-            <div className="dropdown-menu absolute bottom-full left-0 mb-1 bg-zinc-800 border border-zinc-600 rounded shadow-lg min-w-[200px]">
-              <div className="grid grid-cols-3 gap-1 p-2">
+            <div className="dropdown-menu absolute bottom-full left-1/2 -translate-x-1/2 mb-3 bg-zinc-900/95 border border-white/10 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[220px] p-1 animate-in slide-in-from-bottom-2 fade-in duration-200">
+              <div className="grid grid-cols-2 gap-1 p-1">
                 {nationMenuItems.map((item, idx) => (
                   <a
                     key={idx}
                     href={item.href}
-                    className="text-white hover:bg-zinc-700 px-2 py-1 text-sm rounded text-center"
+                    className="text-white/80 hover:text-white hover:bg-white/10 px-3 py-2 text-sm rounded-lg text-center transition-colors border border-transparent hover:border-white/5"
                   >
                     {item.name}
                   </a>
@@ -209,19 +231,25 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
         {/* Quick Navigation */}
         <div className="relative">
           <button
-            className="nav-btn bg-zinc-800 hover:bg-zinc-700 text-white rounded transition-colors"
+            className={`nav-btn rounded-lg transition-all duration-300 border border-white/5 ${
+              openDropdown === "quick"
+                ? "bg-primary/20 text-primary border-primary/30 shadow-glow-sm"
+                : "bg-white/5 hover:bg-white/10 text-white/90"
+            }`}
             onClick={() => setOpenDropdown(openDropdown === "quick" ? null : "quick")}
           >
             빠른 이동 ▲
           </button>
           {openDropdown === "quick" && (
-            <div className="dropdown-menu absolute bottom-full right-0 mb-1 bg-zinc-800 border border-zinc-600 rounded shadow-lg min-w-[300px]">
-              <div className="p-2">
+            <div className="dropdown-menu absolute bottom-full right-0 mb-3 bg-zinc-900/95 border border-white/10 rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.5)] min-w-[320px] animate-in slide-in-from-bottom-2 fade-in duration-200">
+              <div className="p-3 space-y-3">
                 {quickNavItems.map((category, catIdx) => (
-                  <div key={catIdx} className="mb-2">
-                    <div className="text-zinc-400 text-xs px-2 py-1">{category.title}</div>
-                    <hr className="border-zinc-600 my-1" />
-                    <div className="grid grid-cols-3 gap-1">
+                  <div key={catIdx}>
+                    <div className="text-muted-foreground text-xs px-2 py-1 font-bold uppercase tracking-wider">
+                      {category.title}
+                    </div>
+                    <div className="h-px bg-gradient-to-r from-white/10 to-transparent my-1" />
+                    <div className="grid grid-cols-4 gap-1">
                       {category.items.map((item, itemIdx) => (
                         <button
                           key={itemIdx}
@@ -229,7 +257,7 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
                             item.onClick?.();
                             setOpenDropdown(null);
                           }}
-                          className="text-white hover:bg-zinc-700 px-2 py-1 text-sm rounded text-center"
+                          className="text-white/80 hover:text-white hover:bg-white/10 px-1 py-2 text-sm rounded-lg text-center transition-colors border border-transparent hover:border-white/5"
                         >
                           {item.name}
                         </button>
@@ -237,15 +265,15 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
                     </div>
                   </div>
                 ))}
-                <hr className="border-zinc-600 my-2" />
+                <div className="h-px bg-white/10 my-2" />
                 <button
                   onClick={() => {
                     moveLobby();
                     setOpenDropdown(null);
                   }}
-                  className="w-full bg-zinc-700 hover:bg-zinc-600 text-white px-2 py-2 text-sm rounded"
+                  className="w-full bg-red-900/30 hover:bg-red-900/50 text-red-200 border border-red-900/50 px-3 py-2 text-sm rounded-lg transition-colors font-medium"
                 >
-                  로비로
+                  로비로 나가기
                 </button>
               </div>
             </div>
@@ -254,7 +282,7 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
 
         {/* Refresh Button */}
         <button
-          className="nav-btn bg-zinc-700 hover:bg-zinc-600 text-white rounded transition-colors"
+          className="nav-btn bg-white/5 hover:bg-white/10 text-white/90 rounded-lg border border-white/5 hover:border-primary/30 hover:shadow-glow-sm transition-all duration-300 active:scale-95"
           onClick={onRefresh}
         >
           갱신

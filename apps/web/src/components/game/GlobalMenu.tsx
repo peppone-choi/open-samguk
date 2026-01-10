@@ -100,14 +100,15 @@ export function GlobalMenu({
 
   const getButtonClasses = () => {
     const base =
-      "h-8 px-2 text-sm font-medium rounded-sm border transition-colors flex items-center justify-center";
+      "h-9 px-2 text-sm font-medium rounded-md border transition-all duration-300 flex items-center justify-center backdrop-blur-sm relative overflow-hidden group shadow-[0_2px_4px_rgba(0,0,0,0.2)]";
+
     switch (variant) {
       case "primary":
-        return `${base} bg-amber-600 hover:bg-amber-500 border-amber-700 text-white`;
+        return `${base} bg-amber-600/20 hover:bg-amber-600/40 border-amber-600/40 hover:border-amber-400 text-amber-100 shadow-[0_0_10px_rgba(217,119,6,0.1)] hover:shadow-[0_0_15px_rgba(217,119,6,0.3)] hover:-translate-y-0.5`;
       case "nation":
-        return `${base} bg-blue-700 hover:bg-blue-600 border-blue-800 text-white`;
+        return `${base} bg-blue-700/20 hover:bg-blue-600/40 border-blue-600/40 hover:border-blue-400 text-blue-100 shadow-[0_0_10px_rgba(37,99,235,0.1)] hover:shadow-[0_0_15px_rgba(37,99,235,0.3)] hover:-translate-y-0.5`;
       default:
-        return `${base} bg-zinc-700 hover:bg-zinc-600 border-gray-600 text-white`;
+        return `${base} bg-white/5 hover:bg-white/10 border-white/10 hover:border-primary/40 text-gray-200 hover:text-white hover:shadow-glow-sm hover:-translate-y-0.5`;
     }
   };
 
@@ -162,26 +163,28 @@ export function GlobalMenu({
         </div>
 
         {isOpen && (
-          <div className="absolute top-full left-0 mt-1 min-w-[120px] bg-zinc-800 border border-gray-600 rounded shadow-lg z-50">
-            {item.subMenu.map((subItem, subIdx) => {
-              if (subItem.type === "line") {
-                return <hr key={subIdx} className="border-gray-600 my-1" />;
-              }
-              return (
-                <Link
-                  key={subIdx}
-                  href={subItem.url}
-                  target={subItem.newTab ? "_blank" : undefined}
-                  className="block px-3 py-2 text-sm text-gray-300 hover:bg-zinc-700 hover:text-white transition-colors"
-                  onClick={(e) => {
-                    handleMenuClick(e, subItem);
-                    setOpenDropdown(null);
-                  }}
-                >
-                  {subItem.name}
-                </Link>
-              );
-            })}
+          <div className="absolute top-full left-0 mt-2 min-w-[160px] bg-zinc-950/95 backdrop-blur-xl border border-white/10 rounded-lg shadow-[0_8px_32px_rgba(0,0,0,0.5)] z-50 animate-in fade-in slide-in-from-top-2 duration-200 overflow-hidden">
+            <div className="p-1">
+              {item.subMenu.map((subItem, subIdx) => {
+                if (subItem.type === "line") {
+                  return <hr key={subIdx} className="border-white/10 my-1" />;
+                }
+                return (
+                  <Link
+                    key={subIdx}
+                    href={subItem.url}
+                    target={subItem.newTab ? "_blank" : undefined}
+                    className="block px-3 py-2 text-sm text-gray-300 hover:text-white hover:bg-white/10 rounded-md transition-all duration-200"
+                    onClick={(e) => {
+                      handleMenuClick(e, subItem);
+                      setOpenDropdown(null);
+                    }}
+                  >
+                    {subItem.name}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
         )}
       </div>

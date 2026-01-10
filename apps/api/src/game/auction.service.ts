@@ -16,7 +16,7 @@ const AUCTION_EXTENSION_MINUTES = 5;
 export class AuctionService implements OnModuleInit {
   private readonly prisma: PrismaClientType = createPrismaClient();
 
-  constructor(private readonly inheritService: InheritService) { }
+  constructor(private readonly inheritService: InheritService) {}
 
   onModuleInit() {
     // 경매 정산 프로세스 시작 (1분마다 실행)

@@ -1,16 +1,5 @@
 "use client";
 
-/**
- * PageTroop - 부대 편성 (Troop Management)
- * Ported from legacy/hwe/ts/PageTroop.vue
- *
- * Features:
- * - List all troops in the current nation
- * - Join / Leave / Disband troops
- * - Create new troop (if not in a troop)
- * - Kick member / Change troop name (if leader or admin)
- */
-
 import React, { useState, useCallback, useMemo } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
@@ -20,10 +9,6 @@ import { useGeneral } from "@/contexts/GeneralContext";
 import { useCity, useGameConst } from "@/contexts/GameConstContext";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-
-// ============================================================================
-// Types
-// ============================================================================
 
 interface TroopMember {
   no: number;
@@ -36,7 +21,7 @@ interface TroopMember {
 }
 
 interface TroopInfo {
-  id: number; // Leader ID
+  id: number;
   name: string;
   nationId: number;
   leader: TroopMember | null;
@@ -46,17 +31,12 @@ interface TroopInfo {
   reservedCommandBrief: string[];
 }
 
-// ============================================================================
-// Main Component
-// ============================================================================
-
 export default function PageTroop() {
   const { selectedGeneral, selectedGeneralId, isLoading: isGeneralLoading } = useGeneral();
-  useGameConst(); // Keep hook call for potential side effects
+  useGameConst();
 
   const [newTroopName, setNewTroopName] = useState("");
 
-  // Queries
   const {
     data: rawTroops,
     isLoading: isTroopsLoading,
@@ -78,14 +58,12 @@ export default function PageTroop() {
     });
   }, [rawTroops]);
 
-  // Mutations
   const createTroopMutation = trpc.createTroop.useMutation();
   const joinTroopMutation = trpc.joinTroop.useMutation();
   const exitTroopMutation = trpc.exitTroop.useMutation();
   const kickFromTroopMutation = trpc.kickFromTroop.useMutation();
   const setTroopNameMutation = trpc.setTroopName.useMutation();
 
-  // Edit states
   const [editingTroopId, setEditingTroopId] = useState<number | null>(null);
   const [editNameValue, setEditNameValue] = useState("");
   const [kickMemberId, setKickMemberId] = useState<number | null>(null);
@@ -94,7 +72,6 @@ export default function PageTroop() {
     refetch();
   }, [refetch]);
 
-  // Actions
   const handleCreateTroop = async () => {
     if (!newTroopName.trim() || !selectedGeneralId) return;
     try {
@@ -161,7 +138,7 @@ export default function PageTroop() {
     if (!selectedGeneralId) return;
     try {
       await setTroopNameMutation.mutateAsync({
-        leaderId: troopId, // Note: Mutation expects leaderId of the troop
+        leaderId: troopId,
         name: editNameValue,
       });
       toast.success("부대명을 변경했습니다.");
@@ -174,8 +151,8 @@ export default function PageTroop() {
 
   if (isGeneralLoading || (isTroopsLoading && !troops)) {
     return (
-      <div className="min-h-screen bg0 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary shadow-[0_0_15px_rgba(var(--primary),0.5)]"></div>
       </div>
     );
   }
@@ -184,21 +161,43 @@ export default function PageTroop() {
   const myTroopId = selectedGeneral?.troopId ?? 0;
 
   return (
-    <div className="min-h-screen bg0">
+    <div className="min-h-screen bg-background text-foreground pb-20">
       <TopBackBar title="부대 편성" reloadable onReload={loadData} />
 
-      <div className="w-full max-w-[1000px] mx-auto border border-gray-600 bg0 md:p-2 min-h-[calc(100vh-60px)] flex flex-col">
-        {/* Helper Text */}
-        <div className="p-3 text-sm text-gray-400 bg-zinc-900/50 border-b border-gray-700">
-          * 부대장은 부대원을 추방하거나 부대명을 변경할 수 있습니다.
-          <br />* 같은 도시, 같은 턴의 부대원들과 함께 이동하거나 전투할 수 있습니다.
+      <div className="w-full max-w-5xl mx-auto md:p-6 p-2 space-y-6 animate-fadeIn">
+        <div className="p-4 rounded-xl bg-primary/5 border border-primary/20 backdrop-blur-sm shadow-lg">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-full bg-primary/10 mt-0.5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="text-primary"
+              >
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+              </svg>
+            </div>
+            <div className="text-sm text-muted-foreground/90 space-y-1">
+              <p className="text-foreground/90 font-medium mb-1">도움말</p>
+              <p>• 부대장은 부대원을 추방하거나 부대명을 변경할 수 있습니다.</p>
+              <p>• 같은 도시, 같은 턴의 부대원들과 함께 이동하거나 전투할 수 있습니다.</p>
+            </div>
+          </div>
         </div>
 
-        {/* Troop List */}
-        <div className="flex-1 space-y-4 p-4">
+        <div className="space-y-4">
           {!troops || troops.length === 0 ? (
-            <div className="text-center py-12 text-gray-500 border border-dashed border-gray-700 rounded-lg">
-              현재 세력 내에 생성된 부대가 없습니다.
+            <div className="flex flex-col items-center justify-center py-20 text-muted-foreground border-2 border-dashed border-white/10 rounded-2xl bg-white/5 backdrop-blur-sm">
+              <div className="text-4xl mb-4 opacity-20">🛡️</div>
+              <p>현재 세력 내에 생성된 부대가 없습니다.</p>
             </div>
           ) : (
             troops.map((troop) => (
@@ -222,15 +221,18 @@ export default function PageTroop() {
             ))
           )}
         </div>
+      </div>
 
-        {/* Create Troop Section */}
-        {myTroopId === 0 && (
-          <div className="sticky bottom-0 p-4 border-t border-gray-600 bg-zinc-950/90 backdrop-blur-sm">
-            <div className="flex flex-col md:flex-row gap-4 items-center justify-center max-w-2xl mx-auto">
-              <div className="font-bold whitespace-nowrap">신규 부대 창설</div>
+      {myTroopId === 0 && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 border-t border-white/10 bg-background/80 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.5)] z-40">
+          <div className="flex flex-col md:flex-row gap-4 items-center justify-center max-w-2xl mx-auto w-full">
+            <div className="font-bold whitespace-nowrap text-primary flex items-center gap-2">
+              <span className="text-lg">⚔️</span> 신규 부대 창설
+            </div>
+            <div className="flex-1 w-full flex gap-2">
               <Input
-                className="flex-1 bg-zinc-800 border-gray-600 focus:border-primary"
-                placeholder="새 부대 이름을 입력하세요"
+                className="flex-1 bg-white/5 border-white/10 focus:border-primary/50 text-foreground placeholder:text-muted-foreground/50 h-11"
+                placeholder="멋진 부대 이름을 입력하세요"
                 value={newTroopName}
                 onChange={(e) => setNewTroopName(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleCreateTroop()}
@@ -238,13 +240,14 @@ export default function PageTroop() {
               <Button
                 onClick={handleCreateTroop}
                 disabled={!newTroopName.trim() || createTroopMutation.isLoading}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-11 px-6 shadow-[0_0_20px_rgba(var(--primary),0.3)]"
               >
                 {createTroopMutation.isLoading ? "창설 중..." : "창설하기"}
               </Button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -289,91 +292,115 @@ function TroopItem({
   return (
     <div
       className={cn(
-        "border border-gray-600 bg-zinc-900 rounded-lg overflow-hidden transition-all",
-        isMyTroop && "ring-1 ring-primary border-primary shadow-[0_0_15px_rgba(var(--primary),0.1)]"
+        "group relative overflow-hidden rounded-xl transition-all duration-300",
+        "bg-card/60 backdrop-blur-xl border border-white/10 shadow-lg",
+        isMyTroop
+          ? "border-primary/50 shadow-[0_0_30px_rgba(var(--primary),0.15)] bg-gradient-to-br from-primary/5 to-transparent"
+          : "hover:border-white/20 hover:shadow-xl hover:bg-card/80"
       )}
     >
-      <div className="grid md:grid-cols-[160px_100px_100px_1fr_180px] grid-cols-1 divide-y md:divide-y-0 md:divide-x divide-gray-700">
-        {/* Troop Title (Group 1) */}
-        <div className="bg-zinc-800/50 p-3 flex flex-col justify-center text-center">
-          <div className="font-bold text-lg text-primary">{troop.name}</div>
-          <div className="text-xs text-secondary mt-1">【 {leaderCity?.name ?? "???"} 】</div>
+      <div
+        className={cn(
+          "absolute -top-20 -right-20 w-40 h-40 bg-primary/20 rounded-full blur-[80px] pointer-events-none transition-opacity",
+          isMyTroop ? "opacity-40" : "opacity-0 group-hover:opacity-20"
+        )}
+      />
+
+      <div className="grid md:grid-cols-[180px_100px_120px_1fr_200px] grid-cols-1 divide-y md:divide-y-0 md:divide-x divide-white/10 relative z-10">
+        <div className="bg-gradient-to-br from-white/5 to-transparent p-5 flex flex-col justify-center text-center relative group-hover:from-white/10 transition-colors">
+          <div className="font-bold text-xl text-primary drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)]">
+            {troop.name}
+          </div>
+          <div className="text-xs text-muted-foreground mt-2 flex items-center justify-center gap-1.5 bg-black/40 py-1 px-2 rounded-full mx-auto w-fit">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            {leaderCity?.name ?? "???"}
+          </div>
         </div>
 
-        {/* Turn Time */}
-        <div className="hidden md:flex flex-col justify-center items-center p-3 text-center bg-zinc-900/30">
-          <div className="text-[10px] text-gray-500 uppercase tracking-wider mb-1">다음 턴</div>
-          <div className="font-mono text-lg font-semibold text-yellow-500">
+        <div className="hidden md:flex flex-col justify-center items-center p-3 text-center bg-black/20">
+          <div className="text-[10px] text-muted-foreground/70 uppercase tracking-widest mb-1.5">
+            NEXT TURN
+          </div>
+          <div className="font-mono text-lg font-bold text-primary tabular-nums tracking-tight">
             {troop.turnTime ? troop.turnTime.slice(11, 16) : "--:--"}
           </div>
         </div>
 
-        {/* Leader Info */}
-        <div className="p-3 flex flex-col items-center justify-center bg-zinc-800/20">
-          <div className="w-14 h-14 bg-zinc-700 rounded-full flex items-center justify-center mb-2 border-2 border-zinc-600 overflow-hidden shadow-inner">
-            <span className="text-2xl font-bold text-white leading-none">
+        <div className="p-4 flex flex-col items-center justify-center bg-white/5">
+          <div className="w-14 h-14 rounded-full flex items-center justify-center mb-2 overflow-hidden shadow-[0_0_15px_rgba(var(--primary),0.2)] bg-gradient-to-br from-zinc-800 to-zinc-950 border border-primary/30 relative">
+            <span className="text-2xl font-bold text-primary leading-none relative z-10">
               {troop.leader?.name?.charAt(0) ?? "?"}
             </span>
+            <div className="absolute inset-0 bg-primary/10 mix-blend-overlay"></div>
           </div>
-          <div className="text-xs font-medium text-zinc-300 truncate w-full text-center">
+          <div className="text-xs font-medium text-foreground/90 truncate w-full text-center px-2">
             {troop.leader?.name ?? "..."}
           </div>
         </div>
 
-        {/* Middle Area: Reserved commands + Members */}
-        <div className="p-3 flex flex-col gap-3 min-w-0">
-          {/* Members List */}
-          <div className="flex flex-wrap gap-1.5 items-center">
-            <span className="text-[10px] text-gray-500 font-medium block w-full uppercase tracking-tighter mb-1">
-              부대원 리스트 ({troop.memberCount}명)
-            </span>
-            {troop.members.map((member) => (
-              <MemberItem
-                key={member.no}
-                member={member}
-                isLeader={member.no === troop.id}
-                leaderCityId={troop.leader?.cityId ?? 0}
-              />
-            ))}
+        <div className="p-4 flex flex-col justify-center gap-3 min-w-0 bg-transparent">
+          <div>
+            <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider mb-2 flex items-center gap-2">
+              <span className="w-1 h-3 bg-primary/50 rounded-full"></span>
+              SQUAD MEMBERS ({troop.memberCount})
+            </div>
+            <div className="flex flex-wrap gap-2 items-center">
+              {troop.members.map((member) => (
+                <MemberItem
+                  key={member.no}
+                  member={member}
+                  isLeader={member.no === troop.id}
+                  leaderCityId={troop.leader?.cityId ?? 0}
+                />
+              ))}
+            </div>
           </div>
 
-          {/* Reserved Commands Bar */}
           {troop.reservedCommandBrief && troop.reservedCommandBrief.length > 0 && (
-            <div className="flex gap-2 items-center text-[11px] bg-zinc-950/50 p-1.5 rounded border border-zinc-800">
-              <span className="text-gray-500 font-bold whitespace-nowrap">예약:</span>
-              <div className="flex gap-2 min-w-0 overflow-hidden">
-                {troop.reservedCommandBrief.slice(0, 3).map((cmd, idx) => (
-                  <div key={idx} className="truncate text-zinc-400">
-                    <span className="text-zinc-600 mr-1">{idx + 1}.</span>
-                    {cmd}
-                  </div>
-                ))}
+            <div className="mt-1">
+              <div className="flex gap-2 items-center text-[11px] bg-black/30 p-2 rounded-lg border border-white/5">
+                <span className="text-primary/70 font-bold whitespace-nowrap px-1">Orders:</span>
+                <div className="flex gap-3 min-w-0 overflow-hidden">
+                  {troop.reservedCommandBrief.slice(0, 3).map((cmd, idx) => (
+                    <div key={idx} className="truncate text-muted-foreground flex items-center">
+                      <span className="text-primary/40 mr-1 font-mono">{idx + 1}.</span>
+                      {cmd}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           )}
         </div>
 
-        {/* Actions Area */}
-        <div className="p-3 bg-zinc-800/40 flex flex-col gap-2 justify-center">
+        <div className="p-4 bg-black/20 flex flex-col gap-2 justify-center backdrop-blur-sm">
           {!isMyTroop && !myTroopId && (
-            <Button size="sm" className="w-full" onClick={() => onJoin(troop.id, troop.name)}>
+            <Button
+              size="sm"
+              className="w-full bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 hover:border-primary/50 shadow-[0_0_10px_rgba(var(--primary),0.05)] transition-all"
+              onClick={() => onJoin(troop.id, troop.name)}
+            >
               부대 가입
             </Button>
           )}
 
           {isMyTroop && (
-            <Button size="sm" variant="destructive" className="w-full" onClick={onLeaveOrDisband}>
+            <Button
+              size="sm"
+              variant="destructive"
+              className="w-full bg-red-950/30 hover:bg-red-900/50 text-red-400 border border-red-900/50"
+              onClick={onLeaveOrDisband}
+            >
               {isLeader ? "부대 해산" : "부대 탈퇴"}
             </Button>
           )}
 
           {(isLeader || myPermission >= 4) && (
-            <div className="space-y-2 pt-2 border-t border-zinc-700">
-              {/* Name Editor */}
+            <div className="space-y-2 pt-3 border-t border-white/5">
               {editingTroopId === troop.id ? (
-                <div className="space-y-1">
+                <div className="space-y-2">
                   <Input
-                    className="h-8 text-xs bg-zinc-950 border-zinc-700"
+                    className="h-8 text-xs bg-black/50 border-white/10 focus:border-primary/50"
                     value={editNameValue}
                     onChange={(e) => setEditNameValue(e.target.value)}
                     autoFocus
@@ -381,7 +408,7 @@ function TroopItem({
                   <div className="flex gap-1">
                     <Button
                       size="sm"
-                      className="h-7 flex-1 text-[10px]"
+                      className="h-7 flex-1 text-[10px] bg-primary/80 hover:bg-primary text-primary-foreground"
                       onClick={() => onUpdateName(troop.id)}
                     >
                       저장
@@ -389,7 +416,7 @@ function TroopItem({
                     <Button
                       size="sm"
                       variant="ghost"
-                      className="h-7 flex-1 text-[10px]"
+                      className="h-7 flex-1 text-[10px] hover:bg-white/10"
                       onClick={() => setEditingTroopId(null)}
                     >
                       취소
@@ -400,7 +427,7 @@ function TroopItem({
                 <Button
                   size="sm"
                   variant="outline"
-                  className="w-full h-8 text-[11px]"
+                  className="w-full h-8 text-[11px] bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-muted-foreground"
                   onClick={() => {
                     setEditingTroopId(troop.id);
                     setEditNameValue(troop.name);
@@ -410,28 +437,29 @@ function TroopItem({
                 </Button>
               )}
 
-              {/* Kick Member */}
               {isLeader && troop.memberCount > 1 && (
                 <div className="flex gap-1 items-center">
-                  <select
-                    className="bg-zinc-800 border border-zinc-700 text-[10px] h-8 rounded px-2 flex-1 min-w-0 appearance-none"
-                    onChange={(e) => setKickMemberId(Number(e.target.value))}
-                    value={kickMemberId || ""}
-                  >
-                    <option value="">멤버 추방...</option>
-                    {troop.members
-                      .filter((m) => m.no !== troop.id)
-                      .map((m) => (
-                        <option key={m.no} value={m.no}>
-                          {m.name}
-                        </option>
-                      ))}
-                  </select>
+                  <div className="relative flex-1">
+                    <select
+                      className="w-full bg-black/50 border border-white/10 text-[10px] h-8 rounded px-2 appearance-none text-muted-foreground focus:border-primary/50 outline-none"
+                      onChange={(e) => setKickMemberId(Number(e.target.value))}
+                      value={kickMemberId || ""}
+                    >
+                      <option value="">멤버 추방...</option>
+                      {troop.members
+                        .filter((m) => m.no !== troop.id)
+                        .map((m) => (
+                          <option key={m.no} value={m.no}>
+                            {m.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
                   {kickMemberId && (
                     <Button
                       size="sm"
                       variant="destructive"
-                      className="h-8 px-2"
+                      className="h-8 px-2 bg-red-950/30 hover:bg-red-900/50 text-red-400 border border-red-900/50"
                       onClick={() => onKick(troop.id)}
                     >
                       추방
@@ -462,25 +490,39 @@ function MemberItem({
   return (
     <span
       className={cn(
-        "px-2.5 py-1 rounded text-[11px] border transition-colors relative group whitespace-nowrap",
+        "px-3 py-1.5 rounded-md text-[11px] border transition-all relative group whitespace-nowrap cursor-default select-none",
         isLeader
-          ? "bg-yellow-500/10 text-yellow-500 border-yellow-500/30 font-bold"
-          : "bg-zinc-800 border-zinc-700 text-zinc-400 hover:border-zinc-500",
-        isDiffCity && !isLeader && "text-red-400 border-red-900/50 bg-red-950/10"
+          ? "bg-primary/20 text-primary border-primary/30 font-bold shadow-[0_0_10px_rgba(var(--primary),0.1)]"
+          : "bg-white/5 border-white/10 text-muted-foreground hover:bg-white/10 hover:border-white/20 hover:text-foreground",
+        isDiffCity && !isLeader && "text-red-400 border-red-900/30 bg-red-950/10"
       )}
     >
-      {isLeader && <span className="mr-1 inline-block w-2 h-2 rounded-full bg-yellow-500" />}
-      {member.name}
-      {isDiffCity && !isLeader && (
-        <span className="ml-1 text-[9px] opacity-60">({memberCity?.name ?? "..."})</span>
-      )}
+      <div className="flex items-center gap-1.5">
+        {isLeader && (
+          <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_5px_var(--primary)]" />
+        )}
+        {member.name}
+        {isDiffCity && !isLeader && (
+          <span className="text-[9px] opacity-60 ml-0.5">({memberCity?.name ?? "..."})</span>
+        )}
+      </div>
 
-      {/* Tooltip-like detail on hover */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-32 hidden group-hover:block bg-zinc-950 border border-zinc-800 p-2 rounded shadow-xl z-10 text-center">
-        <div className="text-zinc-50 font-bold mb-1">{member.name}</div>
-        <div className="text-[10px] text-zinc-500">도시: {memberCity?.name ?? "???"}</div>
-        <div className="text-[10px] text-zinc-500">병력: {member.crew.toLocaleString()}</div>
-        <div className="w-2 h-2 bg-zinc-950 border-r border-b border-zinc-800 rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2"></div>
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-40 hidden group-hover:block z-50 animate-in fade-in zoom-in-95 duration-200">
+        <div className="bg-popover/95 backdrop-blur-xl border border-white/10 p-3 rounded-xl shadow-2xl text-center relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent pointer-events-none"></div>
+          <div className="text-primary font-bold mb-1.5 text-sm">{member.name}</div>
+          <div className="space-y-1">
+            <div className="text-[10px] text-muted-foreground flex justify-between px-2">
+              <span>위치:</span>
+              <span className="text-foreground">{memberCity?.name ?? "???"}</span>
+            </div>
+            <div className="text-[10px] text-muted-foreground flex justify-between px-2">
+              <span>병력:</span>
+              <span className="text-foreground font-mono">{member.crew.toLocaleString()}</span>
+            </div>
+          </div>
+          <div className="w-3 h-3 bg-popover/95 border-r border-b border-white/10 rotate-45 absolute -bottom-1.5 left-1/2 -translate-x-1/2"></div>
+        </div>
       </div>
     </span>
   );

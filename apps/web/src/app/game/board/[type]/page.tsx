@@ -1,26 +1,11 @@
 "use client";
 
-/**
- * PageBoard - 게시판 (회의실/기밀실)
- * Ported from legacy/hwe/ts/PageBoard.vue
- *
- * Features:
- * - New article form (제목/내용)
- * - Article list with author info and icons
- * - Comment system under each article
- * - Two board types: meeting (회의실), secret (기밀실)
- */
-
 import React, { useState, useCallback, useRef } from "react";
 import { useParams } from "next/navigation";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/utils/trpc";
 import { useGeneral } from "@/contexts/GeneralContext";
-
-// ============================================================================
-// Types (matching backend response)
-// ============================================================================
 
 interface BoardComment {
   no: number;
@@ -30,7 +15,6 @@ interface BoardComment {
   generalId: number;
 }
 
-// Used for typing board list items from API
 type BoardListItem = {
   no: number;
   date: Date | string;
@@ -41,22 +25,12 @@ type BoardListItem = {
   commentCount: number;
 };
 
-// Re-export to satisfy linter (unused but kept for documentation)
 export type { BoardListItem };
 
-// ============================================================================
-// Utility Functions
-// ============================================================================
-
 function cutDateTime(dateTime: string | Date): string {
-  // Extract "MM-DD HH:MM" from date
   const d = typeof dateTime === "string" ? dateTime : dateTime.toISOString();
   return d.slice(5, 16).replace("T", " ");
 }
-
-// ============================================================================
-// BoardComment Component
-// ============================================================================
 
 interface BoardCommentProps {
   comment: BoardComment;
@@ -64,26 +38,18 @@ interface BoardCommentProps {
 
 function BoardCommentItem({ comment }: BoardCommentProps) {
   return (
-    <div className="grid grid-cols-[80px_1fr_80px] lg:grid-cols-[80px_1fr_100px] border-b border-gray-700 text-sm">
-      {/* Author Name */}
-      <div className="bg-zinc-700 p-1 text-center flex items-center justify-center">
-        {comment.author}
+    <div className="group flex flex-col sm:flex-row gap-2 sm:gap-4 p-3 border-b border-white/5 last:border-0 hover:bg-white/5 transition-colors text-sm">
+      <div className="shrink-0 w-20">
+        <div className="font-bold text-primary/90 truncate">{comment.author}</div>
+        <div className="text-xs text-muted-foreground font-mono mt-0.5">
+          {cutDateTime(comment.date)}
+        </div>
       </div>
 
-      {/* Comment Text */}
-      <div className="p-2 whitespace-pre-wrap break-words">{comment.text}</div>
-
-      {/* Date */}
-      <div className="p-1 text-center text-xs text-gray-400 flex items-center justify-center font-mono">
-        {cutDateTime(comment.date)}
-      </div>
+      <div className="grow whitespace-pre-wrap break-words text-foreground/90">{comment.text}</div>
     </div>
   );
 }
-
-// ============================================================================
-// BoardArticle Component
-// ============================================================================
 
 interface BoardArticleProps {
   boardNo: number;
@@ -95,7 +61,6 @@ interface BoardArticleProps {
 function BoardArticle({ boardNo, generalId, nationId, onCommentSubmit }: BoardArticleProps) {
   const [newCommentText, setNewCommentText] = useState("");
 
-  // Fetch board detail with comments
   const { data: boardDetailData, isLoading } = trpc.getBoardDetail.useQuery(
     { boardId: boardNo },
     { enabled: !!boardNo }
@@ -138,7 +103,7 @@ function BoardArticle({ boardNo, generalId, nationId, onCommentSubmit }: BoardAr
 
   if (isLoading || !boardDetailData?.board) {
     return (
-      <div className="bg0 border border-gray-600 mb-2 p-4 text-center text-gray-400">
+      <div className="bg-card/30 backdrop-blur-sm border border-white/5 rounded-xl p-8 text-center text-muted-foreground animate-pulse">
         로딩 중...
       </div>
     );
@@ -147,88 +112,79 @@ function BoardArticle({ boardNo, generalId, nationId, onCommentSubmit }: BoardAr
   const article = boardDetailData.board;
 
   return (
-    <div className="bg0 border border-gray-600 mb-2">
-      {/* Article Header - Author, Title, Date */}
-      <div className="bg1 grid grid-cols-[80px_1fr_80px] lg:grid-cols-[80px_1fr_100px]">
-        {/* Author Name */}
-        <div className="text-center p-1 font-semibold">{article.author}</div>
-
-        {/* Title */}
-        <div className="text-center p-1 font-semibold truncate">{article.title}</div>
-
-        {/* Date */}
-        <div className="text-center p-1 text-xs text-gray-300 font-mono">
-          {cutDateTime(article.date)}
+    <div className="group relative bg-card/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl overflow-hidden mb-6 transition-all hover:border-primary/20 hover:shadow-primary/5">
+      <div className="bg-gradient-to-r from-white/5 to-transparent border-b border-white/10 p-4">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3 overflow-hidden">
+            <div className="font-bold text-lg text-primary truncate min-w-0">{article.title}</div>
+          </div>
+          <div className="text-xs text-muted-foreground font-mono shrink-0 bg-black/20 px-2 py-1 rounded">
+            {cutDateTime(article.date)}
+          </div>
         </div>
       </div>
 
-      {/* Article Body - Icon + Text */}
-      <div className="grid grid-cols-[80px_1fr] lg:grid-cols-[80px_1fr] border-b border-gray-600">
-        {/* Author Icon */}
-        <div className="p-2 flex items-start justify-center">
-          <img
-            className="w-16 h-16 object-contain"
-            src={article.authorIcon || "/d_pic/icons/default.png"}
-            alt={article.author}
-            onError={(e) => {
-              (e.target as HTMLImageElement).src = "/d_pic/icons/default.png";
-            }}
-          />
-        </div>
+      <div className="p-5">
+        <div className="flex gap-5">
+          <div className="shrink-0 flex flex-col items-center gap-2 w-20">
+            <div className="relative w-16 h-16 rounded-xl overflow-hidden border border-white/10 shadow-lg bg-black/40">
+              <img
+                className="w-full h-full object-cover"
+                src={article.authorIcon || "/d_pic/icons/default.png"}
+                alt={article.author}
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "/d_pic/icons/default.png";
+                }}
+              />
+            </div>
+            <div className="text-xs font-semibold text-center text-foreground/80 break-all">
+              {article.author}
+            </div>
+          </div>
 
-        {/* Article Text */}
-        <div className="p-2 whitespace-pre-wrap break-words text-sm">{article.text}</div>
+          <div className="grow min-w-0">
+            <div className="whitespace-pre-wrap break-words text-sm leading-relaxed text-foreground/90 font-medium">
+              {article.text}
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Comments List */}
-      {article.comments.length > 0 && (
-        <div className="border-b border-gray-600">
-          {article.comments.map((comment: BoardComment) => (
-            <BoardCommentItem key={comment.no} comment={comment} />
-          ))}
-        </div>
-      )}
+      <div className="bg-black/20 border-t border-white/5">
+        {article.comments.length > 0 && (
+          <div className="border-b border-white/5">
+            {article.comments.map((comment: BoardComment) => (
+              <BoardCommentItem key={comment.no} comment={comment} />
+            ))}
+          </div>
+        )}
 
-      {/* New Comment Form */}
-      <div className="grid grid-cols-[80px_1fr_60px] lg:grid-cols-[80px_1fr_80px]">
-        {/* Label */}
-        <div className="bg2 p-1 text-center text-sm flex items-center justify-center">
-          댓글 달기
-        </div>
-
-        {/* Input */}
-        <div className="p-1">
-          <input
-            type="text"
-            className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white text-sm"
-            placeholder="새 댓글 내용"
-            maxLength={250}
-            value={newCommentText}
-            onChange={(e) => setNewCommentText(e.target.value)}
-            onKeyUp={handleKeyUp}
-            disabled={addCommentMutation.isPending}
-          />
-        </div>
-
-        {/* Submit Button */}
-        <div className="p-1">
-          <Button
-            size="sm"
-            className="w-full h-full"
-            onClick={handleSubmitComment}
-            disabled={addCommentMutation.isPending}
-          >
-            {addCommentMutation.isPending ? "..." : "등록"}
-          </Button>
+        <div className="p-3 bg-black/10">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              className="grow px-4 py-2 bg-zinc-900/50 border border-white/10 rounded-xl text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+              placeholder="댓글을 입력하세요..."
+              maxLength={250}
+              value={newCommentText}
+              onChange={(e) => setNewCommentText(e.target.value)}
+              onKeyUp={handleKeyUp}
+              disabled={addCommentMutation.isPending}
+            />
+            <Button
+              size="sm"
+              className="shrink-0 rounded-xl bg-primary/20 text-primary hover:bg-primary/30 border border-primary/20"
+              onClick={handleSubmitComment}
+              disabled={addCommentMutation.isPending}
+            >
+              {addCommentMutation.isPending ? "..." : "등록"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
-// ============================================================================
-// Main Page Component
-// ============================================================================
 
 export default function BoardPage() {
   const params = useParams();
@@ -245,7 +201,6 @@ export default function BoardPage() {
   const title = isSecretBoard ? "기밀실" : "회의실";
   const apiType = isSecretBoard ? "secret" : "nation";
 
-  // Fetch board list
   const {
     data: boardListData,
     isLoading,
@@ -259,7 +214,6 @@ export default function BoardPage() {
     { enabled: !!nationId }
   );
 
-  // Create board mutation
   const createBoardMutation = trpc.createBoard.useMutation({
     onSuccess: () => {
       setNewArticle({ title: "", text: "" });
@@ -295,7 +249,6 @@ export default function BoardPage() {
   const handleTextareaInput = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setNewArticle((prev) => ({ ...prev, text: e.target.value }));
 
-    // Auto-resize textarea
     const textarea = e.target;
     textarea.style.height = "auto";
     textarea.style.height = `${textarea.scrollHeight}px`;
@@ -311,55 +264,55 @@ export default function BoardPage() {
     <>
       <TopBackBar title={title} type="close" reloadable onReload={handleReload} />
 
-      <div className="w-full max-w-[1000px] mx-auto border border-gray-600">
-        {/* New Article Form */}
-        <div className="bg0">
-          <div className="bg2 text-center p-2 font-semibold">새 게시물 작성</div>
+      <div className="w-full max-w-[1000px] mx-auto p-4 space-y-8 pb-20">
+        <div className="bg-card/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl p-6 relative overflow-hidden group">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
-          {/* Title Row */}
-          <div className="grid grid-cols-[80px_1fr] lg:grid-cols-[80px_1fr]">
-            <div className="bg1 text-center p-2 flex items-center justify-center">제목</div>
-            <div className="p-1">
-              <input
-                type="text"
-                className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white"
-                placeholder="제목"
-                maxLength={250}
-                value={newArticle.title}
-                onChange={(e) => setNewArticle((prev) => ({ ...prev, title: e.target.value }))}
+          <h2 className="text-lg font-bold text-primary mb-4 flex items-center gap-2">
+            <span className="w-1 h-6 bg-primary rounded-full shadow-[0_0_10px_rgba(var(--primary-rgb),0.5)]" />
+            새 게시물 작성
+          </h2>
+
+          <div className="space-y-4 relative z-10">
+            <input
+              type="text"
+              className="w-full px-4 py-3 bg-zinc-900/50 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all shadow-inner"
+              placeholder="제목을 입력하세요"
+              maxLength={250}
+              value={newArticle.title}
+              onChange={(e) => setNewArticle((prev) => ({ ...prev, title: e.target.value }))}
+              disabled={createBoardMutation.isPending}
+            />
+
+            <textarea
+              ref={textareaRef}
+              className="w-full px-4 py-3 bg-zinc-900/50 border border-white/10 rounded-xl text-foreground placeholder:text-muted-foreground min-h-[100px] resize-none focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all shadow-inner"
+              placeholder="내용을 입력하세요..."
+              value={newArticle.text}
+              onChange={handleTextareaInput}
+              disabled={createBoardMutation.isPending}
+            />
+
+            <div className="flex justify-end">
+              <Button
+                onClick={handleSubmitArticle}
                 disabled={createBoardMutation.isPending}
-              />
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold px-8 rounded-xl shadow-[0_0_15px_rgba(255,215,0,0.2)] hover:shadow-[0_0_25px_rgba(255,215,0,0.4)] transition-all"
+              >
+                {createBoardMutation.isPending ? "등록 중..." : "게시글 등록"}
+              </Button>
             </div>
-          </div>
-
-          {/* Content Row */}
-          <div className="grid grid-cols-[80px_1fr] lg:grid-cols-[80px_1fr]">
-            <div className="bg1 text-center p-2 flex items-start justify-center">내용</div>
-            <div className="p-1">
-              <textarea
-                ref={textareaRef}
-                className="w-full px-2 py-1 bg-zinc-700 border border-gray-600 rounded text-white min-h-[80px] resize-none"
-                placeholder="내용"
-                value={newArticle.text}
-                onChange={handleTextareaInput}
-                disabled={createBoardMutation.isPending}
-              />
-            </div>
-          </div>
-
-          {/* Submit Button Row */}
-          <div className="grid grid-cols-[1fr_100px] lg:grid-cols-[1fr_120px] p-2">
-            <div />
-            <Button onClick={handleSubmitArticle} disabled={createBoardMutation.isPending}>
-              {createBoardMutation.isPending ? "등록 중..." : "등록"}
-            </Button>
           </div>
         </div>
 
-        {/* Articles List */}
-        <div className="p-2">
+        <div className="space-y-6">
           {isLoading ? (
-            <div className="text-center text-gray-400 py-8">로딩 중...</div>
+            <div className="flex flex-col items-center justify-center py-20 gap-4 opacity-50">
+              <div className="w-10 h-10 border-2 border-primary/50 border-t-transparent rounded-full animate-spin" />
+              <div className="text-muted-foreground text-sm font-mono">
+                데이터를 불러오는 중입니다...
+              </div>
+            </div>
           ) : boards.length > 0 ? (
             boards.map((board: BoardListItem) => (
               <BoardArticle
@@ -371,7 +324,10 @@ export default function BoardPage() {
               />
             ))
           ) : (
-            <div className="text-center text-gray-400 py-8">게시물이 없습니다.</div>
+            <div className="bg-card/30 backdrop-blur-sm border border-white/5 rounded-2xl p-12 text-center">
+              <div className="text-muted-foreground mb-2 text-lg">게시물이 없습니다</div>
+              <div className="text-sm text-muted-foreground/50">첫 번째 게시물을 작성해보세요.</div>
+            </div>
           )}
         </div>
       </div>

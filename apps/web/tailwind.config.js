@@ -7,11 +7,24 @@ module.exports = {
       colors: {
         // Game theme colors
         sammo: {
-          base1: "#141c65", // Primary blue
-          base2: "#00582c", // Green
-          base3: "#704615", // Brown
-          base4: "#70153b", // Purple
-          nbase2: "#0c1a41", // Navigation background
+          base1: "#0f172a", // Deep Slate (Modernized from #141c65)
+          base2: "#064e3b", // Deep Emerald (Modernized from #00582c)
+          base3: "#451a03", // Deep Amber/Brown (Modernized from #704615)
+          base4: "#4a044e", // Deep Fuchsia (Modernized from #70153b)
+          nbase2: "#0f172a", // Matches base1
+        },
+        // Premium accents
+        gold: {
+          100: "#fbf6d8",
+          200: "#f6e8a4",
+          300: "#f0d667",
+          400: "#ecc236",
+          500: "#eab308", // Base Gold
+          600: "#ca8a04",
+          700: "#a16207",
+          800: "#854d0e",
+          900: "#713f12",
+          glow: "#ffd700",
         },
         // Nation colors (for dynamic styling)
         nation: {
@@ -92,27 +105,55 @@ module.exports = {
         sm: "calc(var(--radius) - 4px)",
       },
       animation: {
-        "fade-in": "fadeIn 0.2s ease-out",
-        "pulse-glow": "pulseGlow 2s ease-in-out infinite",
-        "slide-in": "slideIn 0.3s ease-out",
+        "fade-in": "fadeIn 0.4s ease-out",
+        "pulse-glow": "pulseGlow 3s ease-in-out infinite",
+        "slide-in": "slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1)",
+        float: "float 6s ease-in-out infinite",
+        shimmer: "shimmer 2s linear infinite",
+        "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
       },
       keyframes: {
         fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
+          "0%": { opacity: "0", filter: "blur(4px)" },
+          "100%": { opacity: "1", filter: "blur(0)" },
         },
         pulseGlow: {
-          "0%, 100%": { boxShadow: "0 0 5px hsl(43 50% 50% / 0.3)" },
-          "50%": { boxShadow: "0 0 20px hsl(43 50% 50% / 0.6)" },
+          "0%, 100%": {
+            boxShadow: "0 0 10px hsl(45 90% 60% / 0.1), 0 0 0 1px hsl(45 90% 60% / 0.1)",
+          },
+          "50%": {
+            boxShadow: "0 0 25px hsl(45 90% 60% / 0.3), 0 0 0 1px hsl(45 90% 60% / 0.3)",
+          },
         },
         slideIn: {
-          "0%": { transform: "translateY(-10px)", opacity: "0" },
+          "0%": { transform: "translateY(10px)", opacity: "0" },
           "100%": { transform: "translateY(0)", opacity: "1" },
+        },
+        float: {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-5px)" },
+        },
+        shimmer: {
+          from: { backgroundPosition: "0 0" },
+          to: { backgroundPosition: "-200% 0" },
+        },
+        "border-beam": {
+          "100%": { "offset-distance": "100%" },
         },
       },
       boxShadow: {
-        glow: "0 0 20px hsl(43 50% 50% / 0.15)",
-        "glow-sm": "0 0 10px hsl(43 50% 50% / 0.1)",
+        glow: "0 0 20px -5px hsl(45 90% 60% / 0.3)",
+        "glow-sm": "0 0 10px -2px hsl(45 90% 60% / 0.2)",
+        "glow-lg": "0 0 30px -5px hsl(45 90% 60% / 0.4)",
+        glass: "0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+        "inner-light": "inset 0 1px 0 0 rgba(255, 255, 255, 0.05)",
+      },
+      backgroundImage: {
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "glass-gradient":
+          "linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.00) 100%)",
+        metallic: "linear-gradient(180deg, #1e293b 0%, #0f172a 100%)",
       },
     },
   },

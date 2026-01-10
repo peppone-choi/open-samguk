@@ -15,7 +15,7 @@ export class UnitRegistry {
   /** 마지막으로 로드된 병종 세트 이름 */
   private lastLoadedSet: string | null = null;
 
-  private constructor() { }
+  private constructor() {}
 
   /**
    * 레지스트리 인스턴스를 획득합니다 (싱글톤).
@@ -29,7 +29,7 @@ export class UnitRegistry {
 
   /**
    * 지정된 병종 세트를 JSON 파일로부터 로드합니다.
-   * 
+   *
    * @param unitSetName 병종 세트 이름 (예: "basic", "che")
    * @param cityNameMap 도시 이름-ID 매핑 (제약 조건 검사용)
    * @param regionNameMap 지역 이름-ID 매핑 (제약 조건 검사용)

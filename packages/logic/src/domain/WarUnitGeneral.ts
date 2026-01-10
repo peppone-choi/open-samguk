@@ -98,7 +98,7 @@ export class WarUnitGeneral implements WarUnit {
     return this.crew;
   }
 
-  /** 
+  /**
    * 데미지를 적용하고 병력 감소 및 군량 소모를 처리합니다.
    * 군량 소모는 살상량에 비례하며 공격자가 수비자보다 더 많이 소모합니다.
    */
@@ -118,7 +118,7 @@ export class WarUnitGeneral implements WarUnit {
     this.killed += damage;
   }
 
-  /** 
+  /**
    * 현재 부대가 계속 전투를 수행할 수 있는지 확인합니다.
    * 병력이 전멸했거나 군량이 바닥나면(병력의 1% 미만) 전투 불능 상태가 됩니다.
    */

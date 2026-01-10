@@ -14,7 +14,7 @@ export class GeneralDevelopAgricultureCommand extends GeneralCommand {
   /**
    * 농지 개간 명령을 실행합니다.
    * 장수의 정치력에 비례하여 농지가 상승합니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param actorId 장수 ID

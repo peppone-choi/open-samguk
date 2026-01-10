@@ -598,94 +598,124 @@ export function GeneralList({
   };
 
   return (
-    <div className={`flex flex-col ${className ?? ""}`} style={containerStyle}>
+    <div
+      className={`flex flex-col rounded-xl overflow-hidden glass ${className ?? ""}`}
+      style={containerStyle}
+    >
       {/* Toolbar */}
-      <div className="flex gap-2 p-2 bg-gray-800 border-b border-gray-700">
-        {/* View Mode */}
-        <div className="flex gap-1">
-          <button
-            className={`px-3 py-1 text-sm rounded ${
-              viewMode === "normal"
-                ? "bg-green-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
-            onClick={() => handleViewModeChange("normal")}
-          >
-            기본
-          </button>
-          <button
-            className={`px-3 py-1 text-sm rounded ${
-              viewMode === "war"
-                ? "bg-green-600 text-white"
-                : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-            }`}
-            onClick={() => handleViewModeChange("war")}
-          >
-            전투
-          </button>
+      <div className="flex flex-wrap gap-3 p-3 bg-card/60 backdrop-blur-md border-b border-white/10 items-center justify-between">
+        <div className="flex items-center gap-3 flex-1">
+          {/* View Mode */}
+          <div className="flex gap-1 p-1 bg-black/20 rounded-lg border border-white/5">
+            <button
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-300 ${
+                viewMode === "normal"
+                  ? "bg-primary text-primary-foreground shadow-glow-sm"
+                  : "text-muted-foreground hover:text-foreground bg-white/5 hover:bg-white/10"
+              }`}
+              onClick={() => handleViewModeChange("normal")}
+            >
+              기본
+            </button>
+            <button
+              className={`px-4 py-1.5 text-sm font-medium rounded-md transition-all duration-300 ${
+                viewMode === "war"
+                  ? "bg-primary text-primary-foreground shadow-glow-sm"
+                  : "text-muted-foreground hover:text-foreground bg-white/5 hover:bg-white/10"
+              }`}
+              onClick={() => handleViewModeChange("war")}
+            >
+              전투
+            </button>
+          </div>
+
+          {/* Search */}
+          <div className="flex-1 max-w-sm relative group">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-primary/70 transition-colors">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="11" cy="11" r="8" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder="장수 검색..."
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              className="w-full pl-9 pr-4 py-1.5 text-sm bg-black/40 border border-white/10 rounded-lg text-foreground placeholder-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/20 transition-all"
+            />
+          </div>
         </div>
 
-        {/* Search */}
-        <input
-          type="text"
-          placeholder="검색..."
-          value={globalFilter}
-          onChange={(e) => setGlobalFilter(e.target.value)}
-          className="flex-1 px-3 py-1 text-sm bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-        />
-
         {/* Column Toggle Dropdown */}
-        <div className="relative group">
-          <button className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-500">
-            열 선택
+        <div className="relative group z-20">
+          <button className="px-4 py-1.5 text-sm font-medium bg-white/5 text-foreground border border-white/10 rounded-lg hover:bg-white/10 hover:border-primary/30 transition-all flex items-center gap-2">
+            <span className="text-muted-foreground">열 설정</span>
+            <span className="text-[10px] opacity-50">▼</span>
           </button>
-          <div className="absolute right-0 top-full mt-1 hidden group-hover:block z-50 bg-gray-800 border border-gray-700 rounded shadow-lg min-w-[150px]">
-            {table.getAllLeafColumns().map((column) => (
-              <label
-                key={column.id}
-                className="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-700 cursor-pointer text-sm text-white"
-              >
-                <input
-                  type="checkbox"
-                  checked={column.getIsVisible()}
-                  onChange={column.getToggleVisibilityHandler()}
-                  className="rounded"
-                />
-                {typeof column.columnDef.header === "string" ? column.columnDef.header : column.id}
-              </label>
-            ))}
+          <div className="absolute right-0 top-full mt-2 hidden group-hover:block bg-card/95 backdrop-blur-xl border border-white/10 rounded-xl shadow-xl min-w-[180px] p-2 animate-in fade-in zoom-in-95 duration-200">
+            <div className="max-h-[60vh] overflow-y-auto">
+              {table.getAllLeafColumns().map((column) => (
+                <label
+                  key={column.id}
+                  className="flex items-center gap-3 px-3 py-2 hover:bg-white/5 rounded-lg cursor-pointer text-sm text-foreground/80 transition-colors select-none"
+                >
+                  <input
+                    type="checkbox"
+                    checked={column.getIsVisible()}
+                    onChange={column.getToggleVisibilityHandler()}
+                    className="rounded border-white/20 bg-black/40 text-primary focus:ring-primary/50 accent-primary"
+                  />
+                  {typeof column.columnDef.header === "string"
+                    ? column.columnDef.header
+                    : column.id}
+                </label>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Table */}
       <div className="flex-1 overflow-auto">
-        <table className="w-full text-sm text-white border-collapse">
-          <thead className="sticky top-0 bg-gray-900 z-10">
+        <table className="w-full text-sm border-collapse text-foreground/90">
+          <thead className="sticky top-0 bg-card/80 backdrop-blur-sm z-10 shadow-sm border-b border-white/10">
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="px-2 py-2 text-center font-medium border-b border-gray-700 bg-gray-900"
+                    className="px-2 py-3 text-center text-xs font-medium text-muted-foreground uppercase tracking-wider relative group"
                     style={{ width: header.getSize() }}
                   >
                     {header.isPlaceholder ? null : (
                       <div
                         className={
                           header.column.getCanSort()
-                            ? "cursor-pointer select-none hover:text-blue-400"
-                            : ""
+                            ? "cursor-pointer select-none flex items-center justify-center gap-1 hover:text-primary transition-colors py-1 rounded hover:bg-white/5"
+                            : "flex items-center justify-center py-1"
                         }
                         onClick={header.column.getToggleSortingHandler()}
                       >
                         {flexRender(header.column.columnDef.header, header.getContext())}
-                        {{
-                          asc: " ▲",
-                          desc: " ▼",
-                        }[header.column.getIsSorted() as string] ?? null}
+                        <span className="w-4 text-primary font-bold">
+                          {{
+                            asc: " ▲",
+                            desc: " ▼",
+                          }[header.column.getIsSorted() as string] ?? null}
+                        </span>
                       </div>
                     )}
+                    <div className="absolute right-0 top-1/4 bottom-1/4 w-[1px] bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </th>
                 ))}
               </tr>
@@ -695,15 +725,17 @@ export function GeneralList({
             {table.getRowModel().rows.map((row, index) => (
               <tr
                 key={row.id}
-                className={`${
-                  index % 2 === 0 ? "bg-gray-800" : "bg-gray-850"
-                } hover:bg-gray-700 transition-colors`}
+                className={`
+                  border-b border-white/[0.02] transition-colors duration-200
+                  ${index % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent"}
+                  hover:bg-white/5 group
+                `}
                 style={{ height: 68 }}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td
                     key={cell.id}
-                    className="px-2 py-1 border-b border-gray-700/50"
+                    className="px-2 py-1 align-middle group-hover:text-white transition-colors"
                     style={{ width: cell.column.getSize() }}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -716,13 +748,35 @@ export function GeneralList({
 
         {/* Empty State */}
         {table.getRowModel().rows.length === 0 && (
-          <div className="flex items-center justify-center h-32 text-gray-400">장수가 없습니다</div>
+          <div className="flex flex-col items-center justify-center h-64 text-muted-foreground bg-white/[0.01]">
+            <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center mb-4">
+              <span className="text-3xl opacity-50">⚔️</span>
+            </div>
+            <div className="text-lg font-medium text-foreground/80">장수가 없습니다</div>
+            <div className="text-sm opacity-50 mt-1">검색 조건을 변경해보세요</div>
+          </div>
         )}
       </div>
 
       {/* Footer */}
-      <div className="px-3 py-2 bg-gray-800 border-t border-gray-700 text-sm text-gray-400">
-        총 {table.getFilteredRowModel().rows.length}명
+      <div className="px-4 py-3 bg-card/40 border-t border-white/10 text-xs text-muted-foreground flex justify-between items-center backdrop-blur-sm">
+        <div className="flex gap-4 items-center">
+          <span className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-primary/50 animate-pulse" />총{" "}
+            <span className="text-foreground font-medium">
+              {table.getFilteredRowModel().rows.length.toLocaleString()}
+            </span>
+            명
+          </span>
+          {Object.keys(sorting).length > 0 && (
+            <span className="text-primary/70 bg-primary/10 px-2 py-0.5 rounded text-[10px] border border-primary/20">
+              정렬됨
+            </span>
+          )}
+        </div>
+        <div className="opacity-50 font-mono text-[10px]">
+          {viewMode === "normal" ? "STANDARD VIEW" : "WAR VIEW"}
+        </div>
       </div>
     </div>
   );

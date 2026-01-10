@@ -36,7 +36,7 @@ export class NationDeclareWarCommand extends GeneralCommand {
   /**
    * 선전포고 명령을 실행합니다.
    * 외교 상태를 '선포(1)'로 변경하고 전역 로그 및 메시지를 발송합니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param actorId 명령을 내리는 수뇌 장수 ID

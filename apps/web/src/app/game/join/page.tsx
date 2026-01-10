@@ -1,27 +1,25 @@
 "use client";
 
-/**
- * PageJoin - 장수 생성 페이지
- * Ported from legacy/hwe/ts/PageJoin.vue
- *
- * Features:
- * - Nation list with scout messages (임관권유문)
- * - General name input (or random if blocked)
- * - User icon toggle (전콘 사용)
- * - Personality (성격) selection
- * - Stats input (통솔/무력/지력) with preset buttons
- * - Inherit points section (유산 포인트)
- */
-
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/utils/trpc";
-
-// ============================================================================
-// Types
-// ============================================================================
+import { cn } from "@/lib/utils";
+import {
+  User,
+  Shield,
+  Zap,
+  BookOpen,
+  Crown,
+  Dna,
+  MapPin,
+  Clock,
+  Lock,
+  RefreshCw,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 interface NationInfo {
   nation: number;
@@ -37,7 +35,6 @@ interface GameIActionInfo {
   info: string;
 }
 
-// CityInfo type for city selection (exported for potential reuse)
 export interface CityInfo {
   id: number;
   name: string;
@@ -72,10 +69,6 @@ interface MemberInfo {
   imgsvr: 0 | 1;
 }
 
-// ============================================================================
-// Utility Functions
-// ============================================================================
-
 function isBrightColor(color: string): boolean {
   const hex = color.replace("#", "");
   const r = parseInt(hex.substring(0, 2), 16);
@@ -100,7 +93,6 @@ function getIconPath(imgsvr: 0 | 1, picture: string): string {
   return `/d_pic/icons/${picture}`;
 }
 
-// Stat generation utilities (from legacy/hwe/ts/util/generalStats.ts)
 function abilityRand(stats: Stats): [number, number, number] {
   let leadership = Math.random() * 65 + 10;
   let strength = Math.random() * 65 + 10;
@@ -231,20 +223,11 @@ function abilityPowint(stats: Stats): [number, number, number] {
   return [leadership, strength, intel];
 }
 
-// ============================================================================
-// Constants
-// ============================================================================
-
-const MOCK_TURN_TERM = 60; // seconds
-
-// ============================================================================
-// Component
-// ============================================================================
+const MOCK_TURN_TERM = 60;
 
 export default function JoinPage() {
   const router = useRouter();
 
-  // Queries
   const { data: userData } = trpc.auth.session.useQuery();
   const { data: rawNations } = trpc.getNations.useQuery();
   const { data: cityData } = trpc.getAllCities.useQuery();
@@ -280,7 +263,6 @@ export default function JoinPage() {
   );
 
   const stats = useMemo<Stats>(() => {
-    // defaults from general.service.ts if gameConst not available
     const c = (gameConst as any)?.consts || {};
     return {
       min: c.statMin ?? 10,
@@ -306,7 +288,7 @@ export default function JoinPage() {
     return cityData.cities.map((c: any) => ({
       id: c.city,
       name: c.name,
-      region: c.region, // Assuming numeric or mapped name
+      region: c.region,
     }));
   }, [cityData]);
 
@@ -314,7 +296,6 @@ export default function JoinPage() {
 
   const [selectedNation, setSelectedNation] = useState<number>(0);
 
-  // Form State
   const [args, setArgs] = useState<JoinArgs>({
     name: "",
     leadership: 60,
@@ -328,7 +309,6 @@ export default function JoinPage() {
     inheritTurntimeZone: undefined,
   });
 
-  // Sync initial name and stats when data loaded
   useEffect(() => {
     if (userData && args.name === "") {
       setArgs((prev) => ({ ...prev, name: userData.name }));
@@ -347,10 +327,7 @@ export default function JoinPage() {
     }
   }, [stats.total, args.leadership, args.strength, args.intel]);
 
-  // UI State
   const [displayTable, setDisplayTable] = useState<boolean>(true);
-  const [toggleZoom, setToggleZoom] = useState(true);
-
   const [displayInherit, setDisplayInherit] = useState<boolean>(true);
 
   const [inheritCity, setInheritCity] = useState<number | undefined>(undefined);
@@ -361,17 +338,14 @@ export default function JoinPage() {
     return c.turnTerm ?? MOCK_TURN_TERM;
   }, [gameConst]);
 
-  // Sync inheritCity with args
   useEffect(() => {
     setArgs((prev) => ({ ...prev, inheritCity }));
   }, [inheritCity]);
 
-  // Sync inheritTurnTimeZone with args
   useEffect(() => {
     setArgs((prev) => ({ ...prev, inheritTurntimeZone: inheritTurnTimeZone }));
   }, [inheritTurnTimeZone]);
 
-  // Turn time zone list
   const turnTimeZoneList = useMemo(() => {
     const result: string[] = [];
     const zoneSec = turnterm;
@@ -396,7 +370,6 @@ export default function JoinPage() {
     return result;
   }, [turnterm]);
 
-  // Icon path
   const iconPath = useMemo(() => {
     if (args.pic) {
       return getIconPath(member.imgsvr, member.picture);
@@ -404,10 +377,8 @@ export default function JoinPage() {
     return getIconPath(0, "default.jpg");
   }, [args.pic, member.imgsvr, member.picture]);
 
-  // Required inherit points
   const inheritRequiredPoint = useMemo(() => {
     let required = 0;
-    // Mock point costs
     const inheritBornCityPoint = 10;
     const inheritBornSpecialPoint = 50;
     const inheritBornTurntimePoint = 5;
@@ -429,7 +400,6 @@ export default function JoinPage() {
     return required;
   }, [args]);
 
-  // Stat preset handlers
   const handleRandStatRandom = useCallback(() => {
     const [l, s, i] = abilityRand(stats);
     setArgs((prev) => ({ ...prev, leadership: l, strength: s, intel: i }));
@@ -450,7 +420,6 @@ export default function JoinPage() {
     setArgs((prev) => ({ ...prev, leadership: l, strength: s, intel: i }));
   }, [stats]);
 
-  // Reset form
   const handleReset = useCallback(() => {
     const defaultTotal = stats.total;
     setArgs((prev) => ({
@@ -466,7 +435,6 @@ export default function JoinPage() {
 
   const createGeneralMutation = trpc.createGeneral.useMutation();
 
-  // Submit form
   const handleSubmit = useCallback(async () => {
     const totalStat = args.leadership + args.strength + args.intel;
     const defaultStatTotal = stats.total;
@@ -506,12 +474,10 @@ export default function JoinPage() {
     }
   }, [args, stats.total, router, createGeneralMutation, member.picture, selectedNation]);
 
-  // Update stat handler
   const updateStat = useCallback((field: "leadership" | "strength" | "intel", value: number) => {
     setArgs((prev) => ({ ...prev, [field]: value }));
   }, []);
 
-  // Update inherit bonus stat
   const updateInheritBonusStat = useCallback(
     (index: number, value: number) => {
       setArgs((prev) => {
@@ -524,431 +490,528 @@ export default function JoinPage() {
   );
 
   return (
-    <>
+    <div className="min-h-screen bg-background pb-20">
       <TopBackBar title="장수 생성" type="gateway" />
 
-      <div className="bg0 w-full max-w-[1000px] mx-auto border border-gray-600 overflow-hidden">
-        {/* Nation List Section */}
-        <div className="nation-list">
-          {/* Header Row */}
-          <div className="bg1 grid grid-cols-[130px_1fr] sm:grid-cols-[3fr_1fr_1fr] sm:grid-rows-2 lg:grid-cols-[130px_1fr_90px_90px] lg:grid-rows-1 items-center text-center border-b border-gray-600">
-            <div className="p-2 hidden lg:block">국가명</div>
-            <div className="p-2 hidden lg:block">임관권유문</div>
-            <div className="p-2 col-span-2 sm:col-span-1 sm:row-span-2 lg:col-span-1 lg:row-span-1">
-              <Button
-                variant={displayTable ? "default" : "secondary"}
-                size="sm"
-                className="w-full"
-                onClick={() => setDisplayTable(!displayTable)}
-              >
-                {displayTable ? "숨기기" : "보이기"}
-              </Button>
-            </div>
-            <div className="p-2 hidden sm:block sm:row-span-2 lg:row-span-1">
-              <Button
-                variant={toggleZoom ? "default" : "secondary"}
-                size="sm"
-                className="w-full lg:hidden"
-                disabled={!displayTable}
-                onClick={() => setToggleZoom(!toggleZoom)}
-              >
-                {toggleZoom ? "작게 보기" : "크게 보기"}
-              </Button>
-            </div>
-          </div>
-
-          {/* Nation Rows */}
-          <div
-            className={`grid border-b border-gray-700 cursor-pointer ${selectedNation === 0 ? "bg-zinc-800" : ""}`}
-            onClick={() => setSelectedNation(0)}
-          >
-            <div className="flex items-center gap-4 p-3">
-              <input
-                type="radio"
-                name="selectedNation"
-                checked={selectedNation === 0}
-                onChange={() => setSelectedNation(0)}
-              />
-              <div className="flex items-center justify-center w-32 h-10 text-lg font-semibold bg-gray-600 text-white">
-                재야
-              </div>
-              <div className="text-sm">특정 국가에 소속되지 않고 자유롭게 시작합니다.</div>
-            </div>
-          </div>
-
-          {displayTable &&
-            nationList.map((nation) => (
-              <div
-                key={nation.nation}
-                className={`grid border-b border-gray-700 cursor-pointer ${selectedNation === nation.nation ? "bg-zinc-800" : ""
-                  } ${toggleZoom
-                    ? "grid-rows-[auto_minmax(0,200px)]"
-                    : "grid-rows-[auto_minmax(0,115px)]"
-                  } lg:grid-cols-[130px_1fr] lg:grid-rows-1`}
-                onClick={() => setSelectedNation(nation.nation)}
-              >
-                {/* Nation Name */}
-                <div
-                  className="flex flex-col items-center justify-center p-3 gap-2"
-                  style={{
-                    backgroundColor: nation.color,
-                    color: isBrightColor(nation.color) ? "black" : "white",
-                  }}
-                >
-                  <input
-                    type="radio"
-                    name="selectedNation"
-                    checked={selectedNation === nation.nation}
-                    onChange={() => setSelectedNation(nation.nation)}
-                  />
-                  <div className="text-lg font-semibold">{nation.name}</div>
-                </div>
-
-                {/* Scout Message */}
-                <div
-                  className={`p-2 overflow-hidden ${toggleZoom ? "overflow-y-auto max-h-[200px]" : "max-h-[115px]"
-                    } lg:max-h-none lg:overflow-visible`}
-                >
-                  <div
-                    className={`${!toggleZoom
-                        ? "origin-top-left scale-[0.575] w-[870px] sm:scale-100 sm:w-auto"
-                        : ""
-                      }`}
-                    dangerouslySetInnerHTML={{
-                      __html: nation.scoutmsg ?? "-",
-                    }}
-                  />
-                </div>
-              </div>
-            ))}
+      <main className="container mx-auto px-4 max-w-5xl py-8 space-y-8">
+        <div className="text-center space-y-2 mb-10">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-primary to-primary/60">
+            Create Your General
+          </h1>
+          <p className="text-muted-foreground">
+            삼국지 모의전투의 세계에 오신 것을 환영합니다. 당신의 분신이 될 장수를 생성해주세요.
+          </p>
         </div>
 
-        {/* Section Header */}
-        <div className="bg1 text-center p-2 border-t border-gray-600">장수 생성</div>
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Crown className="w-6 h-6 text-primary" />
+              <span className="text-foreground">소속 국가 선택</span>
+            </h2>
+            <div className="flex items-center gap-2">
+              <Button
+                variant={displayTable ? "default" : "outline"}
+                size="sm"
+                onClick={() => setDisplayTable(!displayTable)}
+                className="h-8"
+              >
+                {displayTable ? "국가 목록 숨기기" : "국가 목록 보기"}
+              </Button>
+            </div>
+          </div>
 
-        {/* Form */}
-        <div className="px-1.5 py-2 space-y-3">
-          {/* Row 1: Name, Icon, Personality */}
-          <div className="grid grid-cols-12 gap-2 items-center">
-            {/* Name */}
-            <div className="col-span-3 lg:col-span-4 text-right text-sm">장수명</div>
-            <div className="col-span-9 lg:col-span-3">
-              {!blockCustomGeneralName ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div
+              onClick={() => setSelectedNation(0)}
+              className={cn(
+                "cursor-pointer transition-all duration-300 relative overflow-hidden group rounded-xl border",
+                selectedNation === 0
+                  ? "bg-primary/10 border-primary shadow-glow-sm ring-1 ring-primary"
+                  : "bg-card/40 border-white/10 hover:bg-card/60 hover:border-primary/50"
+              )}
+            >
+              <div className="p-5 flex flex-col h-full gap-3">
+                <div className="flex justify-between items-start">
+                  <div className="bg-zinc-800 text-white px-3 py-1 rounded text-sm font-bold">
+                    재야
+                  </div>
+                  <div
+                    className={cn(
+                      "w-5 h-5 rounded-full border flex items-center justify-center",
+                      selectedNation === 0 ? "border-primary bg-primary" : "border-white/20"
+                    )}
+                  >
+                    {selectedNation === 0 && <div className="w-2 h-2 rounded-full bg-black" />}
+                  </div>
+                </div>
+                <div className="mt-2">
+                  <p className="text-sm text-muted-foreground">
+                    특정 국가에 소속되지 않고 자유롭게 시작합니다.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {displayTable &&
+              nationList.map((nation) => (
+                <div
+                  key={nation.nation}
+                  onClick={() => setSelectedNation(nation.nation)}
+                  className={cn(
+                    "cursor-pointer transition-all duration-300 relative overflow-hidden group rounded-xl border",
+                    selectedNation === nation.nation
+                      ? "bg-primary/5 border-primary shadow-glow-sm ring-1 ring-primary"
+                      : "bg-card/40 border-white/10 hover:bg-card/60 hover:border-primary/50"
+                  )}
+                >
+                  <div className="p-5 flex flex-col h-full gap-3">
+                    <div className="flex justify-between items-start">
+                      <div
+                        className="px-3 py-1 rounded text-sm font-bold shadow-sm"
+                        style={{
+                          backgroundColor: nation.color,
+                          color: isBrightColor(nation.color) ? "black" : "white",
+                        }}
+                      >
+                        {nation.name}
+                      </div>
+                      <div
+                        className={cn(
+                          "w-5 h-5 rounded-full border flex items-center justify-center transition-colors",
+                          selectedNation === nation.nation
+                            ? "border-primary bg-primary"
+                            : "border-white/20"
+                        )}
+                      >
+                        {selectedNation === nation.nation && (
+                          <div className="w-2 h-2 rounded-full bg-black" />
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="mt-2 relative">
+                      <div className="text-xs text-muted-foreground/80 overflow-hidden transition-all duration-300 max-h-[150px]">
+                        <div dangerouslySetInnerHTML={{ __html: nation.scoutmsg ?? "-" }} />
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 h-6 bg-gradient-to-t from-card/90 to-transparent pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <User className="w-6 h-6 text-primary" />
+            <span className="text-foreground">기본 정보</span>
+          </h2>
+
+          <div className="glass rounded-xl p-6 md:p-8 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                  장수명
+                </label>
+                {!blockCustomGeneralName ? (
+                  <div className="relative">
+                    <input
+                      type="text"
+                      className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-lg focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all placeholder:text-white/10"
+                      placeholder="장수 이름을 입력하세요"
+                      value={args.name}
+                      onChange={(e) => setArgs((prev) => ({ ...prev, name: e.target.value }))}
+                    />
+                    <User className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20" />
+                  </div>
+                ) : (
+                  <div className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-lg text-muted-foreground flex items-center gap-2">
+                    <Lock className="w-4 h-4" /> 무작위 (서버 설정)
+                  </div>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  * 다른 유저에게 불쾌감을 주는 이름은 제재될 수 있습니다.
+                </p>
+              </div>
+
+              <div className="space-y-3">
+                <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                  성격
+                </label>
+                <div className="space-y-2">
+                  <div className="relative">
+                    <select
+                      className="w-full appearance-none bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-lg focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all cursor-pointer"
+                      value={args.character}
+                      onChange={(e) => setArgs((prev) => ({ ...prev, character: e.target.value }))}
+                    >
+                      {Object.entries(availablePersonality).map(([key, p]) => (
+                        <option key={key} value={key} className="bg-zinc-900">
+                          {p.name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 pointer-events-none" />
+                  </div>
+                  <div className="bg-primary/5 border border-primary/20 rounded-md p-3">
+                    <p className="text-sm text-primary/80">
+                      <span className="font-bold mr-2">특성:</span>
+                      {availablePersonality[args.character]?.info}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="h-px bg-white/5" />
+
+            <div className="flex flex-col md:flex-row gap-6 items-start">
+              <div className="w-full md:w-auto flex-shrink-0 flex justify-center">
+                <div className="relative group">
+                  <div className="w-32 h-32 rounded-xl overflow-hidden border-2 border-white/10 group-hover:border-primary/50 transition-all shadow-2xl">
+                    <img
+                      src={iconPath}
+                      alt="Icon"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/d_pic/icons/default.jpg";
+                      }}
+                    />
+                  </div>
+                  <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-zinc-900 border border-white/20 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap">
+                    {member.name}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex-1 space-y-4">
+                <div>
+                  <h3 className="text-lg font-semibold mb-2">전용 아이콘 사용</h3>
+                  <p className="text-sm text-muted-foreground mb-4">
+                    개인 설정에서 등록한 전용 아이콘을 사용합니다. 체크 해제 시 기본 이미지가
+                    사용됩니다.
+                  </p>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div
+                      className={cn(
+                        "w-12 h-6 rounded-full transition-colors relative",
+                        args.pic ? "bg-primary" : "bg-zinc-700"
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "absolute top-1 w-4 h-4 rounded-full bg-white transition-all shadow-md",
+                          args.pic ? "left-7" : "left-1"
+                        )}
+                      />
+                    </div>
+                    <input
+                      type="checkbox"
+                      checked={args.pic}
+                      onChange={(e) => setArgs((prev) => ({ ...prev, pic: e.target.checked }))}
+                      className="hidden"
+                    />
+                    <span
+                      className={cn(
+                        "text-sm font-medium transition-colors",
+                        args.pic ? "text-primary" : "text-muted-foreground"
+                      )}
+                    >
+                      {args.pic ? "사용함" : "사용안함"}
+                    </span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h2 className="text-2xl font-bold flex items-center gap-2">
+            <Zap className="w-6 h-6 text-primary" />
+            <span className="text-foreground">능력치 설정</span>
+          </h2>
+
+          <div className="glass rounded-xl p-6 md:p-8 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-black/20 border border-white/5 rounded-xl p-5 hover:border-primary/30 transition-all group">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider group-hover:text-primary transition-colors">
+                    통솔 (Leadership)
+                  </span>
+                  <Shield className="w-5 h-5 text-white/20 group-hover:text-primary transition-colors" />
+                </div>
+                <div className="flex items-end gap-2 mb-4">
+                  <span className="text-4xl font-bold tabular-nums text-foreground">
+                    {args.leadership}
+                  </span>
+                  <span className="text-sm text-muted-foreground mb-1.5">/ {stats.max}</span>
+                </div>
                 <input
-                  type="text"
-                  className="w-full px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm"
-                  value={args.name}
-                  onChange={(e) => setArgs((prev) => ({ ...prev, name: e.target.value }))}
+                  type="range"
+                  min={stats.min}
+                  max={stats.max}
+                  value={args.leadership}
+                  onChange={(e) => updateStat("leadership", parseInt(e.target.value) || 0)}
+                  className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary hover:accent-primary-glow"
                 />
+              </div>
+
+              <div className="bg-black/20 border border-white/5 rounded-xl p-5 hover:border-primary/30 transition-all group">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider group-hover:text-primary transition-colors">
+                    무력 (Strength)
+                  </span>
+                  <Zap className="w-5 h-5 text-white/20 group-hover:text-primary transition-colors" />
+                </div>
+                <div className="flex items-end gap-2 mb-4">
+                  <span className="text-4xl font-bold tabular-nums text-foreground">
+                    {args.strength}
+                  </span>
+                  <span className="text-sm text-muted-foreground mb-1.5">/ {stats.max}</span>
+                </div>
+                <input
+                  type="range"
+                  min={stats.min}
+                  max={stats.max}
+                  value={args.strength}
+                  onChange={(e) => updateStat("strength", parseInt(e.target.value) || 0)}
+                  className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary hover:accent-primary-glow"
+                />
+              </div>
+
+              <div className="bg-black/20 border border-white/5 rounded-xl p-5 hover:border-primary/30 transition-all group">
+                <div className="flex justify-between items-center mb-4">
+                  <span className="text-sm font-bold text-muted-foreground uppercase tracking-wider group-hover:text-primary transition-colors">
+                    지력 (Intellect)
+                  </span>
+                  <BookOpen className="w-5 h-5 text-white/20 group-hover:text-primary transition-colors" />
+                </div>
+                <div className="flex items-end gap-2 mb-4">
+                  <span className="text-4xl font-bold tabular-nums text-foreground">
+                    {args.intel}
+                  </span>
+                  <span className="text-sm text-muted-foreground mb-1.5">/ {stats.max}</span>
+                </div>
+                <input
+                  type="range"
+                  min={stats.min}
+                  max={stats.max}
+                  value={args.intel}
+                  onChange={(e) => updateStat("intel", parseInt(e.target.value) || 0)}
+                  className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer accent-primary hover:accent-primary-glow"
+                />
+              </div>
+            </div>
+
+            <div className="bg-primary/5 rounded-lg p-4 border border-primary/10 flex flex-wrap gap-4 items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex flex-col">
+                  <span className="text-xs text-muted-foreground uppercase">총합</span>
+                  <span
+                    className={cn(
+                      "text-2xl font-bold tabular-nums",
+                      args.leadership + args.strength + args.intel === stats.total
+                        ? "text-primary"
+                        : "text-orange-400"
+                    )}
+                  >
+                    {args.leadership + args.strength + args.intel}
+                  </span>
+                </div>
+                <div className="h-8 w-px bg-white/10" />
+                <div className="text-sm text-muted-foreground">
+                  목표 총합: <span className="text-white font-medium">{stats.total}</span>
+                </div>
+              </div>
+
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRandStatRandom}
+                  className="gap-2"
+                >
+                  <RefreshCw className="w-3 h-3" /> 랜덤
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleRandStatLeadPow}>
+                  통솔+무력
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleRandStatLeadInt}>
+                  통솔+지력
+                </Button>
+                <Button variant="outline" size="sm" onClick={handleRandStatPowInt}>
+                  무력+지력
+                </Button>
+              </div>
+            </div>
+
+            <p className="text-center text-sm text-muted-foreground">
+              * 가입 후 {stats.bonusMin} ~ {stats.bonusMax}의 추가 보너스를 획득합니다.
+            </p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <div
+            className="flex items-center justify-between cursor-pointer"
+            onClick={() => setDisplayInherit(!displayInherit)}
+          >
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Dna className="w-6 h-6 text-primary" />
+              <span className="text-foreground">유산 포인트 (선택)</span>
+            </h2>
+            <div className="p-2 rounded-full hover:bg-white/5 transition-colors">
+              {displayInherit ? (
+                <ChevronUp className="w-5 h-5" />
               ) : (
-                <span className="text-gray-400">무작위</span>
+                <ChevronDown className="w-5 h-5" />
               )}
             </div>
-
-            {/* Icon */}
-            <div className="col-span-3 lg:col-span-1 text-right text-sm">전콘 사용</div>
-            <div className="col-span-9 lg:col-span-4 flex items-center gap-2">
-              <img
-                src={iconPath}
-                alt="Icon"
-                className="w-16 h-16 border border-gray-600 rounded bg-zinc-900"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "/d_pic/icons/default.jpg";
-                }}
-              />
-              <label className="flex items-center gap-1 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={args.pic}
-                  onChange={(e) => setArgs((prev) => ({ ...prev, pic: e.target.checked }))}
-                  className="w-4 h-4"
-                />
-                사용
-              </label>
-            </div>
-
-            {/* Personality */}
-            <div className="col-span-3 lg:col-span-4 text-right text-sm">성격</div>
-            <div className="col-span-9 lg:col-span-8">
-              <div className="flex flex-col lg:flex-row lg:items-center gap-2">
-                <select
-                  className="px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm max-w-[20ch]"
-                  value={args.character}
-                  onChange={(e) => setArgs((prev) => ({ ...prev, character: e.target.value }))}
-                >
-                  {Object.entries(availablePersonality).map(([key, p]) => (
-                    <option key={key} value={key}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
-                <small className="text-gray-400">
-                  {availablePersonality[args.character]?.info}
-                </small>
-              </div>
-            </div>
           </div>
 
-          {/* Row 2: Stats */}
-          <div className="grid grid-cols-12 gap-2 items-center mt-4">
-            <div className="col-span-3 lg:col-span-4 text-right text-sm">
-              능력치
-              <br />
-              <small className="text-gray-400">통/무/지</small>
-            </div>
-            <div className="col-span-3 lg:col-span-2">
-              <input
-                type="number"
-                className="w-full px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm text-center"
-                value={args.leadership}
-                onChange={(e) => updateStat("leadership", parseInt(e.target.value) || 0)}
-              />
-            </div>
-            <div className="col-span-3 lg:col-span-2">
-              <input
-                type="number"
-                className="w-full px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm text-center"
-                value={args.strength}
-                onChange={(e) => updateStat("strength", parseInt(e.target.value) || 0)}
-              />
-            </div>
-            <div className="col-span-3 lg:col-span-2">
-              <input
-                type="number"
-                className="w-full px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm text-center"
-                value={args.intel}
-                onChange={(e) => updateStat("intel", parseInt(e.target.value) || 0)}
-              />
-            </div>
-          </div>
-
-          {/* Row 3: Stat preset buttons */}
-          <div className="grid grid-cols-12 gap-2 items-center mt-4">
-            <div className="col-span-3 lg:col-span-4 text-right text-sm">능력치 조절</div>
-            <div className="col-span-9 lg:col-span-8 flex flex-wrap gap-1">
-              <Button
-                variant="secondary"
-                size="sm"
-                className="w-[8em]"
-                onClick={handleRandStatRandom}
-              >
-                랜덤형
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="w-[8em]"
-                onClick={handleRandStatLeadPow}
-              >
-                통솔무력형
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="w-[8em]"
-                onClick={handleRandStatLeadInt}
-              >
-                통솔지력형
-              </Button>
-              <Button
-                variant="secondary"
-                size="sm"
-                className="w-[8em]"
-                onClick={handleRandStatPowInt}
-              >
-                무력지력형
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Stat constraints info */}
-        <div className="border-t border-gray-600 p-2 text-center">
-          <div className="text-orange-400">
-            모든 능력치는 ( {stats.min} &lt;= 능력치 &lt;= {stats.max} ) 사이로 잡으셔야 합니다.
-            <br />그 외의 능력치는 가입되지 않습니다.
-          </div>
-        </div>
-
-        <div className="p-2 text-center text-sm">
-          능력치의 총합은 {stats.total} 입니다. 가입후 {stats.bonusMin} ~ {stats.bonusMax} 의 능력치
-          보너스를 받게 됩니다.
-          <br />
-          임의의 도시에서 재야로 시작하며 건국과 임관은 게임 내에서 실행합니다.
-        </div>
-
-        {/* Inherit Points Section Header */}
-        <div className="bg1 grid grid-cols-12 items-center border-t border-gray-600">
-          <div className="col-span-9 lg:col-span-11 text-center p-2">유산 포인트 사용</div>
-          <div className="col-span-3 lg:col-span-1 p-2">
-            <label className="flex items-center gap-1 text-sm cursor-pointer">
-              <input
-                type="checkbox"
-                checked={displayInherit}
-                onChange={(e) => setDisplayInherit(e.target.checked)}
-                className="w-4 h-4"
-              />
-              {displayInherit ? "숨기기" : "보이기"}
-            </label>
-          </div>
-        </div>
-
-        {/* Inherit Points Form */}
-        {displayInherit && (
-          <div className="p-3 space-y-3">
-            {/* Point display */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-zinc-800 border border-gray-600 rounded p-3">
-                <div className="text-xs text-gray-400 mb-1">보유한 유산 포인트</div>
-                <div className="text-lg font-semibold">{inheritTotalPoint}</div>
-              </div>
-              <div className="bg-zinc-800 border border-gray-600 rounded p-3">
-                <div className="text-xs text-gray-400 mb-1">필요 유산 포인트</div>
-                <div
-                  className={`text-lg font-semibold ${inheritRequiredPoint > inheritTotalPoint ? "text-red-400" : ""
-                    }`}
-                >
-                  {inheritRequiredPoint}
+          {displayInherit && (
+            <div className="glass rounded-xl p-6 md:p-8 space-y-8 animate-in slide-in-from-top-4 duration-300">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-4 flex flex-col items-center justify-center">
+                  <span className="text-sm text-muted-foreground mb-1">보유 포인트</span>
+                  <span className="text-3xl font-bold text-white">{inheritTotalPoint}</span>
                 </div>
-              </div>
-            </div>
-
-            <hr className="border-gray-600" />
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Inherit Special (천재로 생성) */}
-              <div className="p-2">
-                <div className="grid grid-cols-2 gap-2 items-center">
-                  <div className="text-right text-sm">천재로 생성</div>
-                  <div>
-                    <select
-                      className="w-full px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm max-w-[20ch]"
-                      value={args.inheritSpecial ?? ""}
-                      onChange={(e) =>
-                        setArgs((prev) => ({
-                          ...prev,
-                          inheritSpecial: e.target.value || undefined,
-                        }))
-                      }
-                    >
-                      <option value="">사용안함</option>
-                      {Object.entries(availableInheritSpecial).map(([key, special]) => (
-                        <option key={key} value={key}>
-                          {special.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                {args.inheritSpecial && (
-                  <small
-                    className="text-gray-400 block mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: availableInheritSpecial[args.inheritSpecial]?.info ?? "",
-                    }}
-                  />
-                )}
-              </div>
-
-              {/* Inherit City (도시) */}
-              <div className="p-2">
-                <div className="grid grid-cols-2 gap-2 items-center">
-                  <div className="text-right text-sm">도시</div>
-                  <div>
-                    <select
-                      className="w-full px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm max-w-[20ch]"
-                      value={inheritCity ?? ""}
-                      onChange={(e) =>
-                        setInheritCity(e.target.value ? parseInt(e.target.value) : undefined)
-                      }
-                    >
-                      <option value="">사용안함</option>
-                      {availableInheritCity.map(
-                        (city: { id: number; name: string; region: string }) => (
-                          <option key={city.id} value={city.id}>
-                            [{city.region}] {city.name}
-                          </option>
-                        )
-                      )}
-                    </select>
-                  </div>
+                <div className="bg-zinc-900/50 border border-white/5 rounded-xl p-4 flex flex-col items-center justify-center">
+                  <span className="text-sm text-muted-foreground mb-1">필요 포인트</span>
+                  <span
+                    className={cn(
+                      "text-3xl font-bold",
+                      inheritRequiredPoint > inheritTotalPoint ? "text-red-500" : "text-primary"
+                    )}
+                  >
+                    {inheritRequiredPoint}
+                  </span>
                 </div>
               </div>
 
-              {/* Inherit Turn Time Zone (턴 시간 지정) */}
-              <div className="p-2">
-                <div className="grid grid-cols-2 gap-2 items-center">
-                  <div className="text-right text-sm">턴 시간 지정</div>
-                  <div>
-                    <select
-                      className="w-full px-2 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm max-w-[24ch]"
-                      value={inheritTurnTimeZone ?? ""}
-                      onChange={(e) =>
-                        setInheritTurnTimeZone(
-                          e.target.value ? parseInt(e.target.value) : undefined
-                        )
-                      }
-                    >
-                      <option value="">사용안함</option>
-                      {turnTimeZoneList.map((zone, idx) => (
-                        <option key={idx} value={idx}>
-                          {zone}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
-              {/* Inherit Bonus Stat (추가 능력치 고정) */}
-              <div className="p-2">
-                <div className="grid grid-cols-2 gap-2 items-center">
-                  <div className="text-right text-sm">추가 능력치 고정</div>
-                  <div className="grid grid-cols-3 gap-1">
-                    <input
-                      type="number"
-                      className="w-full px-1 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm text-center"
-                      value={args.inheritBonusStat[0]}
-                      min={0}
-                      max={stats.bonusMax}
-                      onChange={(e) => updateInheritBonusStat(0, parseInt(e.target.value) || 0)}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <Crown className="w-4 h-4 text-primary" /> 특별 캐릭터
+                  </label>
+                  <select
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary/50 transition-all"
+                    value={args.inheritSpecial ?? ""}
+                    onChange={(e) =>
+                      setArgs((prev) => ({ ...prev, inheritSpecial: e.target.value || undefined }))
+                    }
+                  >
+                    <option value="">사용안함</option>
+                    {Object.entries(availableInheritSpecial).map(([key, special]) => (
+                      <option key={key} value={key}>
+                        {special.name}
+                      </option>
+                    ))}
+                  </select>
+                  {args.inheritSpecial && (
+                    <div
+                      className="text-xs text-primary/80 bg-primary/5 p-2 rounded border border-primary/10"
+                      dangerouslySetInnerHTML={{
+                        __html: availableInheritSpecial[args.inheritSpecial]?.info ?? "",
+                      }}
                     />
-                    <input
-                      type="number"
-                      className="w-full px-1 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm text-center"
-                      value={args.inheritBonusStat[1]}
-                      min={0}
-                      max={stats.bonusMax}
-                      onChange={(e) => updateInheritBonusStat(1, parseInt(e.target.value) || 0)}
-                    />
-                    <input
-                      type="number"
-                      className="w-full px-1 py-1 bg-zinc-800 border border-gray-600 rounded text-white text-sm text-center"
-                      value={args.inheritBonusStat[2]}
-                      min={0}
-                      max={stats.bonusMax}
-                      onChange={(e) => updateInheritBonusStat(2, parseInt(e.target.value) || 0)}
-                    />
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-primary" /> 시작 도시
+                  </label>
+                  <select
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary/50 transition-all"
+                    value={inheritCity ?? ""}
+                    onChange={(e) =>
+                      setInheritCity(e.target.value ? parseInt(e.target.value) : undefined)
+                    }
+                  >
+                    <option value="">랜덤 (사용안함)</option>
+                    {availableInheritCity.map((city) => (
+                      <option key={city.id} value={city.id}>
+                        [{city.region}] {city.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-primary" /> 턴 시간 지정
+                  </label>
+                  <select
+                    className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-primary/50 transition-all"
+                    value={inheritTurnTimeZone ?? ""}
+                    onChange={(e) =>
+                      setInheritTurnTimeZone(e.target.value ? parseInt(e.target.value) : undefined)
+                    }
+                  >
+                    <option value="">사용안함</option>
+                    {turnTimeZoneList.map((zone, idx) => (
+                      <option key={idx} value={idx}>
+                        {zone}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-primary" /> 추가 능력치 (Max {stats.bonusMax})
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    {["통솔", "무력", "지력"].map((label, idx) => (
+                      <div key={label} className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-bold">
+                          {label}
+                        </span>
+                        <input
+                          type="number"
+                          className="w-full bg-black/20 border border-white/10 rounded-lg pl-10 pr-2 py-3 text-center text-sm focus:outline-none focus:border-primary/50 transition-all"
+                          value={args.inheritBonusStat[idx]}
+                          min={0}
+                          max={stats.bonusMax}
+                          onChange={(e) =>
+                            updateInheritBonusStat(idx, parseInt(e.target.value) || 0)
+                          }
+                        />
+                      </div>
+                    ))}
                   </div>
                 </div>
-                <small className="text-gray-400 block mt-1 text-right">
-                  통/무/지 (최대 {stats.bonusMax})
-                </small>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </section>
 
-        {/* Submit buttons */}
-        <div className="border-t border-gray-600 p-3 text-center space-x-2">
-          <Button variant="default" onClick={handleSubmit}>
+        <div className="flex justify-center gap-4 pt-6">
+          <Button
+            className="w-40 h-12 text-lg font-bold shadow-glow-sm hover:shadow-glow transition-all"
+            onClick={handleSubmit}
+            disabled={inheritRequiredPoint > inheritTotalPoint}
+          >
             장수 생성
           </Button>
-          <Button variant="secondary" onClick={handleReset}>
-            다시 입력
+          <Button
+            variant="outline"
+            className="w-40 h-12 text-lg border-white/10 hover:bg-white/5 hover:border-white/20"
+            onClick={handleReset}
+          >
+            초기화
           </Button>
         </div>
-      </div>
-    </>
+
+        {inheritRequiredPoint > inheritTotalPoint && (
+          <p className="text-center text-red-400 text-sm animate-pulse">
+            유산 포인트가 부족하여 생성할 수 없습니다.
+          </p>
+        )}
+      </main>
+    </div>
   );
 }

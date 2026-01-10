@@ -197,12 +197,21 @@ export function NationBasicCard({ nation, global, gameConst }: NationBasicCardPr
           display: grid;
           grid-template-columns: 7fr 18fr 7fr 18fr;
           grid-template-rows: repeat(10, calc(192px / 10));
-          border-bottom: solid 1px gray;
-          border-right: solid 1px gray;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          border-right: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+          border-radius: 8px;
+          overflow: hidden;
         }
 
         .nation-card-basic .name {
           grid-column: 1 / span 4;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 1.1em;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .nation-card-basic .type-body {
@@ -213,23 +222,32 @@ export function NationBasicCard({ nation, global, gameConst }: NationBasicCardPr
           text-align: center;
           padding: 0px;
           line-height: calc(193px / 10);
-          border-left: solid 1px gray;
-          border-top: solid 1px gray;
+          border-left: 1px solid rgba(255, 255, 255, 0.1);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          background: rgba(255, 255, 255, 0.1);
         }
 
         .tb-head {
-          border-left: solid 1px gray;
-          border-top: solid 1px gray;
+          border-left: 1px solid rgba(255, 255, 255, 0.1);
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
           text-align: center;
           padding: 0px;
           line-height: calc(193px / 10);
+          background: rgba(255, 255, 255, 0.05);
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.7);
         }
 
         .tb-body {
-          border-top: solid 1px gray;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
           padding: 0px;
           line-height: calc(193px / 10);
           text-align: center;
+          transition: background-color 0.2s;
+        }
+
+        .tb-body:hover {
+          background-color: rgba(255, 255, 255, 0.05);
         }
       `}</style>
 

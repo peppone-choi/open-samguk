@@ -20,16 +20,24 @@ export function SammoBar({
 
   return (
     <div
-      className="w-full rounded overflow-hidden"
-      style={{ height: `${height}px`, backgroundColor: bgColor }}
+      className="w-full rounded-full overflow-hidden border border-white/10 shadow-[inset_0_2px_4px_rgba(0,0,0,0.5)] bg-black/40 relative"
+      style={{
+        height: `${height}px`,
+        backgroundColor: bgColor === "#374151" ? undefined : bgColor,
+      }}
     >
       <div
-        className="h-full rounded transition-all duration-300"
+        className="h-full rounded-full transition-all duration-500 ease-out relative overflow-hidden"
         style={{
           width: `${clampedPercent}%`,
           backgroundColor: color,
+          boxShadow: `0 0 10px ${color}`,
         }}
-      />
+      >
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent w-full -translate-x-full animate-[shimmer_2s_infinite]" />
+
+        <div className="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent opacity-50" />
+      </div>
     </div>
   );
 }

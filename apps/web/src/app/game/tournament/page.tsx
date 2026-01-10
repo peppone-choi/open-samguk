@@ -95,14 +95,14 @@ function getTournamentStateText(state: number): string {
 }
 
 function formatName(name: string, npc: number): React.ReactNode {
-  if (!name || name === "-") return <span className="text-gray-500">-</span>;
+  if (!name || name === "-") return <span className="text-muted-foreground/50">-</span>;
 
-  let color = "";
-  if (npc === 6) color = "text-[#66cdaa]";
-  else if (npc === 5) color = "text-[#008b8b]";
-  else if (npc === 4) color = "text-[#00bfff]";
-  else if (npc >= 2) color = "text-cyan-400";
-  else if (npc === 1) color = "text-sky-300";
+  let color = "text-foreground";
+  if (npc === 6) color = "text-emerald-400 font-bold drop-shadow-sm";
+  else if (npc === 5) color = "text-teal-400 font-medium";
+  else if (npc === 4) color = "text-cyan-400";
+  else if (npc >= 2) color = "text-sky-400";
+  else if (npc === 1) color = "text-blue-300";
 
   return <span className={color}>{name}</span>;
 }
@@ -311,14 +311,24 @@ export function BracketMatch({ left, right, winner }: BracketMatchProps) {
   const rightWon = winner && right && winner.no === right.no;
 
   return (
-    <div className="flex flex-col items-center text-xs">
+    <div className="flex flex-col items-center text-xs w-full max-w-[140px] bg-black/40 border border-white/10 rounded overflow-hidden">
       <div
-        className={`px-2 py-0.5 border-b border-gray-600 ${leftWon ? "text-red-400 font-bold" : ""}`}
+        className={`w-full px-2 py-1.5 flex justify-between items-center border-b border-white/5 ${
+          leftWon
+            ? "bg-amber-500/20 text-amber-200 font-bold shadow-[inset_0_0_10px_rgba(245,158,11,0.1)]"
+            : "text-muted-foreground"
+        }`}
       >
-        {left ? formatName(left.name, left.npc) : "-"}
+        <span className="truncate">{left ? formatName(left.name, left.npc) : "-"}</span>
       </div>
-      <div className={`px-2 py-0.5 ${rightWon ? "text-red-400 font-bold" : ""}`}>
-        {right ? formatName(right.name, right.npc) : "-"}
+      <div
+        className={`w-full px-2 py-1.5 flex justify-between items-center ${
+          rightWon
+            ? "bg-amber-500/20 text-amber-200 font-bold shadow-[inset_0_0_10px_rgba(245,158,11,0.1)]"
+            : "text-muted-foreground"
+        }`}
+      >
+        <span className="truncate">{right ? formatName(right.name, right.npc) : "-"}</span>
       </div>
     </div>
   );
@@ -348,51 +358,70 @@ function GroupTable({
   });
 
   return (
-    <table className="w-full text-xs border-collapse">
-      <thead>
-        <tr className="bg-black text-white">
-          <td colSpan={9} className="text-center py-1">
-            {GROUP_NAMES[groupIndex]}조
-          </td>
-        </tr>
-        <tr className="bg1 text-center">
-          <td className="px-1">순</td>
-          <td className="px-1">장수</td>
-          <td className="px-1">{statLabel}</td>
-          <td className="px-1">경</td>
-          <td className="px-1">승</td>
-          <td className="px-1">무</td>
-          <td className="px-1">패</td>
-          <td className="px-1">점</td>
-          <td className="px-1">득</td>
-        </tr>
-      </thead>
-      <tbody>
-        {Array.from({ length: maxRows }).map((_, idx) => {
-          const p = sorted[idx];
-          const games = p ? p.win + p.draw + p.lose : 0;
-          const points = p ? p.win * 3 + p.draw : 0;
-          const promoted = p?.prmt === 1;
+    <div className="bg-card/30 backdrop-blur-sm border border-white/10 rounded-xl overflow-hidden shadow-lg">
+      <div className="bg-gradient-to-r from-white/10 to-transparent px-3 py-2 border-b border-white/10 flex items-center justify-between">
+        <span className="font-bold text-amber-500/90 text-sm">Group {GROUP_NAMES[groupIndex]}</span>
+      </div>
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="bg-black/20 text-muted-foreground border-b border-white/5">
+            <th className="py-2 px-1 font-medium w-6">#</th>
+            <th className="py-2 px-1 font-medium text-left">General</th>
+            <th className="py-2 px-1 font-medium w-8 text-center">{statLabel}</th>
+            <th className="py-2 px-1 font-medium w-6 text-center">G</th>
+            <th className="py-2 px-1 font-medium w-6 text-center text-emerald-500/70">W</th>
+            <th className="py-2 px-1 font-medium w-6 text-center text-yellow-500/70">D</th>
+            <th className="py-2 px-1 font-medium w-6 text-center text-rose-500/70">L</th>
+            <th className="py-2 px-1 font-medium w-8 text-center text-cyan-400">Pt</th>
+            <th className="py-2 px-1 font-medium w-8 text-center text-muted-foreground/50">+/-</th>
+          </tr>
+        </thead>
+        <tbody className="divide-y divide-white/5">
+          {Array.from({ length: maxRows }).map((_, idx) => {
+            const p = sorted[idx];
+            const games = p ? p.win + p.draw + p.lose : 0;
+            const points = p ? p.win * 3 + p.draw : 0;
+            const promoted = p?.prmt === 1;
 
-          return (
-            <tr
-              key={idx}
-              className={`text-center border-b border-gray-700 ${promoted ? "bg-cyan-900/30" : ""}`}
-            >
-              <td className="px-1">{idx + 1}</td>
-              <td className="px-1 text-left">{p ? formatName(p.name, p.npc) : "-"}</td>
-              <td className="px-1">{p ? getStatValue(p, statType) : "-"}</td>
-              <td className="px-1">{p ? games : "-"}</td>
-              <td className="px-1 text-green-400">{p?.win ?? "-"}</td>
-              <td className="px-1 text-yellow-400">{p?.draw ?? "-"}</td>
-              <td className="px-1 text-red-400">{p?.lose ?? "-"}</td>
-              <td className="px-1 text-cyan-400">{p ? points : "-"}</td>
-              <td className="px-1">{p?.gl ?? "-"}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
+            return (
+              <tr
+                key={idx}
+                className={`transition-colors hover:bg-white/5 ${
+                  promoted ? "bg-amber-500/5 relative" : ""
+                }`}
+              >
+                <td className="px-1 py-1.5 text-center text-muted-foreground/70 relative">
+                  {promoted && (
+                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.5)]" />
+                  )}
+                  {idx + 1}
+                </td>
+                <td className="px-1 py-1.5 text-left font-medium">
+                  {p ? formatName(p.name, p.npc) : "-"}
+                </td>
+                <td className="px-1 py-1.5 text-center text-muted-foreground">
+                  {p ? getStatValue(p, statType) : "-"}
+                </td>
+                <td className="px-1 py-1.5 text-center text-muted-foreground">{p ? games : "-"}</td>
+                <td className="px-1 py-1.5 text-center text-emerald-400 font-medium">
+                  {p?.win ?? "-"}
+                </td>
+                <td className="px-1 py-1.5 text-center text-amber-400/80 font-medium">
+                  {p?.draw ?? "-"}
+                </td>
+                <td className="px-1 py-1.5 text-center text-rose-400 font-medium">
+                  {p?.lose ?? "-"}
+                </td>
+                <td className="px-1 py-1.5 text-center text-cyan-400 font-bold text-shadow-sm">
+                  {p ? points : "-"}
+                </td>
+                <td className="px-1 py-1.5 text-center text-muted-foreground/50">{p?.gl ?? "-"}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -482,27 +511,49 @@ export default function TournamentPage() {
     <>
       <TopBackBar title="토너먼트" type="close" reloadable onReload={handleRefresh} />
 
-      <div className="w-full max-w-[2000px] mx-auto px-2 pb-4">
-        {/* Toast Message */}
+      <div className="w-full max-w-[2000px] mx-auto px-4 pb-8 space-y-6 font-sans">
         {toastMessage && (
           <div
-            className={`p-2 text-center text-sm mb-2 ${
+            className={`p-4 rounded-xl border flex items-center gap-3 shadow-lg backdrop-blur-md animate-in slide-in-from-top-2 ${
               toastMessage.variant === "success"
-                ? "bg-green-800"
+                ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-200"
                 : toastMessage.variant === "danger"
-                  ? "bg-red-800"
-                  : "bg-yellow-800"
+                  ? "bg-rose-500/10 border-rose-500/20 text-rose-200"
+                  : "bg-amber-500/10 border-amber-500/20 text-amber-200"
             }`}
           >
             {toastMessage.message}
           </div>
         )}
 
-        {/* Header */}
-        <div className="bg0 border border-gray-600 mb-4">
-          <div className="p-2 flex flex-wrap gap-2 items-center justify-between">
-            <div className="flex gap-2">
-              <Button variant="secondary" size="sm" onClick={handleRefresh}>
+        <div className="relative overflow-hidden rounded-2xl bg-card/60 backdrop-blur-xl border border-white/10 shadow-2xl p-6">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl -mr-32 -mt-32 pointer-events-none" />
+
+          <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+            <div>
+              <h1 className="text-4xl font-black italic tracking-tighter text-white drop-shadow-sm mb-2">
+                <span className="bg-gradient-to-r from-amber-200 to-amber-500 bg-clip-text text-transparent">
+                  {typeInfo.name}
+                </span>
+                <span className="text-white/20 ml-2 not-italic text-2xl font-normal">
+                  Tournament
+                </span>
+              </h1>
+              <div className="flex items-center gap-3">
+                <span className="px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                  {getTournamentStateText(state.tournament)}
+                </span>
+                <span className="text-muted-foreground/50 text-xs">Phase {state.phase}</span>
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={handleRefresh}
+                className="bg-white/5 hover:bg-white/10 border-white/10 text-muted-foreground"
+              >
                 갱신
               </Button>
               {canJoin && myTournamentState === 0 && (
@@ -510,7 +561,7 @@ export default function TournamentPage() {
                   variant="default"
                   size="sm"
                   onClick={handleJoin}
-                  className="bg-cyan-700 hover:bg-cyan-600"
+                  className="bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-black font-bold border-0 shadow-[0_0_15px_rgba(245,158,11,0.3)] transition-all hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]"
                 >
                   참가 (금 {state.develcost})
                 </Button>
@@ -518,87 +569,117 @@ export default function TournamentPage() {
             </div>
           </div>
 
-          {/* Admin Message */}
           {state.tnmtMsg && (
-            <div className="px-4 py-2 border-t border-gray-600">
-              운영자 메세지: <span className="text-orange-400 text-lg">{state.tnmtMsg}</span>
+            <div className="mt-6 p-4 rounded-xl bg-amber-500/5 border-l-2 border-amber-500/50 flex gap-4 items-start relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-amber-500/5 to-transparent pointer-events-none" />
+              <span className="text-amber-500 font-bold text-xs tracking-widest uppercase py-1">
+                Notice
+              </span>
+              <span className="text-amber-100/90 text-sm leading-relaxed">{state.tnmtMsg}</span>
             </div>
           )}
-
-          {/* Tournament Info */}
-          <div className="px-4 py-3 border-t border-gray-600 text-center">
-            <span className="text-2xl">
-              <span className="text-cyan-400">{typeInfo.name}</span>
-              <span className="text-white ml-2">({getTournamentStateText(state.tournament)})</span>
-            </span>
-          </div>
         </div>
 
-        {/* 16강 승자전 Bracket */}
-        <div className="bg0 border border-gray-600 mb-4">
-          <div className="bg2 p-2 text-center text-lg text-magenta-400">
-            <span className="text-fuchsia-400">16강 승자전</span>
+        <div className="rounded-2xl bg-card/40 backdrop-blur-sm border border-white/10 p-1 pb-6 overflow-hidden relative">
+          <div className="px-6 py-4 border-b border-white/5 mb-8 bg-black/20 flex items-center justify-between">
+            <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+              <span className="w-1 h-5 bg-amber-500 rounded-full shadow-[0_0_10px_rgba(245,158,11,0.5)]" />
+              Tournament Bracket
+            </h2>
+            <span className="text-xs text-muted-foreground uppercase tracking-widest">
+              Final Stage
+            </span>
           </div>
 
-          <div className="p-4 overflow-x-auto">
-            <div className="min-w-[1000px]">
-              {/* Champion */}
-              <div className="flex justify-center mb-4">
-                <div className="bg-yellow-900/50 border border-yellow-500 px-4 py-2 text-center">
-                  <div className="text-yellow-400 text-sm mb-1">우승</div>
-                  <div className="text-lg">
-                    {champion ? formatName(champion.name, champion.npc) : "-"}
+          <div className="px-4 overflow-x-auto custom-scrollbar pb-4">
+            <div className="min-w-[1200px] flex flex-col items-center">
+              <div className="flex justify-center mb-12 relative group">
+                <div className="absolute inset-0 bg-amber-500/20 blur-[60px] rounded-full opacity-50 group-hover:opacity-75 transition-opacity duration-1000" />
+                <div className="relative bg-gradient-to-b from-amber-900/80 to-black border border-amber-500/60 px-10 py-5 rounded-2xl text-center shadow-[0_0_30px_rgba(245,158,11,0.2)]">
+                  <div className="text-amber-400 text-[10px] font-bold tracking-[0.3em] uppercase mb-2">
+                    Grand Champion
                   </div>
+                  <div className="text-3xl font-bold text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                    {champion ? (
+                      formatName(champion.name, champion.npc)
+                    ) : (
+                      <span className="text-white/20">-</span>
+                    )}
+                  </div>
+                  {champion && (
+                    <div className="absolute -top-3 -right-3 text-2xl animate-bounce">👑</div>
+                  )}
                 </div>
+                <div className="absolute top-full left-1/2 w-px h-12 bg-gradient-to-b from-amber-500/60 to-transparent" />
               </div>
 
-              {/* Finals */}
-              <div className="flex justify-center gap-8 mb-4">
+              <div className="flex justify-center gap-32 mb-10 relative">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 w-64 h-8 border-t border-r border-l border-white/10 rounded-t-xl pointer-events-none -mt-6" />
+
                 {[0, 1].map((i) => (
-                  <div key={i} className="text-center">
+                  <div key={i} className="text-center relative">
                     <div
-                      className={`px-3 py-1 border ${bracketFinal[i]?.win ? "border-red-500 text-red-400" : "border-gray-600"}`}
+                      className={`w-40 py-2.5 px-3 rounded border backdrop-blur-md transition-all duration-300 ${
+                        bracketFinal[i]?.win
+                          ? "bg-amber-500/10 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.1)] scale-105 z-10"
+                          : "bg-black/40 border-white/10 text-muted-foreground"
+                      }`}
                     >
-                      {bracketFinal[i]
-                        ? formatName(bracketFinal[i].name, bracketFinal[i].npc)
-                        : "-"}
+                      <div className="text-sm font-medium truncate">
+                        {bracketFinal[i]
+                          ? formatName(bracketFinal[i].name, bracketFinal[i].npc)
+                          : "-"}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Semi-finals (4강) */}
-              <div className="flex justify-center gap-4 mb-4">
+              <div className="flex justify-center gap-10 mb-8">
                 {[0, 1, 2, 3].map((i) => (
                   <div key={i} className="text-center">
                     <div
-                      className={`px-3 py-1 border text-sm ${bracket4[i]?.win ? "border-red-500 text-red-400" : "border-gray-600"}`}
+                      className={`w-36 py-2 px-2 rounded border text-sm transition-all ${
+                        bracket4[i]?.win
+                          ? "bg-amber-500/5 border-amber-500/30 text-amber-100/90"
+                          : "bg-black/30 border-white/10 text-muted-foreground"
+                      }`}
                     >
-                      {bracket4[i] ? formatName(bracket4[i].name, bracket4[i].npc) : "-"}
+                      <div className="truncate">
+                        {bracket4[i] ? formatName(bracket4[i].name, bracket4[i].npc) : "-"}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Quarter-finals (8강) */}
-              <div className="flex justify-center gap-2 mb-4">
+              <div className="flex justify-center gap-4 mb-6">
                 {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
                   <div key={i} className="text-center">
                     <div
-                      className={`px-2 py-1 border text-xs ${bracket8[i]?.win ? "border-red-500 text-red-400" : "border-gray-600"}`}
+                      className={`w-32 py-1.5 px-2 rounded border text-xs transition-all ${
+                        bracket8[i]?.win
+                          ? "bg-amber-500/5 border-amber-500/20 text-amber-100/80"
+                          : "bg-black/20 border-white/5 text-muted-foreground/70"
+                      }`}
                     >
-                      {bracket8[i] ? formatName(bracket8[i].name, bracket8[i].npc) : "-"}
+                      <div className="truncate">
+                        {bracket8[i] ? formatName(bracket8[i].name, bracket8[i].npc) : "-"}
+                      </div>
                     </div>
                   </div>
                 ))}
               </div>
 
-              {/* Round of 16 (16강) */}
-              <div className="flex justify-center gap-1 mb-2">
+              <div className="flex justify-center gap-2 mb-3">
                 {bracket16.map((p, i) => (
-                  <div key={i} className="text-center" style={{ width: "125px" }}>
+                  <div key={i} className="text-center w-[125px]">
                     <div
-                      className={`px-1 py-1 border text-xs truncate ${p.win ? "border-red-500 text-red-400" : "border-gray-600"}`}
+                      className={`py-1.5 px-2 rounded border text-xs truncate transition-all ${
+                        p.win
+                          ? "bg-amber-500/5 border-amber-500/20 text-amber-100/80 font-medium"
+                          : "bg-black/20 border-white/5 text-muted-foreground/60"
+                      }`}
                     >
                       {formatName(p.name, p.npc)}
                     </div>
@@ -606,28 +687,32 @@ export default function TournamentPage() {
                 ))}
               </div>
 
-              {/* Betting Odds */}
-              <div className="flex justify-center gap-1 text-xs text-sky-400">
+              <div className="flex justify-center gap-2 text-[10px] font-mono tracking-tight">
                 {bracket16.map((_, i) => (
-                  <div key={i} className="text-center" style={{ width: "125px" }}>
-                    {(Math.random() * 10 + 1).toFixed(1)}
+                  <div key={i} className="text-center w-[125px] flex justify-center">
+                    <span className="bg-cyan-950/30 text-cyan-400/80 px-2 py-0.5 rounded border border-cyan-500/10">
+                      x{(Math.random() * 10 + 1).toFixed(1)}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          <div className="p-2 text-center text-sm text-sky-400 border-t border-gray-600">
+          <div className="p-4 text-center text-xs text-muted-foreground/60 border-t border-white/5 bg-black/20 backdrop-blur-md">
             배당률이 낮을수록 베팅된 금액이 많고 유저들이 우승후보로 많이 선택한 장수입니다.
           </div>
         </div>
 
-        {/* 조별 본선 순위 */}
-        <div className="bg0 border border-gray-600 mb-4">
-          <div className="bg2 p-2 text-center">
-            <span className="text-orange-400 text-lg">조별 본선 순위</span>
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 px-2">
+            <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1" />
+            <h3 className="text-xl font-bold text-amber-100/80 drop-shadow-sm uppercase tracking-widest text-center">
+              Main Round Groups
+            </h3>
+            <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1" />
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-2 p-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
             {mainGroups.map((group, idx) => (
               <GroupTable
                 key={idx}
@@ -641,12 +726,15 @@ export default function TournamentPage() {
           </div>
         </div>
 
-        {/* 조별 예선 순위 */}
-        <div className="bg0 border border-gray-600 mb-4">
-          <div className="bg2 p-2 text-center">
-            <span className="text-yellow-400 text-lg">조별 예선 순위</span>
+        <div className="space-y-4 pt-4">
+          <div className="flex items-center gap-3 px-2">
+            <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1" />
+            <h3 className="text-xl font-bold text-muted-foreground/60 drop-shadow-sm uppercase tracking-widest text-center">
+              Preliminary Groups
+            </h3>
+            <div className="h-px bg-gradient-to-r from-transparent via-white/20 to-transparent flex-1" />
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-2 p-2">
+          <div className="grid grid-cols-2 lg:grid-cols-4 xl:grid-cols-8 gap-4">
             {preliminaryGroups.map((group, idx) => (
               <GroupTable
                 key={idx}
@@ -660,24 +748,27 @@ export default function TournamentPage() {
           </div>
         </div>
 
-        {/* 규칙 설명 */}
-        <div className="bg0 border border-gray-600 p-4 text-sm text-gray-300">
-          <ul className="list-disc list-inside space-y-1">
-            <li>예선은 홈&어웨이 풀리그로 진행됩니다. (총 14경기)</li>
-            <li>상위 4명이 본선에 진출하게 되며 조추첨을 통해 조가 배정됩니다.</li>
-            <li>
-              각 조1위가 시드1로 랜덤하게 조에 배정되며, 역시 각 조2위가 시드2로 랜덤하게 조에
-              배정됩니다.
-            </li>
-            <li>그후 남은 3, 4위는 완전 랜덤하게 모든 조에 랜덤하게 배정됩니다.</li>
-            <li>
-              본선은 개인당 3경기를 치르게 되며 승점(승3, 무1, 패0), 득실, 참가순서(시드)에 따라
-              순위를 매깁니다.
-            </li>
-            <li>각 조 1, 2위는 16강에 지정된 위치에 배정됩니다.</li>
-            <li>16강부터는 1경기 토너먼트로 진행됩니다.</li>
-            <li>참가비는 금20~140이며, 성적에 따라 금과 약간의 명성이 포상으로 주어집니다.</li>
-            <li>16강자 100, 8강자 300, 4강자 600, 준우승자 1200, 우승자 2000 (220년 기준)</li>
+        <div className="rounded-xl bg-card/20 border border-white/5 p-6 text-sm text-muted-foreground">
+          <h4 className="font-bold text-foreground mb-4 uppercase tracking-wider text-xs">
+            Tournament Rules
+          </h4>
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 list-none">
+            {[
+              "예선은 홈&어웨이 풀리그로 진행됩니다. (총 14경기)",
+              "상위 4명이 본선에 진출하게 되며 조추첨을 통해 조가 배정됩니다.",
+              "각 조1위가 시드1로, 각 조2위가 시드2로 랜덤하게 조에 배정됩니다.",
+              "남은 3, 4위는 완전 랜덤하게 모든 조에 배정됩니다.",
+              "본선은 개인당 3경기를 치르며 승점(승3, 무1, 패0), 득실, 시드 순으로 순위를 매깁니다.",
+              "각 조 1, 2위는 16강에 지정된 위치에 배정됩니다.",
+              "16강부터는 1경기 토너먼트로 진행됩니다.",
+              "참가비는 금20~140이며, 성적에 따라 금과 명성이 포상으로 주어집니다.",
+              "상금: 16강(100), 8강(300), 4강(600), 준우승(1200), 우승(2000)",
+            ].map((rule, i) => (
+              <li key={i} className="flex gap-2 items-start">
+                <span className="text-amber-500/50 mt-1.5 text-[8px]">●</span>
+                <span>{rule}</span>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

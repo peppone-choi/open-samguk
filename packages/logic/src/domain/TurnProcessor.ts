@@ -21,7 +21,7 @@ export class TurnProcessor {
 
   /**
    * 장수의 한 턴을 처리합니다.
-   * 
+   *
    * @param snapshot 현재 월드 스냅샷
    * @param generalId 턴을 실행할 장수 ID
    * @returns 턴 실행 결과가 담긴 상태 변경 델타
@@ -124,4 +124,3 @@ export class TurnProcessor {
     return delta;
   }
 }
-

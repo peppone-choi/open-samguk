@@ -157,7 +157,7 @@ const MESSAGES: SightseeingMessageEntry[] = [
 export class SightseeingMessage {
   /**
    * 가중치 기반 무작위 견문 결과를 선택합니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @returns 선택된 결과 타입과 메시지 텍스트
    */
@@ -181,4 +181,3 @@ export class SightseeingMessage {
     return { type: fallback.type, text: rng.choice(fallback.texts) };
   }
 }
-

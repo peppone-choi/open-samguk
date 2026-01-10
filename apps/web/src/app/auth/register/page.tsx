@@ -99,33 +99,42 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-56px)] flex flex-col items-center justify-center px-4 py-8">
-      {/* Page Title */}
-      <h1 className="text-3xl font-bold text-primary mb-8">삼국지 모의전투 HiDCHe</h1>
+    <div className="min-h-[calc(100vh-56px)] flex flex-col items-center justify-center px-4 py-8 relative">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px]" />
+      </div>
 
-      {/* Register Card */}
-      <div className="w-full max-w-[600px] bg-zinc-800 border border-gray-600 rounded-lg overflow-hidden">
-        {/* Card Header */}
-        <div className="bg-zinc-900 border-b border-gray-600 px-4 py-3">
-          <h2 className="text-lg font-semibold text-white">회원가입</h2>
+      <h1 className="relative z-10 text-3xl font-bold text-primary mb-8 text-shadow-glow">
+        삼국지 모의전투 HiDCHe
+      </h1>
+
+      <div className="premium-card w-full max-w-[600px] relative z-10">
+        <div className="border-b border-white/10 px-4 py-4 mb-4 -mx-6 -mt-6 bg-black/20">
+          <h2 className="text-xl font-bold text-primary/90 flex items-center gap-2">
+            <span className="w-1 h-5 bg-primary rounded-full shadow-[0_0_10px_hsl(var(--primary))]"></span>
+            회원가입
+          </h2>
         </div>
 
-        {/* Card Body */}
-        <div className="p-6">
+        <div className="p-2">
           {successMessage && (
-            <div className="mb-4 p-3 bg-green-900/50 border border-green-700 rounded text-green-200 text-sm">
+            <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg text-emerald-300 text-sm backdrop-blur-sm shadow-[0_0_15px_rgba(16,185,129,0.1)] flex items-center gap-3">
+              <span className="text-lg">✨</span>
               {successMessage}
             </div>
           )}
           {errors.form && (
-            <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded text-red-200 text-sm">
+            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/30 rounded-lg text-red-300 text-sm backdrop-blur-sm shadow-[0_0_15px_rgba(239,68,68,0.1)] flex items-center gap-3">
+              <span className="text-lg">⚠️</span>
               {errors.form}
             </div>
           )}
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Username Field */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <label htmlFor="username" className="sm:w-[25%] text-sm text-gray-300 sm:text-right">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 group">
+              <label
+                htmlFor="username"
+                className="sm:w-[25%] text-sm font-medium text-muted-foreground sm:text-right group-focus-within:text-primary transition-colors"
+              >
                 계정명
               </label>
               <div className="sm:w-[75%]">
@@ -133,18 +142,22 @@ export default function RegisterPage() {
                   type="text"
                   id="username"
                   name="username"
-                  placeholder="계정명"
+                  placeholder="Username"
                   value={formData.username}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-zinc-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all duration-300 hover:bg-black/60"
                 />
-                {errors.username && <p className="mt-1 text-sm text-red-400">{errors.username}</p>}
+                {errors.username && (
+                  <p className="mt-1 text-xs text-red-400 pl-1">{errors.username}</p>
+                )}
               </div>
             </div>
 
-            {/* Password Field */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-              <label htmlFor="password" className="sm:w-[25%] text-sm text-gray-300 sm:text-right">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 group">
+              <label
+                htmlFor="password"
+                className="sm:w-[25%] text-sm font-medium text-muted-foreground sm:text-right group-focus-within:text-primary transition-colors"
+              >
                 비밀번호
               </label>
               <div className="sm:w-[75%]">
@@ -152,20 +165,21 @@ export default function RegisterPage() {
                   type="password"
                   id="password"
                   name="password"
-                  placeholder="비밀번호"
+                  placeholder="Password"
                   value={formData.password}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-zinc-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all duration-300 hover:bg-black/60"
                 />
-                {errors.password && <p className="mt-1 text-sm text-red-400">{errors.password}</p>}
+                {errors.password && (
+                  <p className="mt-1 text-xs text-red-400 pl-1">{errors.password}</p>
+                )}
               </div>
             </div>
 
-            {/* Confirm Password Field */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 group">
               <label
                 htmlFor="confirmPassword"
-                className="sm:w-[25%] text-sm text-gray-300 sm:text-right"
+                className="sm:w-[25%] text-sm font-medium text-muted-foreground sm:text-right group-focus-within:text-primary transition-colors"
               >
                 비밀번호 확인
               </label>
@@ -174,22 +188,21 @@ export default function RegisterPage() {
                   type="password"
                   id="confirmPassword"
                   name="confirmPassword"
-                  placeholder="비밀번호 확인"
+                  placeholder="Confirm Password"
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-zinc-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all duration-300 hover:bg-black/60"
                 />
                 {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-red-400">{errors.confirmPassword}</p>
+                  <p className="mt-1 text-xs text-red-400 pl-1">{errors.confirmPassword}</p>
                 )}
               </div>
             </div>
 
-            {/* Nickname Field */}
-            <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 group">
               <label
                 htmlFor="nickname"
-                className="sm:w-[25%] text-sm text-gray-300 sm:text-right pt-2"
+                className="sm:w-[25%] text-sm font-medium text-muted-foreground sm:text-right pt-3 group-focus-within:text-primary transition-colors"
               >
                 닉네임
               </label>
@@ -198,102 +211,180 @@ export default function RegisterPage() {
                   type="text"
                   id="nickname"
                   name="nickname"
-                  placeholder="닉네임"
+                  placeholder="Nickname"
                   value={formData.nickname}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 bg-zinc-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  className="w-full px-4 py-2.5 bg-black/40 border border-white/10 rounded-lg text-white placeholder-white/20 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all duration-300 hover:bg-black/60"
                 />
-                <p className="mt-1 text-xs text-gray-500">
-                  깃수가 종료될때 공개됩니다. 장수명과는 다르게 닉네임은 계속해서 고정되니 신중하게
-                  정해주세요.
+                <p className="mt-2 text-xs text-muted-foreground leading-relaxed pl-1">
+                  * 깃수가 종료될때 공개됩니다. 장수명과는 다르게 닉네임은 계속해서 고정되니
+                  신중하게 정해주세요.
                 </p>
-                {errors.nickname && <p className="mt-1 text-sm text-red-400">{errors.nickname}</p>}
+                {errors.nickname && (
+                  <p className="mt-1 text-xs text-red-400 pl-1">{errors.nickname}</p>
+                )}
               </div>
             </div>
 
-            {/* Terms Agreement */}
+            <div className="my-6 border-t border-white/10"></div>
+
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-              <label className="sm:w-[25%] text-sm text-gray-300 sm:text-right pt-2">
+              <label className="sm:w-[25%] text-sm font-medium text-muted-foreground sm:text-right pt-2">
                 이용 약관
               </label>
               <div className="sm:w-[75%]">
-                <div className="bg-zinc-900 border border-gray-600 rounded p-3 max-h-32 overflow-y-auto text-sm text-gray-400">
+                <div className="bg-black/30 border border-white/10 rounded-lg p-4 max-h-32 overflow-y-auto text-sm text-gray-400 mb-2 custom-scrollbar">
                   본 서비스의 이용약관입니다. 서비스 이용에 관한 기본적인 사항을 규정합니다. 모든
                   이용자는 본 약관에 동의해야 서비스를 이용할 수 있습니다.
                 </div>
-                <label className="flex items-center gap-2 mt-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={agreements.terms}
-                    onChange={() => handleAgreementChange("terms")}
-                    className="w-4 h-4 accent-primary"
-                  />
-                  <span className="text-sm text-gray-300">동의합니다.</span>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div
+                    className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${agreements.terms ? "bg-primary border-primary" : "bg-transparent border-white/30 group-hover:border-primary/50"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={agreements.terms}
+                      onChange={() => handleAgreementChange("terms")}
+                      className="hidden"
+                    />
+                    {agreements.terms && (
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        className="text-black"
+                      >
+                        <path
+                          d="M10 3L4.5 8.5L2 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <span
+                    className={`text-sm transition-colors ${agreements.terms ? "text-white" : "text-gray-400 group-hover:text-gray-300"}`}
+                  >
+                    약관에 동의합니다.
+                  </span>
                 </label>
-                {errors.terms && <p className="mt-1 text-sm text-red-400">{errors.terms}</p>}
+                {errors.terms && <p className="mt-1 text-xs text-red-400 pl-1">{errors.terms}</p>}
               </div>
             </div>
 
-            {/* Privacy Policy Agreement */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-              <label className="sm:w-[25%] text-sm text-gray-300 sm:text-right pt-2">
+              <label className="sm:w-[25%] text-sm font-medium text-muted-foreground sm:text-right pt-2">
                 개인정보 제공
-                <br />및 이용에 대한 동의
+                <br />및 이용 동의
               </label>
               <div className="sm:w-[75%]">
-                <div className="bg-zinc-900 border border-gray-600 rounded p-3 max-h-32 overflow-y-auto text-sm text-gray-400">
+                <div className="bg-black/30 border border-white/10 rounded-lg p-4 max-h-32 overflow-y-auto text-sm text-gray-400 mb-2 custom-scrollbar">
                   개인정보 수집 및 이용에 관한 동의입니다. 수집하는 개인정보 항목, 수집 목적, 보유
                   기간 등에 대해 안내합니다.
                 </div>
-                <label className="flex items-center gap-2 mt-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={agreements.privacy}
-                    onChange={() => handleAgreementChange("privacy")}
-                    className="w-4 h-4 accent-primary"
-                  />
-                  <span className="text-sm text-gray-300">동의합니다.</span>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                  <div
+                    className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${agreements.privacy ? "bg-primary border-primary" : "bg-transparent border-white/30 group-hover:border-primary/50"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={agreements.privacy}
+                      onChange={() => handleAgreementChange("privacy")}
+                      className="hidden"
+                    />
+                    {agreements.privacy && (
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        className="text-black"
+                      >
+                        <path
+                          d="M10 3L4.5 8.5L2 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <span
+                    className={`text-sm transition-colors ${agreements.privacy ? "text-white" : "text-gray-400 group-hover:text-gray-300"}`}
+                  >
+                    개인정보 처리방침에 동의합니다.
+                  </span>
                 </label>
-                {errors.privacy && <p className="mt-1 text-sm text-red-400">{errors.privacy}</p>}
+                {errors.privacy && (
+                  <p className="mt-1 text-xs text-red-400 pl-1">{errors.privacy}</p>
+                )}
               </div>
             </div>
 
-            {/* Third Party Agreement (Optional) */}
             <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4">
-              <label className="sm:w-[25%] text-sm text-gray-300 sm:text-right pt-2">
-                개인정보의 제3자 수집
+              <label className="sm:w-[25%] text-sm font-medium text-muted-foreground sm:text-right pt-2">
+                제3자 정보제공
                 <br />
-                이용 제공에 대한 동의
-                <br />
-                <span className="text-gray-500">(선택)</span>
+                <span className="text-xs opacity-70">(선택사항)</span>
               </label>
               <div className="sm:w-[75%]">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={agreements.thirdParty}
-                    onChange={() => handleAgreementChange("thirdParty")}
-                    className="w-4 h-4 accent-primary"
-                  />
-                  <span className="text-sm text-gray-300">동의합니다.</span>
+                <label className="flex items-center gap-3 cursor-pointer group pt-2">
+                  <div
+                    className={`w-5 h-5 rounded border flex items-center justify-center transition-all duration-200 ${agreements.thirdParty ? "bg-primary border-primary" : "bg-transparent border-white/30 group-hover:border-primary/50"}`}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={agreements.thirdParty}
+                      onChange={() => handleAgreementChange("thirdParty")}
+                      className="hidden"
+                    />
+                    {agreements.thirdParty && (
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        className="text-black"
+                      >
+                        <path
+                          d="M10 3L4.5 8.5L2 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                  <span
+                    className={`text-sm transition-colors ${agreements.thirdParty ? "text-white" : "text-gray-400 group-hover:text-gray-300"}`}
+                  >
+                    제3자 정보 제공에 동의합니다.
+                  </span>
                 </label>
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 pt-4">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 pt-6">
               <div className="sm:w-[25%]"></div>
-              <div className="sm:w-[75%]">
+              <div className="sm:w-[75%] space-y-4">
                 <button
                   type="submit"
                   disabled={registerMutation.isPending || !!successMessage}
-                  className="w-full h-12 bg-amber-600 hover:bg-amber-500 text-white font-semibold rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full btn-primary h-12 text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {registerMutation.isPending ? "가입 중..." : "가입"}
+                  {registerMutation.isPending ? "가입 처리중..." : "가입하기"}
                 </button>
-                <p className="mt-4 text-center text-sm text-gray-400">
+                <p className="text-center text-sm text-gray-400">
                   이미 계정이 있으신가요?{" "}
-                  <Link href="/auth/login" className="text-primary hover:underline">
+                  <Link
+                    href="/auth/login"
+                    className="text-primary hover:text-primary-glow hover:underline font-medium transition-colors"
+                  >
                     로그인
                   </Link>
                 </p>

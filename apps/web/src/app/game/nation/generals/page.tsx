@@ -69,30 +69,41 @@ export default function NationGeneralsPage() {
 
   if (isListLoading || isConstLoading || !generalData || !gameConst) {
     return (
-      <div className="h-screen bg0 flex items-center justify-center">
-        <div className="text-center">
-          <div className="mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto" />
-          <p className="text-gray-400">장수 목록 로딩 중...</p>
+      <div className="h-screen bg-background flex items-center justify-center bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-900/20 via-background to-background">
+        <div className="glass p-12 rounded-2xl flex flex-col items-center gap-6 border border-white/10 shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 bg-primary/5 animate-pulse" />
+          <div className="relative z-10">
+            <div className="mb-4 h-12 w-12 animate-spin rounded-full border-4 border-primary/30 border-t-primary shadow-glow mx-auto" />
+            <p className="text-primary font-bold tracking-[0.2em] text-sm animate-pulse">
+              LOADING DATA
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-screen bg0 flex flex-col overflow-hidden">
+    <div className="h-screen bg-background flex flex-col overflow-hidden relative">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent pointer-events-none" />
+
       <TopBackBar title="세력 장수" reloadable={true} onReload={reload} />
 
-      <div className="flex-1 overflow-hidden">
-        <GeneralList
-          list={generalData.list as GeneralListItem[]}
-          troops={troopListMap}
-          env={generalData.env as GeneralListEnv}
-          gameConst={gameConst}
-          height="fill"
-          availableGeneralClick={true}
-          onGeneralClick={handleGeneralClick}
-          className="h-full"
-        />
+      <div className="flex-1 overflow-hidden p-0 sm:p-4">
+        <div className="h-full w-full sm:glass sm:rounded-xl sm:border sm:border-white/5 sm:shadow-2xl overflow-hidden relative group transition-all duration-500 hover:border-primary/20">
+          <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 sm:opacity-100 pointer-events-none" />
+
+          <GeneralList
+            list={generalData.list as GeneralListItem[]}
+            troops={troopListMap}
+            env={generalData.env as GeneralListEnv}
+            gameConst={gameConst}
+            height="fill"
+            availableGeneralClick={true}
+            onGeneralClick={handleGeneralClick}
+            className="h-full relative z-10"
+          />
+        </div>
       </div>
     </div>
   );

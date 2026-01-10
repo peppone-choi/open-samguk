@@ -435,97 +435,117 @@ export const ReservedCommandPanel = forwardRef<ReservedCommandPanelRef, Reserved
     // ========================================================================
 
     return (
-      <div className={cn("bg-gray-900 relative", className)}>
+      <div
+        className={cn(
+          "relative bg-[#1a1b23] border border-white/10 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/5",
+          className
+        )}
+      >
         {/* Header */}
-        <div className="bg-gray-800 m-0 p-1 text-center">
-          <h4 className="m-0 text-base font-semibold">명령 목록</h4>
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-white/10 p-2 text-center relative shadow-md z-10">
+          <h4 className="m-0 text-sm font-bold text-white/90 tracking-wider flex items-center justify-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)] animate-pulse"></span>
+            명령 예약 관리
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.6)] animate-pulse"></span>
+          </h4>
         </div>
 
         {/* Top Controls */}
-        <div className="grid grid-cols-3 gap-1 p-1">
+        <div className="grid grid-cols-3 gap-2 p-3 bg-white/5 backdrop-blur-sm border-b border-white/5">
           <button
             type="button"
-            className="px-2 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
+            className={`px-3 py-1.5 text-xs font-medium rounded transition-all duration-200 border ${
+              isEditMode
+                ? "bg-cyan-500/20 border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/30 shadow-[0_0_10px_rgba(6,182,212,0.15)]"
+                : "bg-white/5 border-white/10 text-white/70 hover:bg-white/10 hover:text-white"
+            }`}
             onClick={toggleEditMode}
             disabled={!editable}
           >
-            {isEditMode ? "일반 모드로" : "고급 모드로"}
+            {isEditMode ? "⚡ 고급 모드 ON" : "⚙ 일반 모드"}
           </button>
 
-          <div className="bg-blue-600/50 text-center flex items-center justify-center text-sm rounded">
+          <div className="bg-black/40 border border-white/5 text-center flex items-center justify-center text-xs font-mono text-cyan-400 rounded shadow-inner">
             {serverTime ? formatTimeHHMM(serverTime) : "--:--"}
           </div>
 
-          <div className="relative">
+          <div className="relative group">
             <select
-              className="w-full px-2 py-1.5 text-sm bg-gray-600 text-white rounded"
+              className="w-full h-full px-2 py-1.5 text-xs bg-black/40 text-white/90 border border-white/10 rounded appearance-none cursor-pointer hover:border-white/20 transition-colors focus:outline-none focus:border-cyan-500/50"
               onChange={(e) => handleRepeat(Number(e.target.value))}
               disabled={!editable}
               defaultValue=""
             >
               <option value="" disabled>
-                반복
+                ↺ 명령 반복
               </option>
               {Array.from({ length: maxPushTurn }, (_, i) => i + 1).map((n) => (
                 <option key={n} value={n}>
-                  {n}턴
+                  {n}턴 반복
                 </option>
               ))}
             </select>
+            <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none text-white/30 text-[10px]">
+              ▼
+            </div>
           </div>
         </div>
 
         {/* Edit Mode Controls */}
         {isEditMode && (
-          <div className="grid grid-cols-4 gap-1 p-1">
+          <div className="grid grid-cols-4 gap-2 p-3 bg-cyan-950/30 border-b border-cyan-500/20 backdrop-blur-sm animate-in slide-in-from-top-2 duration-200">
             {/* Range Selection */}
-            <select
-              className="px-2 py-1.5 text-sm bg-gray-700 text-white rounded"
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === "clear") clearSelection();
-                else if (val === "all") selectAll();
-                else if (val === "odd") selectStep(0, 2);
-                else if (val === "even") selectStep(1, 2);
-                e.target.value = "";
-              }}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                범위
-              </option>
-              <option value="clear">해제</option>
-              <option value="all">모든턴</option>
-              <option value="odd">홀수턴</option>
-              <option value="even">짝수턴</option>
-            </select>
+            <div className="relative">
+              <select
+                className="w-full px-2 py-1.5 text-xs bg-black/40 text-cyan-100 border border-cyan-500/30 rounded appearance-none cursor-pointer hover:bg-black/50 transition-colors focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "clear") clearSelection();
+                  else if (val === "all") selectAll();
+                  else if (val === "odd") selectStep(0, 2);
+                  else if (val === "even") selectStep(1, 2);
+                  e.target.value = "";
+                }}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  선택 범위
+                </option>
+                <option value="clear">선택 해제</option>
+                <option value="all">모든 턴</option>
+                <option value="odd">홀수 턴</option>
+                <option value="even">짝수 턴</option>
+              </select>
+            </div>
 
             {/* Operations */}
-            <select
-              className="px-2 py-1.5 text-sm bg-gray-700 text-white rounded"
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === "cut") void clipboardCut();
-                else if (val === "copy") clipboardCopy();
-                else if (val === "paste") void clipboardPaste();
-                else if (val === "erase") void eraseSelectedTurns();
-                e.target.value = "";
-              }}
-              defaultValue=""
-            >
-              <option value="" disabled>
-                선택한 턴을
-              </option>
-              <option value="cut">잘라내기</option>
-              <option value="copy">복사하기</option>
-              <option value="paste">붙여넣기</option>
-              <option value="erase">비우기</option>
-            </select>
+            <div className="relative">
+              <select
+                className="w-full px-2 py-1.5 text-xs bg-black/40 text-cyan-100 border border-cyan-500/30 rounded appearance-none cursor-pointer hover:bg-black/50 transition-colors focus:outline-none focus:ring-1 focus:ring-cyan-500/50"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "cut") void clipboardCut();
+                  else if (val === "copy") clipboardCopy();
+                  else if (val === "paste") void clipboardPaste();
+                  else if (val === "erase") void eraseSelectedTurns();
+                  e.target.value = "";
+                }}
+                defaultValue=""
+              >
+                <option value="" disabled>
+                  작업 수행
+                </option>
+                <option value="cut">✂ 잘라내기</option>
+                <option value="copy">📋 복사하기</option>
+                <option value="paste">📌 붙여넣기</option>
+                <option value="erase">❌ 비우기</option>
+              </select>
+            </div>
 
             {/* Command Select Button */}
             <button
               type="button"
-              className="col-span-2 px-2 py-1.5 text-sm bg-cyan-600 text-white rounded hover:bg-cyan-700"
+              className="col-span-2 px-3 py-1.5 text-xs bg-cyan-600 hover:bg-cyan-500 text-white font-medium rounded shadow-lg shadow-cyan-900/20 transition-all active:translate-y-0.5"
               disabled={!editable || commandList.length === 0}
               onClick={() => commandSelectFormRef.current?.toggle()}
             >
@@ -546,50 +566,55 @@ export const ReservedCommandPanel = forwardRef<ReservedCommandPanelRef, Reserved
         {/* Quick Reserve Form (Normal Mode) - Positioned absolutely */}
         {!isEditMode && currentQuickReserveTarget >= 0 && (
           <div
-            className="absolute bg-gray-800 w-full z-10"
-            style={{ top: `${basicModeRowHeight * currentQuickReserveTarget + 110}px` }}
+            className="absolute left-0 right-0 z-50 px-2 animate-in fade-in zoom-in-95 duration-200"
+            style={{ top: `${basicModeRowHeight * currentQuickReserveTarget + 120}px` }}
           >
-            <CommandSelectForm
-              ref={quickReserveFormRef}
-              commandList={commandList}
-              hideClose={false}
-              activatedCategory={activatedCategory}
-              onCategoryChange={setActivatedCategory}
-              onCommandSelect={handleQuickReserveCommand}
-              onClose={() => setCurrentQuickReserveTarget(-1)}
-            />
+            <div className="bg-[#1a1b23] border border-white/20 rounded-lg shadow-2xl p-1 ring-1 ring-black/50">
+              <CommandSelectForm
+                ref={quickReserveFormRef}
+                commandList={commandList}
+                hideClose={false}
+                activatedCategory={activatedCategory}
+                onCategoryChange={setActivatedCategory}
+                onCommandSelect={handleQuickReserveCommand}
+                onClose={() => setCurrentQuickReserveTarget(-1)}
+              />
+            </div>
           </div>
         )}
 
         {/* Turn Grid */}
         <div
-          className="w-full"
+          className="w-full bg-black/20"
           style={{
             display: "grid",
             gridTemplateColumns: gridColumns,
           }}
         >
           {/* Turn Index Column */}
-          <div style={rowGridStyle}>
+          <div style={rowGridStyle} className="bg-black/10 border-r border-white/5">
             {reservedCommandList.slice(0, viewMaxTurn).map((_, turnIdx) => (
-              <div key={turnIdx} className="flex items-center justify-center">
+              <div
+                key={turnIdx}
+                className="flex items-center justify-center border-b border-white/5"
+              >
                 {isEditMode ? (
                   <button
                     type="button"
                     className={cn(
-                      "w-full h-full text-xs font-medium rounded",
+                      "w-5 h-5 flex items-center justify-center text-[10px] font-bold rounded-full transition-all duration-200",
                       selectedTurnList.has(turnIdx)
-                        ? "bg-cyan-600 text-white"
+                        ? "bg-cyan-500 text-white shadow-[0_0_8px_rgba(6,182,212,0.5)] scale-110"
                         : selectedTurnList.size === 0 && prevSelectedTurnList.has(turnIdx)
-                          ? "bg-green-600 text-white"
-                          : "bg-blue-600 text-white"
+                          ? "bg-emerald-600 text-white opacity-70"
+                          : "bg-white/10 text-white/50 hover:bg-white/20 hover:text-white"
                     )}
                     onClick={() => toggleTurn(turnIdx)}
                   >
                     {turnIdx + 1}
                   </button>
                 ) : (
-                  <div className="w-full h-full bg-black flex items-center justify-center text-xs">
+                  <div className="w-5 h-5 flex items-center justify-center text-[10px] font-bold rounded-full bg-white/5 text-white/40 font-mono">
                     {turnIdx + 1}
                   </div>
                 )}
@@ -598,16 +623,19 @@ export const ReservedCommandPanel = forwardRef<ReservedCommandPanelRef, Reserved
           </div>
 
           {/* Year/Month Column */}
-          <div style={rowGridStyle}>
+          <div style={rowGridStyle} className="border-r border-white/5">
             {reservedCommandList.slice(0, viewMaxTurn).map((turn, turnIdx) => (
               <div
                 key={turnIdx}
                 className={cn(
-                  "flex items-center justify-center text-xs whitespace-nowrap overflow-hidden",
-                  isEditMode && "hover:underline cursor-pointer"
+                  "flex items-center justify-center text-xs whitespace-nowrap overflow-hidden border-b border-white/5 transition-colors",
+                  isEditMode
+                    ? "hover:bg-cyan-500/10 cursor-pointer text-cyan-200/80"
+                    : "text-white/60",
+                  turnIdx % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent"
                 )}
                 style={{
-                  fontSize: `${Math.min(14, (75 / (`${turn.year ?? 1}`.length + 8)) * 1.8)}px`,
+                  fontSize: `${Math.min(12, (75 / (`${turn.year ?? 1}`.length + 8)) * 1.8)}px`,
                 }}
                 onClick={isEditMode ? () => selectTurn(turnIdx) : undefined}
               >
@@ -618,11 +646,14 @@ export const ReservedCommandPanel = forwardRef<ReservedCommandPanelRef, Reserved
           </div>
 
           {/* Time Column */}
-          <div style={rowGridStyle}>
+          <div style={rowGridStyle} className="border-r border-white/5">
             {reservedCommandList.slice(0, viewMaxTurn).map((turn, turnIdx) => (
               <div
                 key={turnIdx}
-                className="bg-black flex items-center justify-center text-xs whitespace-nowrap overflow-hidden"
+                className={cn(
+                  "flex items-center justify-center text-[10px] font-mono whitespace-nowrap overflow-hidden border-b border-white/5 text-white/30",
+                  turnIdx % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent"
+                )}
               >
                 {turn.time}
               </div>
@@ -635,14 +666,17 @@ export const ReservedCommandPanel = forwardRef<ReservedCommandPanelRef, Reserved
               <div
                 key={turnIdx}
                 className={cn(
-                  "flex items-center justify-center text-sm whitespace-nowrap px-1",
-                  turnIdx % 2 === 0 ? "bg-gray-700" : "bg-gray-800"
+                  "flex items-center justify-center text-xs whitespace-nowrap px-2 border-b border-white/5 transition-all duration-200",
+                  turnIdx % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent",
+                  isEditMode && selectedTurnList.has(turnIdx)
+                    ? "bg-cyan-500/10 text-cyan-200"
+                    : "text-white/80"
                 )}
                 style={turn.style}
                 title={turn.tooltip}
               >
                 <span
-                  className="inline-block whitespace-nowrap text-ellipsis overflow-hidden"
+                  className="inline-block whitespace-nowrap text-ellipsis overflow-hidden drop-shadow-sm"
                   dangerouslySetInnerHTML={{ __html: turn.brief }}
                 />
               </div>
@@ -651,16 +685,18 @@ export const ReservedCommandPanel = forwardRef<ReservedCommandPanelRef, Reserved
 
           {/* Action Button Column (Normal Mode Only) */}
           {!isEditMode && (
-            <div style={rowGridStyle}>
+            <div style={rowGridStyle} className="border-l border-white/5">
               {reservedCommandList.slice(0, viewMaxTurn).map((_, turnIdx) => (
-                <div key={turnIdx} className="flex items-center justify-center">
+                <div
+                  key={turnIdx}
+                  className={cn(
+                    "flex items-center justify-center border-b border-white/5",
+                    turnIdx % 2 === 0 ? "bg-white/[0.02]" : "bg-transparent"
+                  )}
+                >
                   <button
                     type="button"
-                    className={cn(
-                      "w-full h-full text-xs",
-                      turnIdx % 2 === 0 ? "bg-gray-600" : "bg-gray-700",
-                      "hover:bg-gray-500"
-                    )}
+                    className="w-full h-full text-white/30 hover:text-cyan-400 hover:bg-cyan-500/10 transition-all text-xs"
                     disabled={!editable || commandList.length === 0}
                     onClick={() => toggleQuickReserveForm(turnIdx)}
                   >
@@ -673,53 +709,63 @@ export const ReservedCommandPanel = forwardRef<ReservedCommandPanelRef, Reserved
         </div>
 
         {/* Bottom Controls */}
-        <div className="grid grid-cols-3 gap-1 p-1">
-          <select
-            className="px-2 py-1.5 text-sm bg-gray-600 text-white rounded"
-            onChange={(e) => {
-              const val = Number(e.target.value);
-              if (val) void handlePush(-val);
-              e.target.value = "";
-            }}
-            disabled={!editable}
-            defaultValue=""
-          >
-            <option value="" disabled>
-              당기기
-            </option>
-            {Array.from({ length: maxPushTurn }, (_, i) => i + 1).map((n) => (
-              <option key={n} value={n}>
-                {n}턴
+        <div className="grid grid-cols-3 gap-2 p-3 bg-white/5 backdrop-blur-sm border-t border-white/5">
+          <div className="relative group">
+            <select
+              className="w-full h-full px-2 py-1.5 text-xs bg-black/40 text-white/70 border border-white/10 rounded appearance-none cursor-pointer hover:border-white/20 hover:text-white transition-colors focus:outline-none"
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                if (val) void handlePush(-val);
+                e.target.value = "";
+              }}
+              disabled={!editable}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                ▲ 당기기
               </option>
-            ))}
-          </select>
+              {Array.from({ length: maxPushTurn }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  {n}턴 위로
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none text-white/30 text-[10px]">
+              ▼
+            </div>
+          </div>
 
-          <select
-            className="px-2 py-1.5 text-sm bg-gray-600 text-white rounded"
-            onChange={(e) => {
-              const val = Number(e.target.value);
-              if (val) void handlePush(val);
-              e.target.value = "";
-            }}
-            disabled={!editable}
-            defaultValue=""
-          >
-            <option value="" disabled>
-              미루기
-            </option>
-            {Array.from({ length: maxPushTurn }, (_, i) => i + 1).map((n) => (
-              <option key={n} value={n}>
-                {n}턴
+          <div className="relative group">
+            <select
+              className="w-full h-full px-2 py-1.5 text-xs bg-black/40 text-white/70 border border-white/10 rounded appearance-none cursor-pointer hover:border-white/20 hover:text-white transition-colors focus:outline-none"
+              onChange={(e) => {
+                const val = Number(e.target.value);
+                if (val) void handlePush(val);
+                e.target.value = "";
+              }}
+              disabled={!editable}
+              defaultValue=""
+            >
+              <option value="" disabled>
+                ▼ 미루기
               </option>
-            ))}
-          </select>
+              {Array.from({ length: maxPushTurn }, (_, i) => i + 1).map((n) => (
+                <option key={n} value={n}>
+                  {n}턴 아래로
+                </option>
+              ))}
+            </select>
+            <div className="absolute inset-y-0 right-2 flex items-center pointer-events-none text-white/30 text-[10px]">
+              ▼
+            </div>
+          </div>
 
           <button
             type="button"
-            className="px-2 py-1.5 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-3 py-1.5 text-xs bg-white/5 hover:bg-white/10 text-white/70 hover:text-white border border-white/10 rounded transition-all active:scale-95"
             onClick={toggleViewMaxTurn}
           >
-            {viewMaxTurn === 14 ? "펼치기" : "접기"}
+            {viewMaxTurn === 14 ? "▼ 더보기" : "▲ 접기"}
           </button>
         </div>
       </div>

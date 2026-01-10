@@ -98,8 +98,12 @@ export function CityBasicCard({ city, gameConstStore }: CityBasicCardProps) {
       <style jsx>{`
         .city-card-basic {
           display: grid;
-          border-right: solid 1px gray;
-          border-bottom: solid 1px gray;
+          border-right: 1px solid rgba(255, 255, 255, 0.1);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(12px);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+          border-radius: 8px;
+          overflow: hidden;
         }
 
         .cellText {
@@ -116,22 +120,35 @@ export function CityBasicCard({ city, gameConstStore }: CityBasicCardProps) {
         .gPanel {
           display: grid;
           grid-template-columns: 1fr 2fr;
-          border-top: solid 1px gray;
-          border-left: solid 1px gray;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          border-left: 1px solid rgba(255, 255, 255, 0.1);
+          transition: background-color 0.2s;
+        }
+
+        .gPanel:hover {
+          background-color: rgba(255, 255, 255, 0.05);
         }
 
         .gPanel .gHead {
           display: flex;
           justify-content: center;
           align-items: center;
+          background-color: rgba(255, 255, 255, 0.05);
+          font-weight: 600;
+          color: rgba(255, 255, 255, 0.7);
         }
 
         .cityNamePanel,
         .nationNamePanel {
           font-weight: bold;
           text-align: center;
-          border-top: solid 1px gray;
-          border-left: solid 1px gray;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+          border-left: 1px solid rgba(255, 255, 255, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 8px;
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
         }
 
         .popPanel {

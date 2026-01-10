@@ -4,13 +4,13 @@ import { WarUnitGeneral } from "./WarUnitGeneral.js";
 import type { StatName } from "./items/types.js";
 
 /**
-  * 전투 통계 보정 헬퍼
-  * 전투 중 아이템, 특기 등에 의해 동적으로 변하는 장수의 스탯(공격력, 방어력 등)을 계산합니다.
-  */
+ * 전투 통계 보정 헬퍼
+ * 전투 중 아이템, 특기 등에 의해 동적으로 변하는 장수의 스탯(공격력, 방어력 등)을 계산합니다.
+ */
 export class WarStatHelper {
   /**
    * 아이템의 스탯 계산 로직(onCalcStat)과 상대방 아이템의 디버프 로직(onCalcOpposeStat)을 종합하여 최종 스탯을 산출합니다.
-   * 
+   *
    * @param unit 스탯을 계산할 대상 유닛
    * @param statName 계산할 스탯의 종류 (예: attack, defense, initWarPhase 등)
    * @param baseValue 기초 스탯 값

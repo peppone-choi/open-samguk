@@ -8,7 +8,7 @@ import { WorldSnapshot } from "./entities.js";
 export class TurnExecutionPipeline {
   /**
    * 지정된 시점(targetTime)까지 턴을 실행해야 하는 장수 목록을 추출하고 정렬합니다.
-   * 
+   *
    * @param snapshot 월드 상태 스냅샷
    * @param targetTime 기준 시간 (보통 서버 현재 시간)
    * @returns 실행 대상 장수 ID 배열 (시간 순 정렬)
@@ -23,7 +23,7 @@ export class TurnExecutionPipeline {
   /**
    * 월간 전환(연월 변경)이 필요한 상태인지 확인합니다.
    * 모든 실행 가능한 장수의 처리가 완료되고, 다음 월로 넘어갈 시간이 되었을 때 true를 반환합니다.
-   * 
+   *
    * @param snapshot 월드 상태 스냅샷
    * @param targetTime 기준 시간
    * @returns 월간 전환 필요 여부

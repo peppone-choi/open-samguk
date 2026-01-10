@@ -44,7 +44,7 @@ export class GameEngine {
   /**
    * 1턴(1개월)을 진행합니다.
    * 연월 변경, 세금 징수, 재해 발생 등 월간 업데이트를 수행합니다.
-   * 
+   *
    * @param snapshot 현재 월드 상태
    * @param now 실행 시점의 서버 시간
    * @returns 월간 전환에 따른 상태 변경 델타
@@ -66,7 +66,7 @@ export class GameEngine {
 
   /**
    * 특정 시점(now)까지 실행되어야 할 장수들의 개인 턴을 순차적으로 처리합니다.
-   * 
+   *
    * @param snapshot 현재 월드 상태
    * @param now 실행 시적의 서버 시간
    * @returns 실행된 모든 장수 턴의 합산 델타

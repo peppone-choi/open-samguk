@@ -10,7 +10,7 @@ import { GameConst } from "./GameConst.js";
  * 매달 게임 연월이 바뀔 때 실행되는 전역적인 업데이트 로직을 관장합니다.
  */
 export class MonthlyPipeline {
-  constructor(private readonly eventRegistry: any) { }
+  constructor(private readonly eventRegistry: any) {}
 
   /**
    * 월간 처리 시작 전 전처리 (수입 정산 및 자원 분배 준비)
@@ -133,9 +133,14 @@ export class MonthlyPipeline {
       totalPower += nationCities.length * 100;
       totalPower += nationCities.reduce((acc, c) => acc + c.pop / 1000 + c.agri / 100, 0);
 
-      const nationGenerals = Object.values(snapshot.generals).filter((g) => g.nationId === nation.id);
+      const nationGenerals = Object.values(snapshot.generals).filter(
+        (g) => g.nationId === nation.id
+      );
       totalPower += nationGenerals.length * 50;
-      totalPower += nationGenerals.reduce((acc, g) => acc + (g.leadership + g.strength + g.intel) / 10, 0);
+      totalPower += nationGenerals.reduce(
+        (acc, g) => acc + (g.leadership + g.strength + g.intel) / 10,
+        0
+      );
 
       dNations[nation.id] = { ...dNations[nation.id], power: Math.floor(totalPower) };
     }
@@ -222,14 +227,22 @@ export class MonthlyPipeline {
    */
   private updateCityState(state: number): number {
     switch (state) {
-      case 31: return 0;
-      case 32: return 31;
-      case 33: return 0;
-      case 34: return 33;
-      case 41: return 0;
-      case 42: return 41;
-      case 43: return 42;
-      default: return state;
+      case 31:
+        return 0;
+      case 32:
+        return 31;
+      case 33:
+        return 0;
+      case 34:
+        return 33;
+      case 41:
+        return 0;
+      case 42:
+        return 41;
+      case 43:
+        return 42;
+      default:
+        return state;
     }
   }
 }

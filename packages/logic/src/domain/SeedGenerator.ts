@@ -31,7 +31,7 @@ export class SeedGenerator {
 
   /**
    * 월드 스냅샷(Snapshot)으로부터 현재 시점의 결정론적 시드를 생성합니다.
-   * 
+   *
    * @param snapshot 현재 게임 상태
    * @param actorId 행동 장수 ID
    * @param actionName 행동 이름

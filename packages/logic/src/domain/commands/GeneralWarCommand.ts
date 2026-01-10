@@ -27,7 +27,7 @@ export class GeneralWarCommand extends GeneralCommand {
   /**
    * 출격 명령을 실행합니다.
    * WarEngine을 호출하여 전투 결과를 계산하고 델타를 반환합니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param actorId 장수 ID

@@ -29,7 +29,7 @@ export class NationRewardCommand extends GeneralCommand {
   /**
    * 포상 명령을 실행합니다.
    * 국고에서 자원을 차감하고 대상 장수의 사유 재산을 증가시킵니다.
-   * 
+   *
    * @param rng 난수 생성기
    * @param snapshot 월드 스냅샷
    * @param actorId 명령을 내리는 수뇌 장수 ID

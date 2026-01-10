@@ -35,8 +35,8 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
             const token = getAccessToken();
             return token
               ? {
-                Authorization: `Bearer ${token}`,
-              }
+                  Authorization: `Bearer ${token}`,
+                }
               : {};
           },
         }),

@@ -144,21 +144,23 @@ export function MessagePlate({
   // Background color based on message type - now with gradients for depth
   const bgColorClass = useMemo(() => {
     const base: Record<MsgType, string> = {
-      private: "bg-gradient-to-br from-[#6d2e2a] to-[#4d0e0a]",
-      public: "bg-gradient-to-br from-[#1e2c75] to-[#0a1245]",
-      national: "bg-gradient-to-br from-[#10683c] to-[#00481c]",
-      diplomacy: "bg-gradient-to-br from-[#10683c] to-[#00481c]",
+      private: "bg-gradient-to-r from-red-950/80 to-red-900/60 border-l-2 border-l-red-500",
+      public: "bg-gradient-to-r from-slate-900/80 to-slate-800/60 border-l-2 border-l-slate-500",
+      national:
+        "bg-gradient-to-r from-emerald-950/80 to-emerald-900/60 border-l-2 border-l-emerald-500",
+      diplomacy: "bg-gradient-to-r from-amber-950/80 to-amber-900/60 border-l-2 border-l-amber-500",
     };
 
     if (
       (msg.msgType === "private" || msg.msgType === "national" || msg.msgType === "diplomacy") &&
       nationType === "dest"
     ) {
-      if (msg.msgType === "private") return "bg-gradient-to-br from-[#6d562a] to-[#4d360a]";
-      return "bg-gradient-to-br from-[#805625] to-[#603605]";
+      if (msg.msgType === "private")
+        return "bg-gradient-to-r from-amber-950/80 to-orange-950/60 border-l-2 border-l-orange-500";
+      return "bg-gradient-to-r from-yellow-950/80 to-amber-900/60 border-l-2 border-l-amber-500";
     }
     if ((msg.msgType === "national" || msg.msgType === "diplomacy") && nationType === "src") {
-      return "bg-gradient-to-br from-[#80254b] to-[#60052b]";
+      return "bg-gradient-to-r from-rose-950/80 to-pink-900/60 border-l-2 border-l-pink-500";
     }
     return base[msg.msgType];
   }, [msg.msgType, nationType]);
@@ -200,13 +202,14 @@ export function MessagePlate({
     }) => (
       <span
         role={clickable ? "button" : undefined}
-        className={`inline-block mx-0.5 px-1.5 py-0.5 rounded-md font-medium transition-all duration-150 ${
-          colorType === "bright" ? "text-black/90" : "text-white"
-        } ${clickable ? "cursor-pointer hover:brightness-110 hover:scale-[1.02] active:scale-[0.98]" : ""}`}
+        className={`inline-flex items-center mx-1 px-2 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase transition-all duration-300 ${
+          colorType === "bright" ? "text-black/90 shadow-sm" : "text-white shadow-md"
+        } ${clickable ? "cursor-pointer hover:brightness-110 hover:-translate-y-0.5 hover:shadow-lg active:translate-y-0 active:scale-95" : ""}`}
         style={{
           backgroundColor: target.color,
-          boxShadow: "0 1px 2px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
-          textShadow: colorType === "dark" ? "0 1px 1px rgba(0,0,0,0.3)" : "none",
+          boxShadow: "0 2px 4px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.2)",
+          textShadow: colorType === "dark" ? "0 1px 2px rgba(0,0,0,0.5)" : "none",
+          border: "1px solid rgba(255,255,255,0.15)",
         }}
         onClick={clickable ? () => handleSetTarget(target) : undefined}
       >
@@ -221,9 +224,9 @@ export function MessagePlate({
             <TargetBadge target={src} colorType={srcColorType}>
               나
             </TargetBadge>
-            <span className="mx-1">▶</span>
+            <span className="text-white/40 text-[10px]">▶</span>
             <TargetBadge target={dest} colorType={destColorType} clickable>
-              {dest.name}:{dest.nation} | ↩
+              {dest.name}:{dest.nation}
             </TargetBadge>
           </>
         );
@@ -231,9 +234,9 @@ export function MessagePlate({
       return (
         <>
           <TargetBadge target={src} colorType={srcColorType} clickable>
-            {src.name}:{src.nation} | ↩
+            {src.name}:{src.nation}
           </TargetBadge>
-          <span className="mx-1">▶</span>
+          <span className="text-white/40 text-[10px]">▶</span>
           <TargetBadge target={dest} colorType={destColorType}>
             나
           </TargetBadge>
@@ -256,16 +259,16 @@ export function MessagePlate({
             <TargetBadge target={src} colorType={srcColorType}>
               {src.name}
             </TargetBadge>
-            <span className="mx-1">▶</span>
+            <span className="text-white/40 text-[10px]">▶</span>
             <TargetBadge target={dest} colorType={destColorType} clickable>
-              {dest.nation} | ↩
+              {dest.nation}
             </TargetBadge>
           </>
         );
       }
       return (
         <TargetBadge target={src} colorType={srcColorType} clickable>
-          {src.name}:{src.nation} | ↩
+          {src.name}:{src.nation}
         </TargetBadge>
       );
     }
@@ -277,7 +280,7 @@ export function MessagePlate({
             <TargetBadge target={src} colorType={srcColorType}>
               {src.name}
             </TargetBadge>
-            <span className="mx-1">▶</span>
+            <span className="text-white/40 text-[10px]">▶</span>
             <TargetBadge target={dest} colorType={destColorType}>
               {dest.nation}
             </TargetBadge>
@@ -295,7 +298,7 @@ export function MessagePlate({
     if (src.id !== generalID) {
       return (
         <TargetBadge target={src} colorType={srcColorType} clickable>
-          {src.name}:{src.nation} | ↩
+          {src.name}:{src.nation}
         </TargetBadge>
       );
     }
@@ -309,40 +312,57 @@ export function MessagePlate({
   return (
     <div
       id={`msg_${msg.id}`}
-      className={`grid grid-cols-[64px_1fr] border-b border-gray-600/50 min-h-[64px] text-xs text-white break-all transition-colors ${bgColorClass}`}
+      className={`relative grid grid-cols-[56px_1fr] border-b border-white/5 min-h-[56px] text-xs text-white/90 break-all transition-all duration-300 hover:bg-white/5 group ${bgColorClass}`}
       data-id={msg.id}
     >
       {/* Icon */}
-      <div className="w-16 h-16 border-r border-gray-600/50 flex-shrink-0 overflow-hidden">
+      <div className="w-14 h-14 flex-shrink-0 overflow-hidden relative border-r border-white/10">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/60 z-10" />
         <img
           src={getIconPath(src.icon)}
           alt={src.name}
-          width={64}
-          height={64}
-          className="object-cover"
+          width={56}
+          height={56}
+          className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-110"
         />
+        <div className="absolute inset-0 ring-1 ring-inset ring-white/10 z-20" />
       </div>
 
       {/* Body */}
-      <div className="py-1 px-2 flex flex-col">
+      <div className="py-2 px-3 flex flex-col relative">
         {/* Header */}
-        <div className="font-bold mb-1 relative">
+        <div className="flex items-center flex-wrap gap-y-1 mb-1.5 relative">
+          {renderHeader()}
+          <span className="text-[10px] font-mono text-white/30 ml-auto mr-6 group-hover:text-white/50 transition-colors">
+            {msg.time}
+          </span>
+
           {deletable && (
             <button
               type="button"
-              className="absolute right-0 top-0 px-1.5 py-0.5 text-[8px] border border-yellow-500/70 text-yellow-500 rounded-md hover:bg-yellow-500 hover:text-black transition-colors"
+              className="absolute -right-1 -top-1 p-1.5 text-white/20 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
               onClick={handleDelete}
+              title="삭제"
             >
-              ❌
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+                className="w-3.5 h-3.5"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.75 1A2.75 2.75 0 006 3.75v.443c-.795.077-1.584.176-2.365.298a.75.75 0 10.23 1.482l.149-.022.841 10.518A2.75 2.75 0 007.596 19h4.807a2.75 2.75 0 002.742-2.53l.841-10.52.149.023a.75.75 0 00.23-1.482A41.03 41.03 0 0014 4.193V3.75A2.75 2.75 0 0011.25 1h-2.5zM10 4c.84 0 1.673.025 2.5.075V3.75c0-.69-.56-1.25-1.25-1.25h-2.5c-.69 0-1.25.56-1.25 1.25v.325C8.327 4.025 9.16 4 10 4zM8.58 7.72a.75.75 0 00-1.5.06l.3 7.5a.75.75 0 101.5-.06l-.3-7.5zm4.34.06a.75.75 0 10-1.5-.06l-.3 7.5a.75.75 0 101.5.06l.3-7.5z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </button>
           )}
-          {renderHeader()}
-          <span className="text-[0.75em] font-normal ml-1 text-gray-300">&lt;{msg.time}&gt;</span>
         </div>
 
         {/* Content */}
         <div
-          className={`ml-2 mr-1 ${isValidMsg ? "" : "text-white/50"}`}
+          className={`text-[13px] leading-relaxed tracking-wide text-shadow-sm ${isValidMsg ? "text-white/90" : "text-white/40 italic"}`}
           dangerouslySetInnerHTML={{
             __html: isValidMsg ? linkifyText(msg.text) : "삭제된 메시지입니다",
           }}
@@ -350,22 +370,22 @@ export function MessagePlate({
 
         {/* Action buttons */}
         {msg.option.action && (
-          <div className="text-right mt-1.5 mr-1 space-x-2">
+          <div className="flex justify-end gap-2 mt-2 pt-2 border-t border-white/5">
             <button
               type="button"
               disabled={!allowButton}
               onClick={handleAccept}
-              className="px-2.5 py-1 bg-gradient-to-b from-green-500 to-green-600 text-white rounded-md text-xs font-medium shadow-sm hover:from-green-400 hover:to-green-500 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-green-500 disabled:hover:to-green-600"
+              className="px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/30 hover:border-emerald-500/50 text-emerald-300 rounded text-xs font-medium shadow-sm active:scale-95 transition-all flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              수락
+              <span>✓</span> 수락
             </button>
             <button
               type="button"
               disabled={!allowButton}
               onClick={handleDecline}
-              className="px-2.5 py-1 bg-gradient-to-b from-red-500 to-red-600 text-white rounded-md text-xs font-medium shadow-sm hover:from-red-400 hover:to-red-500 active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:from-red-500 disabled:hover:to-red-600"
+              className="px-3 py-1 bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 hover:border-red-500/50 text-red-300 rounded text-xs font-medium shadow-sm active:scale-95 transition-all flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed"
             >
-              거절
+              <span>✕</span> 거절
             </button>
           </div>
         )}
