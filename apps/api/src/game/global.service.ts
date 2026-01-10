@@ -1,6 +1,113 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient, type PrismaClientType } from "@sammo/infra";
 
+// ============================================================================
+// 명시적 인터페이스 정의 (Docker 환경 호환)
+// ============================================================================
+
+interface NationWithCityCount {
+  nation: number;
+  name: string;
+  color: string;
+  gennum: number;
+  _count: { cities: number };
+}
+
+interface CityForMap {
+  city: number;
+  name: string;
+  level: number;
+  nationId: number;
+  region: number;
+  pop: number;
+  front: number;
+  supply: number;
+}
+
+interface NationBasic {
+  nation: number;
+  name: string;
+  color: string;
+}
+
+interface WorldHistoryBasic {
+  id: number;
+  year: number;
+  month: number;
+  text: string;
+  nationId: number;
+}
+
+interface WorldHistoryWithNation {
+  id: number;
+  year: number;
+  month: number;
+  text: string;
+  nationId: number;
+  nation: { name: string; color: string } | null;
+}
+
+interface GeneralWithRelations {
+  no: number;
+  name: string;
+  picture: string;
+  nationId: number;
+  cityId: number;
+  leadership: number;
+  strength: number;
+  intel: number;
+  officerLevel: number;
+  npc: number;
+  experience: number;
+  dedication: number;
+  crew: number;
+  nation: { name: string; color: string } | null;
+  city: { name: string } | null;
+}
+
+interface DiplomacyRecord {
+  meId: number;
+  youId: number;
+  state: number;
+  term: number;
+}
+
+interface CityForMapData {
+  city: number;
+  level: number;
+  state: number;
+  nationId: number;
+  region: number;
+  supply: number;
+}
+
+interface NationForMapData {
+  nation: number;
+  name: string;
+  color: string;
+  capital: number;
+}
+
+interface NationForDiplomacy {
+  nation: number;
+  name: string;
+  color: string;
+  power: number;
+  gennum: number;
+  level: number;
+  capital: number;
+  cities: { name: string }[];
+}
+
+interface CityWithConflict {
+  city: number;
+  conflict: unknown;
+}
+
+// ============================================================================
+// Service Implementation
+// ============================================================================
+
 @Injectable()
 export class GlobalService {
   private readonly prisma: PrismaClientType = createPrismaClient();
@@ -53,7 +160,7 @@ export class GlobalService {
           _count: { select: { cities: true } },
         },
         orderBy: { power: "desc" },
-      }),
+      }) as Promise<NationWithCityCount[]>,
       this.prisma.worldHistory.findMany({
         orderBy: { id: "desc" },
         take: 5,
@@ -64,7 +171,7 @@ export class GlobalService {
           text: true,
           nationId: true,
         },
-      }),
+      }) as Promise<WorldHistoryBasic[]>,
     ]);
 
     // 서버 상태 정보
@@ -80,7 +187,7 @@ export class GlobalService {
     return {
       result: true,
       env: gameEnv.env,
-      nations: nations.map((n) => ({
+      nations: nations.map((n: NationWithCityCount) => ({
         nation: n.nation,
         name: n.name,
         color: n.color,
@@ -108,7 +215,7 @@ export class GlobalService {
           front: true,
           supply: true,
         },
-      }),
+      }) as Promise<CityForMap[]>,
       this.prisma.nation.findMany({
         where: { gennum: { gt: 0 } },
         select: {
@@ -116,15 +223,16 @@ export class GlobalService {
           name: true,
           color: true,
         },
-      }),
+      }) as Promise<NationBasic[]>,
     ]);
 
-    type NationBasic = (typeof nations)[number];
-    const nationMap = new Map<number, NationBasic>(nations.map((n) => [n.nation, n]));
+    const nationMap = new Map<number, NationBasic>(
+      nations.map((n: NationBasic) => [n.nation, n])
+    );
 
     return {
       result: true,
-      cities: cities.map((c) => {
+      cities: cities.map((c: CityForMap) => {
         const nation = nationMap.get(c.nationId);
         return {
           ...c,
@@ -140,7 +248,6 @@ export class GlobalService {
    * 캐시된 지도 데이터 조회 (변경 시간 기준)
    */
   async getCachedMap(lastModified?: Date) {
-    // 지도 변경 시간 체크
     const mapUpdateTime = await this.prisma.storage.findFirst({
       where: { namespace: "game_env", key: "map_updated_at" },
     });
@@ -169,7 +276,7 @@ export class GlobalService {
     const year = (gameEnv.env.year as number) || 184;
     const month = (gameEnv.env.month as number) || 1;
 
-    const history = await this.prisma.worldHistory.findMany({
+    const history = (await this.prisma.worldHistory.findMany({
       where: { year, month },
       orderBy: { id: "desc" },
       include: {
@@ -177,13 +284,13 @@ export class GlobalService {
           select: { name: true, color: true },
         },
       },
-    });
+    })) as WorldHistoryWithNation[];
 
     return {
       result: true,
       year,
       month,
-      history: history.map((h) => ({
+      history: history.map((h: WorldHistoryWithNation) => ({
         id: h.id,
         text: h.text,
         nationId: h.nationId,
@@ -197,11 +304,10 @@ export class GlobalService {
    * 장수 목록 조회 (토큰 기반)
    */
   async getGeneralListWithToken(token?: string, nationId?: number) {
-    // token은 변경 감지용 (ETag처럼 사용)
-    const generals = await this.prisma.general.findMany({
+    const generals = (await this.prisma.general.findMany({
       where: {
         ...(nationId !== undefined ? { nationId } : {}),
-        npc: { in: [0, 1, 2, 3, 4, 5] }, // 플레이어 + NPC
+        npc: { in: [0, 1, 2, 3, 4, 5] },
       },
       select: {
         no: true,
@@ -221,10 +327,9 @@ export class GlobalService {
         city: { select: { name: true } },
       },
       orderBy: [{ nationId: "asc" }, { officerLevel: "desc" }, { experience: "desc" }],
-    });
+    })) as GeneralWithRelations[];
 
-    // 간단한 해시 생성 (변경 감지용)
-    const newToken = Buffer.from(JSON.stringify(generals.map((g) => g.no)))
+    const newToken = Buffer.from(JSON.stringify(generals.map((g: GeneralWithRelations) => g.no)))
       .toString("base64")
       .slice(0, 16);
 
@@ -236,7 +341,7 @@ export class GlobalService {
       result: true,
       changed: true,
       token: newToken,
-      generals: generals.map((g) => ({
+      generals: generals.map((g: GeneralWithRelations) => ({
         ...g,
         nationName: g.nation?.name,
         nationColor: g.nation?.color,
@@ -252,19 +357,20 @@ export class GlobalService {
     const [diplomacies, nations] = await Promise.all([
       this.prisma.diplomacy.findMany({
         where: { state: { not: 0 } },
-      }),
+      }) as Promise<DiplomacyRecord[]>,
       this.prisma.nation.findMany({
         where: { gennum: { gt: 0 } },
         select: { nation: true, name: true, color: true },
-      }),
+      }) as Promise<NationBasic[]>,
     ]);
 
-    type NationBasic = (typeof nations)[number];
-    const nationMap = new Map<number, NationBasic>(nations.map((n) => [n.nation, n]));
+    const nationMap = new Map<number, NationBasic>(
+      nations.map((n: NationBasic) => [n.nation, n])
+    );
 
     return {
       result: true,
-      diplomacies: diplomacies.map((d) => {
+      diplomacies: diplomacies.map((d: DiplomacyRecord) => {
         const me = nationMap.get(d.meId);
         const you = nationMap.get(d.youId);
         return {
@@ -306,14 +412,14 @@ export class GlobalService {
         include: {
           nation: { select: { name: true, color: true } },
         },
-      }),
+      }) as Promise<WorldHistoryWithNation[]>,
       this.getGameEnv(),
     ]);
 
     return {
       result: true,
       generalRecords,
-      worldHistory: worldHistory.map((h) => ({
+      worldHistory: worldHistory.map((h: WorldHistoryWithNation) => ({
         id: h.id,
         year: h.year,
         month: h.month,
@@ -374,7 +480,7 @@ export class GlobalService {
           region: true,
           supply: true,
         },
-      }),
+      }) as Promise<CityForMapData[]>,
       this.prisma.nation.findMany({
         where: { gennum: { gt: 0 } },
         select: {
@@ -383,7 +489,7 @@ export class GlobalService {
           color: true,
           capital: true,
         },
-      }),
+      }) as Promise<NationForMapData[]>,
       this.prisma.worldHistory.findMany({
         where: { nationId: 0 },
         orderBy: { id: "desc" },
@@ -411,13 +517,20 @@ export class GlobalService {
       year: (env.year as number) || 0,
       month: (env.month as number) || 0,
       startYear: (env.startYear as number) || 184,
-      cityList: cities.map((c) => [c.city, c.level, c.state, c.nationId, c.region, c.supply]),
-      nationList: nations.map((n) => [n.nation, n.name, n.color, n.capital]),
+      cityList: cities.map((c: CityForMapData) => [
+        c.city,
+        c.level,
+        c.state,
+        c.nationId,
+        c.region,
+        c.supply,
+      ]),
+      nationList: nations.map((n: NationForMapData) => [n.nation, n.name, n.color, n.capital]),
       spyList: {},
       shownByGeneralList: [],
       myCity,
       myNation,
-      history: worldHistory.map((h) => h.text),
+      history: worldHistory.map((h: { text: string }) => h.text),
     };
   }
 
@@ -439,11 +552,11 @@ export class GlobalService {
           cities: { select: { name: true } },
         },
         orderBy: { power: "desc" },
-      }),
-      this.prisma.diplomacy.findMany(),
+      }) as Promise<NationForDiplomacy[]>,
+      this.prisma.diplomacy.findMany() as Promise<DiplomacyRecord[]>,
       this.prisma.city.findMany({
         select: { city: true, conflict: true },
-      }),
+      }) as Promise<CityWithConflict[]>,
     ]);
 
     let myNationID = 0;
@@ -462,14 +575,14 @@ export class GlobalService {
     }
 
     const conflict: [number, Record<number, number>][] = cities
-      .filter((c) => {
+      .filter((c: CityWithConflict) => {
         const conflictData = c.conflict as Record<string, number> | null;
         return conflictData && Object.keys(conflictData).length > 0;
       })
-      .map((c) => [c.city, c.conflict as Record<number, number>]);
+      .map((c: CityWithConflict) => [c.city, c.conflict as Record<number, number>]);
 
     return {
-      nations: nations.map((n) => ({
+      nations: nations.map((n: NationForDiplomacy) => ({
         nation: n.nation,
         name: n.name,
         color: n.color,
@@ -477,7 +590,7 @@ export class GlobalService {
         gennum: n.gennum,
         level: n.level,
         capital: n.capital,
-        cities: n.cities.map((c) => c.name),
+        cities: n.cities.map((c: { name: string }) => c.name),
       })),
       conflict,
       diplomacyList: diplomacyMatrix,
