@@ -118,7 +118,7 @@ export interface NationInfo extends NationBasic {
   rice: number;
   tech: number;
   rate: number;
-  bill: string | null;
+  bill: number;
   scout: number;
   war: number;
   cities?: CityBasic[];
@@ -279,6 +279,7 @@ export interface GeneralDetail {
   no: number;
   name: string;
   picture: string;
+  imgsvr: number;
   nationId: number;
   cityId: number;
   officerLevel: number;
@@ -294,22 +295,25 @@ export interface GeneralDetail {
   rice: number;
   crew: number;
   crewType: number;
-  trainClient?: number; // DB 필드명에 따라 다를 수 있음. 실제로는 train
   train: number;
   atmos: number;
   age: number;
   bornYear: number;
   injury: number;
-  personal: string;
-  special: string;
-  special2: string;
-  weapon: string;
-  book: string;
-  horse: string;
-  item: string;
+  personal: string | null;
+  specialDomestic: string | null;
+  specialWar: string | null;
+  weapon: string | null;
+  book: string | null;
+  horse: string | null;
+  item: string | null;
+  killturn: number;
+  belong: number;
+  npc: number;
   turnTime: Date | string;
   nation?: NationBasic;
   city?: CityBasic;
+  troop?: number | null;
 }
 
 // ============================================================================

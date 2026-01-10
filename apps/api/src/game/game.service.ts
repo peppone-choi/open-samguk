@@ -18,7 +18,7 @@ export class GameService {
       year: 184,
       month: 1,
       nations,
-      cities: cities.map(c => ({
+      cities: cities.map((c: any) => ({
         id: c.city,
         city: c.city,
         name: c.name,

@@ -2,7 +2,6 @@ import { Injectable } from "@nestjs/common";
 import { createPrismaClient } from "@sammo/infra";
 import {
   type NationInfo,
-  type SuccessResponse,
   type NationGeneralListResponse
 } from "@sammo/common";
 
@@ -38,7 +37,7 @@ export class NationService {
       bill: nation.bill,
       scout: nation.scout,
       war: nation.war,
-      cities: nation.cities.map(c => ({
+      cities: nation.cities.map((c: any) => ({
         id: c.city,
         city: c.city,
         name: c.name,

@@ -26,13 +26,6 @@ import { createGameSessionRouter } from "../auth/game-session.router.js";
 import { NPCService } from "../game/npc.service.js";
 import { TournamentService } from "../game/tournament.service.js";
 
-import {
-  type GeneralDetail,
-  type GameStateResponse,
-  type ServerInfo,
-  type FrontInfoResponse,
-  type SuccessResponse
-} from "@sammo/common";
 
 @Injectable()
 export class TrpcRouter implements OnModuleInit {
