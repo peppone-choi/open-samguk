@@ -167,6 +167,9 @@ importers:
       '@sammo/api':
         specifier: workspace:*
         version: link:../api
+      '@sammo/common':
+        specifier: workspace:*
+        version: link:../../packages/common
       '@types/node':
         specifier: ^22.0.0
         version: 22.19.3

@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { trpc } from "@/utils/trpc";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import type { GeneralDetail, HistoryItem } from "@sammo/common";
+import type { GeneralDetail, GeneralRecordItem } from "@sammo/common";
 
 const OFFICER_LEVELS: Record<number, string> = {
   0: "재야",
@@ -66,7 +66,7 @@ function EquipmentSlot({
   isDropping,
 }: {
   label: string;
-  value: string;
+  value: string | null;
   onDrop?: () => void;
   isDropping?: boolean;
 }) {
@@ -114,7 +114,7 @@ export default function GeneralDetailPage() {
   });
 
   const general = generalQuery.data as GeneralDetail | undefined;
-  const logs = (logsQuery.data || []) as HistoryItem[];
+  const logs = (logsQuery.data || []) as GeneralRecordItem[];
   const commands = commandsQuery.data;
 
   if (generalQuery.isLoading) {
@@ -198,9 +198,15 @@ export default function GeneralDetailPage() {
                 </div>
               </div>
               <div>
-                <span className="text-muted-foreground">특기</span>
+                <span className="text-muted-foreground">특기(내정)</span>
                 <div className="font-medium">
-                  {general.special === "None" ? "없음" : general.special}
+                  {general.specialDomestic === "None" || !general.specialDomestic ? "없음" : general.specialDomestic}
+                </div>
+              </div>
+              <div>
+                <span className="text-muted-foreground">특기(전투)</span>
+                <div className="font-medium">
+                  {general.specialWar === "None" || !general.specialWar ? "없음" : general.specialWar}
                 </div>
               </div>
             </div>

@@ -26,6 +26,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.0",
     "@sammo/api": "workspace:*",
+    "@sammo/common": "workspace:*",
     "@types/node": "^22.0.0",
     "@types/react": "^18.3.0",
     "@types/react-dom": "^18.3.0",

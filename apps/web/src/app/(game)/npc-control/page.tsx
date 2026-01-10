@@ -5,7 +5,7 @@
  * Ported from legacy/hwe/ts/PageNPCControl.vue
  */
 
-import React, { useState, useCallback, useEffect, useRef } from "react";
+import React, { useState, useCallback, useRef, useEffect } from "react";
 import { TopBackBar } from "@/components/game";
 import { Button } from "@/components/ui/button";
 import { trpc } from "@/utils/trpc";
@@ -18,9 +18,9 @@ import {
   PointerSensor,
   useSensor,
   useSensors,
-  useDroppable,
   type DragEndEvent,
   type DragOverEvent,
+  useDroppable,
 } from "@dnd-kit/core";
 import {
   arrayMove,

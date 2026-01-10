@@ -25,6 +25,7 @@ export type {
   CityBasic,
   CityForMap,
   HistoryItem,
+  GeneralRecordItem,
   AuctionItem,
   AuctionBid,
   BettingInfo,

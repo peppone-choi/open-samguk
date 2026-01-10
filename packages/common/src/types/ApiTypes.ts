@@ -178,13 +178,23 @@ export interface CityForMap extends CityBasic {
 // History (역사) Types
 // ============================================================================
 
-/** 역사 기록 아이템 */
+/** 역사 기록 아이템 (글로벌 히스토리) */
 export interface HistoryItem {
   id: number;
-  date: Date | string;
+  date?: Date | string;
   text: string;
   year: number;
   month: number;
+}
+
+/** 장수 기록 아이템 (GeneralRecord) */
+export interface GeneralRecordItem {
+  id: number;
+  generalId: number;
+  logType: string;
+  year: number;
+  month: number;
+  text: string;
 }
 
 // ============================================================================
