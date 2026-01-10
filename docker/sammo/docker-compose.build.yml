@@ -6,7 +6,7 @@ services:
       context: ../..
       dockerfile: docker/sammo/Dockerfile
       target: api
-  
+
   engine:
     build:
       context: ../..

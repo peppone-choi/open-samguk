@@ -24,7 +24,7 @@ export const GeneralList: React.FC<GeneralListProps> = ({ nationId, nationName }
   const rawData = generalsQuery.data;
   const generals: unknown[] = Array.isArray(rawData)
     ? rawData
-    : (rawData as Record<string, unknown>)?.list as unknown[] ?? [];
+    : (((rawData as Record<string, unknown>)?.list as unknown[]) ?? []);
 
   return (
     <section className="mb-14">

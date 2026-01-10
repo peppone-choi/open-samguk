@@ -31,8 +31,6 @@ import {
 // Types
 // ============================================================================
 
-
-
 // ============================================================================
 // Constants
 // ============================================================================
@@ -270,7 +268,11 @@ export default function PageInheritPoint() {
     );
   }
 
-  const historyLogs = (historyData?.logs ?? []) as Array<{ id: number; date: string | Date; text: string }>;
+  const historyLogs = (historyData?.logs ?? []) as Array<{
+    id: number;
+    date: string | Date;
+    text: string;
+  }>;
   const points = pointsData?.points ?? 0;
 
   return (

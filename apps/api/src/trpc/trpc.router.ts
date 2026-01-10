@@ -26,7 +26,6 @@ import { createGameSessionRouter } from "../auth/game-session.router.js";
 import { NPCService } from "../game/npc.service.js";
 import { TournamentService } from "../game/tournament.service.js";
 
-
 @Injectable()
 export class TrpcRouter implements OnModuleInit {
   public readonly appRouter: any;
@@ -1260,7 +1259,7 @@ export class TrpcRouter implements OnModuleInit {
     });
   }
 
-  onModuleInit() { }
+  onModuleInit() {}
 }
 
 export type AppRouter = ReturnType<TrpcRouter["createRouter"]>;

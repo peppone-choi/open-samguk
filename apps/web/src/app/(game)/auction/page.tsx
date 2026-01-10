@@ -98,8 +98,10 @@ function AuctionResource() {
     }
   };
 
-  const buyRiceAuctions = (auctions as any[] | undefined)?.filter((a) => a.type === "BuyRice") || [];
-  const sellRiceAuctions = (auctions as any[] | undefined)?.filter((a) => a.type === "SellRice") || [];
+  const buyRiceAuctions =
+    (auctions as any[] | undefined)?.filter((a) => a.type === "BuyRice") || [];
+  const sellRiceAuctions =
+    (auctions as any[] | undefined)?.filter((a) => a.type === "SellRice") || [];
 
   if (isLoading) return <div className="p-8 text-center text-gray-500">로딩 중...</div>;
 

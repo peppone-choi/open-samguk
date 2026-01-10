@@ -10,7 +10,7 @@ import { MapUtil } from "./MapData.js";
  * 레거시의 preUpdateMonthly, postUpdateMonthly 로직을 담당함
  */
 export class MonthlyPipeline {
-  constructor(private eventRegistry: EventRegistry) { }
+  constructor(private eventRegistry: EventRegistry) {}
 
   /**
    * 월간 처리 시작 전 전처리 (수입 정산 및 자원 분배)

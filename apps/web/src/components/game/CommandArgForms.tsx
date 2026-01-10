@@ -12,12 +12,7 @@
  * - SelectColorModal - Color picker for nation founding
  */
 
-import {
-  useState,
-  useCallback,
-  useMemo,
-  type ReactNode,
-} from "react";
+import { useState, useCallback, useMemo, type ReactNode } from "react";
 import { cn, getKoreanInitials } from "@/lib/utils";
 
 // ============================================================================

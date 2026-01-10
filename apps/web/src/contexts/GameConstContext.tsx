@@ -73,10 +73,12 @@ export function GameConstProvider({ children }: GameConstProviderProps) {
 
   const value = useMemo<GameConstContextValue>(
     () => ({
-      gameTime: (gameState as GameStateResponse | undefined) ? {
-        year: (gameState as GameStateResponse).year,
-        month: (gameState as GameStateResponse).month
-      } : null,
+      gameTime: (gameState as GameStateResponse | undefined)
+        ? {
+            year: (gameState as GameStateResponse).year,
+            month: (gameState as GameStateResponse).month,
+          }
+        : null,
       nations: (gameState as GameStateResponse | undefined)?.nations ?? [],
       cities: (gameState as GameStateResponse | undefined)?.cities ?? [],
       isLoading,

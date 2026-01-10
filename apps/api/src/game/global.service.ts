@@ -226,9 +226,7 @@ export class GlobalService {
       }) as Promise<NationBasic[]>,
     ]);
 
-    const nationMap = new Map<number, NationBasic>(
-      nations.map((n: NationBasic) => [n.nation, n])
-    );
+    const nationMap = new Map<number, NationBasic>(nations.map((n: NationBasic) => [n.nation, n]));
 
     return {
       result: true,
@@ -364,9 +362,7 @@ export class GlobalService {
       }) as Promise<NationBasic[]>,
     ]);
 
-    const nationMap = new Map<number, NationBasic>(
-      nations.map((n: NationBasic) => [n.nation, n])
-    );
+    const nationMap = new Map<number, NationBasic>(nations.map((n: NationBasic) => [n.nation, n]));
 
     return {
       result: true,

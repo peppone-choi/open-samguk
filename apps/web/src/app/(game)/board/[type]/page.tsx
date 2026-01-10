@@ -361,7 +361,7 @@ export default function BoardPage() {
           {isLoading ? (
             <div className="text-center text-gray-400 py-8">로딩 중...</div>
           ) : boards.length > 0 ? (
-            boards.map((board) => (
+            boards.map((board: BoardListItem) => (
               <BoardArticle
                 key={board.no}
                 boardNo={board.no}

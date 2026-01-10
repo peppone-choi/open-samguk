@@ -214,13 +214,17 @@ export class TournamentService {
     let totalPower = 0;
     for (const p of round16) {
       const stat =
-        typeInfo.statKey === "total" ? p.leadership + p.strength + p.intel : (p as any)[typeInfo.statKey];
+        typeInfo.statKey === "total"
+          ? p.leadership + p.strength + p.intel
+          : (p as any)[typeInfo.statKey];
       totalPower += stat;
     }
 
     for (const p of round16) {
       const stat =
-        typeInfo.statKey === "total" ? p.leadership + p.strength + p.intel : (p as any)[typeInfo.statKey];
+        typeInfo.statKey === "total"
+          ? p.leadership + p.strength + p.intel
+          : (p as any)[typeInfo.statKey];
       // Lower stat = higher odds (underdog)
       odds[p.no] = Math.max(1.1, Math.round((totalPower / stat / round16.length) * 10) / 10);
     }

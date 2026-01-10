@@ -4,7 +4,7 @@ import {
   type GeneralDetail,
   type FrontInfoResponse,
   type GeneralListItem,
-  type SuccessResponse
+  type SuccessResponse,
 } from "@sammo/common";
 import { InheritService, INHERIT_CONSTANTS } from "./inherit.service.js";
 
@@ -57,7 +57,7 @@ const INITIAL_RICE = 1000;
 export class GeneralService {
   private readonly prisma = createPrismaClient();
 
-  constructor(private readonly inheritService: InheritService) { }
+  constructor(private readonly inheritService: InheritService) {}
 
   /**
    * 장수 생성 (신규 가입)
@@ -135,7 +135,10 @@ export class GeneralService {
       requiredPoints += INHERIT_CONSTANTS.inheritBornCityPoint;
       logs.push(`시작 도시 지정 (${input.inheritCity})`);
     }
-    if (input.inheritBonusStat && input.inheritBonusStat.reduce((a: number, b: number) => a + b, 0) > 0) {
+    if (
+      input.inheritBonusStat &&
+      input.inheritBonusStat.reduce((a: number, b: number) => a + b, 0) > 0
+    ) {
       requiredPoints += INHERIT_CONSTANTS.inheritBornStatPointCost;
       logs.push(`보너스 스탯 적용 ([${input.inheritBonusStat.join(",")}])`);
     }
@@ -247,19 +250,23 @@ export class GeneralService {
       specialDomestic: general.special,
       specialWar: general.special2,
       turnTime: general.turnTime.toISOString(),
-      nation: general.nation ? {
-        nation: general.nation.nation,
-        name: general.nation.name,
-        color: general.nation.color,
-        level: general.nation.level,
-      } : undefined,
-      city: general.city ? {
-        id: general.city.city,
-        city: general.city.city,
-        name: general.city.name,
-        nationId: general.city.nationId,
-        level: general.city.level,
-      } : undefined,
+      nation: general.nation
+        ? {
+            nation: general.nation.nation,
+            name: general.nation.name,
+            color: general.nation.color,
+            level: general.nation.level,
+          }
+        : undefined,
+      city: general.city
+        ? {
+            id: general.city.city,
+            city: general.city.city,
+            name: general.city.name,
+            nationId: general.city.nationId,
+            level: general.city.level,
+          }
+        : undefined,
     } as unknown as GeneralDetail;
   }
 
@@ -508,28 +515,28 @@ export class GeneralService {
     // 도시 정보
     const cityInfo = general.city
       ? {
-        id: general.city.city,
-        city: general.city.city,
-        name: general.city.name,
-        level: general.city.level,
-        trust: general.city.trust,
-        pop: [general.city.pop, general.city.popMax],
-        agri: [general.city.agri, general.city.agriMax],
-        comm: [general.city.comm, general.city.commMax],
-        secu: [general.city.secu, general.city.secuMax],
-        def: [general.city.def, general.city.defMax],
-        wall: [general.city.wall, general.city.wallMax],
-        trade: general.city.trade,
-        nationInfo: general.city.nation
-          ? {
-            id: general.city.nationId,
-            nation: general.city.nation.nation,
-            name: general.city.nation.name,
-            color: general.city.nation.color,
-            level: general.city.nation.level,
-          }
-          : null,
-      }
+          id: general.city.city,
+          city: general.city.city,
+          name: general.city.name,
+          level: general.city.level,
+          trust: general.city.trust,
+          pop: [general.city.pop, general.city.popMax],
+          agri: [general.city.agri, general.city.agriMax],
+          comm: [general.city.comm, general.city.commMax],
+          secu: [general.city.secu, general.city.secuMax],
+          def: [general.city.def, general.city.defMax],
+          wall: [general.city.wall, general.city.wallMax],
+          trade: general.city.trade,
+          nationInfo: general.city.nation
+            ? {
+                id: general.city.nationId,
+                nation: general.city.nation.nation,
+                name: general.city.nation.name,
+                color: general.city.nation.color,
+                level: general.city.nation.level,
+              }
+            : null,
+        }
       : null;
 
     // 경매 수, 토너먼트 상태 등 글로벌 정보
@@ -582,7 +589,9 @@ export class GeneralService {
         month: gameEnv.month,
         startyear: gameEnv.startyear ?? gameEnv.init_year,
         turnterm: gameEnv.turnterm,
-        lastExecuted: gameEnv.turntime ? new Date(gameEnv.turntime).toISOString() : new Date().toISOString(),
+        lastExecuted: gameEnv.turntime
+          ? new Date(gameEnv.turntime).toISOString()
+          : new Date().toISOString(),
         auctionCount,
         isTournamentActive: (gameEnv.tournament ?? 0) > 0,
         isLocked: false,

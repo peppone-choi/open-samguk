@@ -1,9 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient } from "@sammo/infra";
-import {
-  type GameStateResponse,
-  type ServerInfo
-} from "@sammo/common";
+import { type GameStateResponse, type ServerInfo } from "@sammo/common";
 
 @Injectable()
 export class GameService {
@@ -23,7 +20,7 @@ export class GameService {
         city: c.city,
         name: c.name,
         nationId: c.nationId,
-        level: c.level
+        level: c.level,
       })),
     };
   }

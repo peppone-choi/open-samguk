@@ -109,7 +109,10 @@ export class BettingService {
       _sum: { amount: true },
     });
 
-    const bettingDetail = bettingDetailRaw.map((item: any) => [item.bettingType, item._sum.amount || 0]);
+    const bettingDetail = bettingDetailRaw.map((item: any) => [
+      item.bettingType,
+      item._sum.amount || 0,
+    ]);
 
     // 내 베팅 현황
     const myBettingRaw = await this.prisma.betting.groupBy({

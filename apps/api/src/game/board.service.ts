@@ -110,7 +110,7 @@ export class BoardService {
       }>;
     }
 
-    const board = await this.prisma.board.findUnique({
+    const board = (await this.prisma.board.findUnique({
       where: { no: boardNo },
       include: {
         comments: {
@@ -124,7 +124,7 @@ export class BoardService {
           },
         },
       },
-    }) as BoardWithComments | null;
+    })) as BoardWithComments | null;
 
     if (!board) {
       throw new Error("게시글이 존재하지 않습니다.");

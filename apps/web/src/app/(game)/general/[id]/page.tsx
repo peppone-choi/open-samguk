@@ -145,8 +145,8 @@ export default function GeneralDetailPage() {
 
   const turnEntries = commands?.turn
     ? Object.entries(commands.turn)
-      .map(([idx, cmd]) => ({ turnIdx: Number(idx), ...cmd }))
-      .sort((a, b) => a.turnIdx - b.turnIdx)
+        .map(([idx, cmd]) => ({ turnIdx: Number(idx), ...cmd }))
+        .sort((a, b) => a.turnIdx - b.turnIdx)
     : [];
 
   return (
@@ -200,13 +200,17 @@ export default function GeneralDetailPage() {
               <div>
                 <span className="text-muted-foreground">특기(내정)</span>
                 <div className="font-medium">
-                  {general.specialDomestic === "None" || !general.specialDomestic ? "없음" : general.specialDomestic}
+                  {general.specialDomestic === "None" || !general.specialDomestic
+                    ? "없음"
+                    : general.specialDomestic}
                 </div>
               </div>
               <div>
                 <span className="text-muted-foreground">특기(전투)</span>
                 <div className="font-medium">
-                  {general.specialWar === "None" || !general.specialWar ? "없음" : general.specialWar}
+                  {general.specialWar === "None" || !general.specialWar
+                    ? "없음"
+                    : general.specialWar}
                 </div>
               </div>
             </div>

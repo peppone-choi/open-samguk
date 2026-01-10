@@ -1,9 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { createPrismaClient } from "@sammo/infra";
-import {
-  type NationInfo,
-  type NationGeneralListResponse
-} from "@sammo/common";
+import { type NationInfo, type NationGeneralListResponse } from "@sammo/common";
 
 @Injectable()
 export class NationService {
@@ -50,7 +47,10 @@ export class NationService {
   /**
    * 국가 소속 장수 목록 조회 (상세 정보 포함)
    */
-  async getNationGeneralList(nationId: number, viewerGeneralId?: number): Promise<NationGeneralListResponse> {
+  async getNationGeneralList(
+    nationId: number,
+    viewerGeneralId?: number
+  ): Promise<NationGeneralListResponse> {
     const viewer = viewerGeneralId
       ? await this.prisma.general.findUnique({ where: { no: viewerGeneralId } })
       : null;

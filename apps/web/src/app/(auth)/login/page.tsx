@@ -67,7 +67,7 @@ export default function LoginPage() {
       if (result.data?.url) {
         window.location.href = result.data.url;
       }
-    } catch (err) {
+    } catch {
       setError("카카오 로그인을 시작할 수 없습니다.");
     }
   };

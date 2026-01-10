@@ -100,7 +100,6 @@ function formatLog(text?: string): string {
 // Component
 // ============================================================================
 
-
 // ============================================================================
 // Component
 // ============================================================================
@@ -167,7 +166,7 @@ export default function CachedMapPage() {
           {cachedMap.history && cachedMap.history.length > 0 && (
             <div className="border-t border-gray-600 bg2 px-4 py-3">
               <div className="space-y-1">
-                {cachedMap.history.map((log, idx) => (
+                {cachedMap.history.map((log: string, idx: number) => (
                   <div
                     key={idx}
                     className="text-sm text-gray-300 leading-relaxed"
