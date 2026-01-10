@@ -88,7 +88,7 @@ export default function ResetPasswordPage() {
   };
 
   const handleGoToLogin = () => {
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   return (
@@ -102,7 +102,7 @@ export default function ResetPasswordPage() {
         <div className="bg-zinc-900 border-b border-gray-600 px-4 py-3 flex items-center gap-2">
           {step !== "success" && (
             <Link
-              href="/login"
+              href="/auth/login"
               className="text-gray-400 hover:text-white transition-colors"
               title="로그인으로 돌아가기"
             >

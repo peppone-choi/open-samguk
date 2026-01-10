@@ -58,7 +58,7 @@ export function SessionExpiryWarning({
     if (remaining <= 0) {
       setShowWarning(false);
       auth.logout();
-      router.push("/login");
+      router.push("/auth/login");
       return;
     }
 
@@ -83,12 +83,12 @@ export function SessionExpiryWarning({
       } else {
         // Refresh failed, redirect to login
         auth.logout();
-        router.push("/login");
+        router.push("/auth/login");
       }
     } catch (error) {
       console.error("Failed to extend session:", error);
       auth.logout();
-      router.push("/login");
+      router.push("/auth/login");
     } finally {
       setIsRefreshing(false);
     }
@@ -100,7 +100,7 @@ export function SessionExpiryWarning({
   const handleLogout = () => {
     auth.logout();
     setShowWarning(false);
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   // Setup expiry check interval
@@ -133,7 +133,7 @@ export function SessionExpiryWarning({
       if (remaining <= 0) {
         setShowWarning(false);
         auth.logout();
-        router.push("/login");
+        router.push("/auth/login");
       } else {
         setTimeRemaining(remaining);
       }

@@ -496,7 +496,7 @@ export default function JoinPage() {
 
       if (result.success) {
         alert("정상적으로 생성되었습니다. \n위키와 팁/강좌 게시판을 꼭 읽어보세요!");
-        router.push("/");
+        router.push("/game");
       } else {
         alert(`생성 실패: ${result.error}`);
       }
@@ -580,13 +580,11 @@ export default function JoinPage() {
             nationList.map((nation) => (
               <div
                 key={nation.nation}
-                className={`grid border-b border-gray-700 cursor-pointer ${
-                  selectedNation === nation.nation ? "bg-zinc-800" : ""
-                } ${
-                  toggleZoom
+                className={`grid border-b border-gray-700 cursor-pointer ${selectedNation === nation.nation ? "bg-zinc-800" : ""
+                  } ${toggleZoom
                     ? "grid-rows-[auto_minmax(0,200px)]"
                     : "grid-rows-[auto_minmax(0,115px)]"
-                } lg:grid-cols-[130px_1fr] lg:grid-rows-1`}
+                  } lg:grid-cols-[130px_1fr] lg:grid-rows-1`}
                 onClick={() => setSelectedNation(nation.nation)}
               >
                 {/* Nation Name */}
@@ -608,16 +606,14 @@ export default function JoinPage() {
 
                 {/* Scout Message */}
                 <div
-                  className={`p-2 overflow-hidden ${
-                    toggleZoom ? "overflow-y-auto max-h-[200px]" : "max-h-[115px]"
-                  } lg:max-h-none lg:overflow-visible`}
+                  className={`p-2 overflow-hidden ${toggleZoom ? "overflow-y-auto max-h-[200px]" : "max-h-[115px]"
+                    } lg:max-h-none lg:overflow-visible`}
                 >
                   <div
-                    className={`${
-                      !toggleZoom
+                    className={`${!toggleZoom
                         ? "origin-top-left scale-[0.575] w-[870px] sm:scale-100 sm:w-auto"
                         : ""
-                    }`}
+                      }`}
                     dangerouslySetInnerHTML={{
                       __html: nation.scoutmsg ?? "-",
                     }}
@@ -809,9 +805,8 @@ export default function JoinPage() {
               <div className="bg-zinc-800 border border-gray-600 rounded p-3">
                 <div className="text-xs text-gray-400 mb-1">필요 유산 포인트</div>
                 <div
-                  className={`text-lg font-semibold ${
-                    inheritRequiredPoint > inheritTotalPoint ? "text-red-400" : ""
-                  }`}
+                  className={`text-lg font-semibold ${inheritRequiredPoint > inheritTotalPoint ? "text-red-400" : ""
+                    }`}
                 >
                   {inheritRequiredPoint}
                 </div>

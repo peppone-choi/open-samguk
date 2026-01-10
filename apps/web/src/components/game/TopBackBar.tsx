@@ -35,11 +35,11 @@ export function TopBackBar({
 
   const handleBack = () => {
     if (type === "normal") {
-      router.push("/");
+      router.push("/game");
     } else if (type === "gateway") {
-      router.push("/servers");
+      router.push("/auth/servers");
     } else if (type === "chief") {
-      router.push("/chief");
+      router.push("/game/chief");
     } else {
       // close - in SPA context, go back
       router.back();
@@ -54,9 +54,8 @@ export function TopBackBar({
 
   return (
     <div
-      className={`bg0 w-full max-w-[1000px] mx-auto grid h-8 items-center ${
-        teleportZone ? "grid-cols-[90px_90px_1fr_180px]" : "grid-cols-[90px_90px_1fr_90px_90px]"
-      }`}
+      className={`bg0 w-full max-w-[1000px] mx-auto grid h-8 items-center ${teleportZone ? "grid-cols-[90px_90px_1fr_180px]" : "grid-cols-[90px_90px_1fr_90px_90px]"
+        }`}
     >
       {/* Back Button */}
       <button
@@ -96,11 +95,10 @@ export function TopBackBar({
             <button
               type="button"
               onClick={() => onSearchToggle?.(!searchable)}
-              className={`h-8 px-2 text-sm rounded-sm border transition-colors ${
-                searchable
-                  ? "bg-cyan-600 hover:bg-cyan-500 border-cyan-500 text-white"
-                  : "bg-zinc-700 hover:bg-zinc-600 border-gray-600 text-gray-300"
-              }`}
+              className={`h-8 px-2 text-sm rounded-sm border transition-colors ${searchable
+                ? "bg-cyan-600 hover:bg-cyan-500 border-cyan-500 text-white"
+                : "bg-zinc-700 hover:bg-zinc-600 border-gray-600 text-gray-300"
+                }`}
             >
               {searchable ? "검색 켜짐" : "검색 꺼짐"}
             </button>

@@ -44,7 +44,7 @@ function KakaoCallbackContent() {
 
       // Redirect to servers page after brief success message
       setTimeout(() => {
-        router.push("/servers");
+        router.push("/auth/servers");
       }, 1000);
     },
     onError: (err) => {
@@ -92,11 +92,11 @@ function KakaoCallbackContent() {
   }, [searchParams, loginMutation]);
 
   const handleGoToLogin = () => {
-    router.push("/login");
+    router.push("/auth/login");
   };
 
   const handleGoToRegister = () => {
-    router.push("/register");
+    router.push("/auth/register");
   };
 
   return (

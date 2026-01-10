@@ -61,19 +61,19 @@ export default function ServersPage() {
   const handleLogout = () => {
     console.log("Logout clicked");
     localStorage.removeItem("token");
-    window.location.href = "/login";
+    window.location.href = "/auth/login";
   };
 
   const handleEnterServer = (serverId: string) => {
     console.log("Entering server:", serverId);
     // TODO: 세션 설정 및 게임 페이지 이동
-    window.location.href = `/game/${serverId}`;
+    window.location.href = "/game";
   };
 
   const handleCreateCharacter = (serverId: string) => {
     console.log("Creating character on server:", serverId);
     // TODO: 캐릭터 생성 페이지 이동
-    window.location.href = `/create-character?server=${serverId}`;
+    window.location.href = `/game/join`;
   };
 
   const getStatusBadge = (status: string) => {
@@ -231,7 +231,7 @@ export default function ServersPage() {
           <div className="bg2 section_title with_border text-center">계 정 관 리</div>
           <div className="center_ordered_items with_border bg0">
             <Link
-              href="/account"
+              href="/auth/account"
               className="inline-flex items-center gap-2 px-4 py-2 bg-zinc-700 hover:bg-zinc-600 text-white rounded transition-colors"
             >
               <Settings size={18} />

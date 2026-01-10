@@ -25,7 +25,7 @@ export default function RegisterPage() {
     onSuccess: () => {
       setSuccessMessage("회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.");
       setTimeout(() => {
-        router.push("/login");
+        router.push("/auth/login");
       }, 2000);
     },
     onError: (err) => {
@@ -293,7 +293,7 @@ export default function RegisterPage() {
                 </button>
                 <p className="mt-4 text-center text-sm text-gray-400">
                   이미 계정이 있으신가요?{" "}
-                  <Link href="/login" className="text-primary hover:underline">
+                  <Link href="/auth/login" className="text-primary hover:underline">
                     로그인
                   </Link>
                 </p>

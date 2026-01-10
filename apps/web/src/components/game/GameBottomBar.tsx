@@ -116,12 +116,12 @@ export function GameBottomBar({ frontInfo, globalMenu, onRefresh }: GameBottomBa
 
   // Nation menu items based on permission level
   const nationMenuItems: MenuItem[] = [
-    { name: "세력 장수", href: "/nation/generals" },
-    { name: "내무부", href: "/nation/finance" },
+    { name: "세력 장수", href: "/game/nation/generals" },
+    { name: "내무부", href: "/game/nation/finance" },
   ];
 
   if (showSecret) {
-    nationMenuItems.push({ name: "사령부", href: "/chief" }, { name: "부대 편성", href: "/troop" });
+    nationMenuItems.push({ name: "사령부", href: "/game/chief" }, { name: "부대 편성", href: "/game/troop" });
   }
 
   return (

@@ -145,7 +145,7 @@ export default function AccountPage() {
         <div className="bg2 section_title with_border flex justify-between items-center">
           <span>계 정 관 리</span>
           <Link
-            href="/servers"
+            href="/auth/servers"
             className="inline-flex items-center gap-1 px-3 py-1 bg-zinc-700 hover:bg-zinc-600 text-white text-sm rounded transition-colors"
           >
             <ArrowLeft size={16} />

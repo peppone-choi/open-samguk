@@ -183,7 +183,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const refreshPromise = (async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/trpc";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "/api/trpc";
 
         // Call auth.refresh endpoint directly via fetch
         const response = await fetch(`${apiUrl}/auth.refresh`, {
