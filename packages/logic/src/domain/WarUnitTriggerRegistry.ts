@@ -21,14 +21,16 @@ export {
 
 /**
  * 전투 트리거 레지스트리
- * 우선순위 기반 실행 및 cascade control 지원
- * 레거시 WarUnitTriggerCaller.php 확장판
+ * 전투 중 발생하는 각종 효과(특기, 아이템 발동 등)들을 관리하고 실행합니다.
+ * 우선순위(Priority) 기반 실행 및 연쇄 중단(Cascade Control) 기능을 지원합니다.
+ * 레거시 WarUnitTriggerCaller.php의 확장 구현체입니다.
  */
 export class WarUnitTriggerRegistry {
+  /** 등록된 트리거 목록 */
   private triggers: WarUnitTrigger[] = [];
 
   /**
-   * 단일 트리거 등록
+   * 단일 트리거를 등록합니다. 등록 후 우선순위에 따라 정렬됩니다.
    */
   public register(trigger: WarUnitTrigger): void {
     this.triggers.push(trigger);
@@ -36,7 +38,7 @@ export class WarUnitTriggerRegistry {
   }
 
   /**
-   * 다수 트리거 벌크 등록
+   * 다수의 트리거를 한꺼번에 등록합니다.
    */
   public registerMany(...triggers: WarUnitTrigger[]): void {
     this.triggers.push(...triggers);
@@ -44,7 +46,7 @@ export class WarUnitTriggerRegistry {
   }
 
   /**
-   * 다른 레지스트리와 병합
+   * 다른 레지스트리에 등록된 모든 트리거를 현재 레지스트리로 병합합니다.
    */
   public merge(other: WarUnitTriggerRegistry): void {
     this.triggers.push(...other.getTriggers());
@@ -52,32 +54,35 @@ export class WarUnitTriggerRegistry {
   }
 
   /**
-   * 등록된 모든 트리거 제거
+   * 등록된 모든 트리거를 제거하여 레지스트리를 초기화합니다.
    */
   public clear(): void {
     this.triggers = [];
   }
 
   /**
-   * 등록된 트리거 목록 반환
+   * 현재 등록된 모든 트리거 목록을 읽기 전용으로 반환합니다.
    */
   public getTriggers(): readonly WarUnitTrigger[] {
     return this.triggers;
   }
 
   /**
-   * 등록된 트리거가 있는지 확인
+   * 현재 등록된 트리거가 없는지 여부를 확인합니다.
    */
   public isEmpty(): boolean {
     return this.triggers.length === 0;
   }
 
   /**
-   * 모든 트리거 실행 (우선순위 순서)
-   * 레거시 BaseWarUnitTrigger.php의 action() 패턴 구현:
-   * - 각 트리거가 자신의 유닛을 기준으로 self/oppose 결정
-   * - selfEnv/opposeEnv로 환경 변수 전달
-   * - cascade control (continueExecution: false 시 중단)
+   * 등록된 모든 트리거를 조건(attempt) 확인 후 순차적으로 실행(fire)합니다.
+   * 레거시 패턴을 구현하여, 각 트리거는 자신의 유닛을 기준으로 self/oppose를 결정하고 환경 변수를 전달받습니다.
+   *
+   * @param attacker 공격자 유닛
+   * @param defender 수비자 유닛
+   * @param rand 난수 생성기
+   * @param phase 현재 전투 페이즈
+   * @returns 생성된 델타 목록 및 업데이트된 환경 변수, 중단 여부
    */
   public fire(
     attacker: WarUnit,
@@ -98,7 +103,7 @@ export class WarUnitTriggerRegistry {
     for (const trigger of this.triggers) {
       if (stopped) break;
 
-      // 트리거 소유 유닛 기준으로 self/oppose 결정
+      // 트리거를 소지한 유닛이 공격자인지 확인하여 self/oppose 관계 설정
       const isAttacker = trigger.unit === attacker;
       const self = isAttacker ? attacker : defender;
       const oppose = isAttacker ? defender : attacker;
@@ -115,11 +120,13 @@ export class WarUnitTriggerRegistry {
         isAttacker,
       };
 
+      // 트리거 발동 조건(확률, 상황 등) 검사
       if (trigger.attempt(ctx)) {
+        // 실제 전투 액션 수행
         const result = trigger.actionWar(ctx);
         deltas.push(result.delta);
 
-        // 환경 변수 업데이트
+        // 트리거 실행 후 변경된 환경 변수 반영
         if (isAttacker) {
           attackerEnv = ctx.selfEnv;
           defenderEnv = ctx.opposeEnv;
@@ -128,6 +135,7 @@ export class WarUnitTriggerRegistry {
           attackerEnv = ctx.opposeEnv;
         }
 
+        // 특정 트리거에 의해 이후 트리거 실행이 불필요한 경우(예: 전투 즉시 종료) 실행 중단
         if (!result.continueExecution) {
           stopped = true;
           break;

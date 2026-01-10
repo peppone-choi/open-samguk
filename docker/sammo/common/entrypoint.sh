@@ -23,6 +23,23 @@ cd "$APP_DIR"
 corepack enable
 pnpm --version
 
+# === CONCURRENCY LOCK ===
+# Multiple service containers sharing the same volume might try to clone/install/build simultaneously.
+# We use a simple lock file mechanism to ensure only one service performs the initialization.
+LOCKFILE="/app/.init.lock"
+INIT_DONE="/app/.init.done"
+
+# If we are the setup service, we take the lead. Others wait.
+if [ "$SERVICE_TYPE" = "setup" ]; then
+    echo "[Setup] Initializing shared volume..."
+    touch "$LOCKFILE"
+else
+    while [ -f "$LOCKFILE" ] && [ ! -f "$INIT_DONE" ]; do
+        echo "[$SERVICE_TYPE] Waiting for initialization to complete..."
+        sleep 5
+    done
+fi
+
 # 2. Install Dependencies
 # Check if node_modules exists AND has the expected structure
 # The shared volume may have incomplete or stale dependencies
@@ -82,7 +99,20 @@ esac
 
 if [ "$BUILD_REQUIRED" = "true" ] || [ "$FORCE_UPDATE" = "true" ]; then
     echo "Found incomplete build or update forced for $SERVICE_TYPE. Building packages and apps..."
-    pnpm run build
+    if [ "$SERVICE_TYPE" = "setup" ]; then
+        # Setup should build everything to ensure shared volume is ready
+        pnpm run build
+    else
+        # Other services might try to build only themselves if needed, but usually setup did it
+        pnpm run build
+    fi
+fi
+
+# Mark initialization as done if we are setup
+if [ "$SERVICE_TYPE" = "setup" ]; then
+    touch "$INIT_DONE"
+    rm -f "$LOCKFILE"
+    echo "[Setup] Initialization complete."
 fi
 
 # Setup Database URL if not provided but Postgres info is there
