@@ -16,7 +16,8 @@ export class PasswordService {
 
   constructor() {
     // Global salt should be configured per installation
-    this.globalSalt = process.env.GLOBAL_SALT || "sammo-global-salt";
+    // PW_SALT is used in Docker env, GLOBAL_SALT is legacy name
+    this.globalSalt = process.env.PW_SALT || process.env.GLOBAL_SALT || "sammo-global-salt";
   }
 
   /**
