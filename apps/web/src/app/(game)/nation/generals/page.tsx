@@ -44,7 +44,7 @@ export default function NationGeneralsPage() {
 
   const gameConst = useMemo<GameConstStore | null>(() => {
     if (!constData || !constData.consts) return null;
-    return constData.consts as GameConstStore;
+    return constData.consts as unknown as GameConstStore;
   }, [constData]);
 
   const troopListMap = useMemo(() => {

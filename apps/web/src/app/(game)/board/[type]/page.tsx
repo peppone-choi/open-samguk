@@ -183,7 +183,7 @@ function BoardArticle({ boardNo, generalId, nationId, onCommentSubmit }: BoardAr
       {/* Comments List */}
       {article.comments.length > 0 && (
         <div className="border-b border-gray-600">
-          {article.comments.map((comment) => (
+          {article.comments.map((comment: BoardComment) => (
             <BoardCommentItem key={comment.no} comment={comment} />
           ))}
         </div>
