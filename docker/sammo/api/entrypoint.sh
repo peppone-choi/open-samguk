@@ -7,4 +7,4 @@ until node -e "require('net').createConnection(5432, 'postgres').on('connect', (
 done
 
 echo "Starting the application..."
-exec pnpm --filter @sammo/api start:prod
+exec node dist/main.js

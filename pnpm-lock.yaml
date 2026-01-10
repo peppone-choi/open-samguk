@@ -230,10 +230,10 @@ importers:
       ioredis:
         specifier: ^5.4.0
         version: 5.9.0
-    devDependencies:
       prisma:
         specifier: ^5.22.0
         version: 5.22.0
+    devDependencies:
       tsdown:
         specifier: ^0.2.0
         version: 0.2.17(rollup@4.55.1)(typescript@5.9.3)

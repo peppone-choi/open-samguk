@@ -10,6 +10,6 @@ until node -e "require('net').createConnection(5432, 'postgres').on('connect', (
 done
 
 echo "Database is ready. Synchronizing Schema..."
-pnpm --filter @sammo/infra db:push
+npx prisma db push
 
 echo "Setup Complete!"

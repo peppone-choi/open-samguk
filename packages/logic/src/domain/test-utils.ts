@@ -9,6 +9,11 @@ import type {
   GameTime,
 } from "./entities.js";
 
+/**
+ * 테스트용 가상 장수를 생성합니다.
+ * @param overrides 기본값에서 덮어쓸 필드들
+ * @returns 생성된 가상 장수 객체
+ */
 export function createMockGeneral(overrides: Partial<General> = {}): General {
   const base: General = {
     id: 1,
@@ -80,6 +85,11 @@ export function createMockGeneral(overrides: Partial<General> = {}): General {
   } as General;
 }
 
+/**
+ * 테스트용 가상 국가를 생성합니다.
+ * @param overrides 기본값에서 덮어쓸 필드들
+ * @returns 생성된 가상 국가 객체
+ */
 export function createMockNation(overrides: Partial<Nation> = {}): Nation {
   return {
     id: 1,
@@ -107,6 +117,11 @@ export function createMockNation(overrides: Partial<Nation> = {}): Nation {
   };
 }
 
+/**
+ * 테스트용 가상 도시를 생성합니다.
+ * @param overrides 기본값에서 덮어쓸 필드들
+ * @returns 생성된 가상 도시 객체
+ */
 export function createMockCity(overrides: Partial<City> = {}): City {
   return {
     id: 1,
@@ -139,6 +154,11 @@ export function createMockCity(overrides: Partial<City> = {}): City {
   };
 }
 
+/**
+ * 테스트용 월드 스냅샷을 구성합니다.
+ * @param overrides 장수, 국가, 도시 등 덮어쓸 데이터
+ * @returns 구성된 WorldSnapshot 객체
+ */
 export function createMockWorldSnapshot(
   overrides: {
     generals?: Record<number, Partial<General>>;

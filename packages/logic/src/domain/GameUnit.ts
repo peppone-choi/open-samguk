@@ -15,8 +15,8 @@ import {
 } from "./unit-constraints/index.js";
 
 /**
- * GameUnit Class
- * Handles individual unit logic, constraints, and modifiers.
+ * 병종(GameUnit) 클래스
+ * 개별 병종의 로직, 제한 사항 및 수정치를 처리합니다.
  */
 export class GameUnit {
   public readonly id: number;
@@ -66,7 +66,7 @@ export class GameUnit {
   }
 
   /**
-   * Check if the unit can be recruited based on the context.
+   * 주어진 컨텍스트를 바탕으로 병종 모집 가능 여부를 확인합니다.
    */
   public canRecruit(context: UnitConstraintContext): boolean {
     for (const constraint of this.constraints) {
@@ -78,7 +78,7 @@ export class GameUnit {
   }
 
   /**
-   * Get the list of unmet constraints info.
+   * 충족되지 않은 제한 사항 정보를 가져옵니다.
    */
   public getUnmetConstraintsInfo(context: UnitConstraintContext): string[] {
     const unmet: string[] = [];
@@ -91,21 +91,21 @@ export class GameUnit {
   }
 
   /**
-   * Get all constraint info strings.
+   * 모든 제한 사항 정보 문자열을 가져옵니다.
    */
   public getConstraintInfos(): string[] {
     return this.constraints.map((c) => c.getInfo());
   }
 
   /**
-   * Get attack modifier against a target unit type.
+   * 대상 병종 타입에 대한 공격 수정치를 가져옵니다.
    */
   public getAttackModifier(targetType: number): number {
     return this.attackModifiers[targetType.toString()] ?? 1.0;
   }
 
   /**
-   * Get defense modifier against an attacker unit type.
+   * 공격 병종 타입에 대한 방어 수정치를 가져옵니다.
    */
   public getDefenseModifier(attackerType: number): number {
     return this.defenseModifiers[attackerType.toString()] ?? 1.0;
