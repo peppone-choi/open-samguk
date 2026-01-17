@@ -1,0 +1,27 @@
+{
+    "extends": "../../tsconfig.paths.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "composite": true,
+        "tsBuildInfoFile": "dist/tsconfig.tsbuildinfo",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "target": "ES2023",
+        "lib": ["ES2024"],
+        "verbatimModuleSyntax": true,
+        "noUncheckedIndexedAccess": true,
+        "exactOptionalPropertyTypes": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "useUnknownInCatchVariables": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true
+    },
+    "include": ["src", "test", "*.ts"],
+    "references": [
+        {
+            "path": "../common"
+        }
+    ]
+}

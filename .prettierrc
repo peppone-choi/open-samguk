@@ -1,0 +1,17 @@
+{
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 4,
+    "useTabs": false,
+    "trailingComma": "es5",
+    "printWidth": 120,
+    "endOfLine": "lf",
+    "overrides": [
+        {
+            "files": "resources/scenario/*.json",
+            "options": {
+                "printWidth": 1000
+            }
+        }
+    ]
+}

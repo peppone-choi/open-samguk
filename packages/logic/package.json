@@ -1,0 +1,33 @@
+{
+    "name": "@sammo-ts/logic",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
+    "scripts": {
+        "build": "tsdown -c ../../tsdown.config.ts -F @sammo-ts/logic",
+        "dev": "tsdown -c ../../tsdown.config.ts -F @sammo-ts/logic --watch",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "test": "vitest run --config vitest.config.ts",
+        "typecheck": "tsc -b"
+    },
+    "dependencies": {
+        "@sammo-ts/common": "workspace:*",
+        "es-toolkit": "^1.43.0",
+        "immer": "^11.1.3",
+        "zod": "^4.3.4"
+    },
+    "devDependencies": {
+        "tsdown": "^0.18.4",
+        "vite-tsconfig-paths": "^6.0.3",
+        "vitest": "^4.0.16"
+    }
+}

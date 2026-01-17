@@ -1,0 +1,28 @@
+{
+    "extends": "../../tsconfig.paths.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "composite": true,
+        "baseUrl": ".",
+        "paths": {
+            "@sammo-ts/common": ["../../packages/common/src/index.ts"],
+            "@sammo-ts/common/*": ["../../packages/common/src/*"],
+            "@sammo-ts/infra": ["../../packages/infra/src/index.ts"],
+            "@sammo-ts/infra/*": ["../../packages/infra/src/*"],
+            "@sammo-ts/logic": ["../../packages/logic/src/index.ts"],
+            "@sammo-ts/logic/*": ["../../packages/logic/src/*"]
+        }
+    },
+    "include": ["src", "test", "*.ts"],
+    "references": [
+        {
+            "path": "../../packages/common"
+        },
+        {
+            "path": "../../packages/infra"
+        },
+        {
+            "path": "../../packages/logic"
+        }
+    ]
+}

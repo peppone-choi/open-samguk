@@ -1,0 +1,30 @@
+{
+    "name": "@sammo-ts/game-engine",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsdown -c ../../tsdown.config.ts -F @sammo-ts/game-engine",
+        "dev": "tsdown -c ../../tsdown.config.ts -F @sammo-ts/game-engine --watch",
+        "start": "pnpm run build && node dist/index.js",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "test": "vitest run --config vitest.config.ts",
+        "typecheck": "tsc -b"
+    },
+    "dependencies": {
+        "@prisma/client": "^7.2.0",
+        "@sammo-ts/common": "workspace:*",
+        "@sammo-ts/infra": "workspace:*",
+        "@sammo-ts/logic": "workspace:*",
+        "es-toolkit": "^1.43.0",
+        "zod": "^4.3.4"
+    },
+    "devDependencies": {
+        "tsdown": "^0.18.4",
+        "vite-tsconfig-paths": "^6.0.3",
+        "vitest": "^4.0.16"
+    }
+}

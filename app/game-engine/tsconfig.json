@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.paths.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "composite": true
+    },
+    "include": ["src", "test", "*.ts"],
+    "references": [
+        {
+            "path": "../../packages/common"
+        },
+        {
+            "path": "../../packages/infra"
+        },
+        {
+            "path": "../../packages/logic"
+        }
+    ]
+}

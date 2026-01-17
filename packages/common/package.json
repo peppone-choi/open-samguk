@@ -1,0 +1,24 @@
+{
+    "name": "@sammo-ts/common",
+    "private": true,
+    "version": "0.0.0",
+    "type": "module",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsdown -c ../../tsdown.config.ts -F @sammo-ts/common",
+        "dev": "tsdown -c ../../tsdown.config.ts -F @sammo-ts/common --watch",
+        "lint": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "test": "vitest run --config vitest.config.ts",
+        "typecheck": "tsc -b"
+    },
+    "dependencies": {
+        "@noble/hashes": "^2.0.1",
+        "es-toolkit": "^1.43.0"
+    },
+    "devDependencies": {
+        "tsdown": "^0.18.4",
+        "vitest": "^4.0.16"
+    }
+}
